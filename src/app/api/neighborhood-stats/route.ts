@@ -77,7 +77,7 @@ export async function GET() {
         })
     )
 
-    const sorted = enriched.sort((a, b) => b.healthScore - a.healthScore)
+    const sorted = enriched.sort((a: { healthScore: number }, b: { healthScore: number }) => b.healthScore - a.healthScore)
 
     return NextResponse.json({ neighborhoods: sorted })
   } catch (error) {
