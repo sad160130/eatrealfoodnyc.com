@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Restaurant {
+  id               Int      @id @default(autoincrement())
+  name             String
+  slug             String   @unique
+  type             String?
+  borough          String?
+  neighborhood     String?
+  address          String
+  street           String?
+  city             String?
+  state            String?
+  latitude         Float?
+  longitude        Float?
+  rating           Float?
+  reviews          Int?     @default(0)
+  price_range      Int?
+  dietary_tags     String?
+  inspection_grade String?
+  inspection_date  String?
+  inspection_score Int?
+  description      String?
+  phone            String?
+  website          String?
+  working_hours    String?
+  photo            String?
+  street_view      String?
+  business_status  String?  @default("OPERATIONAL")
+  is_hidden_gem    Boolean  @default(false)
+  email            String?
+  company_facebook  String?
+  company_instagram String?
+  company_linkedin  String?
+  company_x         String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([borough])
+  @@index([neighborhood])
+  @@index([rating(sort: Desc)])
+  @@index([borough, neighborhood])
+  @@index([is_hidden_gem])
+  @@index([inspection_grade])
+  @@map("restaurants")
+}
+
+model NeighborhoodContent {
+  id           Int      @id @default(autoincrement())
+  borough      String
+  neighborhood String
+  intro        String?
+  faqs         String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([borough, neighborhood])
+  @@map("neighborhood_content")
+}

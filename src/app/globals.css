@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+/* Tailwind v4 custom design tokens — generates bg-forest, text-jade, etc. */
+@theme {
+  --color-forest: #1B3A2D;
+  --color-jade: #2D6A4F;
+  --color-sage: #52B788;
+  --color-cream: #F8F6F1;
+  --color-amber: #D4A853;
+}
+
+/* CSS custom properties for use in arbitrary values and inline styles */
+:root {
+  --color-forest: #1B3A2D;
+  --color-jade: #2D6A4F;
+  --color-sage: #52B788;
+  --color-cream: #F8F6F1;
+  --color-amber: #D4A853;
+  --color-text: #1A1A1A;
+  --color-muted: #6B7280;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-text);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
