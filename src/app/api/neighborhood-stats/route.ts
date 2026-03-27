@@ -16,8 +16,8 @@ export async function GET() {
 
     const enriched = await Promise.all(
       neighborhoods
-        .filter((n) => n.neighborhood && n.borough && n._count.id >= 3)
-        .map(async (n) => {
+        .filter((n: typeof neighborhoods[number]) => n.neighborhood && n.borough && n._count.id >= 3)
+        .map(async (n: typeof neighborhoods[number]) => {
           const [gradeA, hiddenGems, dietaryData] = await Promise.all([
             prisma.restaurant.count({
               where: {
