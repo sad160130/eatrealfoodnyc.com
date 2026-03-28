@@ -1,10 +1,23 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import pg from "pg"
-import dns from "node:dns"
+import { execSync } from "node:child_process"
 
-// Force IPv4 — Vercel build machines can't reach Supabase over IPv6
-dns.setDefaultResultOrder("ipv4first")
+// Resolve hostname to IPv4 — Vercel build can't reach Supabase over IPv6
+function forceIPv4(connectionString: string): string {
+  try {
+    const url = new URL(connectionString)
+    const ipv4 = execSync(
+      `node -e "require('dns').lookup('${url.hostname}', { family: 4 }, (e, a) => process.stdout.write(a || ''))"`,
+      { encoding: "utf-8", timeout: 5000 }
+    ).trim()
+    if (ipv4 && /^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) {
+      url.hostname = ipv4
+      return url.toString()
+    }
+  } catch {}
+  return connectionString
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -12,7 +25,7 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
   const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL!,
+    connectionString: forceIPv4(process.env.DATABASE_URL!),
     max: 5,
     ssl: { rejectUnauthorized: false },
   })
