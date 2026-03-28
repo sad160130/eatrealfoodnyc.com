@@ -1,6 +1,6 @@
 export const SEO_CONFIG = {
   siteName: "Eat Real Food NYC",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://eatrealfoodnyc.com",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com",
   defaultTitle: "Eat Real Food NYC — Healthy Restaurants Across All 5 Boroughs",
   defaultDescription:
     "NYC's most trusted healthy restaurant directory. Every listing verified with NYC Health Department inspection grades, dietary certifications, and neighborhood-level curation.",
