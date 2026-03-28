@@ -27,7 +27,12 @@ import CompareButton from "@/components/compare-button"
 export const revalidate = 86400
 
 export async function generateStaticParams() {
-  const restaurants = await prisma.restaurant.findMany({ select: { slug: true } })
+  // Pre-generate top 1000 pages at build time; rest generate on-demand via ISR
+  const restaurants = await prisma.restaurant.findMany({
+    select: { slug: true },
+    orderBy: [{ reviews: "desc" }, { rating: "desc" }],
+    take: 1000,
+  })
   return restaurants.map((r) => ({ slug: r.slug }))
 }
 
