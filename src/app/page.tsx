@@ -616,6 +616,8 @@ export default async function HomePage() {
 
           <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-white/40">
             © 2026 Eat Real Food NYC. All rights reserved.
+            <span className="mx-2">·</span>
+            <a href="/sitemap.xml" className="text-white/40 transition-colors hover:text-white/60">Sitemap</a>
           </div>
         </div>
       </footer>
