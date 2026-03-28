@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import pg from "pg"
+import dns from "node:dns"
+
+// Force IPv4 — Vercel build machines can't reach Supabase over IPv6
+dns.setDefaultResultOrder("ipv4first")
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
