@@ -54,13 +54,13 @@ export default async function BoroughPage({
 
   const [restaurants, stats, gradeACount] = await Promise.all([
     prisma.restaurant.findMany({
-      where: { borough: boroughName, business_status: "OPERATIONAL" },
+      where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true },
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
       take: PAGE_SIZE,
       skip,
     }),
     prisma.restaurant.aggregate({
-      where: { borough: boroughName, business_status: "OPERATIONAL" },
+      where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true },
       _count: { id: true },
       _avg: { rating: true },
     }),

@@ -130,7 +130,7 @@ interface SearchParams {
 async function handleFullTextSearch(params: SearchParams) {
   const { q, borough, neighborhood, dietParams, grade, hiddenGem, openNow, limit, offset, page } = params;
 
-  const conditions: string[] = ["business_status = 'OPERATIONAL'"];
+  const conditions: string[] = ["business_status = 'OPERATIONAL'", "is_published = true"];
   const values: unknown[] = [];
   let paramIndex = 1;
 
@@ -232,6 +232,7 @@ async function handleFilterSearch(params: SearchParams) {
 
   const where: Prisma.RestaurantWhereInput = {
     business_status: "OPERATIONAL",
+    is_published: true,
   };
 
   if (borough) where.borough = borough;
@@ -290,6 +291,7 @@ async function handleGeoSearch(params: SearchParams & { lat: number; lng: number
 
   const where: Prisma.RestaurantWhereInput = {
     business_status: "OPERATIONAL",
+    is_published: true,
     latitude: { not: null },
     longitude: { not: null },
   };

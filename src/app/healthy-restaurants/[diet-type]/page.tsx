@@ -45,7 +45,7 @@ export default async function DietTypePage({
   const [restaurants, totalCount, boroughBreakdown] = await Promise.all([
     prisma.restaurant.findMany({
       where: {
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
         dietary_tags: { contains: tag },
       },
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
@@ -53,14 +53,14 @@ export default async function DietTypePage({
     }),
     prisma.restaurant.count({
       where: {
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
         dietary_tags: { contains: tag },
       },
     }),
     prisma.restaurant.groupBy({
       by: ["borough"],
       where: {
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
         dietary_tags: { contains: tag },
         borough: { not: null },
       },

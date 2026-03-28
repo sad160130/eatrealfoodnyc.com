@@ -7,24 +7,39 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
-  const connUrl = new URL(process.env.DATABASE_URL!)
+  const connString = process.env.DATABASE_URL!
 
-  // Use individual connection params so we can force IPv4 via hostname override
-  const pool = new pg.Pool({
-    host: connUrl.hostname,
-    port: parseInt(connUrl.port || "6543"),
-    user: connUrl.username,
-    password: decodeURIComponent(connUrl.password),
-    database: connUrl.pathname.slice(1),
+  const poolConfig: pg.PoolConfig = {
+    connectionString: connString,
     max: 5,
     ssl: { rejectUnauthorized: false },
-    // Force IPv4 by setting the lookup function
-    lookup: (hostname: string, options: object, callback: Function) => {
-      const dns = require("node:dns")
-      dns.lookup(hostname, { ...options, family: 4 }, callback)
-    },
-  } as pg.PoolConfig)
+  }
 
+  // On Vercel, force IPv4 resolution to avoid IPv6 ENETUNREACH
+  if (process.env.VERCEL) {
+    try {
+      const url = new URL(connString)
+      poolConfig.host = url.hostname
+      poolConfig.port = parseInt(url.port || "6543")
+      poolConfig.user = url.username
+      poolConfig.password = decodeURIComponent(url.password)
+      poolConfig.database = url.pathname.slice(1)
+      delete poolConfig.connectionString
+      // Override DNS lookup to force IPv4
+      const dns = require("node:dns")
+      ;(poolConfig as Record<string, unknown>).lookup = (
+        hostname: string,
+        opts: Record<string, unknown>,
+        cb: Function
+      ) => {
+        dns.lookup(hostname, { ...opts, family: 4 }, cb)
+      }
+    } catch {
+      // Fall back to connection string
+    }
+  }
+
+  const pool = new pg.Pool(poolConfig)
   const adapter = new PrismaPg(pool)
   return new PrismaClient({
     adapter,

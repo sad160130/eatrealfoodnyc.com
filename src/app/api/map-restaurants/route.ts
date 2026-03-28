@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const restaurants = await prisma.restaurant.findMany({
       where: {
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
         latitude: { not: null },
         longitude: { not: null },
       },

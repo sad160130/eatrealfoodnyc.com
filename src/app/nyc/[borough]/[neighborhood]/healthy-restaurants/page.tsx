@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
     by: ["borough", "neighborhood"],
     where: {
-      business_status: "OPERATIONAL",
+      business_status: "OPERATIONAL", is_published: true,
       borough: { not: null },
       neighborhood: { not: null },
     },
@@ -38,7 +38,7 @@ async function getBoroughAndNeighborhood(
   if (!boroughName) return null
 
   const neighborhoods = await prisma.restaurant.findMany({
-    where: { borough: boroughName, business_status: "OPERATIONAL", neighborhood: { not: null } },
+    where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true, neighborhood: { not: null } },
     select: { neighborhood: true },
     distinct: ["neighborhood"],
   })
@@ -86,7 +86,7 @@ export default async function NeighborhoodPage({
       where: {
         borough: boroughName,
         neighborhood: neighborhoodName,
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
       },
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
       take: 24,
@@ -95,7 +95,7 @@ export default async function NeighborhoodPage({
       where: {
         borough: boroughName,
         neighborhood: neighborhoodName,
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
       },
       _count: { id: true },
       _avg: { rating: true },

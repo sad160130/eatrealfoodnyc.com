@@ -34,6 +34,7 @@ model Restaurant {
   street_view      String?
   business_status  String?  @default("OPERATIONAL")
   is_hidden_gem    Boolean  @default(false)
+  is_published     Boolean  @default(false)
   email            String?
   company_facebook  String?
   company_instagram String?
@@ -48,6 +49,7 @@ model Restaurant {
   @@index([rating(sort: Desc)])
   @@index([borough, neighborhood])
   @@index([is_hidden_gem])
+  @@index([is_published])
   @@index([inspection_grade])
   @@map("restaurants")
 }

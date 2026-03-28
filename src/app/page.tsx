@@ -35,10 +35,10 @@ const ALL_DIETS = [
 
 export default async function HomePage() {
   const [totalCount, editorsPicks, hiddenGems, gradeACount] = await Promise.all([
-    prisma.restaurant.count({ where: { business_status: "OPERATIONAL" } }),
+    prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true } }),
     prisma.restaurant.findMany({
       where: {
-        business_status: "OPERATIONAL",
+        business_status: "OPERATIONAL", is_published: true,
         photo: { not: null },
         rating: { gte: 4.5 },
         reviews: { gte: 200 },
@@ -47,7 +47,7 @@ export default async function HomePage() {
       take: 8,
     }),
     prisma.restaurant.findMany({
-      where: { business_status: "OPERATIONAL", is_hidden_gem: true, photo: { not: null } },
+      where: { business_status: "OPERATIONAL", is_published: true, is_hidden_gem: true, photo: { not: null } },
       orderBy: { rating: "desc" },
       take: 4,
     }),
