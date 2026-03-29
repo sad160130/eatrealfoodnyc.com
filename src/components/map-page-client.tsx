@@ -36,8 +36,8 @@ export default function MapPageClient() {
 
   return (
     <div className="flex h-screen overflow-hidden pt-16">
-      {/* LEFT PANEL — Filter sidebar */}
-      <aside className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-r border-gray-100 bg-white">
+      {/* LEFT PANEL — Filter sidebar (desktop only) */}
+      <aside className="hidden w-80 flex-shrink-0 flex-col overflow-y-auto border-r border-gray-100 bg-white md:flex">
         {/* Header */}
         <div className="border-b border-gray-100 p-6">
           <div className="flex items-center justify-between">

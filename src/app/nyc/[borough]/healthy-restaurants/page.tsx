@@ -165,9 +165,11 @@ export default async function BoroughPage({
       </div>
 
       {/* ─── TWO-COLUMN LAYOUT ─── */}
-      <div className="mx-auto flex max-w-7xl gap-8 px-6 py-8">
-        {/* Sidebar */}
-        <BoroughFilters boroughSlug={boroughSlug} boroughName={boroughName} />
+      <div className="mx-auto flex max-w-7xl gap-8 px-4 py-6 md:px-6 md:py-8">
+        {/* Sidebar — desktop only */}
+        <div className="hidden md:block">
+          <BoroughFilters boroughSlug={boroughSlug} boroughName={boroughName} />
+        </div>
 
         {/* Restaurant list */}
         <div className="flex-1">
@@ -216,10 +218,10 @@ export default async function BoroughPage({
               return (
                 <div
                   key={r.id}
-                  className="flex cursor-pointer gap-6 overflow-hidden rounded-2xl border border-gray-100 bg-white transition-shadow hover:shadow-lg"
+                  className="flex flex-col cursor-pointer gap-0 overflow-hidden rounded-2xl border border-gray-100 bg-white transition-shadow hover:shadow-lg sm:flex-row sm:gap-6"
                 >
                   {/* Photo */}
-                  <div className="relative h-52 w-64 flex-shrink-0">
+                  <div className="relative h-48 w-full flex-shrink-0 sm:h-52 sm:w-64">
                     {r.photo ? (
                       <Image
                         src={r.photo}

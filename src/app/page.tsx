@@ -106,7 +106,7 @@ export default async function HomePage() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/60">
               The Curated NYC Dining Authority
             </p>
-            <h1 className="font-serif text-5xl font-bold leading-tight text-white md:text-7xl">
+            <h1 className="font-serif text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
               Eat well in the{" "}
               <span className="block italic text-sage">City that never sleeps.</span>
             </h1>
@@ -115,22 +115,21 @@ export default async function HomePage() {
             </p>
 
             {/* Search bar */}
-            <form action="/search" method="get" className="mt-8 max-w-xl">
-              <div className="flex overflow-hidden rounded-full bg-white shadow-xl">
+            <form action="/search" method="get" className="mt-8 w-full max-w-xl">
+              <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:flex-row sm:rounded-full">
                 <input
                   name="q"
                   placeholder="Restaurant or cuisine..."
-                  className="flex-1 border-none px-6 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400"
+                  className="flex-1 border-b border-gray-100 px-5 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400 sm:border-b-0 sm:border-r sm:px-6"
                 />
-                <div className="w-px self-stretch bg-gray-200" />
                 <input
                   name="neighborhood"
                   placeholder="Neighborhood..."
-                  className="flex-1 border-none px-6 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400"
+                  className="flex-1 px-5 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400 sm:px-6"
                 />
                 <button
                   type="submit"
-                  className="bg-forest px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-jade"
+                  className="w-full bg-forest px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-jade sm:w-auto"
                 >
                   Explore
                 </button>
