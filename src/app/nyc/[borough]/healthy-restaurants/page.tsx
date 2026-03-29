@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import dynamic from "next/dynamic"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { getCanonicalUrl } from "@/config/seo"
@@ -8,7 +7,7 @@ import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 
-const BackToTop = dynamic(() => import("@/components/back-to-top"), { ssr: false })
+import BackToTop from "@/components/back-to-top"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
