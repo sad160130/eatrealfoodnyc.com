@@ -82,8 +82,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [webSiteJsonLd, orgJsonLd] }) }} />
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-[85vh] overflow-hidden bg-forest">
@@ -114,8 +113,16 @@ export default async function HomePage() {
               The curated authority for New York&apos;s health-conscious dining. Inspected, filtered, and verified.
             </p>
 
+            {/* Topical anchor */}
+            <p className="mt-3 max-w-lg text-sm text-white/50">
+              The only NYC restaurant directory built on{" "}
+              <Link href="/guides/nyc-health-grades-explained" className="text-sage/80 underline underline-offset-2 transition-colors hover:text-sage">verified NYC health inspection grades</Link>
+              {" "}and{" "}
+              <Link href="/about/our-data" className="text-sage/80 underline underline-offset-2 transition-colors hover:text-sage">conservative dietary certification</Link>.
+            </p>
+
             {/* Search bar */}
-            <form action="/search" method="get" className="mt-8 w-full max-w-xl">
+            <form action="/search" method="get" className="mt-6 w-full max-w-xl">
               <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:flex-row sm:rounded-full">
                 <input
                   name="q"

@@ -7,6 +7,8 @@ import { getCanonicalUrl } from "@/config/seo"
 import { DIET_CONFIG } from "@/config/dietary-tags"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
+import ContextualLinks from "@/components/contextual-links"
+import { ANCHOR_TEXT } from "@/lib/internal-links"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -182,6 +184,21 @@ export default async function DietTypePage({
         </section>
 
       </main>
+
+      {/* Contextual links */}
+      <div className="mx-auto max-w-3xl px-6 pb-12">
+        <p className="mb-4 text-base leading-relaxed text-gray-700">
+          Our {config.label.toLowerCase()} restaurant listings are drawn from a dataset of {totalCount.toLocaleString()} verified NYC establishments, each tagged conservatively.
+          Use our <Link href="/nyc/compare" className="font-medium text-jade underline underline-offset-2 hover:text-forest">neighbourhood health comparison tool</Link> to see which NYC neighbourhoods have the highest concentration of {config.label.toLowerCase()} restaurants.
+        </p>
+        <ContextualLinks
+          intro="Related guides:"
+          links={[
+            [ANCHOR_TEXT.guideBestNeighborhoods, "/guides/best-healthy-neighborhoods-nyc"],
+            [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
+          ]}
+        />
+      </div>
 
       {/* FAQ */}
       {config.faqs.length > 0 && (

@@ -18,6 +18,10 @@ import MapWrapper from "@/components/map-wrapper"
 import HealthScoreCard from "@/components/health-score-card"
 import CommunityRating from "@/components/community-rating"
 import ShareExperience from "@/components/share-experience"
+import ContextualLinks from "@/components/contextual-links"
+import TopicalBreadcrumb from "@/components/topical-breadcrumb"
+import { getRestaurantContextualLinks } from "@/lib/internal-links"
+import { buildRestaurantSchema, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
@@ -100,53 +104,29 @@ export default async function RestaurantPage({
 
   const todayName = DAYS_ORDER[new Date().getDay()]
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000"
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    name: restaurant.name,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: restaurant.street ?? restaurant.address,
-      addressLocality: "New York",
-      addressRegion: "NY",
-      addressCountry: "US",
-    },
-    ...(restaurant.latitude && restaurant.longitude
-      ? { geo: { "@type": "GeoCoordinates", latitude: restaurant.latitude, longitude: restaurant.longitude } }
-      : {}),
-    ...(restaurant.phone ? { telephone: restaurant.phone } : {}),
-    ...(restaurant.website ? { url: restaurant.website } : {}),
-    ...(tags.length > 0 ? { servesCuisine: tags.map(formatDietaryTag) } : {}),
-    ...(price ? { priceRange: price } : {}),
-    ...(restaurant.rating != null
-      ? { aggregateRating: { "@type": "AggregateRating", ratingValue: restaurant.rating, reviewCount: restaurant.reviews ?? 0 } }
-      : {}),
-    dateModified: new Date().toISOString(),
-  }
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      ...(restaurant.borough && boroughSlug
-        ? [{ "@type": "ListItem", position: 2, name: restaurant.borough, item: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants` }]
-        : []),
-      { "@type": "ListItem", position: restaurant.borough ? 3 : 2, name: restaurant.name },
-    ],
-  }
+  const breadcrumbItems = [
+    { label: "NYC Healthy Restaurants", href: "/search" },
+    ...(restaurant.borough && boroughSlug ? [{ label: restaurant.borough, href: `/nyc/${boroughSlug}/healthy-restaurants` }] : []),
+    ...(restaurant.neighborhood && boroughSlug && neighborhoodSlug ? [{ label: restaurant.neighborhood, href: `/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants` }] : []),
+    { label: restaurant.name },
+  ]
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbJsonLd]) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [buildRestaurantSchema(restaurant), ORGANIZATION_SCHEMA] }),
+        }}
       />
 
-      {/* ─── PHOTO GALLERY ─── */}
+      {/* ─── BREADCRUMB ─── */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
+        <TopicalBreadcrumb items={breadcrumbItems} />
+      </div>
+
+      {/* ─── PHOTO GALLERY ─── */}
+      <div className="mx-auto max-w-7xl px-6">
         <div className="grid h-96 grid-cols-2 gap-2">
           {/* Left — main photo */}
           <div className="relative col-span-1 overflow-hidden rounded-2xl">
@@ -421,6 +401,41 @@ export default async function RestaurantPage({
                 </div>
               </section>
             )}
+
+            {/* Contextual internal links */}
+            <div className="mt-8 border-t border-gray-100 pt-8">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>EXPLORE MORE</p>
+              <ContextualLinks
+                intro={`${restaurant.name} is one of many healthy restaurants in our directory. Explore`}
+                links={getRestaurantContextualLinks(restaurant.neighborhood, restaurant.borough, restaurant.dietary_tags)}
+                className="mb-4"
+              />
+              {tags.length > 0 && (
+                <ContextualLinks
+                  intro="Browse by dietary need:"
+                  links={tags.slice(0, 3).map((tag) => [`${formatDietaryTag(tag).toLowerCase()} restaurants in NYC` as string, `/healthy-restaurants/${tag}`] as [string, string])}
+                />
+              )}
+            </div>
+
+            {/* Topical authority footer */}
+            <div className="mt-10 border-t border-gray-100 pt-8 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
+              <p>
+                {restaurant.name} is listed in the{" "}
+                <Link href="/" className="font-medium text-jade underline underline-offset-2 hover:text-forest">Eat Real Food NYC directory</Link>
+                {restaurant.borough && boroughSlug && (
+                  <>{" "}— a curated database of{" "}
+                    <Link href={`/nyc/${boroughSlug}/healthy-restaurants`} className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+                      healthy restaurants in {restaurant.borough}
+                    </Link>
+                  </>
+                )}
+                , verified with official NYC Department of Health inspection data.{" "}
+                <Link href="/guides/nyc-health-grades-explained" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+                  Learn how NYC health grades work →
+                </Link>
+              </p>
+            </div>
           </div>
 
           {/* ── RIGHT COLUMN ── */}

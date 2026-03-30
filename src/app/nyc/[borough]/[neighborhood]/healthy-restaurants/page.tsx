@@ -7,6 +7,9 @@ import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
+import TopicalBreadcrumb from "@/components/topical-breadcrumb"
+import ContextualLinks from "@/components/contextual-links"
+import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -241,14 +244,18 @@ export default async function NeighborhoodPage({
         </section>
       </main>
 
-      {/* Compare link */}
-      <div className="mx-auto max-w-7xl px-6 pb-6">
-        <Link
-          href="/nyc/compare"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-jade transition-colors hover:text-forest"
-        >
-          📊 See how {neighborhoodName} ranks among all NYC neighborhoods →
-        </Link>
+      {/* Contextual links */}
+      <div className="mx-auto max-w-3xl px-6 pb-12">
+        <div className="rounded-2xl border border-sage/10 bg-sage/5 p-6">
+          <p className="mb-3 text-sm leading-relaxed text-gray-700">
+            {neighborhoodName} is one of the dining areas we track in {boroughName}, New York City.
+            Every listing includes the official NYC Department of Health inspection grade.
+          </p>
+          <ContextualLinks
+            intro="Explore further:"
+            links={getNeighborhoodContextualLinks(neighborhoodName, boroughName)}
+          />
+        </div>
       </div>
 
       {/* FAQ */}

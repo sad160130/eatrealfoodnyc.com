@@ -155,7 +155,7 @@ export default function RestaurantMap({
                 href={`/restaurants/${restaurant.slug}`}
                 className="mt-3 block text-xs font-semibold text-jade hover:text-forest"
               >
-                View listing →
+                See health grade and details →
               </Link>
             </div>
           </Popup>

@@ -6,8 +6,10 @@ import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
-
 import BackToTop from "@/components/back-to-top"
+import TopicalBreadcrumb from "@/components/topical-breadcrumb"
+import ContextualLinks from "@/components/contextual-links"
+import { getBoroughContextualLinks } from "@/lib/internal-links"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -121,11 +123,10 @@ export default async function BoroughPage({
       {/* ─── HEADER ─── */}
       <div className="border-b bg-white">
         <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
-          <nav className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-            <Link href="/" className="transition-colors hover:text-jade">NYC</Link>
-            <span className="mx-2">/</span>
-            <span className="text-forest">{boroughName.toUpperCase()}</span>
-          </nav>
+          <TopicalBreadcrumb items={[
+            { label: "NYC Healthy Restaurants", href: "/search" },
+            { label: boroughName },
+          ]} />
 
           <h1 className="mt-2 font-serif text-3xl font-bold text-forest md:text-5xl">
             {boroughName} Culinary Guide
@@ -261,6 +262,17 @@ export default async function BoroughPage({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* ─── CONTEXTUAL LINKS ─── */}
+      <div className="mx-auto max-w-3xl px-4 pb-12 md:px-6">
+        <p className="mb-4 text-base leading-relaxed text-gray-700">
+          This page lists every published healthy restaurant in {boroughName} from our directory of {totalCount.toLocaleString()} verified NYC establishments. Each listing shows the official NYC Department of Health inspection grade, dietary certifications, and community ratings.
+        </p>
+        <ContextualLinks
+          intro="Learn more about our data and methodology:"
+          links={getBoroughContextualLinks(boroughName)}
+        />
       </div>
 
       {/* ─── COMPARE CTA ─── */}
