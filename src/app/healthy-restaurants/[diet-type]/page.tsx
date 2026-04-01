@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { DIET_CONFIG } from "@/config/dietary-tags"
+import { DIET_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
@@ -26,11 +27,13 @@ export async function generateMetadata({
   if (!config) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/healthy-restaurants/${tag}`)
+  const kwds = DIET_KEYWORDS[tag]
+  const count = await prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true, dietary_tags: { contains: tag } } })
   return {
-    title: `Best ${config.label} Restaurants in NYC (2026)`,
-    description: `Find ${config.label.toLowerCase()} restaurants in NYC. Browse by neighborhood, view health inspection grades, and filter by dietary need.`,
+    title: kwds?.metaTitle || `Best ${config.label} Restaurants in NYC (2026)`,
+    description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
     alternates: { canonical: canonicalUrl },
-    openGraph: { url: canonicalUrl, type: "website" },
+    openGraph: { title: kwds?.h1, url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
   }
 }
@@ -131,7 +134,7 @@ export default async function DietTypePage({
         </nav>
 
         <h1 className="text-2xl font-bold md:text-3xl">
-          {config.emoji} Best {config.label} Restaurants in NYC
+          {config.emoji} {config.label} Restaurants in NYC
         </h1>
 
         <p className="mt-2 flex items-center gap-1.5 text-xs" style={{ color: "var(--color-muted)" }}>

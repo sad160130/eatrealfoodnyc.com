@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug, formatDietaryTag } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
+import { buildNeighborhoodKeywords } from "@/config/keywords"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -64,9 +65,10 @@ export async function generateMetadata({
   if (!resolved) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/${neighborhood}/healthy-restaurants`)
+  const kwds = buildNeighborhoodKeywords(resolved.neighborhoodName, resolved.boroughName)
   return {
-    title: `Healthy Restaurants in ${resolved.neighborhoodName} — ${resolved.boroughName}`,
-    description: `Discover healthy restaurants in ${resolved.neighborhoodName}, ${resolved.boroughName}, NYC. View health inspection grades, dietary options, and detailed reviews.`,
+    title: kwds.metaTitle,
+    description: kwds.metaDescription(0),
     alternates: { canonical: canonicalUrl },
     openGraph: { url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
@@ -178,7 +180,7 @@ export default async function NeighborhoodPage({
         </nav>
 
         <h1 className="text-2xl font-bold md:text-3xl">
-          Best Healthy Restaurants in {neighborhoodName}, {boroughName}
+          Healthy Restaurants in {neighborhoodName}, {boroughName}
         </h1>
 
         <p className="mt-2 flex items-center gap-1.5 text-xs" style={{ color: "var(--color-muted)" }}>

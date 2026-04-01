@@ -3,7 +3,7 @@ import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 
 export const metadata: Metadata = {
-  title: "Press & Media — Eat Real Food NYC",
+  title: "Press & Media — Eat Real Food NYC | NYC Restaurant Data",
   description:
     "Press resources for Eat Real Food NYC: quick facts, story angles, media contact, and background on NYC's first directory combining health inspection data with dietary filtering.",
   alternates: { canonical: getCanonicalUrl("/press") },

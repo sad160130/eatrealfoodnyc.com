@@ -9,11 +9,11 @@ import SavedPreview from "@/components/saved-preview"
 import NearMeButton from "@/components/near-me-button"
 
 export const metadata: Metadata = {
-  title: "Eat Real Food NYC — Healthy Restaurants, All 5 Boroughs",
+  title: "Healthy Restaurants NYC — Find & Filter | Eat Real Food",
   description:
-    "The only NYC restaurant directory with health inspection grades, dietary filtering, and neighborhood-level search. 8,835 healthy restaurants across Manhattan, Brooklyn, Queens, Bronx, and Staten Island.",
+    "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and 8 more dietary needs.",
   alternates: { canonical: getCanonicalUrl("/") },
-  openGraph: { type: "website", url: getCanonicalUrl("/") },
+  openGraph: { title: "Healthy Restaurants NYC — Find, Filter & Explore (2026)", type: "website", url: getCanonicalUrl("/") },
 }
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
@@ -106,8 +106,8 @@ export default async function HomePage() {
               The Curated NYC Dining Authority
             </p>
             <h1 className="font-serif text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
-              Eat well in the{" "}
-              <span className="block italic text-sage">City that never sleeps.</span>
+              Find Healthy Restaurants{" "}
+              <span className="block text-sage">Across New York City</span>
             </h1>
             <p className="mt-6 max-w-md text-lg text-white/80">
               The curated authority for New York&apos;s health-conscious dining. Inspected, filtered, and verified.

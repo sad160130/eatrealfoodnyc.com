@@ -48,17 +48,19 @@ export async function generateMetadata({
   if (!restaurant) return { title: "Restaurant Not Found" }
 
   const tags = parseDietaryTags(restaurant.dietary_tags)
-  const description =
-    restaurant.description?.slice(0, 155) ||
-    `Discover ${restaurant.name} in ${restaurant.neighborhood ?? "NYC"}. ${tags.length > 0 ? tags.map(formatDietaryTag).join(", ") + ". " : ""}Health grade: ${restaurant.inspection_grade ?? "N/A"}. ${restaurant.rating ?? "N/A"}/5 from ${restaurant.reviews ?? 0} reviews.`
+  const locationStr = restaurant.neighborhood ? `${restaurant.neighborhood}, NYC` : "New York City"
+  const tagStr = tags.length > 0 ? `${tags.slice(0, 3).map(formatDietaryTag).join(", ")}. ` : ""
+  const gradeStr = restaurant.inspection_grade ? `NYC health grade: ${restaurant.inspection_grade}. ` : ""
+  const ratingStr = restaurant.rating ? `Rated ${restaurant.rating}/5 from ${(restaurant.reviews ?? 0).toLocaleString()} reviews.` : ""
+  const description = `${restaurant.name} is a healthy restaurant in ${locationStr}. ${tagStr}${gradeStr}${ratingStr}`.slice(0, 160)
 
   const canonicalUrl = getCanonicalUrl(`/restaurants/${restaurant.slug}`)
 
   return {
     title: buildTitle({
       name: restaurant.name,
-      location: restaurant.neighborhood ? `${restaurant.neighborhood}, NYC` : "New York City",
-      suffix: restaurant.inspection_grade === "A" ? "Grade A" : undefined,
+      location: locationStr,
+      suffix: "Healthy Restaurant",
     }),
     description,
     alternates: { canonical: canonicalUrl },

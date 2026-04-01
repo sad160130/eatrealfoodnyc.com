@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
+import { BOROUGH_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import BackToTop from "@/components/back-to-top"
@@ -33,11 +34,12 @@ export async function generateMetadata({
   })
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/healthy-restaurants`)
 
+  const kwds = BOROUGH_KEYWORDS[borough]
   return {
-    title: `All Healthy Restaurants in ${name}, NYC — Complete Guide`,
-    description: `Complete guide to all ${count} healthy restaurants in ${name}, NYC. Browse every neighbourhood from one page — with health inspection grades, dietary filters, and hidden gem picks.`,
+    title: kwds?.metaTitle || `Healthy Restaurants in ${name}, NYC (2026)`,
+    description: kwds?.metaDescription(count) || `Find ${count}+ healthy restaurants in ${name}, NYC — verified with NYC health inspection grades.`,
     alternates: { canonical: canonicalUrl },
-    openGraph: { url: canonicalUrl, type: "website" },
+    openGraph: { title: kwds?.h1, url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
   }
 }
@@ -129,7 +131,7 @@ export default async function BoroughPage({
           ]} />
 
           <h1 className="mt-2 font-serif text-3xl font-bold text-forest md:text-5xl">
-            {boroughName} Culinary Guide
+            Healthy Restaurants in {boroughName}, NYC
           </h1>
           <p className="mt-2 text-base text-gray-500 md:text-lg">
             {totalCount.toLocaleString()} curated destinations serving health-focused cuisine across {boroughName}.
@@ -202,7 +204,7 @@ export default async function BoroughPage({
               <div className="mb-6 flex flex-wrap items-end justify-between gap-3 border-b border-gray-100 pb-4">
                 <div>
                   <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                    {neighborhood}
+                    Healthy Restaurants in {neighborhood}
                   </h2>
                   <div className="mt-1 flex flex-wrap items-center gap-4">
                     <span className="text-sm" style={{ color: "var(--color-muted)" }}>
