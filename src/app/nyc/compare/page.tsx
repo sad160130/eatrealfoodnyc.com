@@ -5,9 +5,12 @@ export const metadata: Metadata = {
   title: "NYC Neighborhood Health Rankings — Compare Healthy Dining",
   description: "Compare NYC neighborhoods by health inspection grades, average ratings, and dietary diversity. Rank the healthiest neighborhoods for dining across all 5 boroughs.",
   robots: {
-    index: false,
+    index: true,
     follow: true,
-    googleBot: { index: false, follow: true },
+    googleBot: { index: true, follow: true },
+  },
+  alternates: {
+    canonical: "https://www.eatrealfoodnyc.com/nyc/compare",
   },
 }
 
