@@ -9,11 +9,29 @@ import SavedPreview from "@/components/saved-preview"
 import NearMeButton from "@/components/near-me-button"
 
 export const metadata: Metadata = {
-  title: "Healthy Restaurants NYC — Find & Filter | Eat Real Food",
+  title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
   description:
     "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and 8 more dietary needs.",
-  alternates: { canonical: getCanonicalUrl("/") },
-  openGraph: { title: "Healthy Restaurants NYC — Find, Filter & Explore (2026)", type: "website", url: getCanonicalUrl("/") },
+  alternates: {
+    canonical: "https://www.eatrealfoodnyc.com",
+  },
+  openGraph: {
+    title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
+    description: "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs with verified NYC health inspection grades.",
+    type: "website",
+    url: "https://www.eatrealfoodnyc.com",
+    siteName: "Eat Real Food NYC",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large" as const,
+    },
+  },
 }
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
@@ -57,7 +75,7 @@ export default async function HomePage() {
   const heroPhoto = editorsPicks[0]?.photo ?? null
   const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
   const webSiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",

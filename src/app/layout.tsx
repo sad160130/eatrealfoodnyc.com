@@ -19,14 +19,14 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SEO_CONFIG.siteUrl),
+  metadataBase: new URL("https://www.eatrealfoodnyc.com"),
   title: {
     default: SEO_CONFIG.defaultTitle,
     template: "%s | Eat Real Food NYC",
   },
   description: SEO_CONFIG.defaultDescription,
   applicationName: SEO_CONFIG.siteName,
-  authors: [{ name: "Eat Real Food NYC", url: SEO_CONFIG.siteUrl }],
+  authors: [{ name: "Eat Real Food NYC", url: "https://www.eatrealfoodnyc.com" }],
   keywords: [
     "healthy restaurants NYC",
     "NYC restaurant health grades",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     images: [SEO_CONFIG.ogImage],
   },
   alternates: {
-    canonical: SEO_CONFIG.siteUrl,
+    canonical: "https://www.eatrealfoodnyc.com",
   },
 }
 

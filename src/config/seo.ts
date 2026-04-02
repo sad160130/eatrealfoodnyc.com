@@ -9,7 +9,10 @@ export const SEO_CONFIG = {
 }
 
 export function getCanonicalUrl(path: string): string {
-  const base = SEO_CONFIG.siteUrl.replace(/\/$/, "")
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`
-  return `${base}${normalizedPath}`
+  const base = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com").replace(/\/$/, "")
+  const normalizedPath = path === "/" ? "" : (path.startsWith("/") ? path : `/${path}`)
+  const cleanPath = normalizedPath.endsWith("/") && normalizedPath.length > 1
+    ? normalizedPath.slice(0, -1)
+    : normalizedPath
+  return `${base}${cleanPath}`
 }

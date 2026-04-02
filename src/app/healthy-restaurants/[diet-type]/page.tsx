@@ -74,7 +74,7 @@ export default async function DietTypePage({
     }),
   ])
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
