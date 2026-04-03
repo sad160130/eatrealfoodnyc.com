@@ -11,7 +11,7 @@ import NearMeButton from "@/components/near-me-button"
 export const metadata: Metadata = {
   title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
   description:
-    "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and 8 more dietary needs.",
+    "8,835 healthy restaurants across all 5 NYC boroughs. Every listing verified with health inspection grades. Filter by vegan, halal, gluten-free, and more.",
   alternates: {
     canonical: "https://www.eatrealfoodnyc.com",
   },

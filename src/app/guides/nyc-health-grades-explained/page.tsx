@@ -14,7 +14,7 @@ const guide = getGuideBySlug("nyc-health-grades-explained")!
 export const metadata: Metadata = {
   title: guide.metaTitle,
   description:
-    "The complete guide to NYC restaurant health inspection grades. What Grade A, B, and C mean, how the inspection process works, and what diners should know before eating out.",
+    "What NYC restaurant Grade A, B, and C really mean. How the health inspection process works and what diners should know before eating out.",
   alternates: { canonical: `${siteUrl}/guides/nyc-health-grades-explained` },
   robots: {
     index: true,

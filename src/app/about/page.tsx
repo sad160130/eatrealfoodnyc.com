@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db"
 export const metadata: Metadata = {
   title: "About Eat Real Food NYC — NYC Healthy Restaurant Directory",
   description:
-    "Eat Real Food NYC is a curated healthy restaurant directory built on real NYC Health Department data. Learn about our mission, methodology, and the team behind the directory.",
+    "A curated NYC healthy restaurant directory built on real Health Department inspection data. Our mission, methodology, and team.",
   alternates: { canonical: getCanonicalUrl("/about") },
   robots: { index: true, follow: true },
 }

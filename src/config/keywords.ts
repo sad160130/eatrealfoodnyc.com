@@ -13,7 +13,7 @@ export const BOROUGH_KEYWORDS: Record<string, {
     primary: "healthy restaurants in Manhattan",
     h1: "Healthy Restaurants in Manhattan, NYC",
     metaTitle: `Healthy Restaurants in Manhattan, NYC (${YEAR})`,
-    metaDescription: (count) => `Find ${count}+ healthy restaurants in Manhattan, NYC — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and more.`,
+    metaDescription: (count) => `Find ${count}+ healthy restaurants in Manhattan, NYC — verified with health inspection grades. Filter by vegan, halal, gluten-free, and more.`,
     openingLine: "Manhattan is home to more healthy restaurants per square mile than almost any city on earth.",
   },
   brooklyn: {
@@ -27,7 +27,7 @@ export const BOROUGH_KEYWORDS: Record<string, {
     primary: "healthy restaurants in Queens",
     h1: "Healthy Restaurants in Queens, NYC",
     metaTitle: `Healthy Restaurants in Queens, NYC (${YEAR})`,
-    metaDescription: (count) => `Find ${count}+ healthy restaurants in Queens, NYC — the most diverse borough for healthy dining. Health inspection grades across Jackson Heights, Astoria, Flushing.`,
+    metaDescription: (count) => `Find ${count}+ healthy restaurants in Queens, NYC — NYC's most diverse borough for healthy dining. Grades across Jackson Heights, Astoria, and more.`,
     openingLine: "Queens is NYC's most ethnically diverse borough, and that diversity translates into one of the city's richest selections of naturally healthy cuisines.",
   },
   bronx: {
