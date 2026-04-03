@@ -235,7 +235,7 @@ export default async function BoroughPage({
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {neighborhoodRestaurants.map((restaurant, index) => (
+                {neighborhoodRestaurants.slice(0, 8).map((restaurant, index) => (
                   <RestaurantCard
                     key={restaurant.id}
                     restaurant={restaurant}
@@ -243,6 +243,16 @@ export default async function BoroughPage({
                   />
                 ))}
               </div>
+              {neighborhoodRestaurants.length > 8 && (
+                <div className="mt-4 text-center">
+                  <Link
+                    href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
+                    className="inline-flex items-center gap-2 rounded-full border border-sage/30 px-6 py-3 text-sm font-semibold text-jade transition-colors hover:border-jade hover:bg-sage/5"
+                  >
+                    View all {neighborhoodRestaurants.length} restaurants in {neighborhood} →
+                  </Link>
+                </div>
+              )}
             </section>
           )
         })}
