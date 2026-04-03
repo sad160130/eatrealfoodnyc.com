@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: guide.description,
   alternates: { canonical: getCanonicalUrl(`/guides/${guide.slug}`) },
   robots: { index: true, follow: true },
-  openGraph: { title: guide.metaTitle, description: guide.description, type: "article" },
+  openGraph: { title: guide.metaTitle, description: guide.description, type: "article", url: `${siteUrl}/guides/${guide.slug}`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: guide.metaTitle }] },
 }
 
 const GUIDE_FAQS = [

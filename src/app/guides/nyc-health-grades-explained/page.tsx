@@ -26,6 +26,8 @@ export const metadata: Metadata = {
     description:
       "Everything NYC diners need to know about restaurant health inspection grades — what A, B, and C really mean.",
     type: "article",
+    url: `${siteUrl}/guides/nyc-health-grades-explained`,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "NYC Restaurant Health Grades Explained" }],
   },
 }
 

@@ -68,7 +68,8 @@ export async function generateMetadata({
       title: `${restaurant.name} — ${restaurant.neighborhood ?? "NYC"}`,
       description,
       url: canonicalUrl,
-      ...(restaurant.photo ? { images: [{ url: restaurant.photo, alt: restaurant.name }] } : {}),
+      type: "website",
+      ...(restaurant.photo ? { images: [{ url: restaurant.photo, alt: restaurant.name }] } : { images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: restaurant.name }] }),
     },
     robots: { index: true, follow: true },
   }

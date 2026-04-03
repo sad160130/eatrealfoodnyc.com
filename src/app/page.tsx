@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://www.eatrealfoodnyc.com",
     siteName: "Eat Real Food NYC",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Eat Real Food NYC — Healthy Restaurant Directory" }],
   },
   robots: {
     index: true,

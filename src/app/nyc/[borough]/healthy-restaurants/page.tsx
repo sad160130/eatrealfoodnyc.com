@@ -39,7 +39,13 @@ export async function generateMetadata({
     title: kwds?.metaTitle || `Healthy Restaurants in ${name}, NYC (2026)`,
     description: kwds?.metaDescription(count) || `Find ${count}+ healthy restaurants in ${name}, NYC — verified with NYC health inspection grades.`,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title: kwds?.h1, url: canonicalUrl, type: "website" },
+    openGraph: {
+      title: kwds?.h1,
+      description: kwds?.metaDescription(count) || `Find ${count}+ healthy restaurants in ${name}, NYC — verified with NYC health inspection grades.`,
+      url: canonicalUrl,
+      type: "website",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `Healthy Restaurants in ${name}, NYC` }],
+    },
     robots: { index: true, follow: true },
   }
 }

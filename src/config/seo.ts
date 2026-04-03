@@ -5,7 +5,7 @@ export const SEO_CONFIG = {
   defaultDescription:
     "NYC's most trusted healthy restaurant directory. Every listing verified with NYC Health Department inspection grades, dietary certifications, and neighborhood-level curation.",
   twitterHandle: "@eatrealfoodnyc",
-  ogImage: "/og-default.jpg",
+  ogImage: "/opengraph-image",
 }
 
 export function getCanonicalUrl(path: string): string {

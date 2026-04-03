@@ -33,7 +33,13 @@ export async function generateMetadata({
     title: kwds?.metaTitle || `Best ${config.label} Restaurants in NYC (2026)`,
     description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title: kwds?.h1, url: canonicalUrl, type: "website" },
+    openGraph: {
+      title: kwds?.h1,
+      description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
+      url: canonicalUrl,
+      type: "website",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${config.label} Restaurants in NYC` }],
+    },
     robots: { index: true, follow: true },
   }
 }
