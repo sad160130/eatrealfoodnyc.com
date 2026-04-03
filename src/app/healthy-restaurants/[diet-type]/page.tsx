@@ -157,10 +157,25 @@ export default async function DietTypePage({
         {/* Intro */}
         <p className="mt-6 leading-relaxed text-gray-700">{config.intro}</p>
 
-        {/* Count */}
-        <p className="mt-4 text-sm font-medium text-gray-500">
-          {totalCount} {config.label} restaurants in NYC
-        </p>
+        {/* Data-driven conversational aside — varies by count and borough spread */}
+        <div className="mt-4 border-l-4 border-sage pl-4">
+          <p className="text-sm text-gray-600">
+            {totalCount > 100
+              ? `With ${totalCount} options across the city, ${config.label.toLowerCase()} dining in NYC is far from niche — it's mainstream. The challenge isn't finding a restaurant; it's finding the right one.`
+              : totalCount > 30
+                ? `${totalCount} restaurants may not sound like a lot for a city this size, but ${config.label.toLowerCase()} spots in NYC tend to be deliberate about what they serve. Quality over quantity.`
+                : `${totalCount} dedicated options — a smaller pool, which honestly makes it easier to find the standouts. We've tagged each one with health grades so you can compare apples to apples.`}
+          </p>
+        </div>
+
+        {/* Count + borough spread summary */}
+        <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+          <span className="font-medium">{totalCount} restaurants</span>
+          <span className="text-gray-300">|</span>
+          <span>{boroughBreakdown.filter(b => b.borough).length} boroughs</span>
+          <span className="text-gray-300">|</span>
+          <span>Avg rating: {roundedAvg}/5</span>
+        </div>
 
         {/* Restaurant grid */}
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -207,6 +222,19 @@ export default async function DietTypePage({
             [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
           ]}
         />
+      </div>
+
+      {/* Honest aside before FAQ — tone shift */}
+      <div className="mx-auto max-w-3xl px-6 pb-8">
+        <div className="rounded-xl bg-gray-50 px-6 py-4">
+          <p className="text-sm text-gray-600">
+            <strong className="text-forest">How we tag restaurants:</strong> We apply the
+            &ldquo;{config.label.toLowerCase()}&rdquo; tag conservatively. A restaurant only gets it if they
+            explicitly identify as {config.label.toLowerCase()}-friendly or if their menu clearly supports it.
+            We don&apos;t guess. If you think we&apos;re missing a spot,{" "}
+            <Link href="/contact" className="font-medium text-jade underline underline-offset-2 hover:text-forest">let us know</Link>.
+          </p>
+        </div>
       </div>
 
       {/* FAQ */}

@@ -313,6 +313,27 @@ export default async function RestaurantPage({
                   No description available for this restaurant yet.
                 </p>
               )}
+
+              {/* Data-driven conversational aside — varies by restaurant attributes */}
+              {restaurant.rating && restaurant.rating >= 4.5 && (restaurant.reviews ?? 0) >= 500 && (
+                <div className="mt-4 border-l-4 border-sage pl-4">
+                  <p className="text-sm text-gray-600">
+                    <strong className="text-forest">Worth noting:</strong> A {restaurant.rating}/5 rating
+                    across {(restaurant.reviews ?? 0).toLocaleString()} reviews is unusually consistent for
+                    {restaurant.neighborhood ? ` ${restaurant.neighborhood}` : " NYC"}. That kind of volume
+                    with that score suggests genuine quality, not hype.
+                  </p>
+                </div>
+              )}
+              {restaurant.inspection_grade === "A" && restaurant.is_hidden_gem && (
+                <div className="mt-4 rounded-lg bg-amber/5 px-4 py-3">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold text-forest">Hidden gem alert</span> — this spot
+                    flies under the radar despite a clean Grade A inspection and strong ratings.
+                    The kind of place regulars keep to themselves.
+                  </p>
+                </div>
+              )}
             </section>
 
             {/* Dietary Specializations */}
@@ -397,8 +418,11 @@ export default async function RestaurantPage({
                       <p>Last inspected: {restaurant.inspection_date}</p>
                     )}
                     <p className="text-xs text-gray-400">
-                      NYC restaurants are graded by the Department of Health. Grade A means the
-                      restaurant has very good food safety practices.
+                      {restaurant.inspection_grade === "A"
+                        ? "Grade A is the highest mark from NYC's Department of Health — about 90% of restaurants earn it, so it's the baseline you should expect."
+                        : restaurant.inspection_grade === "B"
+                          ? "A Grade B means some violations were found but the restaurant is still operating. Many B-graded spots earn an A on re-inspection within weeks."
+                          : "Grade C indicates serious violations were found. The restaurant is subject to accelerated re-inspection by the NYC Department of Health."}
                     </p>
                   </div>
                 </div>

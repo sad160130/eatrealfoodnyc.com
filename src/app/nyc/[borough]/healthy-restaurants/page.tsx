@@ -1,3 +1,4 @@
+import React from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -160,6 +161,19 @@ export default async function BoroughPage({
 
           {intro && <p className="mt-4 max-w-3xl text-sm leading-relaxed text-gray-600">{intro}</p>}
 
+          {/* Data-driven insight — varies per borough */}
+          {gradeACount > 0 && (
+            <div className="mt-4 border-l-4 border-sage pl-4">
+              <p className="text-sm text-gray-600">
+                {gradeACount > totalCount * 0.7
+                  ? `${Math.round(gradeACount / totalCount * 100)}% of ${boroughName}'s healthy restaurants hold a Grade A — well above the city average. That's not a marketing stat; it's straight from NYC Health Department records.`
+                  : gradeACount > totalCount * 0.4
+                    ? `About ${Math.round(gradeACount / totalCount * 100)}% of the healthy restaurants listed here carry a Grade A. Solid, though some neighborhoods in ${boroughName} perform noticeably better than others — scroll down to see the breakdown.`
+                    : `Grade A coverage in ${boroughName} sits at ${Math.round(gradeACount / totalCount * 100)}%. That's lower than some other boroughs, but the restaurants that do hold an A tend to be genuinely committed to food safety.`}
+              </p>
+            </div>
+          )}
+
           {/* Quick filter pills */}
           <div className="scrollbar-hide mt-4 flex gap-2 overflow-x-auto pb-1">
             <Link href={`/search?borough=${boroughName}&open=true`} className="flex flex-shrink-0 items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-2 text-xs font-semibold text-green-700">
@@ -206,7 +220,19 @@ export default async function BoroughPage({
             : 0
 
           return (
-            <section key={neighborhood} id={`neighborhood-${hoodSlug}`} className="mb-16 scroll-mt-32">
+            <React.Fragment key={neighborhood}>
+            {/* Insert a tone-shifting aside after the 3rd neighborhood */}
+            {neighborhoodIndex === 3 && (
+              <div className="mb-16 rounded-xl bg-gray-50 px-6 py-5">
+                <p className="text-sm text-gray-600">
+                  <strong className="text-forest">A note on how we organize this page:</strong> Neighborhoods
+                  are sorted by restaurant count, not by quality. A neighborhood with 5 restaurants isn&apos;t
+                  worse than one with 50 — it just means fewer options. Some of the best restaurants in
+                  {" "}{boroughName} are in smaller neighborhoods that most guides skip entirely.
+                </p>
+              </div>
+            )}
+            <section id={`neighborhood-${hoodSlug}`} className="mb-16 scroll-mt-32">
               <div className="mb-6 flex flex-wrap items-end justify-between gap-3 border-b border-gray-100 pb-4">
                 <div>
                   <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -254,6 +280,7 @@ export default async function BoroughPage({
                 </div>
               )}
             </section>
+            </React.Fragment>
           )
         })}
       </div>
