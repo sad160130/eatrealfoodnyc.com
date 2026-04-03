@@ -139,15 +139,55 @@ export default function NYCHealthGradesGuide() {
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Every restaurant, food cart, and food service establishment that is open to the public
             in New York City is required to be inspected and to post its grade card in a window
-            visible from the street. This transparency requirement was introduced in 2010 and has
-            since become one of the most recognized food safety systems in the United States.
+            visible from the street. This has been the law since 2010.
           </p>
-          <p className="text-lg leading-relaxed text-gray-700">
-            The grade is determined by a point score. Inspectors assign points for each violation
-            found — and crucially, a lower score is better. A restaurant that receives fewer than
-            14 points earns a Grade A. A restaurant with 14 to 27 points earns a Grade B. A
-            restaurant with 28 or more points receives a Grade C.
+
+          {/* Quick reference table — breaks the paragraph pattern */}
+          <div className="my-8 overflow-hidden rounded-xl border border-gray-200">
+            <table className="w-full text-sm">
+              <thead className="bg-forest text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">Grade</th>
+                  <th className="px-4 py-3 text-left font-semibold">Score Range</th>
+                  <th className="px-4 py-3 text-left font-semibold">What It Means</th>
+                  <th className="px-4 py-3 text-right font-semibold">% of NYC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-100 bg-green-50/50">
+                  <td className="px-4 py-3 text-lg font-bold text-green-700">A</td>
+                  <td className="px-4 py-3 text-gray-700">0 – 13 points</td>
+                  <td className="px-4 py-3 text-gray-700">Excellent food safety</td>
+                  <td className="px-4 py-3 text-right font-semibold text-green-700">~90%</td>
+                </tr>
+                <tr className="border-b border-gray-100 bg-yellow-50/50">
+                  <td className="px-4 py-3 text-lg font-bold text-yellow-700">B</td>
+                  <td className="px-4 py-3 text-gray-700">14 – 27 points</td>
+                  <td className="px-4 py-3 text-gray-700">Some violations found</td>
+                  <td className="px-4 py-3 text-right font-semibold text-yellow-700">~8%</td>
+                </tr>
+                <tr className="bg-orange-50/50">
+                  <td className="px-4 py-3 text-lg font-bold text-orange-700">C</td>
+                  <td className="px-4 py-3 text-gray-700">28+ points</td>
+                  <td className="px-4 py-3 text-gray-700">Serious violations</td>
+                  <td className="px-4 py-3 text-right font-semibold text-orange-700">~2%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Lower score = better. A restaurant that receives fewer than 14 points earns a Grade A.
+            Between 14 and 27? Grade B. At 28 or above, that&apos;s a C.
           </p>
+
+          {/* Conversational aside — tone shift */}
+          <div className="my-6 border-l-4 border-sage pl-5">
+            <p className="text-base italic text-gray-600">
+              Worth noting: about 90% of NYC restaurants hold a Grade A at any given time. So if
+              you see a B or C in the window, it genuinely stands out — and it should.
+            </p>
+          </div>
         </section>
 
         {/* Section 2 — Grade breakdown cards */}
@@ -227,6 +267,16 @@ export default function NYCHealthGradesGuide() {
                   is unsafe — it means there are areas that need improvement.
                 </p>
               </div>
+            </div>
+
+            {/* Real talk aside — breaks the card rhythm */}
+            <div className="rounded-xl bg-gray-50 px-6 py-4">
+              <p className="text-sm leading-relaxed text-gray-600">
+                <strong className="text-forest">Honest take:</strong> A Grade B isn&apos;t the end of the world. Plenty of beloved NYC spots
+                have had a B at some point — kitchens are chaotic environments and inspectors are thorough.
+                What matters more is the <em>trend</em>. A restaurant that bounces between A and B is very
+                different from one that&apos;s been sitting on a C for months.
+              </p>
             </div>
 
             {/* Grade C */}
@@ -317,15 +367,28 @@ export default function NYCHealthGradesGuide() {
           </div>
         </section>
 
+        {/* Conversational break between sections */}
+        <div className="mb-16 border-l-4 border-amber pl-5">
+          <p className="text-base text-gray-600">
+            <strong>One thing that surprises people:</strong> the initial inspection is completely unannounced.
+            No phone call, no scheduling. An inspector just walks in during service. That&apos;s
+            intentional — the city wants to see what a normal day looks like, not a performance.
+          </p>
+        </div>
+
         {/* Section 4 */}
         <section id="what-inspectors-check" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             What NYC inspectors actually look for
           </h2>
-          <p className="mb-8 text-lg leading-relaxed text-gray-700">
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
             NYC health inspectors evaluate restaurants across several categories. Each violation
             carries a specific point value — critical violations are worth more points than general
-            violations.
+            violations. Here&apos;s a breakdown:
+          </p>
+          <p className="mb-8 text-sm text-gray-500">
+            (The distinction between &ldquo;critical&rdquo; and &ldquo;general&rdquo; matters a lot. A single critical
+            violation can push a restaurant from A territory into B range.)
           </p>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[

@@ -130,6 +130,16 @@ export default function HalalFoodGuide() {
           </p>
         </section>
 
+        {/* Tone shift — conversational aside */}
+        <div className="mb-16 border-l-4 border-sage pl-5">
+          <p className="text-base italic text-gray-600">
+            Here&apos;s something you learn after cataloging 500+ halal restaurants: the word &quot;halal&quot;
+            on a sign tells you about the sourcing. It tells you nothing about whether the food is
+            any good, or whether the kitchen is clean. That&apos;s what health grades and reviews are for —
+            and why we track both.
+          </p>
+        </div>
+
         <section id="best-neighborhoods" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Best neighborhoods for halal dining
@@ -159,12 +169,52 @@ export default function HalalFoodGuide() {
           </p>
         </section>
 
+        {/* Data callout — format rotation */}
+        <div className="mb-16 overflow-hidden rounded-xl border border-gray-200">
+          <table className="w-full text-sm">
+            <thead className="bg-forest text-white">
+              <tr>
+                <th className="px-4 py-3 text-left font-semibold">Borough</th>
+                <th className="px-4 py-3 text-left font-semibold">Top Halal Neighborhoods</th>
+                <th className="px-4 py-3 text-left font-semibold">Dominant Cuisines</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-700">
+              <tr className="border-b border-gray-100">
+                <td className="px-4 py-3 font-semibold">Queens</td>
+                <td className="px-4 py-3">Jackson Heights, Astoria, Jamaica</td>
+                <td className="px-4 py-3">Bangladeshi, Pakistani, Egyptian</td>
+              </tr>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <td className="px-4 py-3 font-semibold">Brooklyn</td>
+                <td className="px-4 py-3">Bay Ridge, Midwood, Flatbush</td>
+                <td className="px-4 py-3">Levantine, Uzbek, West African</td>
+              </tr>
+              <tr className="border-b border-gray-100">
+                <td className="px-4 py-3 font-semibold">Bronx</td>
+                <td className="px-4 py-3">Fordham, Parkchester, Morris Park</td>
+                <td className="px-4 py-3">West African, Bangladeshi</td>
+              </tr>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <td className="px-4 py-3 font-semibold">Manhattan</td>
+                <td className="px-4 py-3">East Village, Murray Hill, Midtown</td>
+                <td className="px-4 py-3">Turkish, Afghan, Cart culture</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 font-semibold">Staten Island</td>
+                <td className="px-4 py-3">North Shore</td>
+                <td className="px-4 py-3">South Asian, Mediterranean</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <section id="cuisines" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Cuisines to explore
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            South Asian halal restaurants dominate the NYC landscape in sheer numbers. Pakistani and Bangladeshi restaurants serve hearty biryanis, tandoori meats, and curry dishes that are often remarkably affordable. Indian halal restaurants — distinct from vegetarian Indian spots — offer kebabs, nihari, and haleem that represent the Mughlai culinary tradition. For health-conscious diners, look for tandoori-grilled options and dal-based dishes that pack protein without excessive oil.
+            South Asian halal restaurants dominate the NYC landscape in sheer numbers. Pakistani and Bangladeshi spots serve biryanis, tandoori meats, and curries that are often remarkably affordable. For health-conscious diners: tandoori-grilled options and dal-based dishes pack protein without excessive oil.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Middle Eastern and Mediterranean halal cuisine is arguably the most health-friendly category. Grilled chicken and lamb, fresh salads, hummus, baba ghanoush, tabbouleh, and whole-grain pita are staples. Turkish halal restaurants offer excellent grilled meats and vegetable-forward mezes, while Lebanese spots excel at fresh, herb-heavy preparations. Egyptian koshari — a vegan street food of lentils, rice, and pasta — is naturally halal and extremely budget-friendly.
@@ -193,6 +243,14 @@ export default function HalalFoodGuide() {
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Our directory includes both certified and self-identified halal restaurants. We note this distinction where possible so that diners can make informed decisions based on their own level of observance.
           </p>
+          <div className="rounded-xl bg-gray-50 px-6 py-4">
+            <p className="text-sm text-gray-600">
+              <strong className="text-forest">Bottom line:</strong> Certification is a spectrum in NYC, not a binary.
+              A family-owned Pakistani restaurant in Jackson Heights where the owner prays five times
+              a day may be more reliably halal than a chain restaurant with a certificate gathering
+              dust by the register. Ask questions. Most owners respect the inquiry.
+            </p>
+          </div>
         </section>
 
         <section id="halal-vs-kosher" className="mb-16 scroll-mt-24">

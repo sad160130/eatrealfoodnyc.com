@@ -66,6 +66,15 @@ export default function VeganNYCGuide() {
           <p className="text-lg leading-relaxed text-gray-700">Explore <Link href="/nyc/manhattan/healthy-restaurants" className="font-semibold text-jade hover:text-forest">all healthy restaurants in Manhattan</Link> and filter by vegan tag to see the full landscape. Many Manhattan neighborhoods also excel in <Link href="/guides/gluten-free-dining-nyc" className="font-semibold text-jade hover:text-forest">gluten-free dining</Link>, and the two dietary needs overlap frequently.</p>
         </section>
 
+        {/* Pattern break — conversational aside */}
+        <div className="mb-16 border-l-4 border-sage pl-5">
+          <p className="text-base italic text-gray-600">
+            A quick observation from building this directory: Manhattan gets the credit, but
+            Brooklyn is where the most <em>interesting</em> vegan food is happening right now.
+            The creativity gap has been closing for years and in 2026 it&apos;s basically gone.
+          </p>
+        </div>
+
         <section id="brooklyn" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Brooklyn&apos;s vegan scene</h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">Brooklyn&apos;s vegan scene is arguably the most creative in the city. Williamsburg and Bushwick have become testing grounds for experimental plant-based concepts — from vegan butcher shops to plant-based sushi bars to fully vegan bakeries producing pastries that rival traditional French patisseries.</p>
@@ -80,6 +89,22 @@ export default function VeganNYCGuide() {
           <p className="text-lg leading-relaxed text-gray-700">Check out <Link href="/nyc/queens/healthy-restaurants" className="font-semibold text-jade hover:text-forest">healthy restaurants in Queens</Link>. For budget-conscious vegan diners, Queens often offers better value than Manhattan — see our guide on <Link href="/guides/how-eat-healthy-nyc-15-dollars" className="font-semibold text-jade hover:text-forest">eating healthy in NYC on $15 a day</Link>.</p>
         </section>
 
+        {/* Data callout — breaks the h2/p/p/p rhythm with a different format */}
+        <div className="mb-16 grid grid-cols-3 gap-4 rounded-2xl bg-forest p-6 text-center text-white">
+          <div>
+            <p className="text-2xl font-bold text-sage">107+</p>
+            <p className="mt-1 text-xs text-white/60">Vegan-tagged restaurants in our directory</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-sage">5</p>
+            <p className="mt-1 text-xs text-white/60">Boroughs covered</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-sage">$8–$80</p>
+            <p className="mt-1 text-xs text-white/60">Price range per meal</p>
+          </div>
+        </div>
+
         <section id="bronx-staten-island" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Bronx and Staten Island vegan dining</h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">The Bronx vegan scene is growing rapidly, driven by a health-conscious movement in neighborhoods like Mott Haven and the South Bronx. Several juice bars and plant-based cafes have opened in the past two years, and the borough&apos;s West African and Caribbean restaurants frequently offer hearty vegan-friendly options.</p>
@@ -90,7 +115,16 @@ export default function VeganNYCGuide() {
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>How to tell if a restaurant is genuinely vegan</h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">There is an important distinction between a &quot;vegan restaurant&quot; and a restaurant that &quot;offers vegan options.&quot; A dedicated vegan restaurant serves no animal products at all — there is zero risk of cross-contamination with meat, dairy, or eggs because those ingredients are not in the kitchen.</p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">A restaurant that offers vegan options may prepare plant-based dishes on the same surfaces, in the same oil, and with the same utensils used for animal products. For most vegans this is perfectly acceptable, but for those with severe dairy allergies or strict ethical commitments, the distinction matters.</p>
-          <p className="text-lg leading-relaxed text-gray-700">In our directory, restaurants tagged as &quot;vegan&quot; explicitly identify themselves as offering significant vegan options. We recommend checking the restaurant&apos;s website or calling ahead if you need to confirm that the kitchen is 100% plant-based.</p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">In our directory, restaurants tagged as &quot;vegan&quot; explicitly identify themselves as offering significant vegan options. We recommend checking the restaurant&apos;s website or calling ahead if you need to confirm that the kitchen is 100% plant-based.</p>
+          <div className="rounded-xl bg-gray-50 px-6 py-4">
+            <p className="text-sm text-gray-600">
+              <strong className="text-forest">The honest version:</strong> Most &quot;vegan-friendly&quot;
+              restaurants use the same grill, same fryer, same prep surfaces. If that&apos;s fine with you,
+              great — the options are vast. If cross-contamination is a real concern (allergies, not
+              just preference), stick to the dedicated spots. There are enough of them in NYC that
+              you won&apos;t feel limited.
+            </p>
+          </div>
         </section>
 
         <section id="price-guide" className="mb-16 scroll-mt-24">
