@@ -29,11 +29,15 @@ const DIETS = [
 
 const GUIDE_LINKS = [
   { label: "🏥 NYC Health Grades Explained", href: "/guides/nyc-health-grades-explained" },
+  { label: "📋 NYC Inspection Process", href: "/guides/nyc-restaurant-inspection-process" },
   { label: "🌱 Vegan NYC Guide", href: "/guides/vegan-nyc-borough-guide" },
   { label: "🕌 Halal Food Guide", href: "/guides/halal-food-guide-nyc" },
+  { label: "🌾 Gluten-Free NYC Guide", href: "/guides/gluten-free-dining-nyc" },
+  { label: "✡️ Kosher Dining NYC", href: "/guides/kosher-dining-nyc-guide" },
   { label: "🗺️ Best Healthy Neighborhoods", href: "/guides/best-healthy-neighborhoods-nyc" },
   { label: "💎 Hidden Gem Restaurants", href: "/guides/hidden-gem-restaurants-nyc" },
   { label: "💵 Eat Healthy on $15", href: "/guides/how-eat-healthy-nyc-15-dollars" },
+  { label: "🌙 Late Night Healthy Eating", href: "/guides/late-night-healthy-eating-nyc" },
 ]
 
 export default function Header() {

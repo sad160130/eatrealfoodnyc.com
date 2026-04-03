@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { DM_Sans } from "next/font/google"
 import Header from "@/components/header"
+import Footer from "@/components/footer"
 import ComparisonTray from "@/components/comparison-tray"
 import { SEO_CONFIG } from "@/config/seo"
 import "./globals.css"
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <Header />
         <main className="pt-16">{children}</main>
+        <Footer />
         <ComparisonTray />
       </body>
     </html>
