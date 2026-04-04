@@ -14,15 +14,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4">
           {/* Col 1 */}
           <div>
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/">
               <Image
                 src="/logo.png"
                 alt="Eat Real Food NYC"
-                width={40}
-                height={40}
-                className="h-10 w-10 brightness-0 invert"
+                width={140}
+                height={42}
+                className="h-12 w-auto brightness-0 invert"
               />
-              <span className="font-serif text-xl font-bold">Eat Real Food NYC</span>
             </Link>
             <p className="mt-3 text-sm text-white/60">
               The Curated Culinary Authority of NYC. Dedicated to uncovering the finest

@@ -64,23 +64,15 @@ export default function Header() {
     <header className="fixed left-0 right-0 top-0 z-50 h-16 border-b border-gray-100 bg-white">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-2 px-4 md:px-6">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex flex-shrink-0 items-center gap-2"
-        >
+        <Link href="/" className="flex-shrink-0">
           <Image
             src="/logo.png"
             alt="Eat Real Food NYC"
-            width={36}
-            height={36}
-            className="h-9 w-9"
+            width={160}
+            height={48}
+            className="h-12 w-auto"
+            priority
           />
-          <span
-            className="hidden text-base font-bold text-forest sm:inline md:text-lg"
-            style={{ fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-          >
-            Eat Real Food NYC
-          </span>
         </Link>
 
         {/* Center nav — desktop only */}
