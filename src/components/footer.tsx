@@ -18,9 +18,9 @@ export default function Footer() {
               <Image
                 src="/logo.png"
                 alt="Eat Real Food NYC"
-                width={512}
-                height={512}
-                className="h-12 w-12 rounded-lg brightness-0 invert"
+                width={800}
+                height={198}
+                className="h-10 w-auto brightness-0 invert"
               />
             </Link>
             <p className="mt-3 text-sm text-white/60">
