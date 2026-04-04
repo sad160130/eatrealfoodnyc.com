@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -13,7 +14,16 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4">
           {/* Col 1 */}
           <div>
-            <p className="font-serif text-xl font-bold">Eat Real Food NYC</p>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo.png"
+                alt="Eat Real Food NYC"
+                width={40}
+                height={40}
+                className="h-10 w-10 brightness-0 invert"
+              />
+              <span className="font-serif text-xl font-bold">Eat Real Food NYC</span>
+            </Link>
             <p className="mt-3 text-sm text-white/60">
               The Curated Culinary Authority of NYC. Dedicated to uncovering the finest
               health-conscious experiences in the city.
