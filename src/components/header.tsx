@@ -69,8 +69,8 @@ export default function Header() {
             src="/logo.png"
             alt="Eat Real Food NYC"
             width={160}
-            height={48}
-            className="h-12 w-auto"
+            height={160}
+            className="h-14 w-14"
             priority
           />
         </Link>
