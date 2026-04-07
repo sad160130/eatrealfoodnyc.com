@@ -3,9 +3,9 @@ import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 
 export const metadata: Metadata = {
-  title: "Our Team — Eat Real Food NYC Healthy Restaurant Directory",
+  title: "Meet the Team — Eat Real Food NYC",
   description:
-    "Meet Snket Desai, the founder of Eat Real Food NYC, and learn about the data verification process behind NYC's most trusted healthy restaurant directory.",
+    "Meet Snket Desai and Rohan Kadam — the two co-founders behind Eat Real Food NYC, NYC's most trusted healthy restaurant directory.",
   alternates: { canonical: getCanonicalUrl("/about/team") },
   robots: { index: true, follow: true },
 }
@@ -25,95 +25,171 @@ export default function TeamPage() {
           </div>
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sage">THE PEOPLE</p>
           <h1 className="text-5xl font-bold leading-tight text-white" style={{ fontFamily: "Georgia, serif" }}>
-            Meet the<br />
-            <span className="text-sage">Team</span>
+            Meet the Team
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC was built by someone who spent years eating in New York City and
-            got tired of guessing which restaurants were actually healthy and safe.
+            Eat Real Food NYC is built by two people who care deeply about
+            healthy eating, honest data, and making New York City&apos;s best
+            restaurants easier to find.
           </p>
         </div>
       </div>
 
       {/* Main content */}
       <div className="mx-auto max-w-4xl px-6 py-16">
-        {/* Founder Section */}
-        <section className="mb-16">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm md:p-10">
-            <div className="flex flex-col gap-8 md:flex-row">
-              <div className="flex-shrink-0">
-                <div className="flex h-32 w-32 items-center justify-center rounded-2xl bg-forest text-5xl text-white">
-                  SD
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-sage">FOUNDER & EDITOR-IN-CHIEF</p>
-                <h2 className="text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                  Snket Desai
-                </h2>
-                <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
-                  Charlotte, NC (previously New York City)
-                </p>
+        {/* Team grid — 2 columns on desktop */}
+        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
 
-                <div className="mt-6 space-y-4">
-                  <p className="text-base leading-relaxed text-gray-700">
-                    Sanket is a Senior SEO Manager with deep experience building and scaling data-driven digital
+          {/* CARD 1 — Snket Desai */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+            <div className="flex flex-wrap items-start gap-6">
+              <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-forest">
+                <span className="text-3xl font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>SD</span>
+              </div>
+              <div className="min-w-64 flex-1">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                      Snket Desai
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold text-jade">
+                      Co-Founder & Editor-in-Chief
+                    </p>
+                    <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
+                      Charlotte, NC (previously New York City)
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href="https://www.linkedin.com/in/snket-desai/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg border border-sage/30 px-3 py-1.5 text-xs font-semibold text-jade transition-colors hover:border-jade"
+                    >
+                      LinkedIn →
+                    </a>
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-4 leading-relaxed text-gray-700">
+                  <p>
+                    Snket is a Senior SEO Manager with deep experience building and scaling data-driven digital
                     products. At CoinDesk, he helped grow organic traffic to over 15 million monthly visitors and
                     a Domain Rating of 90, working across technical SEO, content strategy, and programmatic page
                     generation at scale. At Capital One Shopping, he contributed to growing organic sessions to
                     7.4 million, focusing on the intersection of data engineering and search visibility.
                   </p>
-                  <p className="text-base leading-relaxed text-gray-700">
+                  <p>
                     Eat Real Food NYC was born from a personal need. After years of living in New York City and
                     spending too much time cross-referencing Yelp reviews, Google Maps ratings, and the NYC Health
-                    Department inspection database just to find a restaurant that was both healthy and clean, Sanket
-                    decided to build the tool he wished existed. The result is a directory that combines official
-                    government health data with verified dietary information in a way that no other NYC restaurant
-                    resource does.
+                    Department inspection database just to find a restaurant that was both healthy and clean, Snket
+                    decided to build the tool he wished existed.
                   </p>
-                  <p className="text-base leading-relaxed text-gray-700">
+                  <p>
                     The technical architecture behind Eat Real Food NYC — from the data pipeline that ingests and
                     cross-references three separate data sources, to the programmatic SEO layer that generates
                     optimized pages for every borough, neighborhood, and diet type combination — reflects the same
-                    approach to data-driven product building that Sanket has applied throughout his career.
+                    approach to data-driven product building that Snket has applied throughout his career.
                   </p>
                 </div>
 
-                <div className="mt-6">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">EXPERTISE</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Technical SEO",
-                      "Data journalism",
-                      "NYC food scene",
-                      "Health food",
-                      "Digital product building",
-                    ].map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-gray-100 bg-gray-50 px-3 py-1 text-xs font-medium text-forest"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <a
-                    href="https://sanketdesai.info"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-jade transition-colors hover:text-forest"
-                  >
-                    View full portfolio at sanketdesai.info
-                    <span aria-hidden="true">→</span>
-                  </a>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {[
+                    "Technical SEO",
+                    "Data journalism",
+                    "NYC food scene",
+                    "Health food",
+                    "Digital product building",
+                  ].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-sage/10 px-3 py-1 text-xs font-medium text-jade"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </section>
+
+          {/* CARD 2 — Rohan Kadam */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+            <div className="flex flex-wrap items-start gap-6">
+              <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-jade to-sage">
+                <span className="text-3xl font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>RK</span>
+              </div>
+              <div className="min-w-64 flex-1">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                      Rohan Kadam
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold text-jade">
+                      Co-Founder & Marketing Lead
+                    </p>
+                    <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
+                      North York, Ontario, Canada · University of Mumbai
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href="https://www.linkedin.com/in/rohan-kadam-176922204"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg border border-sage/30 px-3 py-1.5 text-xs font-semibold text-jade transition-colors hover:border-jade"
+                    >
+                      LinkedIn →
+                    </a>
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-4 leading-relaxed text-gray-700">
+                  <p>
+                    Rohan Kadam is a Marketing Leader with a sharp focus on brand
+                    positioning, audience growth, and community-led marketing. With a
+                    foundation built at the University of Mumbai and honed through
+                    hands-on entrepreneurial work, Rohan brings a distinctly
+                    user-first perspective to everything Eat Real Food NYC publishes
+                    and promotes.
+                  </p>
+                  <p>
+                    At Eat Real Food NYC, Rohan leads all marketing strategy —
+                    from how the brand speaks to health-conscious New Yorkers, to
+                    the content and community channels that drive awareness across
+                    the city&apos;s five boroughs. His work ensures that the directory
+                    reaches the people who need it most: diners who care about what
+                    they eat and want honest, verified information to guide their
+                    choices.
+                  </p>
+                  <p>
+                    Rohan and Snket share the belief that great healthy food should
+                    be easy to find for everyone in New York City — not just those
+                    who know where to look.
+                  </p>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {[
+                    "Brand strategy",
+                    "Content marketing",
+                    "Community growth",
+                    "Audience development",
+                    "NYC food culture",
+                  ].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-sage/10 px-3 py-1 text-xs font-medium text-jade"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
 
         {/* Data Verification Process */}
         <section className="mb-16">
