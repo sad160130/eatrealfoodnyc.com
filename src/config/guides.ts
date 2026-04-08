@@ -241,6 +241,35 @@ export const GUIDES: GuideArticle[] = [
       { label: "NYC neighborhood health comparison", href: "/nyc/compare" },
     ],
   },
+  {
+    slug: "healthy-breakfast-nyc",
+    title: "The Best Healthy Breakfast Spots in NYC — Where to Eat Well in the Morning",
+    metaTitle: "Best Healthy Breakfast NYC — Where to Eat 2026",
+    shortTitle: "Healthy Breakfast NYC",
+    description: "Where to find the best healthy breakfast in New York City — from granola and açaí bowls to whole food cafes. Every spot verified with NYC health inspection grades.",
+    category: "Dining Situations",
+    emoji: "🌅",
+    readTime: "8 min read",
+    featured: false,
+    publishedDate: "2026-04-01",
+    keywords: [
+      "healthy breakfast nyc",
+      "best breakfast restaurants nyc",
+      "healthy brunch nyc",
+      "whole food breakfast new york",
+    ],
+    relatedGuides: [
+      "how-eat-healthy-nyc-15-dollars",
+      "best-healthy-neighborhoods-nyc",
+      "vegan-nyc-borough-guide",
+    ],
+    relatedHubPages: [
+      { label: "Whole foods restaurants NYC", href: "/healthy-restaurants/whole-foods" },
+      { label: "Vegan restaurants NYC", href: "/healthy-restaurants/vegan" },
+      { label: "Dairy-free restaurants NYC", href: "/healthy-restaurants/dairy-free" },
+      { label: "NYC neighborhood health comparison", href: "/nyc/compare" },
+    ],
+  },
 ]
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {
