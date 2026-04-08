@@ -212,6 +212,35 @@ export const GUIDES: GuideArticle[] = [
       { label: "Search open restaurants", href: "/search?open=true&borough=Manhattan" },
     ],
   },
+  {
+    slug: "seafood-healthy-restaurants-nyc",
+    title: "The Best Seafood Restaurants in NYC for Health-Conscious Diners",
+    metaTitle: "Best Seafood Restaurants in NYC — Health Guide 2026",
+    shortTitle: "Healthy Seafood NYC",
+    description: "Where to find the best healthy seafood in New York City — from tuna and salmon to halibut and fish tacos. Every restaurant verified with NYC health inspection grades.",
+    category: "Dietary Guides",
+    emoji: "🐟",
+    readTime: "9 min read",
+    featured: false,
+    publishedDate: "2026-04-01",
+    keywords: [
+      "seafood restaurants nyc",
+      "healthy seafood nyc",
+      "fish restaurants new york city",
+      "best salmon restaurants nyc",
+    ],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "best-healthy-neighborhoods-nyc",
+      "how-eat-healthy-nyc-15-dollars",
+    ],
+    relatedHubPages: [
+      { label: "Whole foods restaurants NYC", href: "/healthy-restaurants/whole-foods" },
+      { label: "Healthy restaurants in Manhattan", href: "/nyc/manhattan/healthy-restaurants" },
+      { label: "Healthy restaurants in Brooklyn", href: "/nyc/brooklyn/healthy-restaurants" },
+      { label: "NYC neighborhood health comparison", href: "/nyc/compare" },
+    ],
+  },
 ]
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {
