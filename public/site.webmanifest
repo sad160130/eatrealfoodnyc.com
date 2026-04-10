@@ -1,0 +1,21 @@
+{
+  "name": "Eat Real Food NYC",
+  "short_name": "EatRealNYC",
+  "description": "NYC's most trusted healthy restaurant directory",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#1B3A2D",
+  "background_color": "#F8F6F1",
+  "display": "standalone",
+  "start_url": "/"
+}
