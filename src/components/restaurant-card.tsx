@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Restaurant } from "@/types"
@@ -71,6 +72,7 @@ function InspectionBadge({ grade }: { grade: string | null }) {
 }
 
 export default function RestaurantCard({ restaurant, priority = false }: RestaurantCardProps) {
+  const [imageError, setImageError] = useState(false)
   const price = formatPriceRange(restaurant.price_range)
   const tags = parseDietaryTags(restaurant.dietary_tags).slice(0, 3)
   const healthScore = computeHealthScore(restaurant)
@@ -89,7 +91,7 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
     >
       {/* Photo */}
       <div className="relative aspect-[16/9] w-full bg-gray-100">
-        {restaurant.photo ? (
+        {restaurant.photo && !imageError ? (
           <Image
             src={restaurant.photo}
             alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
@@ -98,11 +100,19 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
             unoptimized
+            onError={() => setImageError(true)}
           />
         ) : (
-          <div role="img" aria-label={`${restaurant.name} — no photo available`} className="flex h-full w-full items-center justify-center bg-green-900">
-            <span className="text-4xl font-bold text-white">
+          <div
+            role="img"
+            aria-label={`${restaurant.name} — no photo available`}
+            className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-forest to-jade"
+          >
+            <span className="font-serif text-5xl font-bold text-white">
               {restaurant.name.charAt(0)}
+            </span>
+            <span className="mt-1 text-xs font-medium uppercase tracking-widest text-white/70">
+              {restaurant.type || "Restaurant"}
             </span>
           </div>
         )}

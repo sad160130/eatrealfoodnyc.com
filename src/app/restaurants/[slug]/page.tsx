@@ -15,6 +15,7 @@ import {
   buildTitle,
 } from "@/lib/utils"
 import MapWrapper from "@/components/map-wrapper"
+import RestaurantPhotoGallery from "@/components/restaurant-photo-gallery"
 import HealthScoreCard from "@/components/health-score-card"
 import CommunityRating from "@/components/community-rating"
 import ShareExperience from "@/components/share-experience"
@@ -129,62 +130,14 @@ export default async function RestaurantPage({
       </div>
 
       {/* ─── PHOTO GALLERY ─── */}
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid h-96 grid-cols-2 gap-2">
-          {/* Left — main photo */}
-          <div className="relative col-span-1 overflow-hidden rounded-2xl">
-            {restaurant.photo ? (
-              <Image
-                src={restaurant.photo}
-                alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
-                fill
-                className="object-cover"
-                priority
-                unoptimized
-                sizes="100vw"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-jade">
-                <span className="font-serif text-6xl font-bold text-white/50">
-                  {restaurant.name.charAt(0)}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Right — two stacked cells */}
-          <div className="col-span-1 grid grid-rows-2 gap-2">
-            {/* Top cell — same photo, different crop */}
-            <div className="relative overflow-hidden rounded-2xl">
-              {restaurant.photo ? (
-                <Image
-                  src={restaurant.photo}
-                  alt={`${restaurant.name} interior — ${restaurant.neighborhood ?? "NYC"}`}
-                  fill
-                  className="object-cover object-top"
-                  unoptimized
-                />
-              ) : (
-                <div className="absolute inset-0 bg-forest/80" />
-              )}
-            </div>
-
-            {/* Bottom cell — neighborhood label placeholder */}
-            <div className="relative flex items-center justify-center overflow-hidden rounded-2xl bg-forest">
-              <div className="text-center">
-                {restaurant.neighborhood && (
-                  <p className="font-serif text-xl font-bold text-white">
-                    {restaurant.neighborhood}
-                  </p>
-                )}
-                <p className="mt-1 text-xs uppercase tracking-widest text-white/50">
-                  {restaurant.borough}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <RestaurantPhotoGallery
+        photo={restaurant.photo}
+        name={restaurant.name}
+        alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
+        neighborhood={restaurant.neighborhood}
+        borough={restaurant.borough}
+        type={restaurant.type}
+      />
 
       {/* ─── HEADER INFO BLOCK ─── */}
       <div className="mx-auto max-w-7xl px-6 py-6">
