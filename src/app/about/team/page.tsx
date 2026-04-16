@@ -5,7 +5,7 @@ import { getCanonicalUrl } from "@/config/seo"
 export const metadata: Metadata = {
   title: "Meet the Team — Eat Real Food NYC",
   description:
-    "Meet Snket Desai and Rohan Kadam — the two co-founders behind Eat Real Food NYC, NYC's most trusted healthy restaurant directory.",
+    "Meet Rohan Kadam — the founder behind Eat Real Food NYC, NYC's most trusted healthy restaurant directory.",
   alternates: { canonical: getCanonicalUrl("/about/team") },
   robots: { index: true, follow: true },
 }
@@ -28,7 +28,7 @@ export default function TeamPage() {
             Meet the Team
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC is built by two people who care deeply about
+            Eat Real Food NYC is built by someone who cares deeply about
             healthy eating, honest data, and making New York City&apos;s best
             restaurants easier to find.
           </p>
@@ -37,83 +37,10 @@ export default function TeamPage() {
 
       {/* Main content */}
       <div className="mx-auto max-w-4xl px-6 py-16">
-        {/* Team grid — 2 columns on desktop */}
-        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+        {/* Team */}
+        <div className="mb-16 mx-auto max-w-xl">
 
-          {/* CARD 1 — Snket Desai */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-            <div className="flex flex-wrap items-start gap-6">
-              <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-forest">
-                <span className="text-3xl font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>SD</span>
-              </div>
-              <div className="min-w-64 flex-1">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                      Snket Desai
-                    </h2>
-                    <p className="mt-1 text-sm font-semibold text-jade">
-                      Co-Founder & Editor-in-Chief
-                    </p>
-                    <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
-                      Charlotte, NC (previously New York City)
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <a
-                      href="https://www.linkedin.com/in/snket-desai/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-lg border border-sage/30 px-3 py-1.5 text-xs font-semibold text-jade transition-colors hover:border-jade"
-                    >
-                      LinkedIn →
-                    </a>
-                  </div>
-                </div>
-
-                <div className="mt-5 space-y-4 leading-relaxed text-gray-700">
-                  <p>
-                    Snket is a Senior SEO Manager with deep experience building and scaling data-driven digital
-                    products. At CoinDesk, he helped grow organic traffic to over 15 million monthly visitors and
-                    a Domain Rating of 90, working across technical SEO, content strategy, and programmatic page
-                    generation at scale. At Capital One Shopping, he contributed to growing organic sessions to
-                    7.4 million, focusing on the intersection of data engineering and search visibility.
-                  </p>
-                  <p>
-                    Eat Real Food NYC was born from a personal need. After years of living in New York City and
-                    spending too much time cross-referencing Yelp reviews, Google Maps ratings, and the NYC Health
-                    Department inspection database just to find a restaurant that was both healthy and clean, Snket
-                    decided to build the tool he wished existed.
-                  </p>
-                  <p>
-                    The technical architecture behind Eat Real Food NYC — from the data pipeline that ingests and
-                    cross-references three separate data sources, to the programmatic SEO layer that generates
-                    optimized pages for every borough, neighborhood, and diet type combination — reflects the same
-                    approach to data-driven product building that Snket has applied throughout his career.
-                  </p>
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {[
-                    "Technical SEO",
-                    "Data journalism",
-                    "NYC food scene",
-                    "Health food",
-                    "Digital product building",
-                  ].map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-sage/10 px-3 py-1 text-xs font-medium text-jade"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* CARD 2 — Rohan Kadam */}
+          {/* Rohan Kadam */}
           <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             <div className="flex flex-wrap items-start gap-6">
               <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-jade to-sage">
@@ -126,7 +53,7 @@ export default function TeamPage() {
                       Rohan Kadam
                     </h2>
                     <p className="mt-1 text-sm font-semibold text-jade">
-                      Co-Founder & Marketing Lead
+                      Founder & Marketing Lead
                     </p>
                     <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
                       North York, Ontario, Canada · University of Mumbai
@@ -163,9 +90,9 @@ export default function TeamPage() {
                     choices.
                   </p>
                   <p>
-                    Rohan and Snket share the belief that great healthy food should
-                    be easy to find for everyone in New York City — not just those
-                    who know where to look.
+                    Rohan believes that great healthy food should be easy to find
+                    for everyone in New York City — not just those who know where
+                    to look.
                   </p>
                 </div>
 

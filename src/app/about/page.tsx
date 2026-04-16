@@ -35,10 +35,9 @@ export default async function AboutPage() {
             contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
             sameAs: ["https://twitter.com/eatrealfoodnyc", "https://instagram.com/eatrealfoodnyc"],
             founder: [
-              { "@type": "Person", name: "Snket Desai", jobTitle: "Co-Founder & Editor-in-Chief", sameAs: "https://www.linkedin.com/in/snket-desai/" },
-              { "@type": "Person", name: "Rohan Kadam", jobTitle: "Co-Founder & Marketing Lead", sameAs: "https://www.linkedin.com/in/rohan-kadam-176922204" },
+              { "@type": "Person", name: "Rohan Kadam", jobTitle: "Founder & Marketing Lead", sameAs: "https://www.linkedin.com/in/rohan-kadam-176922204" },
             ],
-            numberOfEmployees: { "@type": "QuantitativeValue", value: 2 },
+            numberOfEmployees: { "@type": "QuantitativeValue", value: 1 },
           }),
         }}
       />
@@ -58,11 +57,11 @@ export default async function AboutPage() {
             in New York City.
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC was built by Snket Desai and Rohan Kadam out of
-            a genuine frustration. Finding a truly healthy restaurant in New
-            York City — one you could trust for both food quality and food
-            safety — required stitching together five different apps, reading
-            hundreds of reviews, and still feeling unsure. We decided to fix that.
+            Eat Real Food NYC was built by Rohan Kadam out of a genuine frustration.
+            Finding a truly healthy restaurant in New York City — one you could trust
+            for both food quality and food safety — required stitching together five
+            different apps, reading hundreds of reviews, and still feeling unsure. He
+            decided to fix that.
           </p>
         </div>
       </div>
@@ -158,7 +157,7 @@ export default async function AboutPage() {
             {[
               { href: "/about/our-data", title: "Our Data & Methodology", desc: "How we source, verify, and maintain the restaurant data.", icon: "📊" },
               { href: "/about/editorial-standards", title: "Editorial Standards", desc: "The principles guiding how we curate and present information.", icon: "📋" },
-              { href: "/about/team", title: "Meet the Team", desc: "The two co-founders behind Eat Real Food NYC — Snket Desai and Rohan Kadam.", icon: "👋" },
+              { href: "/about/team", title: "Meet the Team", desc: "Meet Rohan Kadam, the founder behind Eat Real Food NYC.", icon: "👋" },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="group rounded-2xl border border-gray-100 bg-white p-5 transition-all hover:border-sage/30 hover:shadow-md">
                 <span className="text-3xl">{item.icon}</span>
@@ -176,7 +175,7 @@ export default async function AboutPage() {
             Questions, corrections, or press inquiries?
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-base text-white/60">
-            Snket and Rohan read every message. If you find an error in our data, want to suggest a restaurant, or need information for a press piece, reach out.
+            Rohan reads every message. If you find an error in our data, want to suggest a restaurant, or need information for a press piece, reach out.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link href="/contact" className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest">Contact us →</Link>
