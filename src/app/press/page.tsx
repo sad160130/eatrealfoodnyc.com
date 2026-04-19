@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
+import SocialLinks from "@/components/social-links"
 
 export const metadata: Metadata = {
   title: "Press & Media — Eat Real Food NYC | NYC Restaurant Data",
@@ -114,6 +115,16 @@ export default function PressPage() {
                 <p className="mt-3 text-sm leading-relaxed text-gray-700">{item.detail}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Follow our coverage */}
+        <section className="mb-16">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>
+              FOLLOW OUR COVERAGE
+            </p>
+            <SocialLinks variant="light" showLabels={true} className="flex-col items-start gap-4" />
           </div>
         </section>
 

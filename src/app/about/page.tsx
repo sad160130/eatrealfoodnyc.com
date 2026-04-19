@@ -33,7 +33,10 @@ export default async function AboutPage() {
             foundingDate: "2026",
             areaServed: { "@type": "City", name: "New York City", addressRegion: "NY", addressCountry: "US" },
             contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
-            sameAs: ["https://twitter.com/eatrealfoodnyc", "https://instagram.com/eatrealfoodnyc"],
+            sameAs: [
+              "https://www.instagram.com/nyc_healthyeats/",
+              "https://www.youtube.com/@EatRealFoodNYC",
+            ],
             founder: [
               { "@type": "Person", name: "Rohan Kadam", jobTitle: "Founder & Marketing Lead", sameAs: "https://www.linkedin.com/in/rohan-kadam-176922204" },
             ],

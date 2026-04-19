@@ -18,6 +18,10 @@ export const ORGANIZATION_SCHEMA = {
     "NYC Department of Health restaurant grading",
   ],
   contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
+  sameAs: [
+    "https://www.instagram.com/nyc_healthyeats/",
+    "https://www.youtube.com/@EatRealFoodNYC",
+  ],
 }
 
 export const WEBSITE_SCHEMA = {
