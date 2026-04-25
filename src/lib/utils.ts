@@ -20,16 +20,21 @@ export function formatDietaryTag(tag: string): string {
 export function boroughToSlug(borough: string): string {
   return borough
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
+    // Strip apostrophes (ASCII + curly) and other vanish-chars BEFORE hyphenation
+    .replace(/['\u2018\u2019\u201C\u201D".,]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-")
 }
 
 export function neighborhoodToSlug(neighborhood: string): string {
   return neighborhood
     .toLowerCase()
-    .replace(/[']/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
+    // Strip apostrophes (ASCII + curly) and other vanish-chars BEFORE hyphenation
+    .replace(/['\u2018\u2019\u201C\u201D".,]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-")
 }
 
 export function parseWorkingHours(

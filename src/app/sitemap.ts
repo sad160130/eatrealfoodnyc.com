@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { prisma } from "@/lib/db"
+import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -72,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const neighborhoodPages: MetadataRoute.Sitemap = neighborhoods
     .filter((n) => n.borough && n.neighborhood)
     .map((n) => ({
-      url: `${siteUrl}/nyc/${n.borough!.toLowerCase().replace(/ /g, "-")}/${n.neighborhood!.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/healthy-restaurants`,
+      url: `${siteUrl}/nyc/${boroughToSlug(n.borough!)}/${neighborhoodToSlug(n.neighborhood!)}/healthy-restaurants`,
       changeFrequency: "weekly" as const,
       priority: 0.85,
     }))

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // ── NEIGHBORHOOD SLUG FIXES ──
+      // Apostrophe bug produced wrong slugs (hell-s-kitchen → hells-kitchen)
+      { source: "/nyc/manhattan/hell-s-kitchen/:path*", destination: "/nyc/manhattan/hells-kitchen/:path*", permanent: true },
+
       // ── ABOUT (1 RD, DR54) ──
       { source: "/about/", destination: "/about", permanent: true },
 

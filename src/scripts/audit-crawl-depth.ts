@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 dotenv.config({ path: ".env.local" })
 
 import pg from "pg"
+import { neighborhoodToSlug } from "../lib/utils"
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -44,7 +45,7 @@ async function auditCrawlDepth() {
   console.log("Top 10 restaurants — hub linkage:")
   for (const r of sample.rows) {
     const boroughSlug = r.borough ? r.borough.toLowerCase().replace(/ /g, "-") : null
-    const hoodSlug = r.neighborhood ? r.neighborhood.toLowerCase().replace(/[^a-z0-9]+/g, "-") : null
+    const hoodSlug = r.neighborhood ? neighborhoodToSlug(r.neighborhood) : null
     const hub = boroughSlug && hoodSlug
       ? `/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`
       : boroughSlug

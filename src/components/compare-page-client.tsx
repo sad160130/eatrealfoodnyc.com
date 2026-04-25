@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
 interface NeighborhoodStat {
   neighborhood: string
@@ -31,13 +32,8 @@ function getScoreLabel(score: number): string {
   return "Limited"
 }
 
-function neighborhoodSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-}
-
-function boroughSlug(name: string): string {
-  return name.toLowerCase().replace(/ /g, "-")
-}
+const neighborhoodSlug = neighborhoodToSlug
+const boroughSlug = boroughToSlug
 
 export default function ComparePageClient() {
   const [neighborhoods, setNeighborhoods] = useState<NeighborhoodStat[]>([])
