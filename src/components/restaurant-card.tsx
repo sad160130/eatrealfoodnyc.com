@@ -8,6 +8,7 @@ import { formatPriceRange, parseDietaryTags, formatDietaryTag, computeHealthScor
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
+import VerifiedBadge from "@/components/VerifiedBadge"
 
 interface RestaurantCardProps {
   restaurant: Restaurant
@@ -163,7 +164,10 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
       <div className="p-4">
         {/* Row 1: Name + Price */}
         <div className="flex items-center justify-between gap-2">
-          <h3 className="line-clamp-1 text-base font-semibold">{restaurant.name}</h3>
+          <h3 className="flex min-w-0 items-center gap-2 text-base font-semibold">
+            <span className="line-clamp-1">{restaurant.name}</span>
+            {restaurant.isVerified && <VerifiedBadge />}
+          </h3>
           {price && <span className="shrink-0 text-sm text-gray-500">{price}</span>}
         </div>
 

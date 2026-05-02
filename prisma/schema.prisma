@@ -35,6 +35,8 @@ model Restaurant {
   business_status  String?  @default("OPERATIONAL")
   is_hidden_gem    Boolean  @default(false)
   is_published     Boolean  @default(false)
+  isVerified       Boolean  @default(false) @map("is_verified")
+  priorityRank     Int      @default(0)     @map("priority_rank")
   email            String?
   company_facebook  String?
   company_instagram String?
@@ -51,6 +53,7 @@ model Restaurant {
   @@index([is_hidden_gem])
   @@index([is_published])
   @@index([inspection_grade])
+  @@index([priorityRank(sort: Desc), rating(sort: Desc)])
   @@map("restaurants")
 }
 

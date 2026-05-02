@@ -26,6 +26,8 @@ export interface Restaurant {
   street_view: string | null
   business_status: string | null
   is_hidden_gem: boolean
+  isVerified?: boolean
+  priorityRank?: number
   created_at: string | Date
   updated_at: string | Date
 }

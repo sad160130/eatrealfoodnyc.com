@@ -28,6 +28,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
+import VerifiedBadge from "@/components/VerifiedBadge"
 
 export const revalidate = 86400
 
@@ -221,9 +222,12 @@ export default async function RestaurantPage({
         </div>
 
         {/* Restaurant name */}
-        <h1 className="mt-4 font-serif text-4xl font-bold text-forest md:text-5xl">
-          {restaurant.name}
-        </h1>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <h1 className="font-serif text-4xl font-bold text-forest md:text-5xl">
+            {restaurant.name}
+          </h1>
+          {restaurant.isVerified && <VerifiedBadge />}
+        </div>
 
         {/* Details row */}
         <div className="mt-3 flex flex-wrap items-center gap-6">

@@ -93,7 +93,7 @@ export default async function NeighborhoodPage({
         neighborhood: neighborhoodName,
         business_status: "OPERATIONAL", is_published: true,
       },
-      orderBy: [{ rating: "desc" }, { reviews: "desc" }],
+      orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
       take: 24,
     }),
     prisma.restaurant.aggregate({

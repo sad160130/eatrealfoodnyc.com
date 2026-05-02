@@ -59,7 +59,7 @@ export default async function DietTypePage({
         business_status: "OPERATIONAL", is_published: true,
         dietary_tags: { contains: tag },
       },
-      orderBy: [{ rating: "desc" }, { reviews: "desc" }],
+      orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
       take: 24,
     }),
     prisma.restaurant.count({
