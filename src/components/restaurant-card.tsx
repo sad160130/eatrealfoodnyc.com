@@ -26,15 +26,15 @@ function StarRating({ rating }: { rating: number | null }) {
   for (let i = 1; i <= 5; i++) {
     if (i <= rounded) {
       stars.push(
-        <span key={i} className="text-yellow-400">★</span>
+        <span key={i} aria-hidden="true" className="text-yellow-400">★</span>
       )
     } else if (i - 0.5 === rounded) {
       stars.push(
-        <span key={i} className="text-yellow-400">★</span>
+        <span key={i} aria-hidden="true" className="text-yellow-400">★</span>
       )
     } else {
       stars.push(
-        <span key={i} className="text-gray-300">★</span>
+        <span key={i} aria-hidden="true" className="text-gray-300">★</span>
       )
     }
   }
@@ -66,7 +66,10 @@ function InspectionBadge({ grade }: { grade: string | null }) {
   const style = styles[grade] || "bg-gray-100 text-gray-800 border border-gray-200"
 
   return (
-    <span className={`inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium ${style}`}>
+    <span
+      aria-label={`NYC Department of Health inspection grade ${grade}`}
+      className={`inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium ${style}`}
+    >
       Grade {grade}
     </span>
   )
@@ -77,6 +80,9 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
   const price = formatPriceRange(restaurant.price_range)
   const tags = parseDietaryTags(restaurant.dietary_tags).slice(0, 3)
   const healthScore = computeHealthScore(restaurant)
+  const restaurantUrl = `/restaurants/${restaurant.slug}`
+  const locationLabel = [restaurant.neighborhood, restaurant.borough].filter(Boolean).join(", ")
+  const cardLabel = `${restaurant.name} — healthy restaurant${locationLabel ? ` in ${locationLabel}` : " in New York City"}`
 
   const showHiddenGem = restaurant.is_hidden_gem
   const showTopRated =
@@ -86,37 +92,43 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
     (restaurant.reviews ?? 0) >= 500
 
   return (
-    <Link
-      href={`/restaurants/${restaurant.slug}`}
-      className="block overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md cursor-pointer"
+    <article
+      aria-label={cardLabel}
+      className="relative overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md"
     >
       {/* Photo */}
       <div className="relative aspect-[16/9] w-full bg-gray-100">
-        {restaurant.photo && !imageError ? (
-          <Image
-            src={restaurant.photo}
-            alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={priority}
-            unoptimized
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div
-            role="img"
-            aria-label={`${restaurant.name} — no photo available`}
-            className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-forest to-jade"
-          >
-            <span className="font-serif text-5xl font-bold text-white">
-              {restaurant.name.charAt(0)}
-            </span>
-            <span className="mt-1 text-xs font-medium uppercase tracking-widest text-white/70">
-              {restaurant.type || "Restaurant"}
-            </span>
-          </div>
-        )}
+        <Link
+          href={restaurantUrl}
+          aria-label={`View full listing for ${restaurant.name}`}
+          className="block h-full w-full cursor-pointer"
+        >
+          {restaurant.photo && !imageError ? (
+            <Image
+              src={restaurant.photo}
+              alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={priority}
+              unoptimized
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div
+              role="img"
+              aria-label={`${restaurant.name} — no photo available`}
+              className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-forest to-jade"
+            >
+              <span aria-hidden="true" className="font-serif text-5xl font-bold text-white">
+                {restaurant.name.charAt(0)}
+              </span>
+              <span className="mt-1 text-xs font-medium uppercase tracking-widest text-white/70">
+                {restaurant.type || "Restaurant"}
+              </span>
+            </div>
+          )}
+        </Link>
         {showHiddenGem && <Badge>💎 Hidden Gem</Badge>}
         {showTopRated && <Badge>⭐ Top Rated</Badge>}
         <div className="absolute right-3 top-3 z-10 flex flex-col gap-1.5">
@@ -165,17 +177,30 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
         {/* Row 1: Name + Price */}
         <div className="flex items-center justify-between gap-2">
           <h3 className="flex min-w-0 items-center gap-2 text-base font-semibold">
-            <span className="line-clamp-1">{restaurant.name}</span>
+            <Link
+              href={restaurantUrl}
+              className="line-clamp-1 hover:text-jade transition-colors cursor-pointer"
+            >
+              {restaurant.name}
+            </Link>
             {restaurant.isVerified && <VerifiedBadge />}
           </h3>
-          {price && <span className="shrink-0 text-sm text-gray-500">{price}</span>}
+          {price && (
+            <span
+              aria-label={`Price range ${price}`}
+              className="shrink-0 text-sm text-gray-500"
+            >
+              {price}
+            </span>
+          )}
         </div>
 
         {/* Row 2: Location + Open status */}
         <div className="mt-0.5 flex items-center gap-3 flex-wrap">
-          {(restaurant.neighborhood || restaurant.borough) && (
+          {locationLabel && (
             <p className="line-clamp-1 text-sm text-gray-400">
-              {[restaurant.neighborhood, restaurant.borough].filter(Boolean).join(", ")}
+              <span className="sr-only">Location: </span>
+              {locationLabel}
             </p>
           )}
           <OpenNowBadge
@@ -187,35 +212,42 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
 
         {/* Row 3: Rating */}
         <div className="mt-1.5 flex items-center gap-1.5">
-          <StarRating rating={restaurant.rating} />
-          {restaurant.rating !== null && (
-            <>
+          {restaurant.rating !== null ? (
+            <span
+              aria-label={`Rated ${restaurant.rating.toFixed(1)} out of 5 stars from ${(restaurant.reviews ?? 0).toLocaleString()} reviews`}
+              className="inline-flex items-center gap-1.5"
+            >
+              <StarRating rating={restaurant.rating} />
               <span className="text-sm font-medium">{restaurant.rating.toFixed(1)}</span>
               <span className="text-sm text-gray-400">({restaurant.reviews ?? 0})</span>
-            </>
+            </span>
+          ) : (
+            <StarRating rating={null} />
           )}
         </div>
 
         {/* Row 4: Dietary tags */}
         {tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <ul role="list" aria-label="Dietary certifications" className="mt-2 flex flex-wrap gap-1.5">
             {tags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/healthy-restaurants/${tag}`}
-                onClick={(e) => e.stopPropagation()}
-                className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800 hover:bg-green-200 transition-colors"
-              >
-                {formatDietaryTag(tag)}
-              </Link>
+              <li key={tag} role="listitem">
+                <Link
+                  href={`/healthy-restaurants/${tag}`}
+                  aria-label={`See more ${formatDietaryTag(tag)} restaurants`}
+                  className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800 hover:bg-green-200 transition-colors cursor-pointer"
+                >
+                  {formatDietaryTag(tag)}
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         {/* Row 5: Inspection grade + Health score */}
         <div className="mt-2 flex items-center justify-end gap-2">
           <InspectionBadge grade={restaurant.inspection_grade} />
           <span
+            aria-label={`Health score ${healthScore.score} out of 100`}
             className="text-xs font-bold px-2 py-1 rounded-full"
             style={{
               backgroundColor: healthScore.color + "20",
@@ -227,6 +259,6 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
           </span>
         </div>
       </div>
-    </Link>
+    </article>
   )
 }

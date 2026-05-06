@@ -118,24 +118,39 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
     <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Mobile filter toggle */}
       <button
+        type="button"
         onClick={() => setFiltersOpen(!filtersOpen)}
-        className="mb-4 rounded-lg border px-4 py-2 text-sm font-medium md:hidden"
+        aria-label={`Filter restaurants — ${total} results shown`}
+        aria-expanded={filtersOpen}
+        aria-controls="search-filters-panel"
+        className="mb-4 rounded-lg border px-4 py-2 text-sm font-medium md:hidden cursor-pointer"
       >
-        🔧 Filters
+        <span aria-hidden="true">🔧</span> Filters
       </button>
 
       <div className="flex gap-8">
         {/* Sidebar */}
         <aside
+          id="search-filters-panel"
+          role="search"
+          aria-label="Filter healthy restaurants"
           className={`w-72 shrink-0 space-y-6 ${filtersOpen ? "block" : "hidden"} md:block`}
         >
           {/* Search */}
-          <form onSubmit={handleSearch}>
+          <form onSubmit={handleSearch} role="search" aria-label="Refine results">
+            <label htmlFor="restaurant-search" className="sr-only">
+              Search healthy restaurants in NYC
+            </label>
             <input
-              type="text"
+              id="restaurant-search"
+              name="q"
+              type="search"
+              role="searchbox"
+              autoComplete="off"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               placeholder="Search restaurants..."
+              aria-label="Search healthy restaurants in NYC"
               className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </form>
@@ -143,12 +158,15 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
           {/* Open Now toggle */}
           <div className="border-b border-gray-100 pb-6">
             <button
+              type="button"
               onClick={() => {
                 const next = !openNow
                 setOpenNow(next)
                 router.push(buildUrl({ open: next }))
               }}
-              className={`flex w-full items-center justify-between rounded-2xl border-2 px-5 py-4 transition-all ${
+              aria-pressed={openNow}
+              aria-label={openNow ? "Currently filtering to open restaurants — turn off" : "Filter to currently open restaurants"}
+              className={`flex w-full items-center justify-between rounded-2xl border-2 px-5 py-4 transition-all cursor-pointer ${
                 openNow
                   ? "border-green-400 bg-green-50 text-green-700"
                   : "border-gray-200 bg-white text-gray-600 hover:border-green-300"
@@ -188,11 +206,12 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
           </div>
 
           {/* Borough */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold">Borough</h3>
+          <fieldset>
+            <legend className="mb-2 text-sm font-semibold">Borough</legend>
             <div className="space-y-1">
-              <label className="flex items-center gap-2 text-sm">
+              <label htmlFor="borough-all" className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
+                  id="borough-all"
                   type="radio"
                   name="borough"
                   checked={!borough}
@@ -200,54 +219,70 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
                 />
                 All boroughs
               </label>
-              {BOROUGHS.map((b) => (
-                <label key={b} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    name="borough"
-                    checked={borough === b}
-                    onChange={() => router.push(buildUrl({ borough: b }))}
-                  />
-                  {b}
-                </label>
-              ))}
+              {BOROUGHS.map((b) => {
+                const id = `borough-${b.toLowerCase().replace(/\s+/g, "-")}`
+                return (
+                  <label key={b} htmlFor={id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      id={id}
+                      type="radio"
+                      name="borough"
+                      checked={borough === b}
+                      onChange={() => router.push(buildUrl({ borough: b }))}
+                    />
+                    {b}
+                  </label>
+                )
+              })}
             </div>
-          </div>
+          </fieldset>
 
           {/* Dietary */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold">Dietary Tags</h3>
-            <div className="space-y-1">
-              {Object.entries(DIET_LABELS).map(([tag, label]) => (
-                <label key={tag} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={diets.includes(tag)}
-                    onChange={() => toggleDiet(tag)}
-                  />
-                  {label}
-                </label>
-              ))}
+          <fieldset>
+            <legend className="mb-2 text-sm font-semibold">Dietary Tags</legend>
+            <div className="space-y-1" role="group" aria-label="Dietary tag filters">
+              {Object.entries(DIET_LABELS).map(([tag, label]) => {
+                const id = `diet-${tag}`
+                return (
+                  <label key={tag} htmlFor={id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      id={id}
+                      type="checkbox"
+                      name="diet"
+                      value={tag}
+                      checked={diets.includes(tag)}
+                      onChange={() => toggleDiet(tag)}
+                      aria-label={`Filter by ${label} restaurants${diets.includes(tag) ? " — currently active" : ""}`}
+                    />
+                    {label}
+                  </label>
+                )
+              })}
             </div>
-          </div>
+          </fieldset>
 
           {/* Grade */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold">Inspection Grade</h3>
+          <fieldset>
+            <legend className="mb-2 text-sm font-semibold">Inspection Grade</legend>
             <div className="space-y-1">
-              {GRADES.map((g) => (
-                <label key={g} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    name="grade"
-                    checked={grade === g}
-                    onChange={() => router.push(buildUrl({ grade: g }))}
-                  />
-                  Grade {g}
-                </label>
-              ))}
-              <label className="flex items-center gap-2 text-sm">
+              {GRADES.map((g) => {
+                const id = `grade-${g}`
+                return (
+                  <label key={g} htmlFor={id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      id={id}
+                      type="radio"
+                      name="grade"
+                      checked={grade === g}
+                      onChange={() => router.push(buildUrl({ grade: g }))}
+                    />
+                    Grade {g}
+                  </label>
+                )
+              })}
+              <label htmlFor="grade-any" className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
+                  id="grade-any"
                   type="radio"
                   name="grade"
                   checked={!grade}
@@ -256,7 +291,7 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
                 Any grade
               </label>
             </div>
-          </div>
+          </fieldset>
 
           {/* Clear */}
           <Link
@@ -339,29 +374,36 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-4">
+                <nav
+                  aria-label="Search results pagination"
+                  className="mt-8 flex items-center justify-center gap-4"
+                >
                   <button
+                    type="button"
                     disabled={page <= 1}
                     onClick={() =>
                       router.push(buildUrl({ page: String(page - 1) }))
                     }
-                    className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+                    aria-label="Go to previous page of results"
+                    className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     Previous
                   </button>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500" aria-current="page">
                     Page {page} of {totalPages}
                   </span>
                   <button
+                    type="button"
                     disabled={page >= totalPages}
                     onClick={() =>
                       router.push(buildUrl({ page: String(page + 1) }))
                     }
-                    className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+                    aria-label="Go to next page of results"
+                    className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     Next
                   </button>
-                </div>
+                </nav>
               )}
             </>
           )}

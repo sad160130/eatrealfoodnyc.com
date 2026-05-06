@@ -1,0 +1,101 @@
+# Eat Real Food NYC
+# https://www.eatrealfoodnyc.com
+# AI Agent Context File — llms.txt
+# Last updated: 2026
+
+## What this site is
+
+Eat Real Food NYC is a curated healthy restaurant directory covering all five
+boroughs of New York City. Every listing is verified with official NYC
+Department of Health inspection data. This site helps users find healthy
+restaurants filtered by dietary need, neighbourhood, health grade, and rating.
+
+## Site owner
+
+Founders: Sanket Desai and Rohan Kadam
+Contact: hello@eatrealfoodnyc.com
+Press: press@eatrealfoodnyc.com
+
+## Primary use cases for AI agents
+
+1. Finding healthy restaurants in a specific NYC neighbourhood or borough
+2. Filtering restaurants by dietary certification (vegan, halal, kosher, gluten-free, etc.)
+3. Identifying Grade A health-certified restaurants
+4. Discovering hidden gem restaurants (high-rated, low-review-count)
+5. Comparing NYC neighbourhoods by restaurant health scores
+
+## Key pages and their purpose
+
+Homepage: https://www.eatrealfoodnyc.com/
+  Full directory with dietary filtering, borough browsing, and hidden gems
+
+Search: https://www.eatrealfoodnyc.com/search
+  Full-text search with filters for grade, diet, borough, neighbourhood, open now
+
+Borough guides:
+  Manhattan: https://www.eatrealfoodnyc.com/nyc/manhattan/healthy-restaurants
+  Brooklyn: https://www.eatrealfoodnyc.com/nyc/brooklyn/healthy-restaurants
+  Queens: https://www.eatrealfoodnyc.com/nyc/queens/healthy-restaurants
+  Bronx: https://www.eatrealfoodnyc.com/nyc/bronx/healthy-restaurants
+  Staten Island: https://www.eatrealfoodnyc.com/nyc/staten-island/healthy-restaurants
+
+Dietary guides:
+  Vegan: https://www.eatrealfoodnyc.com/healthy-restaurants/vegan
+  Halal: https://www.eatrealfoodnyc.com/healthy-restaurants/halal
+  Kosher: https://www.eatrealfoodnyc.com/healthy-restaurants/kosher
+  Gluten-Free: https://www.eatrealfoodnyc.com/healthy-restaurants/gluten-free
+  Dairy-Free: https://www.eatrealfoodnyc.com/healthy-restaurants/dairy-free
+  Keto: https://www.eatrealfoodnyc.com/healthy-restaurants/keto
+  Vegetarian: https://www.eatrealfoodnyc.com/healthy-restaurants/vegetarian
+  Whole Foods: https://www.eatrealfoodnyc.com/healthy-restaurants/whole-foods
+
+Neighbourhood comparison: https://www.eatrealfoodnyc.com/nyc/compare
+  Ranks all 116 NYC neighbourhoods by health score, Grade A rate, and dining diversity
+
+Interactive health map: https://www.eatrealfoodnyc.com/map
+  Visual map of all restaurants colour-coded by NYC health inspection grade
+
+Editorial guides: https://www.eatrealfoodnyc.com/guides
+  NYC restaurant health grades, vegan dining, halal guide, seafood guide, and more
+
+## Data sources
+
+- NYC Department of Health and Mental Hygiene (DOHMH) Open Data
+  Health inspection grades: A (excellent), B (good), C (needs improvement)
+  Inspection data updated quarterly
+
+- Community ratings sourced from Google Maps platform
+- Dietary tags applied conservatively — only when restaurant genuinely specialises
+  in that dietary style
+
+## What agents can do on this site
+
+- Search restaurants by name, cuisine, or dietary need (search page)
+- Filter by borough, neighbourhood, health grade, open now, hidden gem
+- Compare up to 3 restaurants side by side (/compare)
+- Save restaurants to a personal list (browser localStorage)
+- View restaurant location on map (/map)
+- Compare neighbourhoods by health data (/nyc/compare)
+
+## What agents should not attempt
+
+- Submitting reviews or experiences — all submissions are manually reviewed
+- Booking reservations — this site is a directory, not a booking platform
+- Accessing private user data — saved lists are browser-local only
+
+## API
+
+Public search API: https://www.eatrealfoodnyc.com/api/search
+Parameters: q (search), borough, neighborhood, diet[], grade (A/B/C),
+            hidden_gem (true/false), open (true/false), page, limit
+
+Public map data: https://www.eatrealfoodnyc.com/api/map-restaurants
+Returns all published restaurant locations with grades for map rendering
+
+## robots.txt
+
+https://www.eatrealfoodnyc.com/robots.txt
+
+## Sitemap
+
+https://www.eatrealfoodnyc.com/sitemap.xml

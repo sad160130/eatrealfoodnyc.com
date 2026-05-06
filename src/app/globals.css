@@ -37,3 +37,30 @@ body {
 html, body {
   overflow-x: hidden;
 }
+
+/* Agent-friendly cursor signals — applied globally so AI agents and users
+   see a consistent pointer indicator on every interactive element. */
+button,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+[type="checkbox"],
+[type="radio"],
+a[href],
+label[for],
+select,
+summary,
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
+/* Disabled elements should signal non-interactivity. */
+button:disabled,
+button[aria-disabled="true"],
+[role="button"][aria-disabled="true"],
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}

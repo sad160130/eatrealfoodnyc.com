@@ -46,21 +46,31 @@ export default function NearMeButton({
   }
 
   const baseClasses: Record<string, string> = {
-    pill: `flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full transition-all ${className}`,
-    full: `flex items-center justify-center gap-3 w-full text-base font-semibold px-6 py-4 rounded-2xl transition-all ${className}`,
-    icon: `flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg transition-colors ${className}`,
+    pill: `flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full transition-all cursor-pointer ${className}`,
+    full: `flex items-center justify-center gap-3 w-full text-base font-semibold px-6 py-4 rounded-2xl transition-all cursor-pointer ${className}`,
+    icon: `flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg transition-colors cursor-pointer ${className}`,
   }
 
   return (
-    <button onClick={handleClick} disabled={loading} className={baseClasses[variant]}>
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={loading}
+      aria-label="Find healthy restaurants near my current location"
+      aria-busy={loading}
+      className={baseClasses[variant]}
+    >
       {loading ? (
         <>
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          <span
+            aria-hidden="true"
+            className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+          />
           Getting location...
         </>
       ) : (
         <>
-          <span>📍</span>
+          <span aria-hidden="true">📍</span>
           {label}
         </>
       )}

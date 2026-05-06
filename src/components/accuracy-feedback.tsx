@@ -34,33 +34,45 @@ export default function AccuracyFeedback({ restaurantSlug }: AccuracyFeedbackPro
 
   return (
     <div className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
-      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
+      <p id="accuracy-feedback-prompt" className="text-xs" style={{ color: "var(--color-muted)" }}>
         Was the health and dietary information on this page accurate?
       </p>
-      <div className="flex items-center gap-2">
+      <div
+        role="group"
+        aria-labelledby="accuracy-feedback-prompt"
+        className="flex items-center gap-2"
+      >
         {status === "done" ? (
-          <span className="text-xs font-medium text-jade">Thanks for your feedback ✓</span>
+          <span role="status" className="text-xs font-medium text-jade">
+            Thanks for your feedback ✓
+          </span>
         ) : (
           <>
             <button
+              type="button"
               onClick={() => handleVote("up")}
-              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+              aria-label="Yes, the health and dietary information on this page is accurate"
+              aria-pressed={voted === "up"}
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
                 voted === "up"
                   ? "border-sage bg-sage/20 text-jade"
                   : "border-gray-200 text-gray-500 hover:border-sage hover:text-jade"
               }`}
             >
-              👍 Yes
+              <span aria-hidden="true">👍</span> Yes
             </button>
             <button
+              type="button"
               onClick={() => handleVote("down")}
-              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+              aria-label="No, the information on this page needs an update"
+              aria-pressed={voted === "down"}
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
                 voted === "down"
                   ? "border-red-200 bg-red-50 text-red-500"
                   : "border-gray-200 text-gray-500 hover:border-red-200 hover:text-red-400"
               }`}
             >
-              👎 Needs update
+              <span aria-hidden="true">👎</span> Needs update
             </button>
           </>
         )}
