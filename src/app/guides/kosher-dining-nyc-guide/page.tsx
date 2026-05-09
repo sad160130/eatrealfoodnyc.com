@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("kosher-dining-nyc-guide")!
@@ -90,6 +92,35 @@ export default function KosherGuide() {
             { href: "#price-guide", label: "Price guide" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Kosher Restaurants in NYC — Directory Data"
+          intro={`Eat Real Food NYC tracks ${stats.dietary.counts["kosher"].toLocaleString()} kosher-certified restaurants across all five NYC boroughs. Every restaurant with a kosher tag holds active certification from a recognised authority — we do not apply this tag based on menu descriptions alone.`}
+          dataPoints={[
+            {
+              stat: stats.dietary.counts["kosher"].toLocaleString(),
+              label: "Kosher restaurants in NYC",
+              source: "Active certification required",
+            },
+            {
+              stat: (stats.dietary.byBorough["Manhattan"]?.["kosher"] ?? 0).toLocaleString(),
+              label: "Kosher restaurants in Manhattan",
+              source: "Upper West Side leads the borough",
+            },
+            {
+              stat: (stats.dietary.byBorough["Brooklyn"]?.["kosher"] ?? 0).toLocaleString(),
+              label: "Kosher restaurants in Brooklyn",
+              source: "Borough Park and Crown Heights",
+            },
+            {
+              stat: stats.dietary.topNeighborhoodsByTag["kosher"]?.[0]?.neighborhood ?? "",
+              label: "Top kosher neighborhood",
+              source: `${stats.dietary.topNeighborhoodsByTag["kosher"]?.[0]?.count ?? 0} kosher restaurants`,
+            },
+          ]}
+          sourceNote="Kosher certification standard: we tag restaurants only when they hold active kosher certification from a recognised authority such as OU, OK, Star-K, or equivalent. Data updated quarterly."
+          variant="green"
         />
 
         <section id="what-is-kosher" className="mb-16 scroll-mt-24">

@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("gluten-free-dining-nyc")!
@@ -90,6 +92,35 @@ export default function GlutenFreeGuide() {
             { href: "#cross-contamination", label: "Cross-contamination" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Gluten-Free Restaurants in NYC — Our Standards"
+          intro="We apply the gluten-free tag conservatively — only when a restaurant explicitly advertises gluten-free options as a core part of its offering, operates a dedicated GF kitchen, or specialises in gluten-free cuisine. This is why our number is lower than other directories."
+          dataPoints={[
+            {
+              stat: stats.dietary.counts["gluten-free"].toLocaleString(),
+              label: "Verified GF-friendly restaurants in NYC",
+              source: `of ${stats.global.totalPublished.toLocaleString()} total restaurants`,
+            },
+            {
+              stat: `${Math.round((stats.dietary.counts["gluten-free"] / stats.global.totalPublished) * 100)}%`,
+              label: "Of our directory has GF certification",
+              source: "Conservative tagging standard",
+            },
+            {
+              stat: (stats.dietary.byBorough["Manhattan"]?.["gluten-free"] ?? 0).toString(),
+              label: "GF restaurants in Manhattan",
+              source: "Highest borough concentration",
+            },
+            {
+              stat: stats.dietary.topNeighborhoodsByTag["gluten-free"]?.[0]?.neighborhood ?? "",
+              label: "Top GF neighborhood",
+              source: `${stats.dietary.topNeighborhoodsByTag["gluten-free"]?.[0]?.count ?? 0} GF restaurants`,
+            },
+          ]}
+          sourceNote="Our gluten-free tagging standard: we only tag a restaurant when it genuinely specialises in GF dining — not because it theoretically has one GF item. This makes our data more reliable for celiac diners."
+          variant="amber"
         />
 
         <section id="understanding-gluten-free" className="mb-16 scroll-mt-24">

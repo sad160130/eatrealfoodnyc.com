@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("how-eat-healthy-nyc-15-dollars")!
@@ -86,6 +88,34 @@ export default function BudgetHealthyGuide() {
             { href: "#meal-timing", label: "Meal timing tricks" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Hidden Gems — NYC's Best Value Healthy Restaurants"
+          intro={`Our hidden gem algorithm identifies restaurants rated 4.5 stars or above with fewer than 200 reviews — high quality before the crowds (and the prices) arrived. These are the restaurants most likely to offer exceptional value. We currently track ${stats.hiddenGems.total.toLocaleString()} hidden gems across NYC.`}
+          dataPoints={[
+            {
+              stat: (stats.hiddenGems.byBorough["Queens"] ?? 0).toLocaleString(),
+              label: "Hidden gems in Queens",
+              source: "Best value borough for healthy dining",
+            },
+            {
+              stat: (stats.hiddenGems.byBorough["Brooklyn"] ?? 0).toLocaleString(),
+              label: "Hidden gems in Brooklyn",
+            },
+            {
+              stat: (stats.hiddenGems.byBorough["Bronx"] ?? 0).toLocaleString(),
+              label: "Hidden gems in the Bronx",
+              source: "Most underexplored borough",
+            },
+            {
+              stat: `${stats.hiddenGems.percentWithGradeA}%`,
+              label: "Hidden gems with Grade A inspection",
+              source: "High quality + safe + affordable",
+            },
+          ]}
+          sourceNote={`Top neighborhood for hidden gem dining: ${stats.hiddenGems.topNeighborhoods[0]?.neighborhood ?? "—"}${stats.hiddenGems.topNeighborhoods[0] ? `, ${stats.hiddenGems.topNeighborhoods[0].borough}` : ""}${stats.hiddenGems.topNeighborhoods[0] ? ` with ${stats.hiddenGems.topNeighborhoods[0].count} hidden gems` : ""}. Data: Eat Real Food NYC directory.`}
+          variant="amber"
         />
 
         <section id="is-it-possible" className="mb-16 scroll-mt-24">

@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-restaurant-inspection-process")!
@@ -69,6 +71,34 @@ export default function InspectionProcessGuide() {
           { href: "#appeal-process", label: "Can restaurants appeal their grade?" },
           { href: "#faq", label: "Frequently asked questions" },
         ]} />
+
+        <DataCallout
+          heading="NYC Restaurant Inspection Coverage — Our Data"
+          intro="How does NYC's inspection system translate to what diners actually see? Our directory of active NYC restaurants gives a clear picture of current grade distribution."
+          dataPoints={[
+            {
+              stat: stats.global.totalPublished.toLocaleString(),
+              label: "Active NYC restaurants tracked",
+            },
+            {
+              stat: stats.global.totalWithGrade.toLocaleString(),
+              label: "Have a verified DOHMH grade",
+              source: `${stats.global.gradeACoverage}% grade coverage`,
+            },
+            {
+              stat: stats.neighborhoods.topByGradeA[0]?.neighborhood ?? "",
+              label: "Top neighborhood by Grade A rate",
+              source: `${stats.neighborhoods.topByGradeA[0]?.rate ?? 0}% Grade A — ${stats.neighborhoods.topByGradeA[0]?.borough ?? ""}`,
+            },
+            {
+              stat: `${stats.neighborhoods.bottomByGradeA[0]?.rate ?? 0}%`,
+              label: "Lowest Grade A rate (min 10 restaurants)",
+              source: stats.neighborhoods.bottomByGradeA[0]?.neighborhood ?? "",
+            },
+          ]}
+          sourceNote="Data: Eat Real Food NYC + NYC DOHMH Open Data. Only restaurants with current operational status included."
+          variant="forest"
+        />
 
         <section id="who-inspects" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Who conducts NYC restaurant inspections</h2>

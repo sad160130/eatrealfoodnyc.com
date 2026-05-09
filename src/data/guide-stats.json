@@ -1,0 +1,361 @@
+{
+  "generatedAt": "2026-05-09T02:52:29.968Z",
+  "global": {
+    "totalPublished": 1300,
+    "totalWithGrade": 504,
+    "gradeACoverage": 39,
+    "totalUniqueNeighborhoods": 109,
+    "totalHiddenGems": 0,
+    "hiddenGemGradeA": 0,
+    "boroughs": {
+      "Manhattan": {
+        "total": 737,
+        "gradeA": 262,
+        "rate": 36
+      },
+      "Queens": {
+        "total": 253,
+        "gradeA": 90,
+        "rate": 36
+      },
+      "Brooklyn": {
+        "total": 192,
+        "gradeA": 71,
+        "rate": 37
+      },
+      "Bronx": {
+        "total": 81,
+        "gradeA": 20,
+        "rate": 25
+      },
+      "Staten Island": {
+        "total": 37,
+        "gradeA": 10,
+        "rate": 27
+      }
+    },
+    "avgRatingByBorough": {
+      "Manhattan": 4.4,
+      "Staten Island": 4.4,
+      "Brooklyn": 4.4,
+      "Queens": 4.3,
+      "Bronx": 4.3
+    }
+  },
+  "neighborhoods": {
+    "topByGradeA": [
+      {
+        "neighborhood": "St. Albans",
+        "borough": "Queens",
+        "total": 10,
+        "gradeA": 6,
+        "rate": 60
+      },
+      {
+        "neighborhood": "Williamsburg",
+        "borough": "Brooklyn",
+        "total": 18,
+        "gradeA": 10,
+        "rate": 56
+      },
+      {
+        "neighborhood": "Gramercy Park",
+        "borough": "Manhattan",
+        "total": 16,
+        "gradeA": 9,
+        "rate": 56
+      },
+      {
+        "neighborhood": "Sheepshead Bay",
+        "borough": "Brooklyn",
+        "total": 11,
+        "gradeA": 6,
+        "rate": 55
+      },
+      {
+        "neighborhood": "East New York",
+        "borough": "Brooklyn",
+        "total": 13,
+        "gradeA": 7,
+        "rate": 54
+      },
+      {
+        "neighborhood": "Long Island City",
+        "borough": "Queens",
+        "total": 10,
+        "gradeA": 5,
+        "rate": 50
+      },
+      {
+        "neighborhood": "Greenpoint",
+        "borough": "Brooklyn",
+        "total": 12,
+        "gradeA": 6,
+        "rate": 50
+      },
+      {
+        "neighborhood": "Tribeca",
+        "borough": "Manhattan",
+        "total": 14,
+        "gradeA": 7,
+        "rate": 50
+      },
+      {
+        "neighborhood": "Astoria",
+        "borough": "Queens",
+        "total": 28,
+        "gradeA": 14,
+        "rate": 50
+      },
+      {
+        "neighborhood": "Lincoln Square",
+        "borough": "Manhattan",
+        "total": 39,
+        "gradeA": 19,
+        "rate": 49
+      }
+    ],
+    "bottomByGradeA": [
+      {
+        "neighborhood": "Wakefield",
+        "borough": "Bronx",
+        "total": 11,
+        "gradeA": 0,
+        "rate": 0
+      },
+      {
+        "neighborhood": "Downtown Brooklyn",
+        "borough": "Brooklyn",
+        "total": 10,
+        "gradeA": 0,
+        "rate": 0
+      },
+      {
+        "neighborhood": "Battery Park City",
+        "borough": "Manhattan",
+        "total": 19,
+        "gradeA": 1,
+        "rate": 5
+      },
+      {
+        "neighborhood": "Morningside Heights",
+        "borough": "Manhattan",
+        "total": 19,
+        "gradeA": 2,
+        "rate": 11
+      },
+      {
+        "neighborhood": "Rosedale",
+        "borough": "Queens",
+        "total": 23,
+        "gradeA": 4,
+        "rate": 17
+      }
+    ],
+    "topByHiddenGems": []
+  },
+  "hiddenGems": {
+    "total": 0,
+    "byBorough": {},
+    "topNeighborhoods": [],
+    "percentWithGradeA": 0
+  },
+  "dietary": {
+    "counts": {
+      "vegan": 27,
+      "vegetarian": 108,
+      "halal": 76,
+      "kosher": 22,
+      "gluten-free": 8,
+      "dairy-free": 16,
+      "keto": 0,
+      "paleo": 0,
+      "whole-foods": 90,
+      "low-calorie": 22,
+      "raw-food": 0,
+      "nut-free": 0
+    },
+    "byBorough": {
+      "Manhattan": {
+        "vegan": 23,
+        "vegetarian": 74,
+        "halal": 31,
+        "kosher": 14,
+        "gluten-free": 8,
+        "dairy-free": 14,
+        "keto": 0,
+        "paleo": 0,
+        "whole-foods": 65,
+        "low-calorie": 18,
+        "raw-food": 0,
+        "nut-free": 0
+      },
+      "Brooklyn": {
+        "vegan": 1,
+        "vegetarian": 9,
+        "halal": 24,
+        "kosher": 7,
+        "gluten-free": 0,
+        "dairy-free": 0,
+        "keto": 0,
+        "paleo": 0,
+        "whole-foods": 13,
+        "low-calorie": 0,
+        "raw-food": 0,
+        "nut-free": 0
+      },
+      "Queens": {
+        "vegan": 1,
+        "vegetarian": 21,
+        "halal": 19,
+        "kosher": 1,
+        "gluten-free": 0,
+        "dairy-free": 0,
+        "keto": 0,
+        "paleo": 0,
+        "whole-foods": 10,
+        "low-calorie": 4,
+        "raw-food": 0,
+        "nut-free": 0
+      },
+      "Bronx": {
+        "vegan": 0,
+        "vegetarian": 2,
+        "halal": 1,
+        "kosher": 0,
+        "gluten-free": 0,
+        "dairy-free": 0,
+        "keto": 0,
+        "paleo": 0,
+        "whole-foods": 1,
+        "low-calorie": 0,
+        "raw-food": 0,
+        "nut-free": 0
+      },
+      "Staten Island": {
+        "vegan": 2,
+        "vegetarian": 2,
+        "halal": 1,
+        "kosher": 0,
+        "gluten-free": 0,
+        "dairy-free": 2,
+        "keto": 0,
+        "paleo": 0,
+        "whole-foods": 1,
+        "low-calorie": 0,
+        "raw-food": 0,
+        "nut-free": 0
+      }
+    },
+    "topNeighborhoodsByTag": {
+      "vegan": [
+        {
+          "neighborhood": "Chelsea",
+          "borough": "Manhattan",
+          "count": 4
+        },
+        {
+          "neighborhood": "Midtown",
+          "borough": "Manhattan",
+          "count": 3
+        },
+        {
+          "neighborhood": "Chinatown",
+          "borough": "Manhattan",
+          "count": 2
+        },
+        {
+          "neighborhood": "Flatiron District",
+          "borough": "Manhattan",
+          "count": 2
+        },
+        {
+          "neighborhood": "Lower East Side",
+          "borough": "Manhattan",
+          "count": 2
+        }
+      ],
+      "halal": [
+        {
+          "neighborhood": "Astoria",
+          "borough": "Queens",
+          "count": 8
+        },
+        {
+          "neighborhood": "Sheepshead Bay",
+          "borough": "Brooklyn",
+          "count": 5
+        },
+        {
+          "neighborhood": "Midtown",
+          "borough": "Manhattan",
+          "count": 4
+        },
+        {
+          "neighborhood": "Brighton Beach",
+          "borough": "Brooklyn",
+          "count": 4
+        },
+        {
+          "neighborhood": "Jamaica",
+          "borough": "Queens",
+          "count": 3
+        }
+      ],
+      "kosher": [
+        {
+          "neighborhood": "Kensington",
+          "borough": "Brooklyn",
+          "count": 3
+        },
+        {
+          "neighborhood": "Chinatown",
+          "borough": "Manhattan",
+          "count": 2
+        },
+        {
+          "neighborhood": "Borough Park",
+          "borough": "Brooklyn",
+          "count": 2
+        },
+        {
+          "neighborhood": "Kips Bay",
+          "borough": "Manhattan",
+          "count": 2
+        },
+        {
+          "neighborhood": "Midtown",
+          "borough": "Manhattan",
+          "count": 2
+        }
+      ],
+      "gluten-free": [
+        {
+          "neighborhood": "Flatiron District",
+          "borough": "Manhattan",
+          "count": 2
+        },
+        {
+          "neighborhood": "Financial District",
+          "borough": "Manhattan",
+          "count": 1
+        },
+        {
+          "neighborhood": "Chelsea",
+          "borough": "Manhattan",
+          "count": 1
+        },
+        {
+          "neighborhood": "Lincoln Square",
+          "borough": "Manhattan",
+          "count": 1
+        },
+        {
+          "neighborhood": "Midtown",
+          "borough": "Manhattan",
+          "count": 1
+        }
+      ]
+    }
+  }
+}

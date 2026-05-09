@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("hidden-gem-restaurants-nyc")!
@@ -86,6 +88,41 @@ export default function HiddenGemsGuide() {
             { href: "#examples-by-diet", label: "Examples by diet" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Hidden Gem Count — Current Data"
+          intro={`Our algorithm currently identifies ${stats.hiddenGems.total.toLocaleString()} hidden gem restaurants across NYC — restaurants rated 4.5 stars or above with fewer than 200 community reviews. Here is the distribution.`}
+          dataPoints={[
+            {
+              stat: stats.hiddenGems.total.toLocaleString(),
+              label: "Total hidden gems in NYC",
+              source: "Rating ≥4.5 · Reviews <200 · Active",
+            },
+            {
+              stat: (stats.hiddenGems.byBorough["Manhattan"] ?? 0).toLocaleString(),
+              label: "Hidden gems in Manhattan",
+            },
+            {
+              stat: (
+                (stats.hiddenGems.byBorough["Brooklyn"] ?? 0) +
+                (stats.hiddenGems.byBorough["Queens"] ?? 0)
+              ).toLocaleString(),
+              label: "Hidden gems in Brooklyn + Queens",
+              source: "Outer boroughs lead for undiscovered spots",
+            },
+            {
+              stat: `${stats.hiddenGems.percentWithGradeA}%`,
+              label: "Hold a Grade A health inspection",
+              source: "Quality and safety combined",
+            },
+          ]}
+          sourceNote={
+            stats.hiddenGems.topNeighborhoods[0]
+              ? `Top neighborhood for hidden gems: ${stats.hiddenGems.topNeighborhoods[0].neighborhood}, ${stats.hiddenGems.topNeighborhoods[0].borough} (${stats.hiddenGems.topNeighborhoods[0].count} gems). This list updates automatically as restaurants gain reviews.`
+              : "Hidden gem detection is recalculated each time new ratings sync from our data sources. This list updates automatically as restaurants gain reviews."
+          }
+          variant="amber"
         />
 
         <section id="what-is-a-hidden-gem" className="mb-16 scroll-mt-24">

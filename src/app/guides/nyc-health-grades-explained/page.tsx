@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
@@ -123,6 +125,35 @@ export default function NYCHealthGradesGuide() {
             { href: "#find-grades", label: "How to find a restaurant's grade in NYC" },
             { href: "#faq", label: "Frequently asked questions" },
           ]}
+        />
+
+        <DataCallout
+          heading="NYC Health Grade Data — Eat Real Food NYC Directory"
+          intro={`Of the ${stats.global.totalPublished.toLocaleString()} active NYC restaurants in our directory, ${stats.global.totalWithGrade.toLocaleString()} (${stats.global.gradeACoverage}%) have a verified health inspection grade from the NYC Department of Health. Here is how Grade A certification is distributed across the five boroughs.`}
+          dataPoints={[
+            {
+              stat: `${stats.global.boroughs["Manhattan"]?.rate ?? 0}%`,
+              label: "Manhattan restaurants with Grade A",
+              source: `${stats.global.boroughs["Manhattan"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Manhattan"]?.total.toLocaleString()} restaurants`,
+            },
+            {
+              stat: `${stats.global.boroughs["Brooklyn"]?.rate ?? 0}%`,
+              label: "Brooklyn restaurants with Grade A",
+              source: `${stats.global.boroughs["Brooklyn"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Brooklyn"]?.total.toLocaleString()} restaurants`,
+            },
+            {
+              stat: `${stats.global.boroughs["Queens"]?.rate ?? 0}%`,
+              label: "Queens restaurants with Grade A",
+              source: `${stats.global.boroughs["Queens"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Queens"]?.total.toLocaleString()} restaurants`,
+            },
+            {
+              stat: `${stats.global.boroughs["Bronx"]?.rate ?? 0}%`,
+              label: "Bronx restaurants with Grade A",
+              source: `${stats.global.boroughs["Bronx"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Bronx"]?.total.toLocaleString()} restaurants`,
+            },
+          ]}
+          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Updated quarterly."
+          variant="green"
         />
 
         {/* Section 1 */}

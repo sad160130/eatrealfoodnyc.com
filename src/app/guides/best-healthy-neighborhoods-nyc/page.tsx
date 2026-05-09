@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("best-healthy-neighborhoods-nyc")!
@@ -87,6 +89,77 @@ export default function HealthyNeighborhoodsGuide() {
             { href: "#faq", label: "FAQ" },
           ]}
         />
+
+        <DataCallout
+          heading="NYC Neighborhood Health Rankings — Our Data"
+          intro={`We track healthy dining data across ${stats.global.totalUniqueNeighborhoods} NYC neighborhoods. The rankings below are based on three factors: Grade A certification rate, restaurant count, and hidden gem density. Minimum 10 restaurants required to qualify.`}
+          dataPoints={[
+            {
+              stat: stats.neighborhoods.topByGradeA[0]?.neighborhood ?? "",
+              label: "#1 neighborhood by Grade A rate",
+              source: `${stats.neighborhoods.topByGradeA[0]?.rate ?? 0}% Grade A — ${stats.neighborhoods.topByGradeA[0]?.borough ?? ""}`,
+            },
+            {
+              stat: stats.neighborhoods.topByGradeA[1]?.neighborhood ?? "",
+              label: "#2 neighborhood by Grade A rate",
+              source: `${stats.neighborhoods.topByGradeA[1]?.rate ?? 0}% Grade A — ${stats.neighborhoods.topByGradeA[1]?.borough ?? ""}`,
+            },
+            {
+              stat: stats.neighborhoods.topByHiddenGems[0]?.neighborhood ?? "—",
+              label: "Most hidden gems",
+              source: stats.neighborhoods.topByHiddenGems[0]
+                ? `${stats.neighborhoods.topByHiddenGems[0].count} undiscovered gems — ${stats.neighborhoods.topByHiddenGems[0].borough}`
+                : "Hidden gem data updating",
+            },
+            {
+              stat: stats.global.totalUniqueNeighborhoods.toString(),
+              label: "NYC neighborhoods tracked",
+              source: "Across all 5 boroughs",
+            },
+          ]}
+          sourceNote="Full neighborhood comparison available at eatrealfoodnyc.com/nyc/compare — ranks all tracked neighborhoods by health score, Grade A rate, dietary diversity, and hidden gem count. Data updated quarterly from NYC DOHMH."
+          variant="forest"
+        />
+
+        <div className="my-8 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+          <div className="bg-forest px-6 py-4">
+            <p className="text-sm font-semibold text-white">
+              Top 10 NYC Neighborhoods by Grade A Rate
+            </p>
+            <p className="mt-0.5 text-xs text-white/50">
+              Eat Real Food NYC data — minimum 10 restaurants — updated quarterly
+            </p>
+          </div>
+          <ol className="divide-y divide-gray-50">
+            {stats.neighborhoods.topByGradeA.map((n, i) => (
+              <li
+                key={`${n.neighborhood}-${n.borough}`}
+                className="flex items-center justify-between px-6 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className="w-6 text-sm font-bold"
+                    style={{ color: "var(--color-muted)" }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-forest">{n.neighborhood}</p>
+                    <p className="text-xs" style={{ color: "var(--color-muted)" }}>
+                      {n.borough}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-sage">{n.rate}% Grade A</p>
+                  <p className="text-xs" style={{ color: "var(--color-muted)" }}>
+                    {n.gradeA} of {n.total} restaurants
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <section id="how-we-rank" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>

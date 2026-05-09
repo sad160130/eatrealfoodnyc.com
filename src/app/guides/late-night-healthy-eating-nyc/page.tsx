@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("late-night-healthy-eating-nyc")!
@@ -86,6 +88,34 @@ export default function LateNightGuide() {
             { href: "#tips", label: "Tips" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Late Night Healthy Dining — What Our Data Shows"
+          intro="Not every healthy restaurant in NYC is open late. Here is the breakdown of dining options across boroughs for diners eating after 9pm, drawn from our directory of active NYC restaurants."
+          dataPoints={[
+            {
+              stat: stats.global.totalPublished.toLocaleString(),
+              label: "Active NYC healthy restaurants tracked",
+            },
+            {
+              stat: (stats.global.boroughs["Manhattan"]?.total ?? 0).toLocaleString(),
+              label: "Manhattan healthy restaurants",
+              source: "Highest late-night density in NYC",
+            },
+            {
+              stat: stats.hiddenGems.total.toLocaleString(),
+              label: "Hidden gem restaurants in our directory",
+              source: "Best value late-night options",
+            },
+            {
+              stat: stats.global.totalUniqueNeighborhoods.toString(),
+              label: "Neighborhoods with healthy dining tracked",
+              source: "Use Open Now filter to find what's open",
+            },
+          ]}
+          sourceNote="Use the Open Now filter at eatrealfoodnyc.com to see restaurants currently open in real time. Hours are parsed from restaurant-reported data and may vary — verify with the restaurant directly for late-night visits."
+          variant="forest"
         />
 
         <section id="the-challenge" className="mb-16 scroll-mt-24">

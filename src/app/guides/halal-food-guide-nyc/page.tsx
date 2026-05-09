@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("halal-food-guide-nyc")!
@@ -90,6 +92,33 @@ export default function HalalFoodGuide() {
             { href: "#price-guide", label: "Price guide" },
             { href: "#faq", label: "FAQ" },
           ]}
+        />
+
+        <DataCallout
+          heading="Halal Restaurants in NYC — Directory Data"
+          intro={`Eat Real Food NYC tracks ${stats.dietary.counts["halal"].toLocaleString()} halal restaurants across all five NYC boroughs. Here is the borough-by-borough distribution.`}
+          dataPoints={[
+            {
+              stat: (stats.dietary.byBorough["Manhattan"]?.["halal"] ?? 0).toLocaleString(),
+              label: "Halal restaurants in Manhattan",
+            },
+            {
+              stat: (stats.dietary.byBorough["Queens"]?.["halal"] ?? 0).toLocaleString(),
+              label: "Halal restaurants in Queens",
+              source: "Strong outer-borough density",
+            },
+            {
+              stat: (stats.dietary.byBorough["Brooklyn"]?.["halal"] ?? 0).toLocaleString(),
+              label: "Halal restaurants in Brooklyn",
+            },
+            {
+              stat: stats.dietary.topNeighborhoodsByTag["halal"]?.[0]?.neighborhood ?? "",
+              label: "Top neighborhood for halal dining",
+              source: `${stats.dietary.topNeighborhoodsByTag["halal"]?.[0]?.count ?? 0} halal restaurants — ${stats.dietary.topNeighborhoodsByTag["halal"]?.[0]?.borough ?? ""}`,
+            },
+          ]}
+          sourceNote="Data: Eat Real Food NYC directory. Halal tag applied only when restaurant is certified or explicitly identifies as halal in public materials. Updated quarterly."
+          variant="green"
         />
 
         <section id="what-is-halal" className="mb-16 scroll-mt-24">

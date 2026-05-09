@@ -7,6 +7,8 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import DataCallout from "@/components/data-callout"
+import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("vegan-nyc-borough-guide")!
@@ -51,6 +53,34 @@ export default function VeganNYCGuide() {
           { href: "#price-guide", label: "Vegan dining across price ranges" },
           { href: "#faq", label: "Frequently asked questions" },
         ]} />
+
+        <DataCallout
+          heading="Vegan Restaurants in NYC — Our Data"
+          intro={`Our directory tracks ${stats.dietary.counts["vegan"].toLocaleString()} dedicated vegan restaurants across all five NYC boroughs. Here is the borough-by-borough breakdown — only restaurants that genuinely specialise in vegan cuisine are included.`}
+          dataPoints={[
+            {
+              stat: (stats.dietary.byBorough["Manhattan"]?.["vegan"] ?? 0).toString(),
+              label: "Vegan restaurants in Manhattan",
+            },
+            {
+              stat: (stats.dietary.byBorough["Brooklyn"]?.["vegan"] ?? 0).toString(),
+              label: "Vegan restaurants in Brooklyn",
+            },
+            {
+              stat: (stats.dietary.byBorough["Queens"]?.["vegan"] ?? 0).toString(),
+              label: "Vegan restaurants in Queens",
+            },
+            {
+              stat: (
+                (stats.dietary.byBorough["Bronx"]?.["vegan"] ?? 0) +
+                (stats.dietary.byBorough["Staten Island"]?.["vegan"] ?? 0)
+              ).toString(),
+              label: "Vegan restaurants in Bronx + Staten Island",
+            },
+          ]}
+          sourceNote={`Top neighborhood for vegan dining: ${stats.dietary.topNeighborhoodsByTag["vegan"]?.[0]?.neighborhood ?? ""}, ${stats.dietary.topNeighborhoodsByTag["vegan"]?.[0]?.borough ?? ""} (${stats.dietary.topNeighborhoodsByTag["vegan"]?.[0]?.count ?? 0} vegan restaurants). Data: Eat Real Food NYC directory, conservative tagging methodology.`}
+          variant="green"
+        />
 
         <section id="why-nyc-vegan" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Why NYC is one of the best cities for vegan dining</h2>
