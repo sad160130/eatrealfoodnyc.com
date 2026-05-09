@@ -270,6 +270,16 @@ export default async function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                 EXPLORE BY BOROUGH
               </p>
+              <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
+                Based on our analysis of{" "}
+                <Link
+                  href="/data/nyc-restaurant-health-grade-report"
+                  className="text-jade underline underline-offset-2 hover:text-forest"
+                >
+                  NYC restaurant health inspection data
+                </Link>
+                {" "}across all 5 boroughs.
+              </p>
               <div className="mt-4 space-y-3">
                 {["Manhattan", "Brooklyn", "Queens"].map((borough) => (
                   <Link

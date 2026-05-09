@@ -157,6 +157,20 @@ export default function NYCHealthGradesGuide() {
           variant="green"
         />
 
+        <div className="-mt-4 mb-8 rounded-xl border border-forest/10 bg-forest/5 px-5 py-4">
+          <p className="text-sm text-gray-700">
+            <strong className="text-forest">Want the full data?</strong>{" "}
+            We have published a complete breakdown of NYC restaurant health grades by borough,
+            neighborhood, and cuisine type.{" "}
+            <Link
+              href="/data/nyc-restaurant-health-grade-report"
+              className="font-medium text-jade underline underline-offset-2 hover:text-forest"
+            >
+              Read the NYC Restaurant Health Grade Report →
+            </Link>
+          </p>
+        </div>
+
         {/* Section 1 */}
         <section id="what-is-a-health-grade" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>

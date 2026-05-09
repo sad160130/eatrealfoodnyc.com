@@ -62,6 +62,9 @@ module.exports = {
     if (path.startsWith('/guides/')) {
       return { loc: path, priority: 0.85, changefreq: 'monthly' }
     }
+    if (path.startsWith('/data/')) {
+      return { loc: path, priority: 0.9, changefreq: 'monthly' }
+    }
     return { loc: path, priority: 0.6, changefreq: 'monthly' }
   },
 }
