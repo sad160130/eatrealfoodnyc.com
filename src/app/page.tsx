@@ -7,6 +7,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import NearMeButton from "@/components/near-me-button"
+import reportData from "@/data/health-grade-report"
 
 export const metadata: Metadata = {
   title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
@@ -191,6 +192,35 @@ export default async function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* ─── DATA REPORT FEATURE BANNER ─── */}
+      <div className="mx-auto -mt-4 mb-8 max-w-7xl px-4 md:px-6">
+        <Link
+          href="/data/nyc-restaurant-health-grade-report"
+          className="group flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-forest px-6 py-4 text-white transition-colors hover:bg-jade"
+        >
+          <div className="flex items-center gap-4">
+            <span aria-hidden="true" className="text-3xl">📊</span>
+            <div>
+              <p className="mb-0.5 text-xs font-bold uppercase tracking-widest text-sage">
+                NEW — ORIGINAL RESEARCH
+              </p>
+              <p
+                className="text-base font-bold text-white transition-colors group-hover:text-cream"
+                style={{ fontFamily: "Georgia, serif" }}
+              >
+                NYC Restaurant Health Grade Report 2026
+              </p>
+              <p className="mt-0.5 text-xs text-white/60">
+                Grade A rates across all 5 boroughs and {reportData.neighborhoods.totalAnalyzed} neighborhoods — data you won&apos;t find anywhere else
+              </p>
+            </div>
+          </div>
+          <span className="flex-shrink-0 text-sm font-semibold text-white/60 transition-colors group-hover:text-white">
+            Read the report →
+          </span>
+        </Link>
+      </div>
 
       {/* ─── SAVED PREVIEW ─── */}
       <SavedPreview />

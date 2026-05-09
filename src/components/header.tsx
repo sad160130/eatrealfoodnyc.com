@@ -147,6 +147,15 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          {/* Data Report */}
+          <Link
+            href="/data/nyc-restaurant-health-grade-report"
+            className="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-widest text-gray-600 transition-colors hover:bg-gray-50 hover:text-jade"
+          >
+            <span aria-hidden="true" className="text-sm">📊</span>
+            <span>Data Report</span>
+          </Link>
         </nav>
 
         {/* Right actions */}
@@ -225,6 +234,19 @@ export default function Header() {
               </Link>
             ))}
           </div>
+
+          {/* Data Report */}
+          <Link
+            href="/data/nyc-restaurant-health-grade-report"
+            onClick={closeMobile}
+            className="flex items-center gap-3 border-b border-gray-100 px-6 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-jade"
+          >
+            <span aria-hidden="true" className="text-xl">📊</span>
+            <div>
+              <p className="font-semibold">Data Report</p>
+              <p className="text-xs" style={{ color: "var(--color-muted)" }}>NYC health grade analysis</p>
+            </div>
+          </Link>
 
           {/* Quick links */}
           <div className="px-6 py-4">
