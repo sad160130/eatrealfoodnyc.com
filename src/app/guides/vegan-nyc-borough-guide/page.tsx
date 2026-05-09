@@ -7,6 +7,7 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import stats from "@/data/guide-stats"
 
@@ -193,6 +194,7 @@ export default function VeganNYCGuide() {
 
         <GuideCTA heading="Browse every vegan restaurant in NYC" body="Our directory shows all verified vegan restaurants with health grades, dietary tags, and neighborhood filters." primaryLabel="Browse vegan restaurants →" primaryHref="/healthy-restaurants/vegan" secondaryLabel="Find vegan near me" secondaryHref="/near-me" />
       </div>
+        <AboutThisData variant="guide" lastRefreshed="April 2026" />
     </GuideLayout>
   )
 }

@@ -7,6 +7,7 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import stats from "@/data/guide-stats"
 
@@ -289,6 +290,7 @@ export default function HiddenGemsGuide() {
           secondaryHref="/near-me"
         />
       </div>
+        <AboutThisData variant="guide" lastRefreshed="April 2026" />
     </GuideLayout>
   )
 }

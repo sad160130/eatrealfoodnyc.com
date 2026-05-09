@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
+import AboutThisData from "@/components/about-this-data"
 
 export const metadata: Metadata = {
   title: "Our Data — NYC Restaurant Health Inspection Grades",
@@ -43,61 +44,7 @@ export default function OurDataPage() {
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Where our data comes from
           </h2>
-          <div className="space-y-6">
-            {[
-              {
-                icon: "🏥",
-                source: "NYC Department of Health and Mental Hygiene (DOHMH)",
-                data: "Restaurant inspection grades, numeric inspection scores, inspection dates, violation histories, and business operational status.",
-                processing: "We pull the full DOHMH inspection dataset from NYC Open Data and match each record to our restaurant listings by name and address. We retain the most recent inspection grade, the cumulative inspection score, and the inspection date. Restaurants without a current grade are flagged but still included in the directory.",
-                coverage: "100% of restaurants in our directory have been cross-referenced against the DOHMH database. Approximately 92% have a current letter grade (A, B, or C). The remaining 8% are pending re-inspection or are newly opened.",
-              },
-              {
-                icon: "📍",
-                source: "Google Maps Platform",
-                data: "Business names, addresses, latitude/longitude coordinates, user ratings, review counts, phone numbers, websites, working hours, cuisine types, and business photos.",
-                processing: "Restaurant listings are sourced via the Google Maps Places API. We geocode every address to obtain precise coordinates for map placement. Ratings and review counts are captured at the time of data collection and represent a snapshot. We do not fabricate or modify user ratings.",
-                coverage: "100% of our 8,835 restaurants have verified Google Maps listings. Over 99% have latitude/longitude coordinates. Approximately 85% have phone numbers and 70% have listed websites.",
-              },
-              {
-                icon: "🗺️",
-                source: "NYC Neighborhood Tabulation Areas (NTA) GeoJSON",
-                data: "Neighborhood boundaries, neighborhood names, and borough assignments for all NYC neighborhoods.",
-                processing: "We use the official NYC NTA boundary files from the Department of City Planning to assign every restaurant to its correct neighborhood using point-in-polygon geospatial matching. This ensures that neighborhood pages reflect the actual city-defined boundaries, not approximations.",
-                coverage: "100% of geocoded restaurants are assigned to an NTA-defined neighborhood. We cover all 5 boroughs and over 190 distinct neighborhoods.",
-              },
-              {
-                icon: "🤖",
-                source: "AI-Assisted Dietary Tagging (Claude API)",
-                data: "12 dietary classification tags: vegan, vegetarian, gluten-free, keto, paleo, halal, kosher, dairy-free, nut-free, raw-food, whole-foods, and low-calorie.",
-                processing: "We use Claude (claude-haiku-4-5 for bulk classification, claude-sonnet-4-20250514 for quality review) to analyze each restaurant's cuisine type, name, menu indicators, and publicly available information to assign dietary tags. Tags are applied conservatively — a restaurant is only tagged if it genuinely specializes in or is certified for that dietary category. Halal and kosher tags require evidence of certification, not merely menu items that happen to comply. Every AI-generated tag is subject to manual spot-check review.",
-                coverage: "100% of restaurants have been processed through the dietary tagging pipeline. Approximately 65% of restaurants have at least one dietary tag. The most common tags are vegetarian-friendly (38%), halal (12%), and gluten-free options (11%).",
-              },
-            ].map((item) => (
-              <div key={item.source} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <span className="text-3xl">{item.icon}</span>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{item.source}</h3>
-                    <div className="mt-3 space-y-3">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-sage">What data we pull</p>
-                        <p className="mt-1 text-sm leading-relaxed text-gray-700">{item.data}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-sage">How we process it</p>
-                        <p className="mt-1 text-sm leading-relaxed text-gray-700">{item.processing}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-sage">Coverage</p>
-                        <p className="mt-1 text-sm leading-relaxed text-gray-700">{item.coverage}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <AboutThisData variant="full" lastRefreshed="April 2026" />
         </section>
 
         {/* Health Score Formula */}

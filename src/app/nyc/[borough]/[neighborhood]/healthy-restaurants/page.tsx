@@ -11,6 +11,7 @@ import FAQSection from "@/components/faq-section"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
+import AboutThisData from "@/components/about-this-data"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -258,6 +259,17 @@ export default async function NeighborhoodPage({
             links={getNeighborhoodContextualLinks(neighborhoodName, boroughName)}
           />
         </div>
+      </div>
+
+      {/* About this data */}
+      <div className="mx-auto max-w-3xl px-6 pb-12">
+        <AboutThisData
+          variant="hub"
+          restaurantCount={restaurants.length}
+          gradeACount={gradeACount}
+          lastRefreshed="April 2026"
+          borough={boroughName}
+        />
       </div>
 
       {/* FAQ */}

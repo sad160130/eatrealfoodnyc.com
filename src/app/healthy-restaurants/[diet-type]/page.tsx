@@ -10,6 +10,7 @@ import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
 import { ANCHOR_TEXT } from "@/lib/internal-links"
+import AboutThisData from "@/components/about-this-data"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -120,12 +121,53 @@ export default async function DietTypePage({
     })),
   }
 
+  const datasetJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: `${config.label} Restaurants in NYC — ${config.label} Certification & Health Grade Data`,
+    description: `${config.label} certifications, health inspection grades, dietary tags, and restaurant data for ${totalCount} verified ${config.label.toLowerCase()} restaurants across all five NYC boroughs. Sourced from NYC DOHMH Open Data and Eat Real Food NYC editorial classification.`,
+    url: `${siteUrl}/healthy-restaurants/${tag}`,
+    creator: {
+      "@type": "Organization",
+      name: "Eat Real Food NYC",
+      url: siteUrl,
+    },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    isBasedOn: {
+      "@type": "Dataset",
+      name: "DOHMH New York City Restaurant Inspection Results",
+      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
+      publisher: {
+        "@type": "GovernmentOrganization",
+        name: "NYC Department of Health and Mental Hygiene",
+      },
+    },
+    temporalCoverage: "2024/2026",
+    spatialCoverage: {
+      "@type": "Place",
+      name: "New York City",
+    },
+    variableMeasured: [
+      `${config.label} certification`,
+      "Health inspection grade",
+      "Community rating",
+      "Borough and neighborhood",
+    ],
+    keywords: [
+      `${config.label.toLowerCase()} restaurants`,
+      `${config.label.toLowerCase()} NYC`,
+      "NYC health inspection grades",
+      "healthy restaurants NYC",
+    ],
+    dateModified: new Date().toISOString().split("T")[0],
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]),
+          __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd]),
         }}
       />
 
@@ -235,6 +277,17 @@ export default async function DietTypePage({
             <Link href="/contact" className="font-medium text-jade underline underline-offset-2 hover:text-forest">let us know</Link>.
           </p>
         </div>
+      </div>
+
+      {/* About this data */}
+      <div className="mx-auto max-w-3xl px-6 pb-12">
+        <AboutThisData
+          variant="hub"
+          restaurantCount={totalCount}
+          lastRefreshed="April 2026"
+          dietaryTag={config.label}
+          dietaryCount={totalCount}
+        />
       </div>
 
       {/* FAQ */}

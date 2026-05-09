@@ -15,6 +15,7 @@ import ContextualLinks from "@/components/contextual-links"
 import { getBoroughContextualLinks } from "@/lib/internal-links"
 import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
 import scorecardsData from "@/data/neighborhood-scorecards"
+import AboutThisData from "@/components/about-this-data"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -137,11 +138,51 @@ export default async function BoroughPage({
     })),
   }
 
+  const datasetJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: `Healthy Restaurants in ${boroughName}, NYC — Health Grade Data`,
+    description: `Health inspection grades, dietary certifications, and restaurant data for ${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, New York City. Sourced from NYC DOHMH Open Data.`,
+    url: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants`,
+    creator: {
+      "@type": "Organization",
+      name: "Eat Real Food NYC",
+      url: siteUrl,
+    },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    isBasedOn: {
+      "@type": "Dataset",
+      name: "DOHMH New York City Restaurant Inspection Results",
+      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
+      publisher: {
+        "@type": "GovernmentOrganization",
+        name: "NYC Department of Health and Mental Hygiene",
+      },
+    },
+    temporalCoverage: "2024/2026",
+    spatialCoverage: {
+      "@type": "Place",
+      name: `${boroughName}, New York City`,
+    },
+    variableMeasured: [
+      "Health inspection grade",
+      "Dietary certifications",
+      "Community rating",
+      "Hidden gem status",
+    ],
+    dateModified: new Date().toISOString().split("T")[0],
+  }
+
   const intro = BOROUGH_INTROS[boroughSlug] || ""
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd]),
+        }}
+      />
 
       {/* ─── HEADER ─── */}
       <div className="border-b bg-white">
@@ -360,6 +401,17 @@ export default async function BoroughPage({
           />
         </div>
       )}
+
+      {/* ─── ABOUT THIS DATA ─── */}
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <AboutThisData
+          variant="hub"
+          restaurantCount={restaurants.length}
+          gradeACount={gradeACount}
+          lastRefreshed="April 2026"
+          borough={boroughName}
+        />
+      </div>
 
       {/* ─── FAQ ─── */}
       {BOROUGH_FAQS[boroughSlug]?.length > 0 && (

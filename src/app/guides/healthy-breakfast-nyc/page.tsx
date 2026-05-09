@@ -7,6 +7,7 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
+import AboutThisData from "@/components/about-this-data"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("healthy-breakfast-nyc")!
@@ -412,6 +413,7 @@ export default function HealthyBreakfastGuide() {
           secondaryHref="/healthy-restaurants/vegan"
         />
       </div>
+        <AboutThisData variant="guide" lastRefreshed="April 2026" />
     </GuideLayout>
   )
 }
