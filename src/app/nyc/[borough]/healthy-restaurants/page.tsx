@@ -13,6 +13,8 @@ import BackToTop from "@/components/back-to-top"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import { getBoroughContextualLinks } from "@/lib/internal-links"
+import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
+import scorecardsData from "@/data/neighborhood-scorecards"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -79,6 +81,9 @@ export default async function BoroughPage({
   const totalCount = stats._count.id
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
+  // Pre-computed neighborhood scorecard for this borough (proprietary data)
+  const neighborhoodScorecard = scorecardsData[boroughName] ?? []
+
   // Group by neighborhood
   const byNeighborhood = restaurants.reduce((acc, r) => {
     const hood = r.neighborhood || "Other"
@@ -103,8 +108,16 @@ export default async function BoroughPage({
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: `Healthy Restaurants in ${boroughName}, NYC`,
-    description: `${totalCount} healthy restaurants in ${boroughName}, New York City`,
+    description: `Complete guide to ${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, with NYC health inspection grades and dietary filters.`,
     numberOfItems: totalCount,
+    about: {
+      "@type": "City",
+      name: boroughName,
+      containedInPlace: {
+        "@type": "City",
+        name: "New York City",
+      },
+    },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: stats._avg.rating ? Math.round(stats._avg.rating * 10) / 10 : 4.3,
@@ -337,6 +350,16 @@ export default async function BoroughPage({
           </Link>
         </div>
       </div>
+
+      {/* ─── NEIGHBORHOOD HEALTH SCORECARD — proprietary data table ─── */}
+      {neighborhoodScorecard.length > 0 && (
+        <div className="mx-auto max-w-7xl px-4 md:px-6">
+          <NeighborhoodScorecard
+            borough={boroughName}
+            neighborhoods={neighborhoodScorecard}
+          />
+        </div>
+      )}
 
       {/* ─── FAQ ─── */}
       {BOROUGH_FAQS[boroughSlug]?.length > 0 && (
