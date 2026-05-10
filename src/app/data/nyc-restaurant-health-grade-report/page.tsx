@@ -4,6 +4,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import AboutThisData from "@/components/about-this-data"
 import reportData from "@/data/health-grade-report"
+import bestRatedData from "@/data/best-rated-restaurants"
 
 const { summary, byBorough, neighborhoods, byType, keyFindings, reportDate } = reportData
 
@@ -749,6 +750,32 @@ export default function HealthGradeReportPage() {
               Compare neighborhoods
             </Link>
           </div>
+        </section>
+
+        {/* Related reports */}
+        <section aria-labelledby="related-reports-heading">
+          <h2
+            id="related-reports-heading"
+            className="mb-4 text-xl font-bold text-forest"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            Related data reports
+          </h2>
+          <Link
+            href="/data/best-rated-restaurants"
+            className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
+          >
+            <span aria-hidden="true" className="text-3xl">⭐</span>
+            <div>
+              <p className="font-bold text-forest transition-colors group-hover:text-jade">
+                NYC&apos;s Best-Rated Healthy Restaurants
+              </p>
+              <p className="mt-0.5 text-sm" style={{ color: "var(--color-muted)" }}>
+                {bestRatedData.summary.total} restaurants rated {bestRatedData.algorithm.qualifyingRating}+ stars, including {bestRatedData.summary.eliteCount} in the elite ★{bestRatedData.algorithm.eliteRating}+ tier.
+              </p>
+            </div>
+            <span className="ml-auto flex-shrink-0 text-sm font-semibold text-jade">Read →</span>
+          </Link>
         </section>
 
         {/* About this data */}

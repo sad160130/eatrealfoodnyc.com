@@ -147,6 +147,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-2">
               {[
                 { label: "📊 Health Grade Report", href: "/data/nyc-restaurant-health-grade-report" },
+                { label: "⭐ Best-Rated Restaurants", href: "/data/best-rated-restaurants" },
                 { label: "Interactive Map", href: "/map" },
                 { label: "Compare Neighborhoods", href: "/nyc/compare" },
                 { label: "Open Right Now", href: "/search?open=true" },

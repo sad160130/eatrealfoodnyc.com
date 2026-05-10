@@ -1,0 +1,858 @@
+{
+  "generatedAt": "2026-05-10T22:34:39.128Z",
+  "reportDate": "May 2026",
+  "algorithm": {
+    "qualifyingRating": 4.5,
+    "eliteRating": 4.7,
+    "status": "OPERATIONAL"
+  },
+  "summary": {
+    "total": 546,
+    "eliteCount": 189,
+    "perfectScoreCount": 3,
+    "withGradeA": 170,
+    "withAnyGrade": 194,
+    "gradeAPct": 31,
+    "gradedPct": 36,
+    "avgRating": 4.62,
+    "avgReviews": 4647
+  },
+  "byBorough": [
+    {
+      "borough": "Manhattan",
+      "count": 340,
+      "elite": 116,
+      "elitePct": 34,
+      "gradeA": 115,
+      "gradeAPct": 34,
+      "avgRating": 4.62,
+      "topRestaurant": {
+        "name": "Foods of NY Tours",
+        "slug": "foods-of-ny-tours",
+        "neighborhood": "Greenwich Village",
+        "rating": 5,
+        "reviews": 1897,
+        "inspection_grade": null,
+        "type": "Sightseeing tour agency",
+        "dietary_tags": null
+      }
+    },
+    {
+      "borough": "Brooklyn",
+      "count": 77,
+      "elite": 28,
+      "elitePct": 36,
+      "gradeA": 24,
+      "gradeAPct": 31,
+      "avgRating": 4.64,
+      "topRestaurant": {
+        "name": "Funny Hibachi Catering",
+        "slug": "funny-hibachi-catering",
+        "neighborhood": "Sunset Park",
+        "rating": 5,
+        "reviews": 1714,
+        "inspection_grade": null,
+        "type": "Caterer",
+        "dietary_tags": null
+      }
+    },
+    {
+      "borough": "Queens",
+      "count": 88,
+      "elite": 30,
+      "elitePct": 34,
+      "gradeA": 23,
+      "gradeAPct": 26,
+      "avgRating": 4.62,
+      "topRestaurant": {
+        "name": "Awesome Hibachi | Hibachi At Home Hibachi Catering",
+        "slug": "awesome-hibachi-hibachi-at-home-hibachi-catering",
+        "neighborhood": "Astoria",
+        "rating": 5,
+        "reviews": 2061,
+        "inspection_grade": null,
+        "type": "Mobile caterer",
+        "dietary_tags": null
+      }
+    },
+    {
+      "borough": "Bronx",
+      "count": 24,
+      "elite": 10,
+      "elitePct": 42,
+      "gradeA": 5,
+      "gradeAPct": 21,
+      "avgRating": 4.64,
+      "topRestaurant": {
+        "name": "787 Coffee",
+        "slug": "787-coffee-mott",
+        "neighborhood": "Mott Haven",
+        "rating": 4.9,
+        "reviews": 2744,
+        "inspection_grade": "A",
+        "type": "Coffee shop",
+        "dietary_tags": null
+      }
+    },
+    {
+      "borough": "Staten Island",
+      "count": 17,
+      "elite": 5,
+      "elitePct": 29,
+      "gradeA": 3,
+      "gradeAPct": 18,
+      "avgRating": 4.59,
+      "topRestaurant": {
+        "name": "Brick City Vegan Newark (Formerly known as Urban Vegan)",
+        "slug": "brick-city-vegan-newark-formerly-known-as-urban-vegan",
+        "neighborhood": "Mariners Harbor",
+        "rating": 4.9,
+        "reviews": 2386,
+        "inspection_grade": null,
+        "type": "Vegan restaurant",
+        "dietary_tags": "dairy-free|vegan|vegetarian"
+      }
+    }
+  ],
+  "byNeighborhood": [
+    {
+      "neighborhood": "Midtown",
+      "borough": "Manhattan",
+      "count": 52
+    },
+    {
+      "neighborhood": "Hell's Kitchen",
+      "borough": "Manhattan",
+      "count": 30
+    },
+    {
+      "neighborhood": "Flatiron District",
+      "borough": "Manhattan",
+      "count": 28
+    },
+    {
+      "neighborhood": "Greenwich Village",
+      "borough": "Manhattan",
+      "count": 22
+    },
+    {
+      "neighborhood": "Financial District",
+      "borough": "Manhattan",
+      "count": 20
+    },
+    {
+      "neighborhood": "Flushing",
+      "borough": "Queens",
+      "count": 19
+    },
+    {
+      "neighborhood": "Midtown East",
+      "borough": "Manhattan",
+      "count": 18
+    },
+    {
+      "neighborhood": "Chelsea",
+      "borough": "Manhattan",
+      "count": 16
+    },
+    {
+      "neighborhood": "Astoria",
+      "borough": "Queens",
+      "count": 16
+    },
+    {
+      "neighborhood": "Lincoln Square",
+      "borough": "Manhattan",
+      "count": 16
+    },
+    {
+      "neighborhood": "Upper West Side",
+      "borough": "Manhattan",
+      "count": 14
+    },
+    {
+      "neighborhood": "Chinatown",
+      "borough": "Manhattan",
+      "count": 13
+    }
+  ],
+  "byTag": [
+    {
+      "tag": "vegetarian",
+      "count": 59
+    },
+    {
+      "tag": "whole-foods",
+      "count": 47
+    },
+    {
+      "tag": "halal",
+      "count": 32
+    },
+    {
+      "tag": "vegan",
+      "count": 22
+    },
+    {
+      "tag": "dairy-free",
+      "count": 14
+    },
+    {
+      "tag": "kosher",
+      "count": 13
+    },
+    {
+      "tag": "gluten-free",
+      "count": 5
+    }
+  ],
+  "featuredByBorough": {
+    "Manhattan": [
+      {
+        "name": "Foods of NY Tours",
+        "slug": "foods-of-ny-tours",
+        "neighborhood": "Greenwich Village",
+        "borough": "Manhattan",
+        "type": "Sightseeing tour agency",
+        "rating": 5,
+        "reviews": 1897,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://www.foodsofny.com/wp-content/uploads/sites/7507/2025/10/JUMBOTRON-HEADER-1-FOODS-OF-NY1.png?w=700&h=700&zoom=2",
+        "address": "9 Barrow St, New York, NY 10014"
+      },
+      {
+        "name": "Mitr Thai Restaurant",
+        "slug": "mitr-thai-restaurant",
+        "neighborhood": "Midtown",
+        "borough": "Manhattan",
+        "type": "Thai restaurant",
+        "rating": 4.9,
+        "reviews": 8795,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://mitrthainyc.com/img/logo/Mirtr_Logo_No_Text_new.png",
+        "address": "37 W 46th St, New York, NY 10036"
+      },
+      {
+        "name": "Osteria La Baia",
+        "slug": "osteria-la-baia",
+        "neighborhood": "Midtown",
+        "borough": "Manhattan",
+        "type": "Italian restaurant",
+        "rating": 4.9,
+        "reviews": 5013,
+        "inspection_grade": "B",
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerASzUpwprVpSQTF60SZlQha1bfxStzMXxT6jn1ts0yWDpqUCNe8raNGr8wKeHvfoZ9N3Lapzxm5YoueTdSY_Er82rZJ1P3-l9tiDHGR3abCk1_6JPzexTwcTC4GZ4Q9FjzGDHD=w800-h500-k-no",
+        "address": "129 W 52nd St, New York, NY 10019"
+      },
+      {
+        "name": "SAPPEISAN",
+        "slug": "sappeisan",
+        "neighborhood": "Greenwich Village",
+        "borough": "Manhattan",
+        "type": "Thai restaurant",
+        "rating": 4.9,
+        "reviews": 4992,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://static.spotapps.co/website_images/ab_websites/231571_website_v1/social_share.jpg",
+        "address": "240 W 14th St, New York, NY 10011"
+      },
+      {
+        "name": "Valla Table",
+        "slug": "valla-table",
+        "neighborhood": "Hell's Kitchen",
+        "borough": "Manhattan",
+        "type": "Thai restaurant",
+        "rating": 4.9,
+        "reviews": 4974,
+        "inspection_grade": "C",
+        "dietary_tags": null,
+        "photo": "https://static.spotapps.co/website_images/ab_websites/11154_website_v1/social_share.jpg",
+        "address": "641 10th Ave, New York, NY 10036"
+      }
+    ],
+    "Brooklyn": [
+      {
+        "name": "Funny Hibachi Catering",
+        "slug": "funny-hibachi-catering",
+        "neighborhood": "Sunset Park",
+        "borough": "Brooklyn",
+        "type": "Caterer",
+        "rating": 5,
+        "reviews": 1714,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://funnyhibachi.com/wp-content/uploads/2026/02/funny-hibachi-menu-617x1024.jpg",
+        "address": "4716 7th Ave, Brooklyn, NY 11220"
+      },
+      {
+        "name": "Glin Thai Bistro",
+        "slug": "glin-thai-bistro",
+        "neighborhood": "Fort Greene",
+        "borough": "Brooklyn",
+        "type": "Thai restaurant",
+        "rating": 4.9,
+        "reviews": 4369,
+        "inspection_grade": "A",
+        "dietary_tags": null,
+        "photo": "https://static.spotapps.co/website_images/ab_websites/117069_website_v1/social_share.jpg",
+        "address": "330 Myrtle Ave, Brooklyn, NY 11205"
+      },
+      {
+        "name": "Laghman Express",
+        "slug": "laghman-express",
+        "neighborhood": "Borough Park",
+        "borough": "Brooklyn",
+        "type": "Halal restaurant",
+        "rating": 4.9,
+        "reviews": 2779,
+        "inspection_grade": "B",
+        "dietary_tags": "halal",
+        "photo": "http://laghmanexpress.com/assets/images/menu.png",
+        "address": "6201 20th Ave, Brooklyn, NY 11204"
+      },
+      {
+        "name": "The Loft Steakhouse",
+        "slug": "the-loft-steakhouse",
+        "neighborhood": "Borough Park",
+        "borough": "Brooklyn",
+        "type": "Steak house",
+        "rating": 4.9,
+        "reviews": 2691,
+        "inspection_grade": "A",
+        "dietary_tags": "kosher",
+        "photo": "https://theloftsteakhouse.com/wp-content/uploads/2022/11/Tartikov_Symbol-240x300-1.png",
+        "address": "1306 40th St, Brooklyn, NY 11218"
+      },
+      {
+        "name": "Glatt A La Carte",
+        "slug": "glatt-a-la-carte",
+        "neighborhood": "Borough Park",
+        "borough": "Brooklyn",
+        "type": "Steak house",
+        "rating": 4.9,
+        "reviews": 1809,
+        "inspection_grade": null,
+        "dietary_tags": "kosher",
+        "photo": "https://www.glattalacarte.com/wp-content/uploads/2022/07/steakhouse-label.png",
+        "address": "5123 18th Ave, Brooklyn, NY 11204"
+      }
+    ],
+    "Queens": [
+      {
+        "name": "Awesome Hibachi | Hibachi At Home Hibachi Catering",
+        "slug": "awesome-hibachi-hibachi-at-home-hibachi-catering",
+        "neighborhood": "Astoria",
+        "borough": "Queens",
+        "type": "Mobile caterer",
+        "rating": 5,
+        "reviews": 2061,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "http://static1.squarespace.com/static/64472f88f002620c848afc2e/t/685d549e3c3c32026a3733a6/1718731309810/91806_AwesomeHibachi_DV_H_01+%282%29.jpg?format=1500w",
+        "address": "24-26 47th St, Astoria, NY 11103"
+      },
+      {
+        "name": "GAN-HOO BBQ",
+        "slug": "gan-hoo-bbq",
+        "neighborhood": "Flushing",
+        "borough": "Queens",
+        "type": "Barbecue restaurant",
+        "rating": 4.9,
+        "reviews": 5618,
+        "inspection_grade": "A",
+        "dietary_tags": null,
+        "photo": "https://cdn.prod.website-files.com/6807049c48aacba54e9d09cd%2F681e9ec5d29dda5b4ebfc32a_gan%20hoo%20bbq%20video%20clip%2030mb-poster-00001.jpg",
+        "address": "37-02 Main St 2nd FLOOR, Flushing, NY 11354"
+      },
+      {
+        "name": "Kam Rai Thai",
+        "slug": "kam-rai-thai",
+        "neighborhood": "Astoria",
+        "borough": "Queens",
+        "type": "Restaurant",
+        "rating": 4.9,
+        "reviews": 3533,
+        "inspection_grade": null,
+        "dietary_tags": "vegetarian",
+        "photo": "http://static1.squarespace.com/static/646403e991ad570b3572a59e/t/646403ff91ad570b3572a938/1684056704787/Screen+Shot+2023-05-14+at+5.28.41+AM.png?format=1500w",
+        "address": "43-11 28th Ave, Astoria, NY 11103"
+      },
+      {
+        "name": "32 North",
+        "slug": "32-north",
+        "neighborhood": "Rosedale",
+        "borough": "Queens",
+        "type": "Restaurant",
+        "rating": 4.9,
+        "reviews": 2931,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://32northrestaurant.com/wp-content/uploads/2025/10/TF_A8A1243-copy.jpg",
+        "address": "32 N Central Ave, Valley Stream, NY 11580"
+      },
+      {
+        "name": "Gulp",
+        "slug": "gulp",
+        "neighborhood": "Long Island City",
+        "borough": "Queens",
+        "type": "Taiwanese restaurant",
+        "rating": 4.9,
+        "reviews": 2716,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "http://static1.squarespace.com/static/6461af47355aee6310721bd3/t/67c2a57f36c0875be7c88ec4/1740809599903/Gulp+Logo_final.png?format=1500w",
+        "address": "42-45 27th St, Long Island City, NY 11101"
+      }
+    ],
+    "Bronx": [
+      {
+        "name": "787 Coffee",
+        "slug": "787-coffee-mott",
+        "neighborhood": "Mott Haven",
+        "borough": "Bronx",
+        "type": "Coffee shop",
+        "rating": 4.9,
+        "reviews": 2744,
+        "inspection_grade": "A",
+        "dietary_tags": null,
+        "photo": "http://static1.squarespace.com/static/6256e7c9ffcbf452d1da5e6d/t/625716d30910085adf760795/1649874643940/787+coffee+logo+cafe+de+puerto+rico.png?format=1500w",
+        "address": "2430 Third Ave, Bronx, NY 10451"
+      },
+      {
+        "name": "Chocolate House Bronx 161",
+        "slug": "chocolate-house-bronx-161",
+        "neighborhood": "Concourse",
+        "borough": "Bronx",
+        "type": "Dessert shop",
+        "rating": 4.9,
+        "reviews": 2019,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAweqLjIwiUSWtijPPvvZ6Gmon4XBYErtXcAxks-PHEbARIM2sRx8lqHPyyTMYCdqVl19PchzrwciTW1TwpaK6nSb3D4QvaQYY6m-8lLzbVttoZDPUu3c-Pg6cDysuVgLtjHNw3tRS=w800-h500-k-no",
+        "address": "92E E 161st St, Bronx, NY 10451"
+      },
+      {
+        "name": "039 Fast Food",
+        "slug": "039-fast-food",
+        "neighborhood": "Belmont",
+        "borough": "Bronx",
+        "type": "Restaurant",
+        "rating": 4.9,
+        "reviews": 58,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepHd4n1WDbsstldkn55m4w-_vIFxymGnEPbpbiI7MrCzxLhiLQCJ-yWYrXKKKJIQaG8uPGmlLdoS_rxj0YSa0Lfm7cA_LcISGdf1W-uvjs0nlGtMN994BOuoaeznmh745CsE_JZ2ZVNA2g=w800-h500-k-no",
+        "address": "2310 Arthur Ave, Bronx, NY 10458"
+      },
+      {
+        "name": "Rockwells",
+        "slug": "rockwells",
+        "neighborhood": "Wakefield",
+        "borough": "Bronx",
+        "type": "American restaurant",
+        "rating": 4.8,
+        "reviews": 3163,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerfoYInM1kKSxsCTfsbPfkNzB_ppi9e99UPWJNY7t7prJYNd-vP6ZVLbXYt43dyYPyXwstiyik8nrLuPmvC5MC2zHyN5_srZOYnVVKrwCV9ja__bbdeTKgOy6nX8cFpBJthJIQmGA=w800-h500-k-no",
+        "address": "105 Wolfs Ln, Village of Pelham, NY 10803"
+      },
+      {
+        "name": "Tandoori Place",
+        "slug": "tandoori-place",
+        "neighborhood": "Parkchester",
+        "borough": "Bronx",
+        "type": "Indian restaurant",
+        "rating": 4.8,
+        "reviews": 2903,
+        "inspection_grade": "A",
+        "dietary_tags": "vegetarian",
+        "photo": "https://menufyproduction.imgix.net/637412279170241759+315346.png?auto=compress,format&amp;h=1080&amp;w=1920&amp;fit=max",
+        "address": "2146 Starling Ave, Bronx, NY 10462"
+      }
+    ],
+    "Staten Island": [
+      {
+        "name": "Brick City Vegan Newark (Formerly known as Urban Vegan)",
+        "slug": "brick-city-vegan-newark-formerly-known-as-urban-vegan",
+        "neighborhood": "Mariners Harbor",
+        "borough": "Staten Island",
+        "type": "Vegan restaurant",
+        "rating": 4.9,
+        "reviews": 2386,
+        "inspection_grade": null,
+        "dietary_tags": "dairy-free|vegan|vegetarian",
+        "photo": "https://brickcityvegan.com/wp-content/uploads/2025/07/Brick-City-Vegan-Logo.webp",
+        "address": "915 Broad St Retail 1, Newark, NJ 07102"
+      },
+      {
+        "name": "Latitude Zero",
+        "slug": "latitude-zero",
+        "neighborhood": "Port Richmond",
+        "borough": "Staten Island",
+        "type": "Ecuadorian restaurant",
+        "rating": 4.7,
+        "reviews": 3521,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAweo161TrojjzMmvm80Pl6YxhTbjWuF9LiG3nJFH-vnfhhtELa7-iVzfBPkgkY4oFOA7Do37eJs_PZUOoIdMdpaip7YKT23TnSu1UECfXO0m0lc0LtkLJD4p8-lTPy_mW-UWOpBfp=w800-h500-k-no",
+        "address": "269 Broadway, Bayonne, NJ 07002"
+      },
+      {
+        "name": "Arirang Hibachi Steakhouse",
+        "slug": "arirang-hibachi-steakhouse-great",
+        "neighborhood": "Great Kills",
+        "borough": "Staten Island",
+        "type": "Japanese steakhouse",
+        "rating": 4.7,
+        "reviews": 2931,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHVAweoVVQ6aNHU7xsfJfJKubeq7zV5vllMmeZG3b5hLz--Ytu8lO7pgWsULO4tu0gcFZXf97uif-3oFKCjJ-4lUURbjPCxG7fs5D_Zu-B3vA-OrAzjSP12ZKvuXMtBiwoN73KlBMiiV=w800-h500-k-no",
+        "address": "23A Nelson Ave, Staten Island, NY 10308"
+      },
+      {
+        "name": "Panini Grill",
+        "slug": "panini-grill-new",
+        "neighborhood": "New Brighton",
+        "borough": "Staten Island",
+        "type": "Italian restaurant",
+        "rating": 4.7,
+        "reviews": 2634,
+        "inspection_grade": "A",
+        "dietary_tags": null,
+        "photo": "https://paninigrillsi.com/assets/img/home-2/logo.png?v=2",
+        "address": "538 Forest Ave, Staten Island, NY 10310"
+      },
+      {
+        "name": "Nonnas of the World Community",
+        "slug": "nonnas-of-the-world-community",
+        "neighborhood": "St. George",
+        "borough": "Staten Island",
+        "type": "Italian restaurant",
+        "rating": 4.7,
+        "reviews": 1576,
+        "inspection_grade": null,
+        "dietary_tags": null,
+        "photo": "https://www.nonnasoftheworld.org/wp-content/uploads/2025/11/NOTW_Community_250.png",
+        "address": "27 Hyatt St, Staten Island, NY 10301"
+      }
+    ]
+  },
+  "perfectScore": [
+    {
+      "name": "Awesome Hibachi | Hibachi At Home Hibachi Catering",
+      "slug": "awesome-hibachi-hibachi-at-home-hibachi-catering",
+      "neighborhood": "Astoria",
+      "borough": "Queens",
+      "type": "Mobile caterer",
+      "rating": 5,
+      "reviews": 2061,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Foods of NY Tours",
+      "slug": "foods-of-ny-tours",
+      "neighborhood": "Greenwich Village",
+      "borough": "Manhattan",
+      "type": "Sightseeing tour agency",
+      "rating": 5,
+      "reviews": 1897,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Funny Hibachi Catering",
+      "slug": "funny-hibachi-catering",
+      "neighborhood": "Sunset Park",
+      "borough": "Brooklyn",
+      "type": "Caterer",
+      "rating": 5,
+      "reviews": 1714,
+      "inspection_grade": null,
+      "dietary_tags": null
+    }
+  ],
+  "eliteList": [
+    {
+      "name": "Awesome Hibachi | Hibachi At Home Hibachi Catering",
+      "slug": "awesome-hibachi-hibachi-at-home-hibachi-catering",
+      "neighborhood": "Astoria",
+      "borough": "Queens",
+      "type": "Mobile caterer",
+      "rating": 5,
+      "reviews": 2061,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Foods of NY Tours",
+      "slug": "foods-of-ny-tours",
+      "neighborhood": "Greenwich Village",
+      "borough": "Manhattan",
+      "type": "Sightseeing tour agency",
+      "rating": 5,
+      "reviews": 1897,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Funny Hibachi Catering",
+      "slug": "funny-hibachi-catering",
+      "neighborhood": "Sunset Park",
+      "borough": "Brooklyn",
+      "type": "Caterer",
+      "rating": 5,
+      "reviews": 1714,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Mitr Thai Restaurant",
+      "slug": "mitr-thai-restaurant",
+      "neighborhood": "Midtown",
+      "borough": "Manhattan",
+      "type": "Thai restaurant",
+      "rating": 4.9,
+      "reviews": 8795,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "GAN-HOO BBQ",
+      "slug": "gan-hoo-bbq",
+      "neighborhood": "Flushing",
+      "borough": "Queens",
+      "type": "Barbecue restaurant",
+      "rating": 4.9,
+      "reviews": 5618,
+      "inspection_grade": "A",
+      "dietary_tags": null
+    },
+    {
+      "name": "Osteria La Baia",
+      "slug": "osteria-la-baia",
+      "neighborhood": "Midtown",
+      "borough": "Manhattan",
+      "type": "Italian restaurant",
+      "rating": 4.9,
+      "reviews": 5013,
+      "inspection_grade": "B",
+      "dietary_tags": null
+    },
+    {
+      "name": "SAPPEISAN",
+      "slug": "sappeisan",
+      "neighborhood": "Greenwich Village",
+      "borough": "Manhattan",
+      "type": "Thai restaurant",
+      "rating": 4.9,
+      "reviews": 4992,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Valla Table",
+      "slug": "valla-table",
+      "neighborhood": "Hell's Kitchen",
+      "borough": "Manhattan",
+      "type": "Thai restaurant",
+      "rating": 4.9,
+      "reviews": 4974,
+      "inspection_grade": "C",
+      "dietary_tags": null
+    },
+    {
+      "name": "Glin Thai Bistro",
+      "slug": "glin-thai-bistro",
+      "neighborhood": "Fort Greene",
+      "borough": "Brooklyn",
+      "type": "Thai restaurant",
+      "rating": 4.9,
+      "reviews": 4369,
+      "inspection_grade": "A",
+      "dietary_tags": null
+    },
+    {
+      "name": "Kam Rai Thai",
+      "slug": "kam-rai-thai",
+      "neighborhood": "Astoria",
+      "borough": "Queens",
+      "type": "Restaurant",
+      "rating": 4.9,
+      "reviews": 3533,
+      "inspection_grade": null,
+      "dietary_tags": "vegetarian"
+    },
+    {
+      "name": "Aragvi",
+      "slug": "aragvi",
+      "neighborhood": "Midtown East",
+      "borough": "Manhattan",
+      "type": "Georgian restaurant",
+      "rating": 4.9,
+      "reviews": 3325,
+      "inspection_grade": "A",
+      "dietary_tags": "halal"
+    },
+    {
+      "name": "Sozai Japanese Restaurant (Izakaya Ramen)",
+      "slug": "sozai-japanese-restaurant-izakaya-ramen",
+      "neighborhood": "Midtown",
+      "borough": "Manhattan",
+      "type": "Japanese restaurant",
+      "rating": 4.9,
+      "reviews": 3164,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "32 North",
+      "slug": "32-north",
+      "neighborhood": "Rosedale",
+      "borough": "Queens",
+      "type": "Restaurant",
+      "rating": 4.9,
+      "reviews": 2931,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Laghman Express",
+      "slug": "laghman-express",
+      "neighborhood": "Borough Park",
+      "borough": "Brooklyn",
+      "type": "Halal restaurant",
+      "rating": 4.9,
+      "reviews": 2779,
+      "inspection_grade": "B",
+      "dietary_tags": "halal"
+    },
+    {
+      "name": "787 Coffee",
+      "slug": "787-coffee-mott",
+      "neighborhood": "Mott Haven",
+      "borough": "Bronx",
+      "type": "Coffee shop",
+      "rating": 4.9,
+      "reviews": 2744,
+      "inspection_grade": "A",
+      "dietary_tags": null
+    },
+    {
+      "name": "Gulp",
+      "slug": "gulp",
+      "neighborhood": "Long Island City",
+      "borough": "Queens",
+      "type": "Taiwanese restaurant",
+      "rating": 4.9,
+      "reviews": 2716,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "The Loft Steakhouse",
+      "slug": "the-loft-steakhouse",
+      "neighborhood": "Borough Park",
+      "borough": "Brooklyn",
+      "type": "Steak house",
+      "rating": 4.9,
+      "reviews": 2691,
+      "inspection_grade": "A",
+      "dietary_tags": "kosher"
+    },
+    {
+      "name": "Bareburger",
+      "slug": "bareburger-upper-mn",
+      "neighborhood": "Upper West Side",
+      "borough": "Manhattan",
+      "type": "Hamburger restaurant",
+      "rating": 4.9,
+      "reviews": 2674,
+      "inspection_grade": "A",
+      "dietary_tags": "whole-foods"
+    },
+    {
+      "name": "Mira Mediterranean & Hookah Lounge",
+      "slug": "mira-mediterranean-hookah-lounge",
+      "neighborhood": "Kips Bay",
+      "borough": "Manhattan",
+      "type": "Mediterranean restaurant",
+      "rating": 4.9,
+      "reviews": 2504,
+      "inspection_grade": null,
+      "dietary_tags": "halal"
+    },
+    {
+      "name": "Dagg Thai Restaurant",
+      "slug": "dagg-thai-restaurant",
+      "neighborhood": "Murray Hill",
+      "borough": "Manhattan",
+      "type": "Thai restaurant",
+      "rating": 4.9,
+      "reviews": 2444,
+      "inspection_grade": null,
+      "dietary_tags": "vegetarian"
+    },
+    {
+      "name": "Brick City Vegan Newark (Formerly known as Urban Vegan)",
+      "slug": "brick-city-vegan-newark-formerly-known-as-urban-vegan",
+      "neighborhood": "Mariners Harbor",
+      "borough": "Staten Island",
+      "type": "Vegan restaurant",
+      "rating": 4.9,
+      "reviews": 2386,
+      "inspection_grade": null,
+      "dietary_tags": "dairy-free|vegan|vegetarian"
+    },
+    {
+      "name": "Talkin' Tacos New York",
+      "slug": "talkin-tacos-new-york",
+      "neighborhood": "Washington Heights",
+      "borough": "Manhattan",
+      "type": "Taco restaurant",
+      "rating": 4.9,
+      "reviews": 2223,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "SAPERAVI",
+      "slug": "saperavi",
+      "neighborhood": "Gramercy Park",
+      "borough": "Manhattan",
+      "type": "Georgian restaurant",
+      "rating": 4.9,
+      "reviews": 2112,
+      "inspection_grade": "A",
+      "dietary_tags": null
+    },
+    {
+      "name": "Chocolate House Bronx 161",
+      "slug": "chocolate-house-bronx-161",
+      "neighborhood": "Concourse",
+      "borough": "Bronx",
+      "type": "Dessert shop",
+      "rating": 4.9,
+      "reviews": 2019,
+      "inspection_grade": null,
+      "dietary_tags": null
+    },
+    {
+      "name": "Glatt A La Carte",
+      "slug": "glatt-a-la-carte",
+      "neighborhood": "Borough Park",
+      "borough": "Brooklyn",
+      "type": "Steak house",
+      "rating": 4.9,
+      "reviews": 1809,
+      "inspection_grade": null,
+      "dietary_tags": "kosher"
+    }
+  ]
+}
