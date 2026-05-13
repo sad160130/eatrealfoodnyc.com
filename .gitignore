@@ -69,7 +69,9 @@ public/sitemap*.xml
 public/robots.txt
 
 # Claude Code
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/skills/**
 
 # Root-level non-code files
 *.png
