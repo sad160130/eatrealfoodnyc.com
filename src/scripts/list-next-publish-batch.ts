@@ -6,6 +6,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env") })
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { prisma } = require("../lib/db") as { prisma: import("@prisma/client").PrismaClient }
+import { isPublishableType, isNameBlocked } from "../config/publishable-types"
 
 interface BatchRow {
   slug: string
@@ -25,11 +26,14 @@ function parseDietaryTags(raw: string | null): string[] {
 }
 
 async function main() {
-  // Top 100 unpublished operational restaurants by priorityRank (priority_rank in DB).
-  // rating desc is a deterministic tiebreaker — the priorityRank column has many
-  // ties at the @default(0), so a single sort would give nondeterministic results.
-  // Matches the ordering used by the borough hub findMany.
-  const rows = await prisma.restaurant.findMany({
+  // Over-fetch and filter in JS because both filters are regex/set based
+  // and don't translate to Prisma where clauses. 500 candidates is enough
+  // headroom even when the unpublished pool is heavily contaminated with
+  // non-restaurant entities. The two filters cascade:
+  //   1. Type allowlist  — gates by Google Maps `type` (restaurant-shaped)
+  //   2. Name blocklist  — strips Herbalife/MLM, wellness clinics, NJ rows
+  //                        that slipped through with type="Restaurant"
+  const candidates = await prisma.restaurant.findMany({
     where: {
       is_published: false,
       business_status: "OPERATIONAL",
@@ -38,7 +42,7 @@ async function main() {
       { priorityRank: "desc" },
       { rating: "desc" },
     ],
-    take: 100,
+    take: 500,
     select: {
       slug: true,
       name: true,
@@ -47,14 +51,20 @@ async function main() {
       dietary_tags: true,
       rating: true,
       reviews: true,
+      type: true,
     },
   })
 
-  // is_hidden_gem computed per the canonical algorithm (rating ≥ 4.5, reviews < 200,
-  // operational). The query already restricts to operational, so the runtime check
-  // is only on rating and reviews. Independent of the is_hidden_gem column on the
-  // model — that flag isn't backfilled yet.
-  const batch: BatchRow[] = rows.map((r) => ({
+  const filtered = candidates
+    .filter((r) => isPublishableType(r.type))
+    .filter((r) => !isNameBlocked(r.name))
+    .slice(0, 100)
+
+  // is_hidden_gem computed per the canonical algorithm (rating ≥ 4.5,
+  // reviews < 200, operational). The query already restricts to operational,
+  // so the runtime check is only on rating and reviews. Independent of the
+  // is_hidden_gem DB column, which isn't backfilled yet.
+  const batch: BatchRow[] = filtered.map((r) => ({
     slug: r.slug,
     name: r.name,
     borough: r.borough,
