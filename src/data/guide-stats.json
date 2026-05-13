@@ -1,63 +1,49 @@
 {
-  "generatedAt": "2026-05-09T02:52:29.968Z",
+  "generatedAt": "2026-05-13T05:28:53.859Z",
   "global": {
-    "totalPublished": 1300,
-    "totalWithGrade": 504,
-    "gradeACoverage": 39,
-    "totalUniqueNeighborhoods": 109,
-    "totalHiddenGems": 0,
-    "hiddenGemGradeA": 0,
+    "totalPublished": 1401,
+    "totalWithGrade": 513,
+    "gradeACoverage": 37,
+    "totalUniqueNeighborhoods": 111,
+    "totalHiddenGems": 54,
+    "hiddenGemGradeA": 4,
     "boroughs": {
       "Manhattan": {
-        "total": 737,
-        "gradeA": 262,
-        "rate": 36
+        "total": 763,
+        "gradeA": 264,
+        "rate": 35
       },
       "Queens": {
-        "total": 253,
-        "gradeA": 90,
-        "rate": 36
+        "total": 281,
+        "gradeA": 92,
+        "rate": 33
       },
       "Brooklyn": {
-        "total": 192,
-        "gradeA": 71,
-        "rate": 37
+        "total": 216,
+        "gradeA": 73,
+        "rate": 34
       },
       "Bronx": {
-        "total": 81,
-        "gradeA": 20,
-        "rate": 25
+        "total": 96,
+        "gradeA": 21,
+        "rate": 22
       },
       "Staten Island": {
-        "total": 37,
-        "gradeA": 10,
-        "rate": 27
+        "total": 45,
+        "gradeA": 11,
+        "rate": 24
       }
     },
     "avgRatingByBorough": {
       "Manhattan": 4.4,
       "Staten Island": 4.4,
       "Brooklyn": 4.4,
-      "Queens": 4.3,
-      "Bronx": 4.3
+      "Bronx": 4.4,
+      "Queens": 4.3
     }
   },
   "neighborhoods": {
     "topByGradeA": [
-      {
-        "neighborhood": "St. Albans",
-        "borough": "Queens",
-        "total": 10,
-        "gradeA": 6,
-        "rate": 60
-      },
-      {
-        "neighborhood": "Williamsburg",
-        "borough": "Brooklyn",
-        "total": 18,
-        "gradeA": 10,
-        "rate": 56
-      },
       {
         "neighborhood": "Gramercy Park",
         "borough": "Manhattan",
@@ -66,45 +52,17 @@
         "rate": 56
       },
       {
-        "neighborhood": "Sheepshead Bay",
-        "borough": "Brooklyn",
-        "total": 11,
-        "gradeA": 6,
-        "rate": 55
-      },
-      {
-        "neighborhood": "East New York",
-        "borough": "Brooklyn",
+        "neighborhood": "Jamaica",
+        "borough": "Queens",
         "total": 13,
         "gradeA": 7,
         "rate": 54
       },
       {
-        "neighborhood": "Long Island City",
-        "borough": "Queens",
-        "total": 10,
-        "gradeA": 5,
-        "rate": 50
-      },
-      {
-        "neighborhood": "Greenpoint",
+        "neighborhood": "Sheepshead Bay",
         "borough": "Brooklyn",
         "total": 12,
         "gradeA": 6,
-        "rate": 50
-      },
-      {
-        "neighborhood": "Tribeca",
-        "borough": "Manhattan",
-        "total": 14,
-        "gradeA": 7,
-        "rate": 50
-      },
-      {
-        "neighborhood": "Astoria",
-        "borough": "Queens",
-        "total": 28,
-        "gradeA": 14,
         "rate": 50
       },
       {
@@ -113,108 +71,208 @@
         "total": 39,
         "gradeA": 19,
         "rate": 49
+      },
+      {
+        "neighborhood": "Greenwich Village",
+        "borough": "Manhattan",
+        "total": 39,
+        "gradeA": 19,
+        "rate": 49
+      },
+      {
+        "neighborhood": "Astoria",
+        "borough": "Queens",
+        "total": 29,
+        "gradeA": 14,
+        "rate": 48
+      },
+      {
+        "neighborhood": "East New York",
+        "borough": "Brooklyn",
+        "total": 15,
+        "gradeA": 7,
+        "rate": 47
+      },
+      {
+        "neighborhood": "Tribeca",
+        "borough": "Manhattan",
+        "total": 15,
+        "gradeA": 7,
+        "rate": 47
+      },
+      {
+        "neighborhood": "Long Island City",
+        "borough": "Queens",
+        "total": 13,
+        "gradeA": 6,
+        "rate": 46
+      },
+      {
+        "neighborhood": "SoHo",
+        "borough": "Manhattan",
+        "total": 32,
+        "gradeA": 14,
+        "rate": 44
       }
     ],
     "bottomByGradeA": [
       {
         "neighborhood": "Wakefield",
         "borough": "Bronx",
-        "total": 11,
+        "total": 13,
         "gradeA": 0,
         "rate": 0
       },
       {
         "neighborhood": "Downtown Brooklyn",
         "borough": "Brooklyn",
-        "total": 10,
+        "total": 11,
+        "gradeA": 0,
+        "rate": 0
+      },
+      {
+        "neighborhood": "Belmont",
+        "borough": "Bronx",
+        "total": 11,
         "gradeA": 0,
         "rate": 0
       },
       {
         "neighborhood": "Battery Park City",
         "borough": "Manhattan",
-        "total": 19,
+        "total": 20,
         "gradeA": 1,
         "rate": 5
       },
       {
         "neighborhood": "Morningside Heights",
         "borough": "Manhattan",
-        "total": 19,
+        "total": 21,
         "gradeA": 2,
-        "rate": 11
-      },
-      {
-        "neighborhood": "Rosedale",
-        "borough": "Queens",
-        "total": 23,
-        "gradeA": 4,
-        "rate": 17
+        "rate": 10
       }
     ],
-    "topByHiddenGems": []
+    "topByHiddenGems": [
+      {
+        "neighborhood": "Belmont",
+        "borough": "Bronx",
+        "count": 4
+      },
+      {
+        "neighborhood": "Williamsburg",
+        "borough": "Brooklyn",
+        "count": 2
+      },
+      {
+        "neighborhood": "Wakefield",
+        "borough": "Bronx",
+        "count": 2
+      },
+      {
+        "neighborhood": "Jamaica",
+        "borough": "Queens",
+        "count": 2
+      },
+      {
+        "neighborhood": "Kensington",
+        "borough": "Brooklyn",
+        "count": 2
+      }
+    ]
   },
   "hiddenGems": {
-    "total": 0,
-    "byBorough": {},
-    "topNeighborhoods": [],
-    "percentWithGradeA": 0
+    "total": 54,
+    "byBorough": {
+      "Manhattan": 15,
+      "Brooklyn": 14,
+      "Queens": 13,
+      "Bronx": 10,
+      "Staten Island": 2
+    },
+    "topNeighborhoods": [
+      {
+        "neighborhood": "Belmont",
+        "borough": "Bronx",
+        "count": 4
+      },
+      {
+        "neighborhood": "Williamsburg",
+        "borough": "Brooklyn",
+        "count": 2
+      },
+      {
+        "neighborhood": "Wakefield",
+        "borough": "Bronx",
+        "count": 2
+      },
+      {
+        "neighborhood": "Jamaica",
+        "borough": "Queens",
+        "count": 2
+      },
+      {
+        "neighborhood": "Kensington",
+        "borough": "Brooklyn",
+        "count": 2
+      }
+    ],
+    "percentWithGradeA": 7
   },
   "dietary": {
     "counts": {
-      "vegan": 27,
-      "vegetarian": 108,
-      "halal": 76,
-      "kosher": 22,
+      "vegan": 32,
+      "vegetarian": 117,
+      "halal": 78,
+      "kosher": 24,
       "gluten-free": 8,
-      "dairy-free": 16,
+      "dairy-free": 18,
       "keto": 0,
       "paleo": 0,
-      "whole-foods": 90,
-      "low-calorie": 22,
+      "whole-foods": 140,
+      "low-calorie": 53,
       "raw-food": 0,
-      "nut-free": 0
+      "nut-free": 1
     },
     "byBorough": {
       "Manhattan": {
-        "vegan": 23,
-        "vegetarian": 74,
-        "halal": 31,
+        "vegan": 25,
+        "vegetarian": 77,
+        "halal": 32,
         "kosher": 14,
         "gluten-free": 8,
-        "dairy-free": 14,
+        "dairy-free": 15,
         "keto": 0,
         "paleo": 0,
-        "whole-foods": 65,
-        "low-calorie": 18,
+        "whole-foods": 80,
+        "low-calorie": 29,
         "raw-food": 0,
         "nut-free": 0
       },
       "Brooklyn": {
-        "vegan": 1,
-        "vegetarian": 9,
-        "halal": 24,
-        "kosher": 7,
+        "vegan": 3,
+        "vegetarian": 11,
+        "halal": 25,
+        "kosher": 8,
         "gluten-free": 0,
-        "dairy-free": 0,
+        "dairy-free": 1,
         "keto": 0,
         "paleo": 0,
-        "whole-foods": 13,
-        "low-calorie": 0,
+        "whole-foods": 23,
+        "low-calorie": 4,
         "raw-food": 0,
         "nut-free": 0
       },
       "Queens": {
-        "vegan": 1,
-        "vegetarian": 21,
+        "vegan": 2,
+        "vegetarian": 25,
         "halal": 19,
-        "kosher": 1,
+        "kosher": 2,
         "gluten-free": 0,
         "dairy-free": 0,
         "keto": 0,
         "paleo": 0,
-        "whole-foods": 10,
-        "low-calorie": 4,
+        "whole-foods": 20,
+        "low-calorie": 9,
         "raw-food": 0,
         "nut-free": 0
       },
@@ -227,10 +285,10 @@
         "dairy-free": 0,
         "keto": 0,
         "paleo": 0,
-        "whole-foods": 1,
-        "low-calorie": 0,
+        "whole-foods": 10,
+        "low-calorie": 5,
         "raw-food": 0,
-        "nut-free": 0
+        "nut-free": 1
       },
       "Staten Island": {
         "vegan": 2,
@@ -241,8 +299,8 @@
         "dairy-free": 2,
         "keto": 0,
         "paleo": 0,
-        "whole-foods": 1,
-        "low-calorie": 0,
+        "whole-foods": 7,
+        "low-calorie": 6,
         "raw-food": 0,
         "nut-free": 0
       }
@@ -270,7 +328,7 @@
           "count": 2
         },
         {
-          "neighborhood": "Lower East Side",
+          "neighborhood": "Hamilton Heights",
           "borough": "Manhattan",
           "count": 2
         }
@@ -287,18 +345,18 @@
           "count": 5
         },
         {
+          "neighborhood": "Brighton Beach",
+          "borough": "Brooklyn",
+          "count": 5
+        },
+        {
           "neighborhood": "Midtown",
           "borough": "Manhattan",
           "count": 4
         },
         {
-          "neighborhood": "Brighton Beach",
-          "borough": "Brooklyn",
-          "count": 4
-        },
-        {
-          "neighborhood": "Jamaica",
-          "borough": "Queens",
+          "neighborhood": "East Village",
+          "borough": "Manhattan",
           "count": 3
         }
       ],
@@ -306,7 +364,7 @@
         {
           "neighborhood": "Kensington",
           "borough": "Brooklyn",
-          "count": 3
+          "count": 4
         },
         {
           "neighborhood": "Chinatown",

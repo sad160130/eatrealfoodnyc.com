@@ -3,10 +3,10 @@
     {
       "neighborhood": "Midtown",
       "borough": "Manhattan",
-      "total": 122,
+      "total": 125,
       "gradeA": 41,
-      "gradeARate": 34,
-      "hiddenGems": 0,
+      "gradeARate": 33,
+      "hiddenGems": 2,
       "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
@@ -15,10 +15,10 @@
     {
       "neighborhood": "Flatiron District",
       "borough": "Manhattan",
-      "total": 54,
+      "total": 55,
       "gradeA": 22,
-      "gradeARate": 41,
-      "hiddenGems": 0,
+      "gradeARate": 40,
+      "hiddenGems": 1,
       "avgRating": 4.5,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
@@ -27,14 +27,14 @@
     {
       "neighborhood": "Hell's Kitchen",
       "borough": "Manhattan",
-      "total": 46,
+      "total": 47,
       "gradeA": 12,
       "gradeARate": 26,
-      "hiddenGems": 0,
+      "hiddenGems": 1,
       "avgRating": 4.5,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 4
+      "topDietaryCount": 5
     },
     {
       "neighborhood": "Lincoln Square",
@@ -75,10 +75,10 @@
     {
       "neighborhood": "Financial District",
       "borough": "Manhattan",
-      "total": 36,
+      "total": 37,
       "gradeA": 10,
-      "gradeARate": 28,
-      "hiddenGems": 0,
+      "gradeARate": 27,
+      "hiddenGems": 1,
       "avgRating": 4.5,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
@@ -87,10 +87,10 @@
     {
       "neighborhood": "Upper West Side",
       "borough": "Manhattan",
-      "total": 34,
+      "total": 35,
       "gradeA": 12,
-      "gradeARate": 35,
-      "hiddenGems": 0,
+      "gradeARate": 34,
+      "hiddenGems": 1,
       "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
@@ -135,70 +135,70 @@
     {
       "neighborhood": "Hudson Yards",
       "borough": "Manhattan",
-      "total": 25,
+      "total": 27,
       "gradeA": 5,
-      "gradeARate": 20,
-      "hiddenGems": 0,
+      "gradeARate": 19,
+      "hiddenGems": 1,
       "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 2
+      "topDietaryCount": 4
     },
     {
       "neighborhood": "West Village",
       "borough": "Manhattan",
-      "total": 22,
+      "total": 23,
       "gradeA": 7,
-      "gradeARate": 32,
-      "hiddenGems": 0,
+      "gradeARate": 30,
+      "hiddenGems": 1,
       "avgRating": 4.4,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 4
-    },
-    {
-      "neighborhood": "Murray Hill",
-      "borough": "Manhattan",
-      "total": 21,
-      "gradeA": 8,
-      "gradeARate": 38,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 4
+      "topDietaryCount": 5
     },
     {
       "neighborhood": "East Village",
       "borough": "Manhattan",
-      "total": 20,
+      "total": 23,
       "gradeA": 9,
-      "gradeARate": 45,
+      "gradeARate": 39,
+      "hiddenGems": 2,
+      "avgRating": 4.5,
+      "topDietaryTag": "vegetarian",
+      "topDietaryLabel": "Vegetarian",
+      "topDietaryCount": 3
+    },
+    {
+      "neighborhood": "Murray Hill",
+      "borough": "Manhattan",
+      "total": 22,
+      "gradeA": 8,
+      "gradeARate": 36,
       "hiddenGems": 0,
       "avgRating": 4.4,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 2
+      "topDietaryCount": 4
     },
     {
       "neighborhood": "Morningside Heights",
       "borough": "Manhattan",
-      "total": 19,
+      "total": 21,
       "gradeA": 2,
-      "gradeARate": 11,
+      "gradeARate": 10,
       "hiddenGems": 0,
       "avgRating": 4.4,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 2
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 3
     },
     {
       "neighborhood": "Battery Park City",
       "borough": "Manhattan",
-      "total": 19,
+      "total": 20,
       "gradeA": 1,
       "gradeARate": 5,
-      "hiddenGems": 0,
+      "hiddenGems": 1,
       "avgRating": 4.3,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
@@ -207,14 +207,26 @@
     {
       "neighborhood": "Kips Bay",
       "borough": "Manhattan",
-      "total": 16,
-      "gradeA": 5,
-      "gradeARate": 31,
+      "total": 17,
+      "gradeA": 6,
+      "gradeARate": 35,
       "hiddenGems": 0,
-      "avgRating": 4.4,
+      "avgRating": 4.5,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
       "topDietaryCount": 6
+    },
+    {
+      "neighborhood": "Upper East Side",
+      "borough": "Manhattan",
+      "total": 17,
+      "gradeA": 7,
+      "gradeARate": 41,
+      "hiddenGems": 0,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Gramercy Park",
@@ -229,28 +241,28 @@
       "topDietaryCount": 3
     },
     {
-      "neighborhood": "Upper East Side",
-      "borough": "Manhattan",
-      "total": 15,
-      "gradeA": 6,
-      "gradeARate": 40,
-      "hiddenGems": 0,
-      "avgRating": 4.5,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 1
-    },
-    {
       "neighborhood": "Tribeca",
       "borough": "Manhattan",
-      "total": 14,
+      "total": 15,
       "gradeA": 7,
-      "gradeARate": 50,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 3
+      "gradeARate": 47,
+      "hiddenGems": 1,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 4
+    },
+    {
+      "neighborhood": "Hamilton Heights",
+      "borough": "Manhattan",
+      "total": 12,
+      "gradeA": 4,
+      "gradeARate": 33,
+      "hiddenGems": 1,
+      "avgRating": 4.5,
+      "topDietaryTag": "vegan",
+      "topDietaryLabel": "Vegan",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Lower East Side",
@@ -263,18 +275,6 @@
       "topDietaryTag": "vegan",
       "topDietaryLabel": "Vegan",
       "topDietaryCount": 2
-    },
-    {
-      "neighborhood": "Hamilton Heights",
-      "borough": "Manhattan",
-      "total": 10,
-      "gradeA": 4,
-      "gradeARate": 40,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "vegan",
-      "topDietaryLabel": "Vegan",
-      "topDietaryCount": 1
     },
     {
       "neighborhood": "Yorkville",
@@ -291,26 +291,26 @@
     {
       "neighborhood": "Harlem",
       "borough": "Manhattan",
-      "total": 7,
+      "total": 8,
       "gradeA": 5,
-      "gradeARate": 71,
-      "hiddenGems": 0,
-      "avgRating": 4.3,
+      "gradeARate": 63,
+      "hiddenGems": 1,
+      "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 2
+      "topDietaryCount": 3
     },
     {
       "neighborhood": "Inwood",
       "borough": "Manhattan",
-      "total": 5,
+      "total": 6,
       "gradeA": 1,
-      "gradeARate": 20,
+      "gradeARate": 17,
       "hiddenGems": 0,
       "avgRating": 4.3,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "Washington Heights",
@@ -327,11 +327,11 @@
     {
       "neighborhood": "East Harlem",
       "borough": "Manhattan",
-      "total": 2,
+      "total": 3,
       "gradeA": 2,
-      "gradeARate": 100,
-      "hiddenGems": 0,
-      "avgRating": 4.6,
+      "gradeARate": 67,
+      "hiddenGems": 1,
+      "avgRating": 4.7,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
       "topDietaryCount": 1
@@ -341,14 +341,38 @@
     {
       "neighborhood": "Williamsburg",
       "borough": "Brooklyn",
-      "total": 18,
+      "total": 23,
       "gradeA": 10,
-      "gradeARate": 56,
-      "hiddenGems": 0,
+      "gradeARate": 43,
+      "hiddenGems": 2,
+      "avgRating": 4.6,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 4
+    },
+    {
+      "neighborhood": "East New York",
+      "borough": "Brooklyn",
+      "total": 15,
+      "gradeA": 7,
+      "gradeARate": 47,
+      "hiddenGems": 1,
+      "avgRating": 3.9,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
+    },
+    {
+      "neighborhood": "Greenpoint",
+      "borough": "Brooklyn",
+      "total": 14,
+      "gradeA": 6,
+      "gradeARate": 43,
+      "hiddenGems": 1,
       "avgRating": 4.5,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 2
+      "topDietaryTag": "vegan",
+      "topDietaryLabel": "Vegan",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "Fort Greene",
@@ -363,64 +387,52 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "East New York",
-      "borough": "Brooklyn",
-      "total": 13,
-      "gradeA": 7,
-      "gradeARate": 54,
-      "hiddenGems": 0,
-      "avgRating": 3.9,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Greenpoint",
+      "neighborhood": "DUMBO",
       "borough": "Brooklyn",
       "total": 12,
-      "gradeA": 6,
-      "gradeARate": 50,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "gradeA": 2,
+      "gradeARate": 17,
+      "hiddenGems": 2,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 3
     },
     {
       "neighborhood": "Sheepshead Bay",
       "borough": "Brooklyn",
-      "total": 11,
+      "total": 12,
       "gradeA": 6,
-      "gradeARate": 55,
-      "hiddenGems": 0,
+      "gradeARate": 50,
+      "hiddenGems": 1,
       "avgRating": 4.2,
       "topDietaryTag": "halal",
       "topDietaryLabel": "Halal",
       "topDietaryCount": 5
     },
     {
-      "neighborhood": "DUMBO",
-      "borough": "Brooklyn",
-      "total": 10,
-      "gradeA": 2,
-      "gradeARate": 20,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "whole-foods",
-      "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 2
-    },
-    {
       "neighborhood": "Downtown Brooklyn",
       "borough": "Brooklyn",
-      "total": 10,
+      "total": 11,
       "gradeA": 0,
       "gradeARate": 0,
       "hiddenGems": 0,
       "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 2
+      "topDietaryCount": 3
+    },
+    {
+      "neighborhood": "Kensington",
+      "borough": "Brooklyn",
+      "total": 10,
+      "gradeA": 3,
+      "gradeARate": 30,
+      "hiddenGems": 2,
+      "avgRating": 4.6,
+      "topDietaryTag": "kosher",
+      "topDietaryLabel": "Kosher",
+      "topDietaryCount": 4
     },
     {
       "neighborhood": "Crown Heights",
@@ -459,40 +471,16 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "Kensington",
-      "borough": "Brooklyn",
-      "total": 7,
-      "gradeA": 2,
-      "gradeARate": 29,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 3
-    },
-    {
-      "neighborhood": "Clinton Hill",
-      "borough": "Brooklyn",
-      "total": 6,
-      "gradeA": 1,
-      "gradeARate": 17,
-      "hiddenGems": 0,
-      "avgRating": 4.5,
-      "topDietaryTag": "whole-foods",
-      "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 2
-    },
-    {
       "neighborhood": "Brighton Beach",
       "borough": "Brooklyn",
-      "total": 6,
+      "total": 7,
       "gradeA": 1,
-      "gradeARate": 17,
-      "hiddenGems": 0,
-      "avgRating": 4.2,
+      "gradeARate": 14,
+      "hiddenGems": 1,
+      "avgRating": 4.3,
       "topDietaryTag": "halal",
       "topDietaryLabel": "Halal",
-      "topDietaryCount": 4
+      "topDietaryCount": 5
     },
     {
       "neighborhood": "Flatlands",
@@ -507,6 +495,30 @@
       "topDietaryCount": 1
     },
     {
+      "neighborhood": "Flatbush",
+      "borough": "Brooklyn",
+      "total": 6,
+      "gradeA": 2,
+      "gradeARate": 33,
+      "hiddenGems": 1,
+      "avgRating": 4.3,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
+    },
+    {
+      "neighborhood": "Prospect Heights",
+      "borough": "Brooklyn",
+      "total": 6,
+      "gradeA": 2,
+      "gradeARate": 33,
+      "hiddenGems": 1,
+      "avgRating": 4.5,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
+    },
+    {
       "neighborhood": "Bay Ridge",
       "borough": "Brooklyn",
       "total": 6,
@@ -519,13 +531,37 @@
       "topDietaryCount": 2
     },
     {
-      "neighborhood": "Prospect Heights",
+      "neighborhood": "Clinton Hill",
+      "borough": "Brooklyn",
+      "total": 6,
+      "gradeA": 1,
+      "gradeARate": 17,
+      "hiddenGems": 0,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
+    },
+    {
+      "neighborhood": "Gowanus",
+      "borough": "Brooklyn",
+      "total": 6,
+      "gradeA": 3,
+      "gradeARate": 50,
+      "hiddenGems": 1,
+      "avgRating": 4.5,
+      "topDietaryTag": "kosher",
+      "topDietaryLabel": "Kosher",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Bedford-Stuyvesant",
       "borough": "Brooklyn",
       "total": 5,
-      "gradeA": 2,
-      "gradeARate": 40,
+      "gradeA": 1,
+      "gradeARate": 20,
       "hiddenGems": 0,
-      "avgRating": 4.4,
+      "avgRating": 4.5,
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
@@ -543,28 +579,28 @@
       "topDietaryCount": 0
     },
     {
-      "neighborhood": "Gowanus",
-      "borough": "Brooklyn",
-      "total": 5,
-      "gradeA": 2,
-      "gradeARate": 40,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "kosher",
-      "topDietaryLabel": "Kosher",
-      "topDietaryCount": 1
-    },
-    {
-      "neighborhood": "Borough Park",
+      "neighborhood": "Coney Island",
       "borough": "Brooklyn",
       "total": 4,
       "gradeA": 1,
       "gradeARate": 25,
       "hiddenGems": 0,
+      "avgRating": 4.1,
+      "topDietaryTag": "halal",
+      "topDietaryLabel": "Halal",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Park Slope",
+      "borough": "Brooklyn",
+      "total": 4,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 1,
       "avgRating": 4.8,
-      "topDietaryTag": "kosher",
-      "topDietaryLabel": "Kosher",
-      "topDietaryCount": 2
+      "topDietaryTag": "halal",
+      "topDietaryLabel": "Halal",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "Cobble Hill",
@@ -579,40 +615,16 @@
       "topDietaryCount": 2
     },
     {
-      "neighborhood": "Coney Island",
+      "neighborhood": "Borough Park",
       "borough": "Brooklyn",
       "total": 4,
       "gradeA": 1,
       "gradeARate": 25,
       "hiddenGems": 0,
-      "avgRating": 4.1,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 1
-    },
-    {
-      "neighborhood": "Bedford-Stuyvesant",
-      "borough": "Brooklyn",
-      "total": 4,
-      "gradeA": 1,
-      "gradeARate": 25,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Flatbush",
-      "borough": "Brooklyn",
-      "total": 4,
-      "gradeA": 2,
-      "gradeARate": 50,
-      "hiddenGems": 0,
-      "avgRating": 4.1,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "avgRating": 4.8,
+      "topDietaryTag": "kosher",
+      "topDietaryLabel": "Kosher",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Red Hook",
@@ -627,16 +639,16 @@
       "topDietaryCount": 0
     },
     {
-      "neighborhood": "Park Slope",
+      "neighborhood": "Bushwick",
       "borough": "Brooklyn",
       "total": 3,
       "gradeA": 0,
       "gradeARate": 0,
       "hiddenGems": 0,
-      "avgRating": 4.7,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 1
+      "avgRating": 4.6,
+      "topDietaryTag": "vegetarian",
+      "topDietaryLabel": "Vegetarian",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Brooklyn Heights",
@@ -651,18 +663,6 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "Bushwick",
-      "borough": "Brooklyn",
-      "total": 2,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.6,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 2
-    },
-    {
       "neighborhood": "Brownsville",
       "borough": "Brooklyn",
       "total": 2,
@@ -670,18 +670,6 @@
       "gradeARate": 0,
       "hiddenGems": 0,
       "avgRating": 4.3,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Canarsie",
-      "borough": "Brooklyn",
-      "total": 1,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
@@ -697,32 +685,56 @@
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
+    },
+    {
+      "neighborhood": "Canarsie",
+      "borough": "Brooklyn",
+      "total": 1,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 0,
+      "avgRating": 4.4,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
     }
   ],
   "Queens": [
     {
       "neighborhood": "Flushing",
       "borough": "Queens",
-      "total": 29,
+      "total": 31,
       "gradeA": 7,
-      "gradeARate": 24,
-      "hiddenGems": 0,
+      "gradeARate": 23,
+      "hiddenGems": 1,
       "avgRating": 4.5,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 1
+      "topDietaryCount": 2
+    },
+    {
+      "neighborhood": "Bayside",
+      "borough": "Queens",
+      "total": 29,
+      "gradeA": 7,
+      "gradeARate": 24,
+      "hiddenGems": 2,
+      "avgRating": 4.3,
+      "topDietaryTag": "vegetarian",
+      "topDietaryLabel": "Vegetarian",
+      "topDietaryCount": 5
     },
     {
       "neighborhood": "Astoria",
       "borough": "Queens",
-      "total": 28,
+      "total": 29,
       "gradeA": 14,
-      "gradeARate": 50,
+      "gradeARate": 48,
       "hiddenGems": 0,
       "avgRating": 4.5,
       "topDietaryTag": "vegetarian",
       "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 9
+      "topDietaryCount": 10
     },
     {
       "neighborhood": "Jackson Heights",
@@ -737,21 +749,9 @@
       "topDietaryCount": 3
     },
     {
-      "neighborhood": "Bayside",
-      "borough": "Queens",
-      "total": 26,
-      "gradeA": 7,
-      "gradeARate": 27,
-      "hiddenGems": 0,
-      "avgRating": 4.3,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 4
-    },
-    {
       "neighborhood": "Rosedale",
       "borough": "Queens",
-      "total": 23,
+      "total": 24,
       "gradeA": 4,
       "gradeARate": 17,
       "hiddenGems": 0,
@@ -759,6 +759,18 @@
       "topDietaryTag": "halal",
       "topDietaryLabel": "Halal",
       "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "St. Albans",
+      "borough": "Queens",
+      "total": 14,
+      "gradeA": 6,
+      "gradeARate": 43,
+      "hiddenGems": 2,
+      "avgRating": 4.3,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Rego Park",
@@ -773,11 +785,23 @@
       "topDietaryCount": 2
     },
     {
+      "neighborhood": "Jamaica",
+      "borough": "Queens",
+      "total": 13,
+      "gradeA": 7,
+      "gradeARate": 54,
+      "hiddenGems": 2,
+      "avgRating": 4.2,
+      "topDietaryTag": "halal",
+      "topDietaryLabel": "Halal",
+      "topDietaryCount": 3
+    },
+    {
       "neighborhood": "Long Island City",
       "borough": "Queens",
-      "total": 10,
-      "gradeA": 5,
-      "gradeARate": 50,
+      "total": 13,
+      "gradeA": 6,
+      "gradeARate": 46,
       "hiddenGems": 0,
       "avgRating": 4.5,
       "topDietaryTag": "vegetarian",
@@ -797,40 +821,16 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "St. Albans",
-      "borough": "Queens",
-      "total": 10,
-      "gradeA": 6,
-      "gradeARate": 60,
-      "hiddenGems": 0,
-      "avgRating": 4.2,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 1
-    },
-    {
-      "neighborhood": "Jamaica",
-      "borough": "Queens",
-      "total": 9,
-      "gradeA": 6,
-      "gradeARate": 67,
-      "hiddenGems": 0,
-      "avgRating": 4,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
-      "topDietaryCount": 3
-    },
-    {
       "neighborhood": "South Ozone Park",
       "borough": "Queens",
-      "total": 9,
+      "total": 10,
       "gradeA": 3,
-      "gradeARate": 33,
-      "hiddenGems": 0,
-      "avgRating": 4,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "gradeARate": 30,
+      "hiddenGems": 1,
+      "avgRating": 4.1,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "Elmhurst",
@@ -843,6 +843,18 @@
       "topDietaryTag": "halal",
       "topDietaryLabel": "Halal",
       "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Far Rockaway",
+      "borough": "Queens",
+      "total": 7,
+      "gradeA": 1,
+      "gradeARate": 14,
+      "hiddenGems": 1,
+      "avgRating": 4.3,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Sunnyside",
@@ -869,16 +881,16 @@
       "topDietaryCount": 0
     },
     {
-      "neighborhood": "Far Rockaway",
+      "neighborhood": "Richmond Hill",
       "borough": "Queens",
       "total": 5,
-      "gradeA": 1,
-      "gradeARate": 20,
-      "hiddenGems": 0,
-      "avgRating": 4.1,
-      "topDietaryTag": "whole-foods",
-      "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 1
+      "gradeA": 2,
+      "gradeARate": 40,
+      "hiddenGems": 1,
+      "avgRating": 4.4,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
     },
     {
       "neighborhood": "College Point",
@@ -905,23 +917,47 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "Richmond Hill",
-      "borough": "Queens",
-      "total": 4,
-      "gradeA": 2,
-      "gradeARate": 50,
-      "hiddenGems": 0,
-      "avgRating": 4.2,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
       "neighborhood": "Ridgewood",
       "borough": "Queens",
-      "total": 4,
+      "total": 5,
       "gradeA": 1,
-      "gradeARate": 25,
+      "gradeARate": 20,
+      "hiddenGems": 1,
+      "avgRating": 4.4,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Woodside",
+      "borough": "Queens",
+      "total": 4,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 1,
+      "avgRating": 4.7,
+      "topDietaryTag": "vegetarian",
+      "topDietaryLabel": "Vegetarian",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Kew Gardens",
+      "borough": "Queens",
+      "total": 3,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 0,
+      "avgRating": 4.4,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Corona",
+      "borough": "Queens",
+      "total": 3,
+      "gradeA": 1,
+      "gradeARate": 33,
       "hiddenGems": 0,
       "avgRating": 4.3,
       "topDietaryTag": null,
@@ -941,52 +977,28 @@
       "topDietaryCount": 0
     },
     {
-      "neighborhood": "Corona",
+      "neighborhood": "Briarwood",
       "borough": "Queens",
       "total": 3,
       "gradeA": 1,
       "gradeARate": 33,
       "hiddenGems": 0,
-      "avgRating": 4.3,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Kew Gardens",
-      "borough": "Queens",
-      "total": 2,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Woodside",
-      "borough": "Queens",
-      "total": 2,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.5,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Briarwood",
-      "borough": "Queens",
-      "total": 2,
-      "gradeA": 1,
-      "gradeARate": 50,
-      "hiddenGems": 0,
       "avgRating": 4.1,
       "topDietaryTag": "kosher",
       "topDietaryLabel": "Kosher",
       "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Maspeth",
+      "borough": "Queens",
+      "total": 2,
+      "gradeA": 1,
+      "gradeARate": 50,
+      "hiddenGems": 1,
+      "avgRating": 4.8,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
     },
     {
       "neighborhood": "Woodhaven",
@@ -1023,44 +1035,44 @@
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Maspeth",
-      "borough": "Queens",
-      "total": 1,
-      "gradeA": 1,
-      "gradeARate": 100,
-      "hiddenGems": 0,
-      "avgRating": 4.5,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
     }
   ],
   "Bronx": [
     {
       "neighborhood": "Pelham Bay",
       "borough": "Bronx",
-      "total": 13,
+      "total": 14,
       "gradeA": 5,
-      "gradeARate": 38,
+      "gradeARate": 36,
       "hiddenGems": 0,
       "avgRating": 4.1,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "Wakefield",
       "borough": "Bronx",
+      "total": 13,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 2,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Belmont",
+      "borough": "Bronx",
       "total": 11,
       "gradeA": 0,
       "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "hiddenGems": 4,
+      "avgRating": 4.6,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Throgs Neck",
@@ -1087,18 +1099,6 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "Belmont",
-      "borough": "Bronx",
-      "total": 7,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.4,
-      "topDietaryTag": "vegetarian",
-      "topDietaryLabel": "Vegetarian",
-      "topDietaryCount": 1
-    },
-    {
       "neighborhood": "Williamsbridge",
       "borough": "Bronx",
       "total": 7,
@@ -1111,28 +1111,16 @@
       "topDietaryCount": 1
     },
     {
-      "neighborhood": "Concourse",
-      "borough": "Bronx",
-      "total": 6,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.3,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
       "neighborhood": "Kingsbridge",
       "borough": "Bronx",
-      "total": 6,
+      "total": 7,
       "gradeA": 2,
-      "gradeARate": 33,
+      "gradeARate": 29,
       "hiddenGems": 0,
       "avgRating": 4.3,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 1
+      "topDietaryCount": 2
     },
     {
       "neighborhood": "Soundview",
@@ -1149,11 +1137,47 @@
     {
       "neighborhood": "Mott Haven",
       "borough": "Bronx",
-      "total": 3,
+      "total": 6,
       "gradeA": 1,
-      "gradeARate": 33,
+      "gradeARate": 17,
+      "hiddenGems": 2,
+      "avgRating": 4.7,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Concourse",
+      "borough": "Bronx",
+      "total": 6,
+      "gradeA": 0,
+      "gradeARate": 0,
       "hiddenGems": 0,
+      "avgRating": 4.3,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
+    },
+    {
+      "neighborhood": "Fordham",
+      "borough": "Bronx",
+      "total": 2,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 1,
       "avgRating": 4.4,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
+    },
+    {
+      "neighborhood": "Hunts Point",
+      "borough": "Bronx",
+      "total": 2,
+      "gradeA": 1,
+      "gradeARate": 50,
+      "hiddenGems": 0,
+      "avgRating": 4.9,
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
@@ -1173,49 +1197,37 @@
     {
       "neighborhood": "Melrose",
       "borough": "Bronx",
-      "total": 1,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.1,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Hunts Point",
-      "borough": "Bronx",
-      "total": 1,
+      "total": 2,
       "gradeA": 1,
-      "gradeARate": 100,
-      "hiddenGems": 0,
-      "avgRating": 4.7,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "gradeARate": 50,
+      "hiddenGems": 1,
+      "avgRating": 4.6,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     },
     {
-      "neighborhood": "Fordham",
+      "neighborhood": "Norwood",
       "borough": "Bronx",
       "total": 1,
       "gradeA": 0,
       "gradeARate": 0,
       "hiddenGems": 0,
-      "avgRating": 3.7,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "avgRating": null,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     }
   ],
   "Staten Island": [
     {
       "neighborhood": "Mariners Harbor",
       "borough": "Staten Island",
-      "total": 12,
+      "total": 14,
       "gradeA": 2,
-      "gradeARate": 17,
+      "gradeARate": 14,
       "hiddenGems": 0,
-      "avgRating": 4.3,
+      "avgRating": 4.4,
       "topDietaryTag": "vegan",
       "topDietaryLabel": "Vegan",
       "topDietaryCount": 2
@@ -1235,26 +1247,38 @@
     {
       "neighborhood": "Todt Hill",
       "borough": "Staten Island",
-      "total": 3,
+      "total": 5,
       "gradeA": 1,
-      "gradeARate": 33,
+      "gradeARate": 20,
       "hiddenGems": 0,
       "avgRating": 4.4,
-      "topDietaryTag": "halal",
-      "topDietaryLabel": "Halal",
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 2
+    },
+    {
+      "neighborhood": "St. George",
+      "borough": "Staten Island",
+      "total": 4,
+      "gradeA": 1,
+      "gradeARate": 25,
+      "hiddenGems": 0,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
       "topDietaryCount": 1
     },
     {
       "neighborhood": "Port Richmond",
       "borough": "Staten Island",
-      "total": 3,
+      "total": 4,
       "gradeA": 0,
       "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.3,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
+      "hiddenGems": 1,
+      "avgRating": 4.5,
+      "topDietaryTag": "whole-foods",
+      "topDietaryLabel": "Whole Foods",
+      "topDietaryCount": 1
     },
     {
       "neighborhood": "New Brighton",
@@ -1269,37 +1293,25 @@
       "topDietaryCount": 0
     },
     {
-      "neighborhood": "St. George",
+      "neighborhood": "Willowbrook",
       "borough": "Staten Island",
       "total": 3,
       "gradeA": 1,
       "gradeARate": 33,
       "hiddenGems": 0,
-      "avgRating": 4.5,
-      "topDietaryTag": null,
-      "topDietaryLabel": null,
-      "topDietaryCount": 0
-    },
-    {
-      "neighborhood": "Willowbrook",
-      "borough": "Staten Island",
-      "total": 2,
-      "gradeA": 1,
-      "gradeARate": 50,
-      "hiddenGems": 0,
       "avgRating": 4.4,
       "topDietaryTag": "whole-foods",
       "topDietaryLabel": "Whole Foods",
-      "topDietaryCount": 1
+      "topDietaryCount": 2
     },
     {
-      "neighborhood": "Tottenville",
+      "neighborhood": "Stapleton",
       "borough": "Staten Island",
       "total": 1,
-      "gradeA": 0,
-      "gradeARate": 0,
-      "hiddenGems": 0,
-      "avgRating": 4.2,
+      "gradeA": 1,
+      "gradeARate": 100,
+      "hiddenGems": 1,
+      "avgRating": 5,
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0
@@ -1312,6 +1324,18 @@
       "gradeARate": 0,
       "hiddenGems": 0,
       "avgRating": 4.1,
+      "topDietaryTag": null,
+      "topDietaryLabel": null,
+      "topDietaryCount": 0
+    },
+    {
+      "neighborhood": "Tottenville",
+      "borough": "Staten Island",
+      "total": 1,
+      "gradeA": 0,
+      "gradeARate": 0,
+      "hiddenGems": 0,
+      "avgRating": 4.2,
       "topDietaryTag": null,
       "topDietaryLabel": null,
       "topDietaryCount": 0

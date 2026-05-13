@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-09T19:10:17.156Z",
+  "generatedAt": "2026-05-13T05:29:45.240Z",
   "reportDate": "May 2026",
   "summary": {
-    "totalRestaurants": 1300,
-    "totalGraded": 504,
-    "gradedPct": 39,
-    "totalGradeA": 453,
+    "totalRestaurants": 1401,
+    "totalGraded": 513,
+    "gradedPct": 37,
+    "totalGradeA": 461,
     "totalGradeB": 42,
-    "totalGradeC": 9,
-    "gradeACoverage": 35,
+    "totalGradeC": 10,
+    "gradeACoverage": 33,
     "overallGradeAPct": 90,
     "overallGradeBPct": 8,
     "overallGradeCPct": 2
@@ -16,78 +16,78 @@
   "byBorough": [
     {
       "borough": "Manhattan",
-      "total": 737,
-      "graded": 290,
-      "gradedPct": 39,
-      "gradeA": 262,
+      "total": 763,
+      "graded": 292,
+      "gradedPct": 38,
+      "gradeA": 264,
       "gradeB": 21,
       "gradeC": 7,
       "gradeAPct": 90,
       "gradeBPct": 7,
       "gradeCPct": 2,
-      "gradeAOfTotal": 36,
-      "avgInspectionScore": 11.6,
-      "hiddenGems": 0
+      "gradeAOfTotal": 35,
+      "avgInspectionScore": 11.5,
+      "hiddenGems": 15
     },
     {
       "borough": "Brooklyn",
-      "total": 192,
-      "graded": 79,
-      "gradedPct": 41,
-      "gradeA": 71,
+      "total": 216,
+      "graded": 82,
+      "gradedPct": 38,
+      "gradeA": 73,
       "gradeB": 7,
-      "gradeC": 1,
-      "gradeAPct": 90,
+      "gradeC": 2,
+      "gradeAPct": 89,
       "gradeBPct": 9,
-      "gradeCPct": 1,
-      "gradeAOfTotal": 37,
-      "avgInspectionScore": 10.8,
-      "hiddenGems": 0
+      "gradeCPct": 2,
+      "gradeAOfTotal": 34,
+      "avgInspectionScore": 11.1,
+      "hiddenGems": 14
     },
     {
       "borough": "Queens",
-      "total": 253,
-      "graded": 103,
-      "gradedPct": 41,
-      "gradeA": 90,
+      "total": 281,
+      "graded": 105,
+      "gradedPct": 37,
+      "gradeA": 92,
       "gradeB": 12,
       "gradeC": 1,
-      "gradeAPct": 87,
-      "gradeBPct": 12,
+      "gradeAPct": 88,
+      "gradeBPct": 11,
       "gradeCPct": 1,
-      "gradeAOfTotal": 36,
+      "gradeAOfTotal": 33,
       "avgInspectionScore": 12.1,
-      "hiddenGems": 0
+      "hiddenGems": 13
     },
     {
       "borough": "Bronx",
-      "total": 81,
-      "graded": 22,
-      "gradedPct": 27,
-      "gradeA": 20,
+      "total": 96,
+      "graded": 23,
+      "gradedPct": 24,
+      "gradeA": 21,
       "gradeB": 2,
       "gradeC": 0,
       "gradeAPct": 91,
       "gradeBPct": 9,
       "gradeCPct": 0,
-      "gradeAOfTotal": 25,
-      "avgInspectionScore": 11.3,
-      "hiddenGems": 0
+      "gradeAOfTotal": 22,
+      "avgInspectionScore": 11.1,
+      "hiddenGems": 10
     },
     {
       "borough": "Staten Island",
-      "total": 37,
-      "graded": 10,
-      "gradedPct": 27,
-      "gradeA": 10,
+      "total": 45,
+      "graded": 11,
+      "gradedPct": 24,
+      "gradeA": 11,
       "gradeB": 0,
       "gradeC": 0,
       "gradeAPct": 100,
       "gradeBPct": 0,
       "gradeCPct": 0,
-      "gradeAOfTotal": 27,
-      "avgInspectionScore": 10.8,
-      "hiddenGems": 0
+      "gradeAOfTotal": 24,
+      "avgInspectionScore": 10.5,
+      "hiddenGems": 2
     }
   ],
   "neighborhoods": {
@@ -95,20 +95,20 @@
       {
         "neighborhood": "Upper East Side",
         "borough": "Manhattan",
-        "total": 15,
-        "gradeA": 6,
+        "total": 17,
+        "gradeA": 7,
         "gradeB": 0,
         "gradeC": 0,
-        "graded": 6,
+        "graded": 7,
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 40
+        "gradeAOfTotal": 41
       },
       {
         "neighborhood": "Pelham Bay",
         "borough": "Bronx",
-        "total": 13,
+        "total": 14,
         "gradeA": 5,
         "gradeB": 0,
         "gradeC": 0,
@@ -116,12 +116,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 38
+        "gradeAOfTotal": 36
       },
       {
         "neighborhood": "Flatiron District",
         "borough": "Manhattan",
-        "total": 54,
+        "total": 55,
         "gradeA": 22,
         "gradeB": 0,
         "gradeC": 0,
@@ -129,25 +129,25 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 41
+        "gradeAOfTotal": 40
       },
       {
         "neighborhood": "Long Island City",
         "borough": "Queens",
-        "total": 10,
-        "gradeA": 5,
+        "total": 13,
+        "gradeA": 6,
         "gradeB": 0,
         "gradeC": 0,
-        "graded": 5,
+        "graded": 6,
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 50
+        "gradeAOfTotal": 46
       },
       {
         "neighborhood": "St. Albans",
         "borough": "Queens",
-        "total": 10,
+        "total": 14,
         "gradeA": 6,
         "gradeB": 0,
         "gradeC": 0,
@@ -155,12 +155,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 60
+        "gradeAOfTotal": 43
       },
       {
         "neighborhood": "Hudson Yards",
         "borough": "Manhattan",
-        "total": 25,
+        "total": 27,
         "gradeA": 5,
         "gradeB": 0,
         "gradeC": 0,
@@ -168,12 +168,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 20
+        "gradeAOfTotal": 19
       },
       {
         "neighborhood": "Greenpoint",
         "borough": "Brooklyn",
-        "total": 12,
+        "total": 14,
         "gradeA": 6,
         "gradeB": 0,
         "gradeC": 0,
@@ -181,12 +181,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 50
+        "gradeAOfTotal": 43
       },
       {
         "neighborhood": "East New York",
         "borough": "Brooklyn",
-        "total": 13,
+        "total": 15,
         "gradeA": 7,
         "gradeB": 0,
         "gradeC": 0,
@@ -194,12 +194,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 54
+        "gradeAOfTotal": 47
       },
       {
         "neighborhood": "Bayside",
         "borough": "Queens",
-        "total": 26,
+        "total": 29,
         "gradeA": 7,
         "gradeB": 0,
         "gradeC": 0,
@@ -207,12 +207,12 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 27
+        "gradeAOfTotal": 24
       },
       {
         "neighborhood": "Tribeca",
         "borough": "Manhattan",
-        "total": 14,
+        "total": 15,
         "gradeA": 7,
         "gradeB": 0,
         "gradeC": 0,
@@ -220,7 +220,7 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 50
+        "gradeAOfTotal": 47
       },
       {
         "neighborhood": "Gramercy Park",
@@ -238,7 +238,7 @@
       {
         "neighborhood": "West Village",
         "borough": "Manhattan",
-        "total": 22,
+        "total": 23,
         "gradeA": 7,
         "gradeB": 0,
         "gradeC": 0,
@@ -246,7 +246,7 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 32
+        "gradeAOfTotal": 30
       },
       {
         "neighborhood": "Fort Greene",
@@ -264,7 +264,7 @@
       {
         "neighborhood": "Sheepshead Bay",
         "borough": "Brooklyn",
-        "total": 11,
+        "total": 12,
         "gradeA": 6,
         "gradeB": 0,
         "gradeC": 0,
@@ -272,7 +272,7 @@
         "gradeAPct": 100,
         "gradeBPct": 0,
         "gradeCPct": 0,
-        "gradeAOfTotal": 55
+        "gradeAOfTotal": 50
       },
       {
         "neighborhood": "Greenwich Village",
@@ -331,20 +331,20 @@
       {
         "neighborhood": "Kips Bay",
         "borough": "Manhattan",
-        "total": 16,
-        "gradeA": 5,
+        "total": 17,
+        "gradeA": 6,
         "gradeB": 1,
         "gradeC": 1,
-        "graded": 7,
-        "gradeAPct": 71,
-        "gradeBPct": 14,
-        "gradeCPct": 14,
-        "gradeAOfTotal": 31
+        "graded": 8,
+        "gradeAPct": 75,
+        "gradeBPct": 13,
+        "gradeCPct": 13,
+        "gradeAOfTotal": 35
       },
       {
         "neighborhood": "Flushing",
         "borough": "Queens",
-        "total": 29,
+        "total": 31,
         "gradeA": 7,
         "gradeB": 1,
         "gradeC": 1,
@@ -352,12 +352,12 @@
         "gradeAPct": 78,
         "gradeBPct": 11,
         "gradeCPct": 11,
-        "gradeAOfTotal": 24
+        "gradeAOfTotal": 23
       },
       {
         "neighborhood": "East Village",
         "borough": "Manhattan",
-        "total": 20,
+        "total": 23,
         "gradeA": 9,
         "gradeB": 2,
         "gradeC": 0,
@@ -365,12 +365,25 @@
         "gradeAPct": 82,
         "gradeBPct": 18,
         "gradeCPct": 0,
-        "gradeAOfTotal": 45
+        "gradeAOfTotal": 39
+      },
+      {
+        "neighborhood": "Williamsburg",
+        "borough": "Brooklyn",
+        "total": 23,
+        "gradeA": 10,
+        "gradeB": 1,
+        "gradeC": 1,
+        "graded": 12,
+        "gradeAPct": 83,
+        "gradeBPct": 8,
+        "gradeCPct": 8,
+        "gradeAOfTotal": 43
       },
       {
         "neighborhood": "Financial District",
         "borough": "Manhattan",
-        "total": 36,
+        "total": 37,
         "gradeA": 10,
         "gradeB": 2,
         "gradeC": 0,
@@ -378,7 +391,7 @@
         "gradeAPct": 83,
         "gradeBPct": 17,
         "gradeCPct": 0,
-        "gradeAOfTotal": 28
+        "gradeAOfTotal": 27
       },
       {
         "neighborhood": "Chinatown",
@@ -405,27 +418,14 @@
         "gradeBPct": 15,
         "gradeCPct": 0,
         "gradeAOfTotal": 41
-      },
-      {
-        "neighborhood": "Hell's Kitchen",
-        "borough": "Manhattan",
-        "total": 46,
-        "gradeA": 12,
-        "gradeB": 0,
-        "gradeC": 2,
-        "graded": 14,
-        "gradeAPct": 86,
-        "gradeBPct": 0,
-        "gradeCPct": 14,
-        "gradeAOfTotal": 26
       }
     ],
-    "totalAnalyzed": 33
+    "totalAnalyzed": 34
   },
   "byType": [
     {
       "type": "Fast food restaurant",
-      "total": 39,
+      "total": 40,
       "gradeA": 34,
       "graded": 34,
       "gradeAPct": 100
@@ -445,13 +445,6 @@
       "gradeAPct": 100
     },
     {
-      "type": "Restaurant",
-      "total": 124,
-      "gradeA": 46,
-      "graded": 49,
-      "gradeAPct": 94
-    },
-    {
       "type": "American restaurant",
       "total": 75,
       "gradeA": 27,
@@ -459,8 +452,15 @@
       "gradeAPct": 93
     },
     {
+      "type": "Restaurant",
+      "total": 151,
+      "gradeA": 47,
+      "graded": 51,
+      "gradeAPct": 92
+    },
+    {
       "type": "French restaurant",
-      "total": 21,
+      "total": 22,
       "gradeA": 9,
       "graded": 10,
       "gradeAPct": 90
@@ -481,9 +481,9 @@
     },
     {
       "type": "Mexican restaurant",
-      "total": 35,
-      "gradeA": 18,
-      "graded": 21,
+      "total": 36,
+      "gradeA": 19,
+      "graded": 22,
       "gradeAPct": 86
     },
     {
@@ -494,13 +494,6 @@
       "gradeAPct": 84
     },
     {
-      "type": "Steak house",
-      "total": 20,
-      "gradeA": 9,
-      "graded": 11,
-      "gradeAPct": 82
-    },
-    {
       "type": "Thai restaurant",
       "total": 37,
       "gradeA": 12,
@@ -509,7 +502,7 @@
     },
     {
       "type": "Indian restaurant",
-      "total": 27,
+      "total": 29,
       "gradeA": 12,
       "graded": 15,
       "gradeAPct": 80
@@ -526,7 +519,7 @@
     "topBorough": "Staten Island",
     "topBoroughGradeAPct": 100,
     "bottomBorough": "Queens",
-    "bottomBoroughGradeAPct": 87,
+    "bottomBoroughGradeAPct": 88,
     "topNeighborhood": "Upper East Side",
     "topNeighborhoodBorough": "Manhattan",
     "topNeighborhoodGradeAPct": 100,
