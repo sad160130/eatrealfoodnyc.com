@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client"
 import pg from "pg"
 import { existsSync } from "node:fs"
 import { config } from "dotenv"
+import { getNextPublishBatch } from "../lib/next-publish-batch"
 
 if (existsSync(".env.local")) config({ path: ".env.local", override: true })
 
@@ -17,12 +18,10 @@ const prisma = new PrismaClient({ adapter: new PrismaPg(pool), log: ["error"] })
 async function main() {
   console.log("\n=== WEEKLY PUBLISH ===\n")
 
-  const batch = await prisma.restaurant.findMany({
-    where: { is_published: false, business_status: "OPERATIONAL" },
-    orderBy: [{ reviews: "desc" }, { rating: "desc" }],
-    take: 100,
-    select: { id: true, name: true, slug: true },
-  })
+  // Selection logic lives in src/lib/next-publish-batch.ts. This script and
+  // list-next-publish-batch.ts MUST select the same rows — anything else
+  // bypasses the routing/approval gate.
+  const batch = await getNextPublishBatch(prisma)
 
   if (batch.length === 0) {
     console.log("All restaurants are already published!")
