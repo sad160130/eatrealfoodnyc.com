@@ -165,3 +165,23 @@ export function getListingHubLinks(restaurant: {
 
   return links
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §6 equity routing — diet-hub cross-links.
+// The vegan/vegetarian/whole-foods hubs hold the strongest expired-domain
+// backlinks (up to DR95). Route that equity to money pages that have none:
+// borough hubs and the high-intent halal/kosher/gluten-free hubs.
+// ─────────────────────────────────────────────────────────────────────────────
+export const DIET_HUB_CROSSLINKS: Record<string, Array<[string, string]>> = {
+  vegan: [
+    [ANCHOR_TEXT.boroughHub("Brooklyn"), "/nyc/brooklyn/healthy-restaurants"],
+    [ANCHOR_TEXT.dietHub("Gluten-Free"), "/healthy-restaurants/gluten-free"],
+  ],
+  vegetarian: [
+    [ANCHOR_TEXT.dietHub("Halal"), "/healthy-restaurants/halal"],
+    [ANCHOR_TEXT.boroughHub("Queens"), "/nyc/queens/healthy-restaurants"],
+  ],
+  "whole-foods": [
+    [ANCHOR_TEXT.dietHub("Kosher"), "/healthy-restaurants/kosher"],
+  ],
+}

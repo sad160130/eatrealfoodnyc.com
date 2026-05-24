@@ -221,6 +221,15 @@ export default function HealthyBreakfastGuide() {
               a granola bowl with 40g of added sugar is not a health food, regardless of what the menu says.
             </p>
           </div>
+
+          <p className="mt-6 text-lg leading-relaxed text-gray-700">
+            Not every healthy breakfast is grain-based. Protein-forward, low-carb mornings — eggs with
+            seasonal vegetables, smoked salmon, avocado — are a NYC staple too; browse{" "}
+            <Link href="/healthy-restaurants/keto" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+              keto-friendly restaurants in NYC
+            </Link>{" "}
+            for spots that lead with protein over grains.
+          </p>
         </section>
 
         {/* Section 4 */}
@@ -321,7 +330,7 @@ export default function HealthyBreakfastGuide() {
           <div className="space-y-3">
             {[
               { neighborhood: "West Village, Manhattan", desc: "The highest concentration of independent health cafes in the city. Strong granola and grain bowl culture. Multiple spots making housemade nut milks.", link: "/nyc/manhattan/healthy-restaurants" },
-              { neighborhood: "Williamsburg, Brooklyn", desc: "Brooklyn's health cafe epicentre. Strong vegan breakfast scene alongside whole food grain bowls and açaí. Many spots open from 7am for the commuter market.", link: "/nyc/brooklyn/healthy-restaurants" },
+              { neighborhood: "Williamsburg, Brooklyn", desc: "Brooklyn's health cafe epicentre. Strong vegan breakfast scene alongside whole food grain bowls and açaí. Many spots open from 7am for the commuter market.", link: "/nyc/brooklyn/williamsburg/healthy-restaurants" },
               { neighborhood: "Park Slope, Brooklyn", desc: "Family-oriented healthy breakfast culture. Strong organic sourcing across multiple cafes. Good dairy-free options driven by both vegan and lactose-intolerant demographics.", link: "/nyc/brooklyn/healthy-restaurants" },
               { neighborhood: "East Village, Manhattan", desc: "The heart of NYC's vegan breakfast scene. Multiple dedicated plant-based cafes open early. Strong raw food and muesli options.", link: "/nyc/manhattan/healthy-restaurants" },
               { neighborhood: "Astoria, Queens", desc: "Excellent Mediterranean and Middle Eastern breakfast traditions — olive-oil based preparations, fresh yogurt and fruit, mezze-style spreads. Naturally healthy and significantly more affordable than Manhattan equivalents.", link: "/nyc/queens/healthy-restaurants" },

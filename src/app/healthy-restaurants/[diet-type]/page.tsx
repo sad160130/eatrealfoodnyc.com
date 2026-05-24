@@ -9,7 +9,7 @@ import { DIET_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
-import { ANCHOR_TEXT } from "@/lib/internal-links"
+import { ANCHOR_TEXT, DIET_HUB_CROSSLINKS } from "@/lib/internal-links"
 import AboutThisData from "@/components/about-this-data"
 
 export async function generateStaticParams() {
@@ -53,6 +53,8 @@ export default async function DietTypePage({
   const { "diet-type": tag } = await params
   const config = DIET_CONFIG[tag]
   if (!config) notFound()
+
+  const crossLinks = DIET_HUB_CROSSLINKS[tag] // §6 equity routing (vegan/vegetarian/whole-foods)
 
   const [restaurants, totalCount, boroughBreakdown] = await Promise.all([
     prisma.restaurant.findMany({
@@ -264,6 +266,13 @@ export default async function DietTypePage({
             [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
           ]}
         />
+        {crossLinks && (
+          <ContextualLinks
+            className="mt-4"
+            intro={`Diners exploring ${config.label.toLowerCase()} restaurants also browse`}
+            links={crossLinks}
+          />
+        )}
       </div>
 
       {/* Honest aside before FAQ — tone shift */}
