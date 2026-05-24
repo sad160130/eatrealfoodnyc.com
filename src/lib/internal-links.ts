@@ -1,4 +1,4 @@
-import { boroughToSlug, neighborhoodToSlug, formatDietaryTag } from "./utils"
+import { boroughToSlug, neighborhoodToSlug, formatDietaryTag, parseDietaryTags } from "./utils"
 
 export const ANCHOR_TEXT = {
   boroughHub: (borough: string) => `healthy restaurants in ${borough}`,
@@ -57,5 +57,111 @@ export function getRestaurantContextualLinks(
   }
   links.push([ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"])
   links.push([ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"])
+  return links
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRD CC-23 — guaranteed minimum internal links from every listing page.
+//
+// Partial-match anchor pools: varied phrasings around the head term so the site
+// does not ship thousands of identical exact-match anchors (over-optimisation
+// risk). Selection is DETERMINISTIC per slug, so SSG output is stable across
+// builds and there is no hydration drift. Once GSC→BigQuery query data accrues,
+// pickAnchor() can be upgraded to weight each page's own top non-brand ranking
+// query — until then anchors are derived from page attributes + keyword config.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const MIN_LISTING_HUB_LINKS = 3 // PRD CC-23
+
+const NEIGHBORHOOD_ANCHORS: Array<(n: string) => string> = [
+  (n) => `healthy restaurants in ${n}`,
+  (n) => `${n} healthy dining`,
+  (n) => `where to eat healthy in ${n}`,
+  (n) => `${n} restaurants by health grade`,
+]
+
+const BOROUGH_ANCHORS: Array<(b: string) => string> = [
+  (b) => `healthy restaurants in ${b}`,
+  (b) => `${b}'s healthy dining scene`,
+  (b) => `healthy spots across ${b}`,
+  (b) => `${b} restaurants by health grade`,
+]
+
+const DIET_ANCHORS: Array<(d: string) => string> = [
+  (d) => `${d} restaurants in NYC`,
+  (d) => `best ${d} restaurants in NYC`,
+  (d) => `NYC ${d} dining`,
+  (d) => `${d}-friendly restaurants in NYC`,
+]
+
+// Stable, dependency-free hash so the anchor choice is fixed per page but varies
+// across pages (anchor-text diversity without random, SSG-safe output).
+function pickAnchor<T>(pool: T[], seed: string, salt: number): T {
+  let h = (salt + 1) >>> 0
+  for (let i = 0; i < seed.length; i++) h = (Math.imul(h, 31) + seed.charCodeAt(i)) >>> 0
+  return pool[h % pool.length]
+}
+
+/**
+ * PRD CC-23: the guaranteed money-page link set for a listing page —
+ * neighbourhood hub → borough hub → matching diet-type hubs, padded with
+ * authority pages so the result is ALWAYS >= MIN_LISTING_HUB_LINKS even when a
+ * restaurant is missing its neighbourhood, borough, or dietary tags.
+ */
+export function getListingHubLinks(restaurant: {
+  slug: string
+  borough: string | null
+  neighborhood: string | null
+  dietary_tags: string | null
+}): Array<[string, string]> {
+  const links: Array<[string, string]> = []
+  const seen = new Set<string>()
+  const add = (anchor: string, href: string) => {
+    if (seen.has(href)) return
+    seen.add(href)
+    links.push([anchor, href])
+  }
+
+  const { slug, borough, neighborhood } = restaurant
+
+  // 1 — Neighbourhood hub (strongest local relevance)
+  if (neighborhood && borough) {
+    add(
+      pickAnchor(NEIGHBORHOOD_ANCHORS, slug, 1)(neighborhood),
+      `/nyc/${boroughToSlug(borough)}/${neighborhoodToSlug(neighborhood)}/healthy-restaurants`
+    )
+  }
+
+  // 2 — Borough hub
+  if (borough) {
+    add(
+      pickAnchor(BOROUGH_ANCHORS, slug, 2)(borough),
+      `/nyc/${boroughToSlug(borough)}/healthy-restaurants`
+    )
+  }
+
+  // 3 — Matching diet-type hubs (capped to keep prose readable; the full set is
+  //     already linked in the listing's "Dietary Specializations" section)
+  parseDietaryTags(restaurant.dietary_tags)
+    .slice(0, 3)
+    .forEach((tag, i) => {
+      add(
+        pickAnchor(DIET_ANCHORS, slug, 3 + i)(formatDietaryTag(tag).toLowerCase()),
+        `/healthy-restaurants/${tag}`
+      )
+    })
+
+  // 4 — Enforce the CC-23 floor: pad with authority/money pages if still short.
+  const FALLBACKS: Array<[string, string]> = [
+    [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
+    [ANCHOR_TEXT.gradeAFilter, "/search?grade=A"],
+    [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
+    [ANCHOR_TEXT.hiddenGems, "/search?hidden_gem=true"],
+  ]
+  for (const [anchor, href] of FALLBACKS) {
+    if (links.length >= MIN_LISTING_HUB_LINKS) break
+    add(anchor, href)
+  }
+
   return links
 }

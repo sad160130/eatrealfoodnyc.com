@@ -21,7 +21,7 @@ import CommunityRating from "@/components/community-rating"
 import ShareExperience from "@/components/share-experience"
 import ContextualLinks from "@/components/contextual-links"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
-import { getRestaurantContextualLinks } from "@/lib/internal-links"
+import { getListingHubLinks } from "@/lib/internal-links"
 import { buildRestaurantSchema, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import { getCanonicalUrl } from "@/config/seo"
@@ -386,20 +386,15 @@ export default async function RestaurantPage({
               </section>
             )}
 
-            {/* Contextual internal links */}
+            {/* Contextual internal links — PRD CC-23: guaranteed >= 3 money-page links
+                (neighbourhood hub, borough hub, matching diet-type hubs) with partial-match anchors */}
             <div className="mt-8 border-t border-gray-100 pt-8">
               <p className="mb-3 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>EXPLORE MORE</p>
               <ContextualLinks
                 intro={`${restaurant.name} is one of many healthy restaurants in our directory. Explore`}
-                links={getRestaurantContextualLinks(restaurant.neighborhood, restaurant.borough, restaurant.dietary_tags)}
+                links={getListingHubLinks(restaurant)}
                 className="mb-4"
               />
-              {tags.length > 0 && (
-                <ContextualLinks
-                  intro="Browse by dietary need:"
-                  links={tags.slice(0, 3).map((tag) => [`${formatDietaryTag(tag).toLowerCase()} restaurants in NYC` as string, `/healthy-restaurants/${tag}`] as [string, string])}
-                />
-              )}
             </div>
 
             {/* Topical authority footer */}
