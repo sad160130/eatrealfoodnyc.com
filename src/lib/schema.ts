@@ -20,7 +20,7 @@ export const ORGANIZATION_SCHEMA = {
   description: "NYC's most trusted healthy restaurant directory, built on verified NYC Department of Health inspection data.",
   foundingDate: "2026",
   founder: [FOUNDER_ROHAN],
-  areaServed: { "@type": "City", name: "New York City", addressRegion: "NY", addressCountry: "US" },
+  areaServed: { "@type": "City", name: "New York City", address: { "@type": "PostalAddress", addressRegion: "NY", addressCountry: "US" } },
   knowsAbout: [
     "Healthy restaurants in New York City",
     "NYC restaurant health inspection grades",
