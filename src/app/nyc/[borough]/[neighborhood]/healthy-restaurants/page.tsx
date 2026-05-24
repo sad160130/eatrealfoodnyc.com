@@ -236,7 +236,7 @@ export default async function NeighborhoodPage({
             {dietLinks.map((tag) => (
               <Link
                 key={tag}
-                href={`/nyc/${boroughSlug}/${neighborhoodSlug}/${tag}-restaurants`}
+                href={`/healthy-restaurants/${tag}`}
                 className="flex items-center gap-2 rounded-lg border bg-white px-3 py-3 text-sm transition-colors hover:border-green-400"
               >
                 <span className="text-green-600">→</span>

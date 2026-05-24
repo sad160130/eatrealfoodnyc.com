@@ -239,7 +239,7 @@ export default async function DietTypePage({
               .map((b) => (
                 <Link
                   key={b.borough}
-                  href={`/nyc/${boroughToSlug(b.borough!)}/${tag}-restaurants`}
+                  href={`/nyc/${boroughToSlug(b.borough!)}/healthy-restaurants`}
                   className="rounded-lg border bg-white p-3 text-center transition hover:border-green-400"
                 >
                   <div className="font-medium">{b.borough}</div>
