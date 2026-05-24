@@ -14,6 +14,20 @@ export const metadata: Metadata = {
 export default function OurDataPage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Eat Real Food NYC", item: getCanonicalUrl("/") },
+              { "@type": "ListItem", position: 2, name: "About", item: getCanonicalUrl("/about") },
+              { "@type": "ListItem", position: 3, name: "Our Data & Methodology" },
+            ],
+          }),
+        }}
+      />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import { prisma } from "@/lib/db"
+import { ORGANIZATION_SCHEMA } from "@/lib/schema"
 
 export const metadata: Metadata = {
   title: "About Eat Real Food NYC — NYC Healthy Restaurant Directory",
@@ -23,25 +24,7 @@ export default async function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Eat Real Food NYC",
-            url: "https://eatrealfoodnyc.com",
-            logo: "https://eatrealfoodnyc.com/logo.png",
-            description: "NYC's most trusted healthy restaurant directory, built on verified NYC Health Department inspection data.",
-            foundingDate: "2026",
-            areaServed: { "@type": "City", name: "New York City", addressRegion: "NY", addressCountry: "US" },
-            contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
-            sameAs: [
-              "https://www.instagram.com/nyc_healthyeats/",
-              "https://www.youtube.com/@EatRealFoodNYC",
-            ],
-            founder: [
-              { "@type": "Person", name: "Rohan Kadam", jobTitle: "Founder & Marketing Lead", sameAs: "https://www.linkedin.com/in/rohan-kadam-176922204" },
-            ],
-            numberOfEmployees: { "@type": "QuantitativeValue", value: 1 },
-          }),
+          __html: JSON.stringify({ "@context": "https://schema.org", ...ORGANIZATION_SCHEMA }),
         }}
       />
 

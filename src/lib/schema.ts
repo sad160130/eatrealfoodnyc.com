@@ -1,12 +1,25 @@
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
+export const FOUNDER_ROHAN = {
+  "@type": "Person",
+  "@id": `${SITE_URL}/#rohan-kadam`,
+  name: "Rohan Kadam",
+  jobTitle: "Founder & Marketing Lead",
+  url: `${SITE_URL}/about/team`,
+  sameAs: ["https://www.linkedin.com/in/rohan-kadam-176922204"],
+  alumniOf: { "@type": "CollegeOrUniversity", name: "University of Mumbai" },
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+}
+
 export const ORGANIZATION_SCHEMA = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: "Eat Real Food NYC",
   url: SITE_URL,
+  logo: { "@type": "ImageObject", "@id": `${SITE_URL}/#logo`, url: `${SITE_URL}/logo.png`, contentUrl: `${SITE_URL}/logo.png`, caption: "Eat Real Food NYC" },
   description: "NYC's most trusted healthy restaurant directory, built on verified NYC Department of Health inspection data.",
   foundingDate: "2026",
+  founder: [FOUNDER_ROHAN],
   areaServed: { "@type": "City", name: "New York City", addressRegion: "NY", addressCountry: "US" },
   knowsAbout: [
     "Healthy restaurants in New York City",

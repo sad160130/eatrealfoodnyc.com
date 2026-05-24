@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, parseDietaryTags, formatDietaryTag, formatPriceRange } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
+import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import NearMeButton from "@/components/near-me-button"
@@ -75,32 +76,9 @@ export default async function HomePage() {
   const heroPhoto = editorsPicks[0]?.photo ?? null
   const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
-  const webSiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Eat Real Food NYC",
-    url: siteUrl,
-    description: "NYC restaurant directory with health inspection grades and dietary filtering.",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/search?q={search_term_string}` },
-      "query-input": "required name=search_term_string",
-    },
-  }
-  const orgJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Eat Real Food NYC",
-    url: siteUrl,
-    description: "The curated NYC restaurant directory with health inspection grades, dietary filtering, and neighborhood-level search.",
-    foundingDate: "2026",
-    areaServed: { "@type": "City", name: "New York City", addressRegion: "NY", addressCountry: "US" },
-  }
-
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [webSiteJsonLd, orgJsonLd] }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [WEBSITE_SCHEMA, ORGANIZATION_SCHEMA] }) }} />
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-[85vh] overflow-hidden bg-forest">
