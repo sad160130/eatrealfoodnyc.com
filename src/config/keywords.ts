@@ -54,6 +54,15 @@ export function buildNeighborhoodKeywords(neighborhood: string, borough: string)
   }
 }
 
+export function buildDietBoroughKeywords(dietLabel: string, boroughName: string) {
+  return {
+    h1: `${dietLabel} Restaurants in ${boroughName}`,
+    metaTitle: `${dietLabel} Restaurants in ${boroughName}, NYC (${YEAR})`,
+    metaDescription: (count: number) =>
+      `Find ${count}+ ${dietLabel.toLowerCase()} restaurants in ${boroughName}, NYC — every listing verified with NYC health inspection grades, ratings, and hidden-gem picks.`,
+  }
+}
+
 export const DIET_KEYWORDS: Record<string, {
   h1: string
   metaTitle: string

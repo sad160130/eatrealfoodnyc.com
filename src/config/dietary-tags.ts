@@ -162,3 +162,11 @@ export const DIET_CONFIG: Record<string, {
     ]
   }
 }
+
+/**
+ * Minimum published, operational restaurants a diet+borough combo
+ * (e.g. /nyc/brooklyn/vegan-restaurants) must have to be generated and indexed.
+ * Prevents thin/doorway pages. Shared by the combo route + its
+ * generateStaticParams, the sitemap, and the diet-hub borough breakdown links.
+ */
+export const COMBO_MIN_RESTAURANTS = 5

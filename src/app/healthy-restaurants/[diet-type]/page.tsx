@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
-import { DIET_CONFIG } from "@/config/dietary-tags"
+import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { DIET_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -239,7 +239,11 @@ export default async function DietTypePage({
               .map((b) => (
                 <Link
                   key={b.borough}
-                  href={`/nyc/${boroughToSlug(b.borough!)}/healthy-restaurants`}
+                  href={
+                    b._count.id >= COMBO_MIN_RESTAURANTS
+                      ? `/nyc/${boroughToSlug(b.borough!)}/${tag}-restaurants`
+                      : `/nyc/${boroughToSlug(b.borough!)}/healthy-restaurants`
+                  }
                   className="rounded-lg border bg-white p-3 text-center transition hover:border-green-400"
                 >
                   <div className="font-medium">{b.borough}</div>

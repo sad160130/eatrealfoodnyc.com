@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
+import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -78,6 +79,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     }))
 
+  // Diet + borough combo hub pages (gated to avoid thin pages)
+  const comboGroups = await Promise.all(
+    dietTypes.map((tag) =>
+      prisma.restaurant
+        .groupBy({
+          by: ["borough"],
+          where: {
+            business_status: "OPERATIONAL",
+            is_published: true,
+            dietary_tags: { contains: tag },
+            borough: { not: null },
+          },
+          having: { id: { _count: { gte: COMBO_MIN_RESTAURANTS } } },
+        })
+        .then((rows) => ({ tag, rows }))
+    )
+  )
+  const comboPages: MetadataRoute.Sitemap = comboGroups.flatMap(({ tag, rows }) =>
+    rows
+      .filter((r) => r.borough)
+      .map((r) => ({
+        url: `${siteUrl}/nyc/${boroughToSlug(r.borough!)}/${tag}-restaurants`,
+        changeFrequency: "weekly" as const,
+        priority: 0.85,
+      }))
+  )
+
   // Published restaurant pages
   const restaurants = await prisma.restaurant.findMany({
     where: { is_published: true },
@@ -95,6 +123,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...dietPages,
     ...boroughPages,
     ...neighborhoodPages,
+    ...comboPages,
     ...restaurantPages,
   ]
 }
