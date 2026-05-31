@@ -81,11 +81,10 @@ export const PUBLISHABLE_TYPE_ALLOWLIST = new Set<string>([
   "Pub",
   "Irish pub",
 
-  // Catering (the user explicitly chose to keep these in the default
-  // allowlist; trim later if catering-only operations shouldn't have hub pages)
-  "Caterer",
-  "Mobile caterer",
-  "Catering food and drink supplier",
+  // (Catering types removed from the allowlist — catering-only operations
+  // are not sit-down dining destinations and do not belong in a healthy
+  // restaurant directory. See NAME_BLOCK_PATTERNS below for the parallel
+  // name-level guard that catches Restaurant-typed entries with catering names.)
 
   // Breweries & brewpubs (typically serve food)
   "Brewery",
@@ -108,12 +107,13 @@ export function isPublishableType(type: string | null): boolean {
 //
 // Some entries pass the type filter because Google Maps tagged them
 // "Restaurant" or "Cafe" even though the name signals they are not a
-// dining establishment. Three recurring patterns:
+// dining establishment. Four recurring patterns:
 //
 //   1. Herbalife / MLM "nutrition club" outfits operating as cafes
 //   2. Solo nutritionists / dietitians / wellness practitioners listed
 //      with their personal name or credential
 //   3. Out-of-NYC entries that snuck into the NYC ingest by mistake
+//   4. Catering / private-chef businesses (not sit-down dining destinations)
 //
 // Bias toward exclusion. A false positive can be unblocked by edit; a
 // false negative ships a wellness clinic onto /restaurants/.
@@ -129,6 +129,12 @@ export const NAME_BLOCK_PATTERNS: RegExp[] = [
   /\bwellness\b/i,        // "Wellness In Inwood", "Forest Hills Wellness"
   /\bdietitian/i,
   /\bRDN\b/,              // Registered Dietitian Nutritionist credential
+
+  // Catering / private-chef businesses (parallel guard to the allowlist removal)
+  /\bcatering\b/i,        // "Royalty Catering", "Gotham Catering & Events"
+  /\bchef\s+services\b/i, // "Private Chef Services NYC"
+  /\bprivate\s+chef\b/i,
+  /\bmeal\s+prep\b/i,     // pre-emptive — meal-prep services aren't sit-down
 
   // Out-of-NYC
   /\s+NJ$/i,              // trailing " NJ"
