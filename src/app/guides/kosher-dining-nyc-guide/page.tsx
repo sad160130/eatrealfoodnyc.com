@@ -176,6 +176,9 @@ export default function KosherGuide() {
               Manhattan
             </Link>&apos;s kosher scene is more upscale and geographically dispersed. The Upper West Side has a strong cluster of kosher restaurants catering to the neighborhood&apos;s significant Modern Orthodox population. Midtown has kosher steakhouses and business-lunch spots. The Lower East Side, historically the heart of Jewish New York, retains a few iconic kosher establishments alongside newer additions. Chelsea and the Flatiron District have seen kosher restaurant growth driven by the broader kosher-curious market.
           </p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Recent additions illustrate how kosher dining keeps spreading: <Link href="/restaurants/hungarian-kosher-cuisine" className="font-semibold text-jade hover:text-forest">Hungarian Kosher Cuisine in Borough Park</Link> brings a hidden-gem take on traditional Ashkenazi fare, <Link href="/restaurants/fish-grill-brooklyn" className="font-semibold text-jade hover:text-forest">Fish Grill in Kensington</Link> serves grilled seafood in a quieter Brooklyn pocket, and <Link href="/restaurants/cafe-muscat-great-neck" className="font-semibold text-jade hover:text-forest">Cafe Muscat in Bayside</Link> extends Queens&apos;s small but growing kosher scene.
+          </p>
         </section>
 
         <section id="certification-bodies" className="mb-16 scroll-mt-24">

@@ -195,6 +195,9 @@ export default function HiddenGemsGuide() {
               comparison tool
             </Link>.
           </p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Recent additions illustrate the cross-borough spread: <Link href="/restaurants/electric-beets" className="font-semibold text-jade hover:text-forest">Electric Beets in Park Slope</Link> (Brooklyn vegan), <Link href="/restaurants/vegd-out" className="font-semibold text-jade hover:text-forest">Veg&apos;d Out in Wakefield</Link> (Bronx plant-based), <Link href="/restaurants/power-bowls" className="font-semibold text-jade hover:text-forest">Power Bowls in the Financial District</Link> (Manhattan whole-foods), <Link href="/restaurants/saffron-indian-cuisine-ridgewood" className="font-semibold text-jade hover:text-forest">Saffron Indian Cuisine in Ridgewood</Link> (Queens vegetarian), and <Link href="/restaurants/tastyhut-smoothie-cafe" className="font-semibold text-jade hover:text-forest">Tastyhut Smoothie Cafe in Port Richmond</Link> (Staten Island whole-foods) all qualified as hidden gems on their first index — each rated 4.5+ with fewer than 200 reviews.
+          </p>
         </section>
 
         <section id="how-to-evaluate" className="mb-16 scroll-mt-24">

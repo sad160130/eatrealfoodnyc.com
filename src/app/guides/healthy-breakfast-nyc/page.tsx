@@ -346,6 +346,9 @@ export default function HealthyBreakfastGuide() {
               </div>
             ))}
           </div>
+          <p className="mt-6 text-lg leading-relaxed text-gray-700">
+            Two recent Manhattan additions worth a morning detour: <Link href="/restaurants/power-bowls" className="font-semibold text-jade hover:text-forest">Power Bowls in the Financial District</Link>, a whole-foods bowl spot built for the lunch-rush crowd that doubles as a strong breakfast option, and <Link href="/restaurants/project-eats-farm-and-eatery" className="font-semibold text-jade hover:text-forest">Project EATS on the Lower East Side</Link>, which pairs farm-sourced ingredients with a Grade-A kitchen.
+          </p>
         </section>
 
         {/* Section 6 */}
