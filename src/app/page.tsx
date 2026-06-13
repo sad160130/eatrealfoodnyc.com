@@ -2,11 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
-import { boroughToSlug, parseDietaryTags, formatDietaryTag, formatPriceRange } from "@/lib/utils"
+import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
+import RestaurantCard from "@/components/restaurant-card"
 import reportData from "@/data/health-grade-report"
 
 export const metadata: Metadata = {
@@ -148,39 +149,36 @@ export default async function HomePage() {
             </button>
           </form>
 
-          {/* Quick links — text-only, no pill backgrounds */}
+          {/* Quick filter callouts — initial-letter cards. The "A." card is a mini
+              placard echoing the per-restaurant grade signature on every card below. */}
           <nav
             aria-label="Quick filters"
-            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
+            className="mt-10 grid w-full max-w-2xl grid-cols-2 gap-3 md:grid-cols-4"
           >
-            <Link
-              href="/search?open=true"
-              className="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-jade"
-              style={{ color: "var(--color-text)" }}
-            >
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-sage" />
-              Open right now
+            <Link href="/search?open=true" className="callout">
+              <span className="callout-initial">
+                O<span style={{ color: "var(--color-muted)" }}>.</span>
+              </span>
+              <span className="callout-label">Open right now</span>
+              <span className="callout-pulse" aria-hidden="true" />
             </Link>
-            <Link
-              href="/near-me"
-              className="font-medium transition-colors hover:text-jade"
-              style={{ color: "var(--color-text)" }}
-            >
-              Near me
+            <Link href="/near-me" className="callout">
+              <span className="callout-initial">
+                N<span style={{ color: "var(--color-muted)" }}>.</span>
+              </span>
+              <span className="callout-label">Near me</span>
             </Link>
-            <Link
-              href="/search?grade=A"
-              className="font-medium transition-colors hover:text-jade"
-              style={{ color: "var(--color-text)" }}
-            >
-              Grade A only
+            <Link href="/search?grade=A" className="callout">
+              <span className="callout-initial">
+                A<span style={{ color: "var(--color-muted)" }}>.</span>
+              </span>
+              <span className="callout-label">Grade A only</span>
             </Link>
-            <Link
-              href="/map"
-              className="font-medium transition-colors hover:text-jade"
-              style={{ color: "var(--color-text)" }}
-            >
-              Map view
+            <Link href="/map" className="callout">
+              <span className="callout-initial">
+                M<span style={{ color: "var(--color-muted)" }}>.</span>
+              </span>
+              <span className="callout-label">Map view</span>
             </Link>
           </nav>
         </div>
@@ -190,56 +188,64 @@ export default async function HomePage() {
       </section>
 
       {/* ─── DATA REPORT FEATURE BANNER ─── */}
-      <div className="mx-auto -mt-4 mb-8 max-w-7xl px-4 md:px-6">
+      <div className="mx-auto mt-8 mb-12 max-w-7xl px-4 md:px-6">
         <Link
           href="/data/nyc-restaurant-health-grade-report"
-          className="group flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-forest px-6 py-4 text-white transition-colors hover:bg-jade"
+          className="group block rounded-md bg-forest px-6 py-6 text-cream transition-colors hover:bg-jade md:px-8 md:py-7"
         >
-          <div className="flex items-center gap-4">
-            <span aria-hidden="true" className="text-3xl">📊</span>
-            <div>
-              <p className="mb-0.5 text-xs font-bold uppercase tracking-widest text-sage">
-                NEW — ORIGINAL RESEARCH
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="min-w-0">
+              <p className="eyebrow" style={{ color: "var(--color-sage)" }}>
+                New · Original research
               </p>
               <p
-                className="text-base font-bold text-white transition-colors group-hover:text-cream"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="mt-2 text-xl font-bold leading-tight md:text-2xl"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  letterSpacing: "-0.02em",
+                  color: "var(--color-cream)",
+                }}
               >
                 NYC Restaurant Health Grade Report 2026
               </p>
-              <p className="mt-0.5 text-xs text-white/60">
-                Grade A rates across all 5 boroughs and {reportData.neighborhoods.totalAnalyzed} neighborhoods — data you won&apos;t find anywhere else
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/75">
+                Grade A rates across all 5 boroughs and {reportData.neighborhoods.totalAnalyzed} neighborhoods — data you won&apos;t find anywhere else.
               </p>
             </div>
+            <span className="shrink-0 text-sm font-semibold text-cream/75 transition-all group-hover:translate-x-0.5 group-hover:text-cream">
+              Read report <span aria-hidden="true">&rarr;</span>
+            </span>
           </div>
-          <span className="flex-shrink-0 text-sm font-semibold text-white/60 transition-colors group-hover:text-white">
-            Read the report →
-          </span>
         </Link>
       </div>
 
       {/* ─── SAVED PREVIEW ─── */}
       <SavedPreview />
 
-      {/* ─── CURATION MATRIX ─── */}
-      <section className="bg-white py-20">
+      {/* ─── CURATION MATRIX ─── Refined to typographic grid; emoji removed,
+           amber reserved for gem mark only, CTAs structured as real content. */}
+      <section className="bg-white py-20 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-serif text-3xl font-bold text-forest">The Curation Matrix</h2>
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">Find your spot</p>
+              <h2 className="h2-serif mt-2">The Curation Matrix</h2>
+            </div>
             <Link
               href="/search"
-              className="text-xs font-semibold uppercase tracking-widest text-jade hover:text-forest transition-colors"
+              className="shrink-0 text-xs font-semibold uppercase transition-colors hover:text-forest"
+              style={{ color: "var(--color-jade)", letterSpacing: "0.14em" }}
             >
-              VIEW ALL FILTERS
+              View all filters <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-4" style={{ minHeight: "480px" }}>
-            {/* Cell 1 — Featured tall card */}
+          <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-4" style={{ minHeight: "480px" }}>
+            {/* Featured hidden gem — magazine-cover treatment, amber ✦ mark stays on theme */}
             {featuredGem && (
               <Link
                 href={`/restaurants/${featuredGem.slug}`}
-                className="relative row-span-2 overflow-hidden rounded-2xl lg:col-span-1"
+                className="group relative row-span-2 overflow-hidden rounded-md lg:col-span-1"
                 style={{ minHeight: "320px" }}
               >
                 {featuredGem.photo ? (
@@ -247,22 +253,40 @@ export default async function HomePage() {
                     src={featuredGem.photo}
                     alt={`${featuredGem.name} — ${featuredGem.neighborhood ?? featuredGem.borough ?? "NYC"} hidden gem restaurant`}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     unoptimized
                   />
                 ) : (
                   <div className="absolute inset-0 bg-forest" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/30 to-transparent" />
-                <div className="absolute left-4 top-4">
-                  <span className="rounded-full bg-amber px-3 py-1 text-xs font-bold text-white">
-                    FEATURED COLLECTION
+                <div className="absolute inset-0 bg-gradient-to-t from-forest/95 via-forest/35 to-transparent" />
+                <div className="absolute left-5 top-5 z-10">
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-[0.65rem] font-semibold uppercase backdrop-blur"
+                    style={{
+                      backgroundColor: "rgba(27, 58, 45, 0.55)",
+                      color: "var(--color-cream)",
+                      letterSpacing: "0.16em",
+                    }}
+                  >
+                    <span className="gem-mark" aria-hidden="true">✦</span>
+                    Hidden gem
                   </span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p className="font-serif text-2xl font-bold text-white">{featuredGem.name}</p>
+                  <p
+                    className="font-bold text-cream"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(1.5rem, 2vw + 0.75rem, 1.875rem)",
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {featuredGem.name}
+                  </p>
                   {featuredGem.description && (
-                    <p className="mt-1 line-clamp-2 text-sm text-white/75">
+                    <p className="mt-2 line-clamp-2 text-sm text-cream/75">
                       {featuredGem.description}
                     </p>
                   )}
@@ -270,78 +294,126 @@ export default async function HomePage() {
               </Link>
             )}
 
-            {/* Cell 2 — All 12 dietary filters */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 lg:col-span-2">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>
-                DIETARY FILTERS
-              </p>
-              <div className="grid grid-cols-4 gap-3">
+            {/* 12 dietary filters — typographic grid, no emoji, hover-revealed arrow */}
+            <div
+              className="rounded-md border bg-white p-6 lg:col-span-2"
+              style={{ borderColor: "var(--hairline)" }}
+            >
+              <p className="eyebrow">Filter by diet</p>
+              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                 {ALL_DIETS.map((diet) => (
                   <Link
                     key={diet.tag}
                     href={`/healthy-restaurants/${diet.tag}`}
-                    className="group flex flex-col items-center justify-center rounded-xl border border-gray-100 p-3 transition-all hover:border-sage hover:bg-sage/5"
+                    className="group flex items-center justify-between rounded-sm border px-4 py-3 text-left transition-colors hover:border-forest"
+                    style={{ borderColor: "var(--hairline)" }}
                   >
-                    <span className="text-2xl">{diet.emoji}</span>
-                    <span className="mt-1 text-center text-xs font-medium leading-tight text-forest group-hover:text-jade">
+                    <span
+                      className="text-sm font-medium transition-colors group-hover:text-jade"
+                      style={{ color: "var(--color-forest)" }}
+                    >
                       {diet.label}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="ml-2 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
+                      style={{ color: "var(--color-jade)" }}
+                    >
+                      &rarr;
                     </span>
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Cell 3 — Borough explorer */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                EXPLORE BY BOROUGH
+            {/* Borough explorer — all 5 boroughs, hairline divider list */}
+            <div
+              className="rounded-md border bg-white p-6"
+              style={{ borderColor: "var(--hairline)" }}
+            >
+              <p className="eyebrow">By borough</p>
+              <p
+                className="mt-3 text-sm leading-relaxed"
+                style={{ color: "var(--color-muted)" }}
+              >
+                Health-graded data across all 5 NYC boroughs.
               </p>
-              <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
-                Based on our analysis of{" "}
-                <Link
-                  href="/data/nyc-restaurant-health-grade-report"
-                  className="text-jade underline underline-offset-2 hover:text-forest"
-                >
-                  NYC restaurant health inspection data
-                </Link>
-                {" "}across all 5 boroughs.
-              </p>
-              <div className="mt-4 space-y-3">
-                {["Manhattan", "Brooklyn", "Queens"].map((borough) => (
+              <div className="mt-5">
+                {["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"].map((borough) => (
                   <Link
                     key={borough}
                     href={`/nyc/${boroughToSlug(borough)}/healthy-restaurants`}
-                    className="flex items-center justify-between border-b border-gray-50 py-2 text-sm font-medium text-forest transition-colors hover:text-jade"
+                    className="group flex items-center justify-between border-b py-2.5 text-sm font-medium transition-colors hover:text-jade"
+                    style={{ borderColor: "var(--hairline)", color: "var(--color-text)" }}
                   >
                     <span>{borough}</span>
-                    <span className="text-sage">→</span>
+                    <span
+                      aria-hidden="true"
+                      className="opacity-40 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
+                      style={{ color: "var(--color-jade)" }}
+                    >
+                      &rarr;
+                    </span>
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Compare link below borough explorer */}
-            <div className="flex items-center justify-center rounded-2xl border border-gray-100 bg-white p-4 lg:col-span-2">
+            {/* Comparison CTA — real content, not just a pill */}
+            <div
+              className="flex flex-col justify-center rounded-md border bg-white p-6 lg:col-span-2"
+              style={{ borderColor: "var(--hairline)" }}
+            >
+              <p className="eyebrow">Neighborhood comparison</p>
+              <h3
+                className="mt-2 text-xl font-bold leading-snug md:text-2xl"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "var(--color-forest)",
+                  letterSpacing: "-0.015em",
+                }}
+              >
+                Which NYC neighborhoods score highest on health-graded dining?
+              </h3>
               <Link
                 href="/nyc/compare"
-                className="inline-flex items-center gap-2 rounded-full border border-sage/30 px-6 py-3 text-sm font-semibold text-jade transition-colors hover:border-jade hover:text-forest"
+                className="mt-4 inline-flex items-center gap-2 self-start text-sm font-semibold underline underline-offset-4 transition-colors hover:text-forest"
+                style={{
+                  color: "var(--color-jade)",
+                  textDecorationThickness: "1px",
+                }}
               >
-                📊 Compare all neighborhoods →
+                Compare all neighborhoods <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>
 
-            {/* Cell 5 — Nearby */}
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-forest p-8 text-center">
-              <span className="text-3xl">📍</span>
-              <p className="mt-3 font-serif text-xl font-bold text-white">Nearby Now</p>
-              <p className="mt-2 text-sm text-white/70">
-                Find healthy options within 1 mile of your current location
-              </p>
+            {/* Nearby Now — forest panel, refined button */}
+            <div className="flex flex-col justify-between rounded-md bg-forest p-6 text-cream">
+              <div>
+                <p className="eyebrow" style={{ color: "var(--color-sage)" }}>
+                  Within 1 mile
+                </p>
+                <h3
+                  className="mt-2 text-2xl font-bold"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "var(--color-cream)",
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1.05,
+                  }}
+                >
+                  Healthy options near you, right now.
+                </h3>
+              </div>
               <Link
-                href="/search"
-                className="mt-4 rounded-full bg-sage px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-jade"
+                href="/near-me"
+                className="mt-6 inline-flex items-center self-start rounded-sm bg-sage px-5 py-2.5 text-xs font-semibold uppercase transition-colors hover:bg-cream"
+                style={{
+                  color: "var(--color-forest)",
+                  letterSpacing: "0.14em",
+                }}
               >
-                Find Nearby
+                Find nearby
               </Link>
             </div>
           </div>
@@ -351,217 +423,243 @@ export default async function HomePage() {
       {/* ─── EAT FOR YOUR GOAL ─── */}
       <EatForYourGoal />
 
-      {/* ─── EDITOR'S JOURNAL ─── */}
-      <section className="py-20" style={{ backgroundColor: "var(--color-cream)" }}>
+      {/* ─── EDITOR'S JOURNAL ─── Uses RestaurantCard for visual consistency
+           with the rest of the site (same placard signature, same rhythm). */}
+      <section className="py-24 md:py-28" style={{ backgroundColor: "var(--color-cream)" }}>
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="font-serif text-3xl font-bold text-forest">The Editor&apos;s Journal</h2>
-          <p className="mt-2 max-w-lg text-sm" style={{ color: "var(--color-muted)" }}>
-            Each month, our culinary experts handpick the most vital additions to the NYC dining
-            landscape. Not just food — vibrancy.
-          </p>
+          <div className="max-w-2xl">
+            <p className="eyebrow">This month</p>
+            <h2 className="h2-serif mt-2">The Editor&apos;s Journal</h2>
+            <p
+              className="mt-4 text-base leading-relaxed"
+              style={{ color: "var(--color-muted)" }}
+            >
+              Hand-selected additions from our directory — the kind of healthy
+              restaurants that locals quietly keep returning to.
+            </p>
+          </div>
 
-          {/* Horizontal scroll */}
-          <div className="scrollbar-hide mt-8 flex gap-6 overflow-x-auto pb-4">
-            {editorsPicks.map((r) => {
-              const tags = parseDietaryTags(r.dietary_tags)
-              const price = formatPriceRange(r.price_range)
-              return (
-                <Link
-                  key={r.id}
-                  href={`/restaurants/${r.slug}`}
-                  className="w-72 min-w-72 flex-shrink-0 overflow-hidden rounded-2xl bg-white transition-shadow hover:shadow-lg"
-                >
-                  {/* Photo */}
-                  <div className="relative aspect-video w-full">
-                    {r.photo ? (
-                      <Image
-                        src={r.photo}
-                        alt={`${r.name} — ${r.neighborhood ?? r.borough ?? "NYC"} healthy restaurant`}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-jade" />
-                    )}
-                    {r.rating != null && (
-                      <span className="absolute right-3 top-3 rounded-full bg-amber px-2 py-1 text-xs font-bold text-white">
-                        ★ {r.rating.toFixed(1)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                      {[r.neighborhood, r.type].filter(Boolean).join(" · ")}
-                    </p>
-                    <p className="mt-1 font-serif text-xl font-bold text-forest">{r.name}</p>
-                    {r.description && (
-                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">{r.description}</p>
-                    )}
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
-                      {price && (
-                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                          {price}
-                        </span>
-                      )}
-                      {tags[0] && (
-                        <span className="rounded-full bg-sage/20 px-3 py-1 text-xs font-medium text-jade">
-                          {formatDietaryTag(tags[0])}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-3 text-xs font-semibold text-jade">Book Table →</p>
-                  </div>
-                </Link>
-              )
-            })}
+          {/* Horizontal scroll using the canonical RestaurantCard */}
+          <div className="scrollbar-hide mt-10 -mx-6 flex gap-5 overflow-x-auto px-6 pb-4">
+            {editorsPicks.map((r) => (
+              <div key={r.id} className="w-80 shrink-0 sm:w-72">
+                <RestaurantCard restaurant={r} priority={false} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ─── DISPATCHES ─── */}
-      <section className="bg-white py-20">
+      {/* ─── DISPATCHES ─── Visual refresh only this pass. Note: the bylines
+           (Elena Vance, Marcus Thorne) and "Critics' Choice: 2026 Green List"
+           are fabricated — the visual treatment here intentionally stays
+           understated to avoid amplifying that. Real content needs to replace
+           this section in a separate pass. */}
+      <section className="bg-white py-24 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
-            {/* Left — Articles */}
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+            {/* Left — Article list */}
             <div>
-              <h2 className="font-serif text-3xl font-bold text-forest">Dispatches</h2>
-              <p className="mt-2 text-sm" style={{ color: "var(--color-muted)" }}>
+              <p className="eyebrow">From the editors</p>
+              <h2 className="h2-serif mt-2">Dispatches</h2>
+              <p
+                className="mt-4 text-base leading-relaxed"
+                style={{ color: "var(--color-muted)" }}
+              >
                 The latest word from our community of food critics and wellness experts.
               </p>
 
-              {[
-                {
-                  author: "Elena Vance",
-                  role: "Deputy Editor",
-                  title: "Is 'Bone Broth Luxe' the new high-end lunch?",
-                  excerpt: "A deep dive into NYC's obsession with mineral-dense elixirs.",
-                  href: "/search?q=bone+broth",
-                },
-                {
-                  author: "Marcus Thorne",
-                  role: "Culinary Strategist",
-                  title: "7 Spots for Keto-Friendly Omakase",
-                  excerpt: "Where to find world-class fish without the vinegared rice.",
-                  href: "/search?q=keto",
-                },
-              ].map((article) => (
-                <Link
-                  key={article.author}
-                  href={article.href}
-                  className="flex gap-4 border-b border-gray-100 py-6 hover:opacity-80 transition-opacity"
-                >
-                  <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200" />
-                  <div>
-                    <p className="text-sm font-bold text-gray-900">{article.author}</p>
-                    <p className="text-xs text-gray-400">{article.role}</p>
-                    <p className="mt-2 font-serif text-base font-semibold text-forest">
-                      {article.title}
-                    </p>
-                    <p className="mt-1 text-sm text-gray-500">{article.excerpt}</p>
-                  </div>
-                </Link>
-              ))}
+              <div className="mt-8">
+                {[
+                  {
+                    author: "Elena Vance",
+                    initial: "E",
+                    role: "Deputy Editor",
+                    title: "Is 'Bone Broth Luxe' the new high-end lunch?",
+                    excerpt: "A deep dive into NYC's obsession with mineral-dense elixirs.",
+                    href: "/search?q=bone+broth",
+                  },
+                  {
+                    author: "Marcus Thorne",
+                    initial: "M",
+                    role: "Culinary Strategist",
+                    title: "7 Spots for Keto-Friendly Omakase",
+                    excerpt: "Where to find world-class fish without the vinegared rice.",
+                    href: "/search?q=keto",
+                  },
+                ].map((article) => (
+                  <Link
+                    key={article.author}
+                    href={article.href}
+                    className="group flex gap-5 border-b py-6 transition-colors hover:bg-cream/40"
+                    style={{ borderColor: "var(--hairline)" }}
+                  >
+                    {/* Mini-plaque initial avatar — echoes the card placard */}
+                    <span
+                      aria-hidden="true"
+                      className="shrink-0"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "2.75rem",
+                        height: "2.75rem",
+                        backgroundColor: "var(--color-cream)",
+                        border: "1px solid var(--hairline-strong)",
+                        borderRadius: "4px",
+                        fontFamily: "var(--font-display)",
+                        fontWeight: 700,
+                        fontSize: "1.375rem",
+                        lineHeight: 1,
+                        color: "var(--color-jade)",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {article.initial}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: "var(--color-text)" }}
+                      >
+                        {article.author}
+                      </p>
+                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
+                        {article.role}
+                      </p>
+                      <p
+                        className="mt-3 font-bold leading-snug transition-colors group-hover:text-jade"
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: "1.0625rem",
+                          color: "var(--color-forest)",
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
+                        {article.title}
+                      </p>
+                      <p
+                        className="mt-1.5 text-sm leading-relaxed"
+                        style={{ color: "var(--color-muted)" }}
+                      >
+                        {article.excerpt}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
 
-            {/* Right — Critics' Choice card */}
-            <div>
-              <div className="relative h-full overflow-hidden rounded-2xl bg-forest p-10">
-                <div className="absolute -bottom-8 -right-8 h-48 w-48 rounded-full bg-jade/30" />
-                <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div>
-                    <span className="text-2xl">⭐</span>
-                    <h3 className="mt-4 font-serif text-2xl font-bold text-white">
-                      Critics&apos; Choice: The 2026 Green List
-                    </h3>
-                    <p className="mt-3 text-sm text-white/70">
-                      Our annual definitive guide to the 50 most sustainable, nutrient-dense, and
-                      delicious restaurants across the five boroughs.
-                    </p>
-                  </div>
-                  <Link
-                    href="/healthy-restaurants/whole-foods"
-                    className="mt-6 w-fit rounded-full bg-sage px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-jade"
+            {/* Right — Critics' Choice card (forest panel, refined) */}
+            <div className="flex">
+              <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-md bg-forest p-8 md:p-10">
+                <div>
+                  <p className="eyebrow" style={{ color: "var(--color-sage)" }}>
+                    Critics&apos; choice
+                  </p>
+                  <h3
+                    className="mt-3 font-bold leading-tight text-cream"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(1.625rem, 1.5vw + 1rem, 2.25rem)",
+                      letterSpacing: "-0.02em",
+                    }}
                   >
-                    Explore the List →
-                  </Link>
+                    The 2026 Green List
+                  </h3>
+                  <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/75">
+                    The 50 most sustainable, nutrient-dense, and delicious
+                    restaurants across the five boroughs.
+                  </p>
                 </div>
+                <Link
+                  href="/healthy-restaurants/whole-foods"
+                  className="mt-8 inline-flex items-center self-start rounded-sm bg-sage px-5 py-2.5 text-xs font-semibold uppercase transition-colors hover:bg-cream"
+                  style={{
+                    color: "var(--color-forest)",
+                    letterSpacing: "0.14em",
+                  }}
+                >
+                  Explore the list
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── FROM OUR GUIDES ─── */}
-      <section className="border-t border-gray-100 bg-white px-6 py-16">
+      {/* ─── FROM OUR GUIDES ─── Hairline cards, no emoji, eyebrow + Georgia title */}
+      <section
+        className="border-t bg-white px-6 py-24 md:py-28"
+        style={{ borderColor: "var(--hairline)" }}
+      >
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-sage">
-                KNOWLEDGE BASE
-              </p>
-              <h2
-                className="text-3xl font-bold text-forest"
-                style={{ fontFamily: "Georgia, serif" }}
-              >
-                From our guides
-              </h2>
+          <div className="mb-12 flex items-end justify-between gap-4">
+            <div className="max-w-xl">
+              <p className="eyebrow">Knowledge base</p>
+              <h2 className="h2-serif mt-2">From our guides</h2>
             </div>
             <Link
               href="/guides"
-              className="text-sm font-semibold text-jade transition-colors hover:text-forest"
+              className="shrink-0 text-sm font-semibold transition-colors hover:text-forest"
+              style={{ color: "var(--color-jade)" }}
             >
-              View all guides →
+              View all guides <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
               {
                 slug: "nyc-health-grades-explained",
-                emoji: "🏥",
                 title: "NYC Health Grades Explained",
-                desc: "What Grade A, B, and C really mean and how the inspection process works.",
-                category: "Health & Safety",
+                desc: "What Grade A, B, and C really mean — and how the inspection process works.",
+                category: "Health & safety",
               },
               {
                 slug: "vegan-nyc-borough-guide",
-                emoji: "🌱",
                 title: "Vegan NYC — Borough by Borough",
                 desc: "The definitive guide to plant-based dining across all five NYC boroughs.",
-                category: "Dietary Guides",
+                category: "Dietary guides",
               },
               {
                 slug: "best-healthy-neighborhoods-nyc",
-                emoji: "🗺️",
                 title: "Best Healthy Neighborhoods NYC",
                 desc: "Data-driven rankings of NYC neighborhoods for healthy dining.",
-                category: "Neighborhood Guides",
+                category: "Neighborhood guides",
               },
             ].map((article) => (
               <Link
                 key={article.slug}
                 href={`/guides/${article.slug}`}
-                className="group rounded-2xl border border-gray-100 p-6 transition-all hover:border-sage/30 hover:shadow-md"
-                style={{ backgroundColor: "var(--color-cream)" }}
+                className="group flex flex-col rounded-md border p-7 transition-all hover:border-forest hover:shadow-lg"
+                style={{
+                  borderColor: "var(--hairline)",
+                  backgroundColor: "var(--color-cream)",
+                }}
               >
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="text-2xl">{article.emoji}</span>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-jade">
-                    {article.category}
-                  </span>
-                </div>
+                <p className="eyebrow">{article.category}</p>
                 <h3
-                  className="text-base font-bold leading-snug text-forest transition-colors group-hover:text-jade"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="mt-4 text-lg font-bold leading-snug transition-colors group-hover:text-jade"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "var(--color-forest)",
+                    letterSpacing: "-0.015em",
+                  }}
                 >
                   {article.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+                <p
+                  className="mt-3 text-sm leading-relaxed"
+                  style={{ color: "var(--color-muted)" }}
+                >
                   {article.desc}
                 </p>
-                <p className="mt-4 text-xs font-semibold text-jade">Read guide →</p>
+                <p
+                  className="mt-6 text-xs font-semibold transition-all group-hover:translate-x-0.5"
+                  style={{ color: "var(--color-jade)" }}
+                >
+                  Read guide <span aria-hidden="true">&rarr;</span>
+                </p>
               </Link>
             ))}
           </div>

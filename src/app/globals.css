@@ -150,6 +150,86 @@ html, body { overflow-x: hidden; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   CALLOUT — small initial-letter cards (used for hero quick-filters and
+   any "discoverable controls" block). The initial letter echoes the
+   placard's typographic gesture; the eyebrow label sits below.
+   ───────────────────────────────────────────────────────────────────────── */
+.callout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.125rem 1rem 1rem;
+  min-height: 5.75rem;
+  background-color: #FFFFFF;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  text-decoration: none;
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+.callout:hover {
+  border-color: var(--color-forest);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -6px rgba(27, 58, 45, 0.14);
+}
+.callout:focus-visible {
+  outline: 2px solid var(--color-jade);
+  outline-offset: 2px;
+}
+
+.callout-initial {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-jade);
+  letter-spacing: -0.02em;
+}
+
+.callout-label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+/* Live pulse dot — placed top-right on the "Open right now" callout */
+.callout-pulse {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--color-sage);
+  animation: callout-pulse 2400ms ease-in-out infinite;
+}
+.callout-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background-color: var(--color-sage);
+  opacity: 0.25;
+  animation: callout-pulse-ring 2400ms ease-out infinite;
+}
+@keyframes callout-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+@keyframes callout-pulse-ring {
+  0%   { transform: scale(0.6); opacity: 0.35; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Utility — hide scrollbar (used by horizontal-scroll rails)
    ───────────────────────────────────────────────────────────────────────── */
 .scrollbar-hide { scrollbar-width: none; }
