@@ -301,14 +301,11 @@ function FooterLink({
     <li>
       <Link
         href={href}
+        className="footer-link"
         style={{
           fontFamily: "var(--font-body)",
           fontSize: "0.875rem",
-          color: "rgba(248, 246, 241, 0.72)",
-          transition: "color 180ms ease",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-cream)")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(248, 246, 241, 0.72)")}
       >
         {children}
       </Link>
@@ -331,9 +328,7 @@ function SocialLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      style={{ color: "rgba(248, 246, 241, 0.55)", transition: "color 180ms ease" }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-cream)")}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(248, 246, 241, 0.55)")}
+      className="footer-social"
     >
       {children}
     </a>
