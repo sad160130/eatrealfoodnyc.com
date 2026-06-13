@@ -1,15 +1,26 @@
 @import "tailwindcss";
 
-/* Tailwind v4 custom design tokens — generates bg-forest, text-jade, etc. */
+/* ─────────────────────────────────────────────────────────────────────────
+   Tailwind v4 design tokens — these generate utility classes
+   (bg-forest, text-jade, font-display, etc.)
+   ───────────────────────────────────────────────────────────────────────── */
 @theme {
+  /* Brand palette — DO NOT add new colours (see CLAUDE.md §2). */
   --color-forest: #1B3A2D;
   --color-jade: #2D6A4F;
   --color-sage: #52B788;
   --color-cream: #F8F6F1;
   --color-amber: #D4A853;
+
+  /* Typeface tokens — DM Sans body, Georgia display.
+     "Don't introduce new fonts" (CLAUDE.md §11). */
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
 }
 
-/* CSS custom properties for use in arbitrary values and inline styles */
+/* ─────────────────────────────────────────────────────────────────────────
+   Root custom properties for inline styles and arbitrary values
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
   --color-forest: #1B3A2D;
   --color-jade: #2D6A4F;
@@ -18,28 +29,135 @@
   --color-amber: #D4A853;
   --color-text: #1A1A1A;
   --color-muted: #6B7280;
+
+  /* Hairline — forest at 14% mixed with transparent. */
+  --hairline: color-mix(in srgb, #1B3A2D 14%, transparent);
+  --hairline-strong: color-mix(in srgb, #1B3A2D 28%, transparent);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Page baseline
+   ───────────────────────────────────────────────────────────────────────── */
 body {
   background-color: var(--color-cream);
   color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Hide scrollbar utility */
-.scrollbar-hide {
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+html, body { overflow-x: hidden; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Type system — design language for the rest of the site to opt into.
+   Defines four roles: eyebrow, display, h2-serif, dek.
+   Headlines are Georgia set tight and bold; everything else DM Sans.
+   ───────────────────────────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-jade);
 }
 
-/* Prevent horizontal scroll on mobile */
-html, body {
-  overflow-x: hidden;
+.display-1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 4vw + 1.25rem, 5.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--color-forest);
 }
 
-/* Agent-friendly cursor signals — applied globally so AI agents and users
-   see a consistent pointer indicator on every interactive element. */
+.display-2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 2.5vw + 1rem, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-forest);
+}
+
+.h2-serif {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 1.5vw + 0.875rem, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-forest);
+}
+
+.dek {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  max-width: 60ch;
+}
+
+/* Numerical chrome — align digits, prevent jitter on changing values. */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Hairline border using forest at low opacity. */
+.border-hairline { border-color: var(--hairline); }
+.border-hairline-strong { border-color: var(--hairline-strong); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   The signature element — the DOHMH-inspired letter plaque.
+   A small cream square with a hairline jade border that frames the
+   inspection grade letter set in Georgia bold. Used on every restaurant
+   card and anywhere else a grade needs to land as the visual hook.
+   ───────────────────────────────────────────────────────────────────────── */
+.plaque {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: var(--color-cream);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.875rem;
+  line-height: 1;
+  color: var(--color-jade);
+  letter-spacing: -0.02em;
+  box-shadow:
+    0 1px 0 0 var(--hairline),
+    0 4px 12px -2px rgba(27, 58, 45, 0.10);
+}
+
+/* Plaque is a single visual regardless of grade — the LETTER carries the
+   semantic. No new colour values introduced (CLAUDE.md §11). The default
+   "no grade" state dims to muted so the absence of data reads visually. */
+.plaque[data-grade=""] { color: var(--color-muted); }
+
+/* The hidden-gem mark — a small amber glyph used in card bodies, NOT on the
+   plaque. Keeps amber's single role (only for gems) intact. */
+.gem-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-amber);
+  font-size: 0.875em;
+  letter-spacing: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Utility — hide scrollbar (used by horizontal-scroll rails)
+   ───────────────────────────────────────────────────────────────────────── */
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Cursor signals — agent-friendly pointer indicators
+   ───────────────────────────────────────────────────────────────────────── */
 button,
 [role="button"],
 [type="button"],
@@ -55,7 +173,6 @@ summary,
   cursor: pointer;
 }
 
-/* Disabled elements should signal non-interactivity. */
 button:disabled,
 button[aria-disabled="true"],
 [role="button"][aria-disabled="true"],
@@ -63,4 +180,16 @@ input:disabled,
 select:disabled,
 textarea:disabled {
   cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Reduced motion — respect users who prefer no animation.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

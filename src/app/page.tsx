@@ -7,7 +7,6 @@ import { getCanonicalUrl } from "@/config/seo"
 import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
-import NearMeButton from "@/components/near-me-button"
 import reportData from "@/data/health-grade-report"
 
 export const metadata: Metadata = {
@@ -73,102 +72,121 @@ export default async function HomePage() {
     prisma.restaurant.count({ where: { inspection_grade: "A" } }),
   ])
 
-  const heroPhoto = editorsPicks[0]?.photo ?? null
   const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [WEBSITE_SCHEMA, ORGANIZATION_SCHEMA] }) }} />
 
-      {/* ─── HERO ─── */}
-      <section className="relative min-h-[85vh] overflow-hidden bg-forest">
-        {heroPhoto && (
-          <Image
-            src={heroPhoto}
-            alt="NYC Healthy Dining"
-            fill
-            className="object-cover"
-            priority
-            unoptimized
-          />
-        )}
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-forest/90 via-forest/70 to-transparent" />
+      {/* ─── HERO ─── Type-led, cream-on-cream. Restraint balances the
+           placard signature that fires on every restaurant card below. */}
+      <section
+        className="relative px-6 pb-20 pt-16 md:pt-24"
+        style={{ backgroundColor: "var(--color-cream)" }}
+      >
+        <div className="mx-auto max-w-6xl">
+          {/* Eyebrow — live moat proof, pulled from real DB counts */}
+          <p className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>NYC DOHMH-graded</span>
+            <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+            <span className="tabular">{totalCount.toLocaleString()} verified spots</span>
+            <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+            <span>Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+          </p>
 
-        {/* Content */}
-        <div className="relative z-10 flex min-h-[85vh] flex-col justify-center px-6 py-20 md:pl-20">
-          <div className="max-w-2xl">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/60">
-              The Curated NYC Dining Authority
-            </p>
-            <h1 className="font-serif text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
-              Find Healthy Restaurants{" "}
-              <span className="block text-sage">Across New York City</span>
-            </h1>
-            <p className="mt-6 max-w-md text-lg text-white/80">
-              The curated authority for New York&apos;s health-conscious dining. Inspected, filtered, and verified.
-            </p>
+          {/* Display headline — the thesis. The phrasing foregrounds the
+              proprietary moat (DOHMH grading) rather than generic adjectives. */}
+          <h1 className="display-1 mt-8 max-w-[18ch]">
+            Healthy restaurants,<br />
+            graded by the city.
+          </h1>
 
-            {/* Topical anchor */}
-            <p className="mt-3 max-w-lg text-sm text-white/50">
-              The only NYC restaurant directory built on{" "}
-              <Link href="/guides/nyc-health-grades-explained" className="text-sage/80 underline underline-offset-2 transition-colors hover:text-sage">verified NYC health inspection grades</Link>
-              {" "}and{" "}
-              <Link href="/about/our-data" className="text-sage/80 underline underline-offset-2 transition-colors hover:text-sage">conservative dietary certification</Link>.
-            </p>
+          {/* Dek — single paragraph, no second sentence */}
+          <p className="dek mt-6 max-w-[58ch]">
+            Vegan, halal, gluten-free, kosher and more — filtered by neighborhood
+            and verified against the city&apos;s own NYC Department of Health
+            inspection grade.{" "}
+            <Link
+              href="/guides/nyc-health-grades-explained"
+              className="font-medium underline underline-offset-4 hover:text-jade"
+              style={{ color: "var(--color-jade)", textDecorationThickness: "1px" }}
+            >
+              How grades work
+            </Link>
+            .
+          </p>
 
-            {/* Search bar */}
-            <form action="/search" method="get" className="mt-6 w-full max-w-xl">
-              <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:flex-row sm:rounded-full">
-                <input
-                  name="q"
-                  placeholder="Restaurant or cuisine..."
-                  className="flex-1 border-b border-gray-100 px-5 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400 sm:border-b-0 sm:border-r sm:px-6"
-                />
-                <input
-                  name="neighborhood"
-                  placeholder="Neighborhood..."
-                  className="flex-1 px-5 py-4 text-sm text-gray-800 outline-none placeholder:text-gray-400 sm:px-6"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-forest px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-jade sm:w-auto"
-                >
-                  Explore
-                </button>
-              </div>
-            </form>
-          </div>
+          {/* Search form — single row, hairline borders, no rounded-full pill */}
+          <form
+            action="/search"
+            method="get"
+            role="search"
+            aria-label="Find healthy restaurants in NYC"
+            className="mt-10 flex w-full max-w-2xl flex-col gap-2 sm:flex-row sm:gap-0"
+          >
+            <input
+              name="q"
+              type="search"
+              placeholder="Restaurant, cuisine, or dish"
+              aria-label="Search restaurants"
+              className="h-14 flex-1 rounded-md border bg-white px-5 text-base outline-none transition-colors placeholder:text-gray-400 focus:border-jade sm:rounded-r-none sm:border-r-0"
+              style={{ borderColor: "var(--hairline-strong)" }}
+            />
+            <input
+              name="neighborhood"
+              type="text"
+              placeholder="Neighborhood"
+              aria-label="Filter by neighborhood"
+              className="h-14 flex-1 rounded-md border bg-white px-5 text-base outline-none transition-colors placeholder:text-gray-400 focus:border-jade sm:rounded-none sm:border-x-0"
+              style={{ borderColor: "var(--hairline-strong)" }}
+            />
+            <button
+              type="submit"
+              className="h-14 rounded-md bg-forest px-8 text-sm font-semibold uppercase tracking-wider text-cream transition-colors hover:bg-jade sm:rounded-l-none"
+            >
+              Search
+            </button>
+          </form>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          {/* Quick links — text-only, no pill backgrounds */}
+          <nav
+            aria-label="Quick filters"
+            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
+          >
             <Link
               href="/search?open=true"
-              className="flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/25"
+              className="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-jade"
+              style={{ color: "var(--color-text)" }}
             >
-              <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-              Open Right Now
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-sage" />
+              Open right now
             </Link>
-            <NearMeButton
-              variant="pill"
-              label="Near Me"
-              className="border border-white/30 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25"
-            />
-          </div>
-
-          <Link
-            href="/near-me"
-            className="mt-2 inline-block text-xs text-white/50 underline transition-colors hover:text-white/70"
-          >
-            Browse restaurants near your location →
-          </Link>
-
-          <p className="mt-4 text-xs text-white/60">
-            Or{" "}
-            <Link href="/map" className="text-sage underline transition-colors hover:text-white">
-              explore the interactive map →
+            <Link
+              href="/near-me"
+              className="font-medium transition-colors hover:text-jade"
+              style={{ color: "var(--color-text)" }}
+            >
+              Near me
             </Link>
-          </p>
+            <Link
+              href="/search?grade=A"
+              className="font-medium transition-colors hover:text-jade"
+              style={{ color: "var(--color-text)" }}
+            >
+              Grade A only
+            </Link>
+            <Link
+              href="/map"
+              className="font-medium transition-colors hover:text-jade"
+              style={{ color: "var(--color-text)" }}
+            >
+              Map view
+            </Link>
+          </nav>
         </div>
+
+        {/* Hairline divider closing the hero */}
+        <div className="mx-auto mt-20 max-w-6xl border-t border-hairline" />
       </section>
 
       {/* ─── DATA REPORT FEATURE BANNER ─── */}
