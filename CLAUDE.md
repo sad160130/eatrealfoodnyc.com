@@ -95,8 +95,9 @@ body    — DM Sans (next/font/google)
 square at top-left of its photo with the NYC DOHMH inspection grade letter set in
 Georgia bold inside a hairline border — the actual NYC inspection-placard silhouette
 in our palette. The same typographic gesture extends to the hero quick-filter
-callouts (`O.` / `N.` / `A.` / `M.`) and Dispatches byline avatars. Colour stays
-jade for every grade; the LETTER carries the meaning, not the colour.
+callouts (`O.` / `N.` / `A.` / `M.`), the header brand mark, the footer trust row,
+and the restaurant detail page hero (monumental 5.5rem version). Colour stays jade
+for every grade; the LETTER carries the meaning, not the colour.
 
 ## Search (NO Algolia)
 PostgreSQL full-text via tsvector + GIN index in Supabase. /api/search handles
@@ -104,8 +105,10 @@ search + filter queries. /search is noindex — it's UI, not a destination.
 
 ## Principles
 - **Trust is the product.** Real data only. No fake reviews. No fabricated bylines
-  or editorial personas. The "Dispatches" section on the homepage (Elena Vance,
-  Marcus Thorne) is a known outstanding violation; replace with real-data sections.
+  or editorial personas. The homepage previously had a "Dispatches" section with
+  fabricated bylines (Elena Vance, Marcus Thorne) and a fabricated "2026 Green
+  List" — both replaced (v3) with a real-data "The directory, in numbers" section
+  and a methodology card pointing to `/about/our-data`.
 - **Deploy only via `git push origin main`.** Vercel auto-deploys main. NEVER use
   the `vercel` CLI.
 - **No deploys on Fridays.**
@@ -118,8 +121,9 @@ search + filter queries. /search is noindex — it's UI, not a destination.
 ## Current state
 Live in production. ~1,500 of 8,835 restaurants published. Weekly +100 cadence
 on Sundays. Recent infra: GSC→BigQuery bulk export (data accruing), built the
-/nyc/[borough]/[diet-type]-restaurants combo pages, two design passes
-(placard signature, type rhythm, callout cards) on `design/placard-elevate`.
+/nyc/[borough]/[diet-type]-restaurants combo pages, three design passes
+(v1 placard signature, v2 callout system + homepage, v3 chrome + every template)
+on `design/placard-elevate`.
 
 ## Deep workflows
 See `.claude/skills/eatrealfoodnyc/SKILL.md` for the weekly publish workflow,

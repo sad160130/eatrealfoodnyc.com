@@ -450,137 +450,85 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── DISPATCHES ─── Visual refresh only this pass. Note: the bylines
-           (Elena Vance, Marcus Thorne) and "Critics' Choice: 2026 Green List"
-           are fabricated — the visual treatment here intentionally stays
-           understated to avoid amplifying that. Real content needs to replace
-           this section in a separate pass. */}
-      <section className="bg-white py-24 md:py-28">
+      {/* ─── THE DIRECTORY IN NUMBERS ───
+           Replaces a prior "Dispatches" section that featured fabricated
+           bylines (Elena Vance, Marcus Thorne) and a fabricated "Critics'
+           Choice: 2026 Green List." Per CLAUDE.md §11 ("Trust is the
+           product"), that section is now a real-data accounting of the
+           directory itself — every number is verifiable, every link is
+           real, and the headline directly states the position. */}
+      <section
+        className="border-t bg-white py-24 md:py-28"
+        style={{ borderColor: "var(--hairline)" }}
+      >
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
-            {/* Left — Article list */}
-            <div>
-              <p className="eyebrow">From the editors</p>
-              <h2 className="h2-serif mt-2">Dispatches</h2>
-              <p
-                className="mt-4 text-base leading-relaxed"
-                style={{ color: "var(--color-muted)" }}
-              >
-                The latest word from our community of food critics and wellness experts.
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+            {/* Left — the position + the numbers */}
+            <div className="lg:col-span-7">
+              <p className="eyebrow">The directory, in numbers</p>
+              <h2 className="display-2 mt-3">
+                Real data. No bylines.
+              </h2>
+              <p className="dek mt-5" style={{ maxWidth: "58ch" }}>
+                We don&apos;t pay critics, and we don&apos;t accept paid placements.
+                Every restaurant here is cross-referenced with NYC Department of
+                Health inspection records — public, sourced, verifiable.
               </p>
 
-              <div className="mt-8">
-                {[
-                  {
-                    author: "Elena Vance",
-                    initial: "E",
-                    role: "Deputy Editor",
-                    title: "Is 'Bone Broth Luxe' the new high-end lunch?",
-                    excerpt: "A deep dive into NYC's obsession with mineral-dense elixirs.",
-                    href: "/search?q=bone+broth",
-                  },
-                  {
-                    author: "Marcus Thorne",
-                    initial: "M",
-                    role: "Culinary Strategist",
-                    title: "7 Spots for Keto-Friendly Omakase",
-                    excerpt: "Where to find world-class fish without the vinegared rice.",
-                    href: "/search?q=keto",
-                  },
-                ].map((article) => (
-                  <Link
-                    key={article.author}
-                    href={article.href}
-                    className="group flex gap-5 border-b py-6 transition-colors hover:bg-cream/40"
-                    style={{ borderColor: "var(--hairline)" }}
-                  >
-                    {/* Mini-plaque initial avatar — echoes the card placard */}
-                    <span
-                      aria-hidden="true"
-                      className="shrink-0"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "2.75rem",
-                        height: "2.75rem",
-                        backgroundColor: "var(--color-cream)",
-                        border: "1px solid var(--hairline-strong)",
-                        borderRadius: "4px",
-                        fontFamily: "var(--font-display)",
-                        fontWeight: 700,
-                        fontSize: "1.375rem",
-                        lineHeight: 1,
-                        color: "var(--color-jade)",
-                        letterSpacing: "-0.02em",
-                      }}
-                    >
-                      {article.initial}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className="text-sm font-semibold"
-                        style={{ color: "var(--color-text)" }}
-                      >
-                        {article.author}
-                      </p>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        {article.role}
-                      </p>
-                      <p
-                        className="mt-3 font-bold leading-snug transition-colors group-hover:text-jade"
-                        style={{
-                          fontFamily: "var(--font-display)",
-                          fontSize: "1.0625rem",
-                          color: "var(--color-forest)",
-                          letterSpacing: "-0.01em",
-                        }}
-                      >
-                        {article.title}
-                      </p>
-                      <p
-                        className="mt-1.5 text-sm leading-relaxed"
-                        style={{ color: "var(--color-muted)" }}
-                      >
-                        {article.excerpt}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <dl className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
+                <Stat number="8,835" label="NYC restaurants tracked" />
+                <Stat number={totalCount.toLocaleString()} label="Currently published" />
+                <Stat number={gradeACount.toLocaleString()} label="Grade A inspections" />
+                <Stat number="116" label="Neighborhoods covered" />
+                <Stat number="12" label="Dietary tags, applied conservatively" />
+                <Stat number="+100 / wk" label="New listings every Sunday" />
+              </dl>
             </div>
 
-            {/* Right — Critics' Choice card (forest panel, refined) */}
-            <div className="flex">
-              <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-md bg-forest p-8 md:p-10">
+            {/* Right — methodology card */}
+            <div className="flex lg:col-span-5">
+              <div
+                className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-md p-8 md:p-10"
+                style={{ backgroundColor: "var(--color-forest)" }}
+              >
                 <div>
                   <p className="eyebrow" style={{ color: "var(--color-sage)" }}>
-                    Critics&apos; choice
+                    Our methodology
                   </p>
                   <h3
-                    className="mt-3 font-bold leading-tight text-cream"
+                    className="mt-3"
                     style={{
                       fontFamily: "var(--font-display)",
+                      fontWeight: 700,
                       fontSize: "clamp(1.625rem, 1.5vw + 1rem, 2.25rem)",
+                      lineHeight: 1.1,
                       letterSpacing: "-0.02em",
+                      color: "var(--color-cream)",
                     }}
                   >
-                    The 2026 Green List
+                    How we built this.
                   </h3>
-                  <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/75">
-                    The 50 most sustainable, nutrient-dense, and delicious
-                    restaurants across the five boroughs.
+                  <p
+                    className="mt-5 max-w-md"
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "0.9375rem",
+                      lineHeight: 1.6,
+                      color: "rgba(248, 246, 241, 0.78)",
+                    }}
+                  >
+                    DOHMH Open Data joined to conservative dietary tagging.
+                    Weekly publish cadence. No paid placements, no fabricated
+                    reviews, no editorial personas.
                   </p>
                 </div>
                 <Link
-                  href="/healthy-restaurants/whole-foods"
-                  className="mt-8 inline-flex items-center self-start rounded-sm bg-sage px-5 py-2.5 text-xs font-semibold uppercase transition-colors hover:bg-cream"
-                  style={{
-                    color: "var(--color-forest)",
-                    letterSpacing: "0.14em",
-                  }}
+                  href="/about/our-data"
+                  className="eyebrow mt-8 inline-flex items-center self-start gap-1.5 transition-colors"
+                  style={{ color: "var(--color-sage)" }}
                 >
-                  Explore the list
+                  Read the methodology
+                  <span aria-hidden="true">→</span>
                 </Link>
               </div>
             </div>
@@ -667,5 +615,37 @@ export default async function HomePage() {
       </section>
 
     </>
+  )
+}
+
+/* ─── Internal pieces ─── */
+
+function Stat({ number, label }: { number: string; label: string }) {
+  return (
+    <div>
+      <dt
+        className="tabular"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          fontSize: "clamp(1.875rem, 1.5vw + 1rem, 2.5rem)",
+          lineHeight: 1,
+          letterSpacing: "-0.025em",
+          color: "var(--color-forest)",
+        }}
+      >
+        {number}
+      </dt>
+      <dd
+        className="eyebrow mt-3"
+        style={{
+          color: "var(--color-muted)",
+          letterSpacing: "0.12em",
+          lineHeight: 1.35,
+        }}
+      >
+        {label}
+      </dd>
+    </div>
   )
 }
