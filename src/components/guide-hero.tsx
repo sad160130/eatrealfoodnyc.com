@@ -8,50 +8,94 @@ interface GuideHeroProps {
 }
 
 export default function GuideHero({ guide, subtitle, stats }: GuideHeroProps) {
+  const updatedLabel = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })
+  const publishedLabel = new Date(guide.publishedDate).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+
   return (
-    <div className="bg-forest px-6 py-16">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-8 flex items-center gap-2 text-xs uppercase tracking-widest text-white/50">
-          <Link href="/" className="transition-colors hover:text-white">Home</Link>
-          <span>/</span>
-          <Link href="/guides" className="transition-colors hover:text-white">Guides</Link>
-          <span>/</span>
-          <span className="text-white/80">{guide.shortTitle}</span>
-        </div>
+    <header
+      className="border-b"
+      style={{ borderBottomColor: "var(--hairline)" }}
+    >
+      <div className="mx-auto max-w-4xl px-6 pb-12 pt-8">
+        {/* Breadcrumb */}
+        <nav className="eyebrow flex flex-wrap items-center gap-2" style={{ color: "var(--color-muted)" }}>
+          <Link href="/" className="transition-colors" style={{ color: "var(--color-forest)" }}>
+            Home
+          </Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/guides" className="transition-colors" style={{ color: "var(--color-forest)" }}>
+            Guides
+          </Link>
+          <span aria-hidden="true">·</span>
+          <span>{guide.shortTitle}</span>
+        </nav>
 
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <span className="text-xs font-semibold uppercase tracking-widest text-sage">{guide.category}</span>
-          <span className="text-white/30">·</span>
-          <span className="text-xs text-white/50">{guide.readTime}</span>
-          <span className="text-white/30">·</span>
-          <span className="text-xs text-white/50">
-            Published {new Date(guide.publishedDate).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-          </span>
-          <span className="text-white/30">·</span>
-          <span className="rounded-full bg-sage/20 px-2 py-0.5 text-xs font-medium text-sage">
-            Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-          </span>
-        </div>
+        {/* Article eyebrow */}
+        <p className="eyebrow mt-7">
+          {guide.category}
+          <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+          <span style={{ color: "var(--color-muted)" }}>{guide.readTime}</span>
+          <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+          <span style={{ color: "var(--color-muted)" }}>Published {publishedLabel}</span>
+          <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+          <span style={{ color: "var(--color-jade)" }}>Updated {updatedLabel}</span>
+        </p>
 
-        <h1
-          className="text-4xl font-bold leading-tight text-white md:text-5xl"
-          style={{ fontFamily: "Georgia, serif" }}
+        {/* Title */}
+        <h1 className="display-1 mt-4">{guide.title}</h1>
+
+        {/* Subtitle / lede */}
+        <p
+          className="mt-5"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontStyle: "italic",
+            fontSize: "1.25rem",
+            lineHeight: 1.5,
+            color: "var(--color-text)",
+            maxWidth: "62ch",
+          }}
         >
-          {guide.title}
-        </h1>
-        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">{subtitle}</p>
+          {subtitle}
+        </p>
 
+        {/* Stats — hairline cards, no white/10 background */}
         {stats && stats.length > 0 && (
-          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             {stats.map((item) => (
-              <div key={item.label} className="rounded-xl bg-white/10 p-4 text-center">
-                <p className="text-2xl font-bold text-sage">{item.stat}</p>
-                <p className="mt-1 text-xs leading-tight text-white/60">{item.label}</p>
+              <div
+                key={item.label}
+                className="border p-4"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderColor: "var(--hairline)",
+                  borderRadius: "4px",
+                }}
+              >
+                <p
+                  className="tabular"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 700,
+                    fontSize: "1.75rem",
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    color: "var(--color-forest)",
+                  }}
+                >
+                  {item.stat}
+                </p>
+                <p
+                  className="eyebrow mt-2"
+                  style={{ color: "var(--color-muted)" }}
+                >
+                  {item.label}
+                </p>
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </header>
   )
 }

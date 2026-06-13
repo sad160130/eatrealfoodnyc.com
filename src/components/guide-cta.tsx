@@ -18,24 +18,68 @@ export default function GuideCTA({
   secondaryHref,
 }: GuideCTAProps) {
   return (
-    <section className="my-12 rounded-2xl bg-forest p-10 text-center">
-      <h2 className="text-3xl font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>
+    <section
+      className="my-12 p-10 md:p-14"
+      style={{
+        backgroundColor: "var(--color-forest)",
+        color: "var(--color-cream)",
+        borderRadius: "4px",
+      }}
+    >
+      <p className="eyebrow" style={{ color: "var(--color-sage)" }}>
+        Next step
+      </p>
+      <h2
+        className="mt-3"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          fontSize: "clamp(1.625rem, 2vw + 1rem, 2.25rem)",
+          lineHeight: 1.15,
+          letterSpacing: "-0.02em",
+          color: "var(--color-cream)",
+        }}
+      >
         {heading}
       </h2>
-      <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-white/60">{body}</p>
-      <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+      <p
+        className="mt-3"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "1rem",
+          lineHeight: 1.6,
+          color: "rgba(248, 246, 241, 0.78)",
+          maxWidth: "52ch",
+        }}
+      >
+        {body}
+      </p>
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <Link
           href={primaryHref}
-          className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest"
+          className="inline-flex items-center gap-2 border px-6 py-3"
+          style={{
+            backgroundColor: "var(--color-cream)",
+            color: "var(--color-forest)",
+            borderColor: "var(--color-cream)",
+            borderRadius: "3px",
+            fontFamily: "var(--font-body)",
+            fontWeight: 600,
+            fontSize: "0.875rem",
+            letterSpacing: "0.02em",
+          }}
         >
           {primaryLabel}
+          <span aria-hidden="true">→</span>
         </Link>
         {secondaryLabel && secondaryHref && (
           <Link
             href={secondaryHref}
-            className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white transition-all hover:bg-white/20"
+            className="eyebrow inline-flex items-center gap-1.5"
+            style={{ color: "var(--color-sage)" }}
           >
             {secondaryLabel}
+            <span aria-hidden="true">→</span>
           </Link>
         )}
       </div>

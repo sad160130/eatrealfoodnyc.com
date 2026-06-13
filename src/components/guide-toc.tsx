@@ -9,22 +9,48 @@ interface GuideTOCProps {
 
 export default function GuideTOC({ items }: GuideTOCProps) {
   return (
-    <div className="mb-12 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>
-        IN THIS GUIDE
+    <nav
+      aria-label="In this guide"
+      className="mb-12 border p-6"
+      style={{
+        backgroundColor: "#FFFFFF",
+        borderColor: "var(--hairline)",
+        borderRadius: "4px",
+      }}
+    >
+      <p className="eyebrow mb-4" style={{ color: "var(--color-muted)" }}>
+        In this guide
       </p>
-      <nav className="space-y-2">
+      <ol className="space-y-2.5" style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {items.map((item, i) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-2 py-1 text-sm text-jade transition-colors hover:text-forest"
-          >
-            <span className="text-sage">{i + 1}.</span>
-            {item.label}
-          </a>
+          <li key={item.href} className="flex items-baseline gap-3">
+            <span
+              className="tabular flex-shrink-0"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: "0.875rem",
+                color: "var(--color-muted)",
+                width: "1.5rem",
+              }}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <a
+              href={item.href}
+              className="flex-1 transition-colors hover:underline"
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.95rem",
+                color: "var(--color-forest)",
+                textUnderlineOffset: "2px",
+              }}
+            >
+              {item.label}
+            </a>
+          </li>
         ))}
-      </nav>
-    </div>
+      </ol>
+    </nav>
   )
 }

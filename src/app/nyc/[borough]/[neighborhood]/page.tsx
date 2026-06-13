@@ -211,59 +211,133 @@ export default async function DietBoroughPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd, faqJsonLd]) }}
       />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 md:px-6">
-        <TopicalBreadcrumb
-          items={[
-            { label: "NYC Healthy Restaurants", href: "/search" },
-            { label: boroughName, href: `/nyc/${boroughSlug}/healthy-restaurants` },
-            { label: `${config.label} Restaurants` },
-          ]}
-        />
+      {/* ─── HERO ─── */}
+      <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
+        <div className="mx-auto max-w-7xl px-6 pb-10 pt-6">
+          <TopicalBreadcrumb
+            items={[
+              { label: "NYC Healthy Restaurants", href: "/search" },
+              { label: boroughName, href: `/nyc/${boroughSlug}/healthy-restaurants` },
+              { label: `${config.label} Restaurants` },
+            ]}
+          />
 
-        <h1 className="mt-2 font-serif text-3xl font-bold text-forest md:text-4xl">
-          {config.emoji} {config.label} Restaurants in {boroughName}, NYC
-        </h1>
+          <p className="eyebrow mt-6">
+            {config.label} <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+            <span style={{ color: "var(--color-muted)" }}>{boroughName}, NYC</span>
+          </p>
 
-        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm" style={{ color: "var(--color-muted)" }}>
-          <span className="font-semibold text-forest">{totalCount} restaurants</span>
-          {gradeACount > 0 && <span className="font-semibold text-sage">⭐ {gradeACount} Grade A</span>}
-          {avgRating > 0 && (
-            <span className="font-semibold" style={{ color: "var(--color-amber)" }}>★ {avgRating} avg</span>
-          )}
-          <span>🔄 Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
-        </p>
+          <h1 className="display-1 mt-3">
+            {config.label} restaurants in {boroughName}.
+          </h1>
 
-        <p className="mt-6 max-w-3xl leading-relaxed text-gray-700">
-          {boroughName} has {totalCount} {dietLower} {totalCount === 1 ? "restaurant" : "restaurants"} in our directory,
-          each verified against its NYC Department of Health inspection grade. {config.whatIs}
-        </p>
+          <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
+            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {dietLower} {totalCount === 1 ? "restaurant" : "restaurants"} in {boroughName} — every listing verified against its NYC Department of Health inspection grade.
+          </p>
 
-        {/* Quick filters */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Link href={`/search?borough=${boroughName}&diet=${tag}&grade=A`} className="rounded-full border border-sage/20 bg-sage/10 px-3 py-2 text-xs font-semibold text-jade">
-            ⭐ Grade A only
-          </Link>
-          <Link href={`/search?borough=${boroughName}&diet=${tag}&hidden_gem=true`} className="rounded-full border border-amber/20 bg-amber/10 px-3 py-2 text-xs font-semibold" style={{ color: "var(--color-amber)" }}>
-            💎 Hidden gems
-          </Link>
-          <Link href={`/healthy-restaurants/${tag}`} className="rounded-full border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600">
-            All {config.label} in NYC →
-          </Link>
+          {/* What it means — quiet editorial pull */}
+          <aside
+            className="mt-6 border-l pl-5 py-1"
+            style={{
+              borderLeftWidth: "2px",
+              borderLeftColor: "var(--color-jade)",
+              maxWidth: "62ch",
+            }}
+          >
+            <p className="eyebrow" style={{ color: "var(--color-muted)" }}>
+              What {dietLower} means here
+            </p>
+            <p
+              className="mt-2"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "1.0625rem",
+                fontStyle: "italic",
+                lineHeight: 1.55,
+                color: "var(--color-text)",
+              }}
+            >
+              {config.whatIs}
+            </p>
+          </aside>
+
+          {/* Inline stats */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <span style={{ color: "var(--color-text)" }}>
+              <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Restaurants</span>
+              <span className="tabular font-semibold">{totalCount.toLocaleString()}</span>
+            </span>
+            {gradeACount > 0 && (
+              <>
+                <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+                <span style={{ color: "var(--color-text)" }}>
+                  <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Grade A</span>
+                  <span className="tabular font-semibold">{gradeACount.toLocaleString()}</span>
+                </span>
+              </>
+            )}
+            {avgRating > 0 && (
+              <>
+                <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+                <span style={{ color: "var(--color-text)" }}>
+                  <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Avg rating</span>
+                  <span className="tabular font-semibold">{avgRating} ★</span>
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Quick filters — homepage callout pattern */}
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Link href={`/search?borough=${boroughName}&diet=${tag}&grade=A`} className="callout">
+              <span className="callout-initial">A<span style={{ color: "var(--color-muted)" }}>.</span></span>
+              <span className="callout-label">Grade A only</span>
+            </Link>
+            <Link href={`/search?borough=${boroughName}&diet=${tag}&hidden_gem=true`} className="callout">
+              <span className="callout-initial" style={{ color: "var(--color-amber)" }}>✦</span>
+              <span className="callout-label">Hidden gems</span>
+            </Link>
+            <Link href={`/healthy-restaurants/${tag}`} className="callout">
+              <span className="callout-initial">All<span style={{ color: "var(--color-muted)" }}>.</span></span>
+              <span className="callout-label">{config.label} citywide</span>
+            </Link>
+          </div>
         </div>
+      </header>
 
-        {/* Restaurant grid */}
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {restaurants.map((r, i) => (
-            <RestaurantCard key={r.id} restaurant={r} priority={i === 0} />
-          ))}
+      <main className="mx-auto max-w-7xl px-6 py-12">
+        {/* ─── Listings ─── */}
+        <div>
+          <p className="eyebrow">Listings</p>
+          <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, 48)} {dietLower} spots in {boroughName}</h2>
+          <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
+            Ranked by editorial priority, rating, and review depth.
+          </p>
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {restaurants.map((r, i) => (
+              <RestaurantCard key={r.id} restaurant={r} priority={i === 0} />
+            ))}
+          </div>
         </div>
       </main>
 
       {/* Contextual links */}
-      <div className="mx-auto max-w-3xl px-4 pb-12 md:px-6">
-        <p className="mb-4 text-base leading-relaxed text-gray-700">
+      <div className="mx-auto max-w-3xl px-6 pb-12">
+        <p
+          className="mb-4"
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "1rem",
+            lineHeight: 1.6,
+            color: "var(--color-text)",
+            maxWidth: "62ch",
+          }}
+        >
           Looking beyond {dietLower} options in {boroughName}? Browse the full{" "}
-          <Link href={`/nyc/${boroughSlug}/healthy-restaurants`} className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+          <Link
+            href={`/nyc/${boroughSlug}/healthy-restaurants`}
+            style={{ color: "var(--color-jade)", textDecoration: "underline", textUnderlineOffset: "2px" }}
+          >
             healthy restaurants in {boroughName}
           </Link>{" "}
           directory, or explore {dietLower} spots across the rest of the city.
@@ -279,7 +353,7 @@ export default async function DietBoroughPage({
       </div>
 
       {/* About this data */}
-      <div className="mx-auto max-w-3xl px-4 pb-12 md:px-6">
+      <div className="mx-auto max-w-3xl px-6 pb-12">
         <AboutThisData
           variant="hub"
           restaurantCount={totalCount}

@@ -10,64 +10,109 @@ export default function GuideLayout({ guide, children }: GuideLayoutProps) {
   const relatedGuides = getRelatedGuides(guide.slug)
 
   return (
-    <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--color-cream)" }}>
       {children}
 
-      <div className="mx-auto max-w-4xl px-6 pb-8">
+      <div className="mx-auto max-w-4xl px-6 pb-12">
         {/* Related hub pages */}
-        <div className="mb-8 rounded-2xl border border-sage/20 bg-sage/10 p-6">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-jade">
-            EXPLORE ON OUR SITE
-          </p>
-          <div className="flex flex-wrap gap-3">
+        <section
+          className="mt-12 border-t pt-10"
+          style={{ borderTopColor: "var(--hairline)" }}
+        >
+          <p className="eyebrow">Explore on our site</p>
+          <h2 className="h2-serif mt-2" style={{ fontSize: "1.5rem" }}>
+            Continue with the listings
+          </h2>
+          <div className="mt-5 flex flex-wrap gap-2">
             {guide.relatedHubPages.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center gap-2 rounded-xl border border-sage/20 bg-white px-4 py-2.5 text-sm font-medium text-jade transition-all hover:border-jade hover:shadow-sm"
+                className="inline-flex items-center gap-1.5 border px-4 py-2 text-sm transition-colors"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderColor: "var(--hairline)",
+                  borderRadius: "3px",
+                  color: "var(--color-forest)",
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 500,
+                }}
               >
-                {link.label} →
+                {link.label}
+                <span aria-hidden="true" style={{ color: "var(--color-jade)" }}>→</span>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Related guides */}
         {relatedGuides.length > 0 && (
-          <div className="mb-8">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>
-              RELATED GUIDES
-            </p>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <section
+            className="mt-12 border-t pt-10"
+            style={{ borderTopColor: "var(--hairline)" }}
+          >
+            <p className="eyebrow">Related guides</p>
+            <h2 className="h2-serif mt-2" style={{ fontSize: "1.5rem" }}>
+              Keep reading
+            </h2>
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
               {relatedGuides.map((related) => (
                 <Link
                   key={related.slug}
                   href={`/guides/${related.slug}`}
-                  className="group rounded-2xl border border-gray-100 bg-white p-5 transition-all hover:border-sage/30 hover:shadow-md"
+                  className="group block border p-5 transition-colors"
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    borderColor: "var(--hairline)",
+                    borderRadius: "4px",
+                  }}
                 >
-                  <span className="text-2xl">{related.emoji}</span>
+                  <p className="eyebrow" style={{ color: "var(--color-muted)" }}>
+                    {related.category} <span className="mx-1">·</span> {related.readTime}
+                  </p>
                   <h3
-                    className="mt-3 text-sm font-bold leading-snug text-forest transition-colors group-hover:text-jade"
-                    style={{ fontFamily: "Georgia, serif" }}
+                    className="mt-3 transition-colors"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.01em",
+                      color: "var(--color-forest)",
+                    }}
                   >
                     {related.shortTitle}
                   </h3>
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
+                  <p
+                    className="mt-2 line-clamp-2 text-xs"
+                    style={{ color: "var(--color-muted)", lineHeight: 1.5 }}
+                  >
                     {related.description}
                   </p>
-                  <p className="mt-3 text-xs font-semibold text-jade">{related.readTime}</p>
+                  <p
+                    className="eyebrow mt-3 inline-flex items-center gap-1.5"
+                    style={{ color: "var(--color-jade)" }}
+                  >
+                    Read
+                    <span aria-hidden="true">→</span>
+                  </p>
                 </Link>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        <div className="border-t border-gray-100 py-8 text-center">
+        <div
+          className="border-t py-10 text-center"
+          style={{ borderTopColor: "var(--hairline)" }}
+        >
           <Link
             href="/guides"
-            className="inline-flex items-center gap-2 rounded-full border border-sage/30 px-6 py-3 text-sm font-semibold text-jade transition-colors hover:border-jade hover:text-forest"
+            className="eyebrow inline-flex items-center gap-1.5"
+            style={{ color: "var(--color-jade)" }}
           >
-            ← Browse all guides
+            <span aria-hidden="true">←</span>
+            Browse all guides
           </Link>
         </div>
       </div>

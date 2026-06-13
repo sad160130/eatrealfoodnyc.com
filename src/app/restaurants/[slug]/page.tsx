@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
@@ -9,7 +8,6 @@ import {
   formatDietaryTag,
   boroughToSlug,
   neighborhoodToSlug,
-  getOpenStatus,
   parseWorkingHours,
   getRestaurantImageAlt,
   buildTitle,
@@ -100,7 +98,6 @@ export default async function RestaurantPage({
             ? "Fine Dining"
             : null
   const tags = parseDietaryTags(restaurant.dietary_tags)
-  const openStatus = getOpenStatus(restaurant.working_hours)
   const hours = parseWorkingHours(restaurant.working_hours)
   const boroughSlug = restaurant.borough ? boroughToSlug(restaurant.borough) : null
   const neighborhoodSlug = restaurant.neighborhood
@@ -108,6 +105,10 @@ export default async function RestaurantPage({
     : null
 
   const todayName = DAYS_ORDER[new Date().getDay()]
+  const grade = restaurant.inspection_grade || ""
+  const gradeAria = grade
+    ? `NYC Department of Health inspection grade ${grade}`
+    : "NYC Department of Health inspection grade pending"
 
   const breadcrumbItems = [
     { label: "NYC Healthy Restaurants", href: "/search" },
@@ -130,57 +131,142 @@ export default async function RestaurantPage({
         <TopicalBreadcrumb items={breadcrumbItems} />
       </div>
 
-      {/* ─── PHOTO GALLERY ─── */}
-      <RestaurantPhotoGallery
-        photo={restaurant.photo}
-        name={restaurant.name}
-        alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
-        neighborhood={restaurant.neighborhood}
-        borough={restaurant.borough}
-        type={restaurant.type}
-      />
+      {/* ─── EDITORIAL HERO ───
+          Name first, monumental plaque beside it as subject anchor. The
+          letter carries the meaning; jade stays constant across A/B/C. */}
+      <header className="mx-auto max-w-7xl px-6 pb-10 pt-8">
+        {/* Eyebrow — restaurant type if known, else generic */}
+        <p className="eyebrow">
+          {restaurant.type || "Healthy restaurant"}
+          {restaurant.is_hidden_gem && (
+            <>
+              <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+              <span style={{ color: "var(--color-amber)" }}>Hidden gem ✦</span>
+            </>
+          )}
+        </p>
 
-      {/* ─── HEADER INFO BLOCK ─── */}
-      <div className="mx-auto max-w-7xl px-6 py-6">
-        {/* Badges + CTA row */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-3">
-            {restaurant.rating != null && (
-              <span
-                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-bold"
-                style={{ backgroundColor: "rgba(212,168,83,0.15)", color: "var(--color-amber)" }}
-              >
-                ★ {restaurant.rating.toFixed(1)}
-                {restaurant.reviews != null && (
-                  <span className="font-normal">
-                    {" "}({(restaurant.reviews / 1000).toFixed(1)}K REVIEWS)
+        {/* Main row: title left, monumental plaque right */}
+        <div className="mt-4 flex items-start justify-between gap-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="display-1">
+              {restaurant.name}
+              {restaurant.isVerified && (
+                <span className="ml-3 inline-flex align-middle" style={{ verticalAlign: "0.15em" }}>
+                  <VerifiedBadge />
+                </span>
+              )}
+            </h1>
+
+            {/* Subtitle: neighborhood · borough · price */}
+            <p className="dek mt-3" style={{ color: "var(--color-text)" }}>
+              {[
+                restaurant.neighborhood,
+                restaurant.borough,
+                priceLabel || price,
+              ]
+                .filter(Boolean)
+                .map((piece, i, arr) => (
+                  <span key={`${piece}-${i}`}>
+                    {piece}
+                    {i < arr.length - 1 && (
+                      <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
+                    )}
                   </span>
-                )}
-              </span>
-            )}
-            {restaurant.inspection_grade && (
-              <span
-                className="rounded-full border px-4 py-2 text-sm font-bold"
-                style={{
-                  backgroundColor: "rgba(82,183,136,0.15)",
-                  color: "var(--color-jade)",
-                  borderColor: "rgba(82,183,136,0.3)",
-                }}
-              >
-                {restaurant.inspection_grade} — HEALTH GRADE
-              </span>
-            )}
+                ))}
+            </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <a
-              href={restaurant.website || (restaurant.phone ? `tel:${restaurant.phone}` : "#")}
-              target={restaurant.website ? "_blank" : undefined}
-              rel={restaurant.website ? "noopener noreferrer" : undefined}
-              className="rounded-xl bg-forest px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-jade"
+          {/* The subject anchor — monumental plaque echoing the DOHMH inspection placard */}
+          <div className="hidden flex-shrink-0 flex-col items-center gap-2 sm:flex">
+            <span
+              className="plaque"
+              data-grade={grade}
+              aria-label={gradeAria}
+              style={{ width: "5.5rem", height: "5.5rem", fontSize: "3rem" }}
             >
-              BOOK A TABLE
+              {grade || "–"}
+            </span>
+            <span className="eyebrow" style={{ color: "var(--color-muted)" }}>
+              NYC Health Grade
+            </span>
+          </div>
+        </div>
+
+        {/* Inline metadata: rating + open status — no pill chips */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          {restaurant.rating != null && (
+            <span
+              aria-label={`Rated ${restaurant.rating.toFixed(1)} out of 5 from ${(restaurant.reviews ?? 0).toLocaleString()} reviews`}
+              className="tabular inline-flex items-center gap-1.5"
+              style={{ color: "var(--color-text)" }}
+            >
+              <span aria-hidden="true" style={{ color: "var(--color-amber)", fontSize: "1.05em" }}>★</span>
+              <span className="font-semibold">{restaurant.rating.toFixed(1)}</span>
+              <span style={{ color: "var(--color-muted)" }}>
+                · {(restaurant.reviews ?? 0).toLocaleString()} reviews
+              </span>
+            </span>
+          )}
+          <OpenNowBadge workingHours={restaurant.working_hours} showClosingTime={true} size="md" />
+          {/* Inline dietary tags — quiet, lowercase, with mid-dot separators */}
+          {tags.length > 0 && (
+            <span className="inline-flex flex-wrap items-center gap-x-1.5">
+              {tags.slice(0, 4).map((tag, i) => (
+                <span key={tag} className="inline-flex items-center">
+                  {i > 0 && <span aria-hidden="true" className="mr-1.5" style={{ color: "var(--color-muted)" }}>·</span>}
+                  <Link
+                    href={`/healthy-restaurants/${tag}`}
+                    className="lowercase transition-colors hover:underline"
+                    style={{ color: "var(--color-jade)", textUnderlineOffset: "2px" }}
+                  >
+                    {formatDietaryTag(tag)}
+                  </Link>
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
+
+        {/* Action row — typographic actions, no pill buttons */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-5" style={{ borderTopColor: "var(--hairline)" }}>
+          {restaurant.website && (
+            <a
+              href={restaurant.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="eyebrow inline-flex items-center gap-1.5 transition-colors"
+              style={{ color: "var(--color-forest)" }}
+            >
+              Visit website
+              <span aria-hidden="true" style={{ color: "var(--color-jade)" }}>↗</span>
             </a>
+          )}
+          {restaurant.phone && (
+            <a
+              href={`tel:${restaurant.phone}`}
+              className="eyebrow inline-flex items-center gap-1.5 transition-colors"
+              style={{ color: "var(--color-forest)" }}
+            >
+              Call
+              <span className="tabular" style={{ textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-body)", fontWeight: 500, color: "var(--color-muted)" }}>
+                {restaurant.phone}
+              </span>
+            </a>
+          )}
+          {restaurant.latitude != null && restaurant.longitude != null && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${restaurant.latitude},${restaurant.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="eyebrow inline-flex items-center gap-1.5 transition-colors"
+              style={{ color: "var(--color-forest)" }}
+            >
+              Directions
+              <span aria-hidden="true" style={{ color: "var(--color-jade)" }}>→</span>
+            </a>
+          )}
+          <span className="ml-auto inline-flex items-center gap-3">
             <SaveButton
               restaurant={{
                 slug: restaurant.slug,
@@ -218,98 +304,138 @@ export default async function RestaurantPage({
               }}
               variant="full"
             />
-          </div>
+          </span>
         </div>
+      </header>
 
-        {/* Restaurant name */}
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <h1 className="font-serif text-4xl font-bold text-forest md:text-5xl">
-            {restaurant.name}
-          </h1>
-          {restaurant.isVerified && <VerifiedBadge />}
-        </div>
+      {/* ─── PHOTO GALLERY — comes after the hero, editorial-style ─── */}
+      <RestaurantPhotoGallery
+        photo={restaurant.photo}
+        name={restaurant.name}
+        alt={getRestaurantImageAlt({ name: restaurant.name, type: restaurant.type, neighborhood: restaurant.neighborhood, borough: restaurant.borough })}
+        neighborhood={restaurant.neighborhood}
+        borough={restaurant.borough}
+        type={restaurant.type}
+      />
 
-        {/* Details row */}
-        <div className="mt-3 flex flex-wrap items-center gap-6">
-          {(price || priceLabel) && (
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              💳 {[price, priceLabel].filter(Boolean).join(" • ")}
-            </span>
-          )}
-          {restaurant.type && (
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              🌿 {restaurant.type}
-            </span>
-          )}
-          <OpenNowBadge
-            workingHours={restaurant.working_hours}
-            showClosingTime={true}
-            size="md"
-          />
-        </div>
-      </div>
-
-      {/* ─── MAIN CONTENT: TWO-COLUMN ─── */}
-      <div className="mx-auto max-w-7xl px-6 py-10">
+      {/* ─── MAIN: TWO-COLUMN ─── */}
+      <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
 
           {/* ── LEFT COLUMN ── */}
-          <div className="lg:col-span-2 space-y-10">
+          <div className="space-y-12 lg:col-span-2">
 
             {/* Curated Story */}
             <section>
-              <h2 className="font-serif text-2xl font-bold text-forest">
-                The Curated Culinary Story
-              </h2>
+              <p className="eyebrow">The brief</p>
+              <h2 className="h2-serif mt-2">About {restaurant.name}</h2>
               {restaurant.description ? (
-                <p className="mt-4 text-base leading-relaxed text-gray-700">
+                <p className="dek mt-4" style={{ maxWidth: "65ch" }}>
                   {restaurant.description}
                 </p>
               ) : (
-                <p className="mt-4 text-base leading-relaxed text-gray-400 italic">
-                  No description available for this restaurant yet.
+                <p className="dek mt-4 italic" style={{ color: "var(--color-muted)", maxWidth: "65ch" }}>
+                  Description coming soon.
                 </p>
               )}
 
-              {/* Data-driven conversational aside — varies by restaurant attributes */}
+              {/* Editorial asides */}
               {restaurant.rating && restaurant.rating >= 4.5 && (restaurant.reviews ?? 0) >= 500 && (
-                <div className="mt-4 border-l-4 border-sage pl-4">
-                  <p className="text-sm text-gray-600">
-                    <strong className="text-forest">Worth noting:</strong> A {restaurant.rating}/5 rating
-                    across {(restaurant.reviews ?? 0).toLocaleString()} reviews is unusually consistent for
-                    {restaurant.neighborhood ? ` ${restaurant.neighborhood}` : " NYC"}. That kind of volume
-                    with that score suggests genuine quality, not hype.
+                <aside
+                  className="mt-6 border-l pl-5 py-1"
+                  style={{
+                    borderLeftWidth: "2px",
+                    borderLeftColor: "var(--color-sage)",
+                    maxWidth: "62ch",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontStyle: "italic",
+                      fontSize: "1rem",
+                      lineHeight: 1.55,
+                      color: "var(--color-text)",
+                    }}
+                  >
+                    A {restaurant.rating}/5 across {(restaurant.reviews ?? 0).toLocaleString()} reviews is unusually consistent for{" "}
+                    {restaurant.neighborhood || "NYC"} — the kind of volume-with-score combination that suggests genuine quality, not hype.
                   </p>
-                </div>
+                </aside>
               )}
               {restaurant.inspection_grade === "A" && restaurant.is_hidden_gem && (
-                <div className="mt-4 rounded-lg bg-amber/5 px-4 py-3">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold text-forest">Hidden gem alert</span> — this spot
-                    flies under the radar despite a clean Grade A inspection and strong ratings.
-                    The kind of place regulars keep to themselves.
+                <aside
+                  className="mt-6 border-l pl-5 py-1"
+                  style={{
+                    borderLeftWidth: "2px",
+                    borderLeftColor: "var(--color-amber)",
+                    maxWidth: "62ch",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontStyle: "italic",
+                      fontSize: "1rem",
+                      lineHeight: 1.55,
+                      color: "var(--color-text)",
+                    }}
+                  >
+                    <span className="gem-mark">✦</span> A hidden gem with a clean Grade A — the kind of spot regulars keep to themselves.
                   </p>
-                </div>
+                </aside>
               )}
             </section>
 
-            {/* Dietary Specializations */}
-            {tags.length > 0 && (
+            {/* NYC Health Inspection — the placard, the explanation. No bespoke colors. */}
+            {restaurant.inspection_grade && (
               <section>
-                <h2 className="font-serif text-xl font-bold text-forest">
-                  Dietary Specializations
-                </h2>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {tags.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/healthy-restaurants/${tag}`}
-                      className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-jade transition-colors hover:bg-sage/10"
-                      style={{ borderColor: "rgba(82,183,136,0.3)" }}
+                <p className="eyebrow">Health inspection</p>
+                <h2 className="h2-serif mt-2">NYC DOHMH Grade {restaurant.inspection_grade}</h2>
+                <div className="mt-5 flex items-start gap-5">
+                  <span
+                    className="plaque flex-shrink-0"
+                    data-grade={grade}
+                    aria-label={gradeAria}
+                    style={{ width: "4.5rem", height: "4.5rem", fontSize: "2.5rem" }}
+                  >
+                    {restaurant.inspection_grade}
+                  </span>
+                  <div className="space-y-2 pt-1">
+                    {restaurant.inspection_score != null && (
+                      <p className="text-sm" style={{ color: "var(--color-text)" }}>
+                        <span className="eyebrow mr-2" style={{ color: "var(--color-muted)" }}>Score</span>
+                        <span className="tabular font-semibold">{restaurant.inspection_score}</span>
+                        <span className="ml-1.5" style={{ color: "var(--color-muted)" }}>(lower is better)</span>
+                      </p>
+                    )}
+                    {restaurant.inspection_date && (
+                      <p className="text-sm" style={{ color: "var(--color-text)" }}>
+                        <span className="eyebrow mr-2" style={{ color: "var(--color-muted)" }}>Inspected</span>
+                        <span className="tabular">{restaurant.inspection_date}</span>
+                      </p>
+                    )}
+                    <p
+                      className="text-sm"
+                      style={{ color: "var(--color-muted)", maxWidth: "52ch", lineHeight: 1.55 }}
                     >
-                      🌿 {formatDietaryTag(tag)}
-                    </Link>
-                  ))}
+                      {restaurant.inspection_grade === "A"
+                        ? "Grade A is the highest mark from NYC's Department of Health — about 90% of restaurants earn it."
+                        : restaurant.inspection_grade === "B"
+                          ? "A Grade B means some violations were found. Many B-graded spots earn an A on re-inspection within weeks."
+                          : "Grade C indicates serious violations. The restaurant is subject to accelerated re-inspection by the DOHMH."}
+                    </p>
+                    <p className="mt-2">
+                      <Link
+                        href="/guides/nyc-health-grades-explained"
+                        className="eyebrow inline-flex items-center gap-1.5"
+                        style={{ color: "var(--color-jade)" }}
+                      >
+                        How grades work
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    </p>
+                  </div>
                 </div>
               </section>
             )}
@@ -333,112 +459,66 @@ export default async function RestaurantPage({
             {/* Accuracy Feedback */}
             <AccuracyFeedback restaurantSlug={restaurant.slug} />
 
-            {/* Health Inspection */}
-            {restaurant.inspection_grade && (
-              <section>
-                <h2 className="font-serif text-xl font-bold text-forest">NYC Health Inspection</h2>
-                <div className="mt-4 flex items-start gap-4">
-                  <span
-                    className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl border-2 font-serif text-2xl font-bold"
-                    style={{
-                      borderColor:
-                        restaurant.inspection_grade === "A"
-                          ? "var(--color-sage)"
-                          : restaurant.inspection_grade === "B"
-                            ? "#FBBF24"
-                            : "#F97316",
-                      color:
-                        restaurant.inspection_grade === "A"
-                          ? "var(--color-jade)"
-                          : restaurant.inspection_grade === "B"
-                            ? "#92400E"
-                            : "#7C2D12",
-                      backgroundColor:
-                        restaurant.inspection_grade === "A"
-                          ? "rgba(82,183,136,0.1)"
-                          : restaurant.inspection_grade === "B"
-                            ? "rgba(251,191,36,0.1)"
-                            : "rgba(249,115,22,0.1)",
-                    }}
-                  >
-                    {restaurant.inspection_grade}
-                  </span>
-                  <div className="space-y-1 text-sm text-gray-600">
-                    {restaurant.inspection_score != null && (
-                      <p>
-                        Score:{" "}
-                        <span className="font-medium">{restaurant.inspection_score}</span>{" "}
-                        <span className="text-gray-400">(lower is better)</span>
-                      </p>
-                    )}
-                    {restaurant.inspection_date && (
-                      <p>Last inspected: {restaurant.inspection_date}</p>
-                    )}
-                    <p className="text-xs text-gray-400">
-                      {restaurant.inspection_grade === "A"
-                        ? "Grade A is the highest mark from NYC's Department of Health — about 90% of restaurants earn it, so it's the baseline you should expect."
-                        : restaurant.inspection_grade === "B"
-                          ? "A Grade B means some violations were found but the restaurant is still operating. Many B-graded spots earn an A on re-inspection within weeks."
-                          : "Grade C indicates serious violations were found. The restaurant is subject to accelerated re-inspection by the NYC Department of Health."}
-                    </p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* Contextual internal links — PRD CC-23: guaranteed >= 3 money-page links
-                (neighbourhood hub, borough hub, matching diet-type hubs) with partial-match anchors */}
-            <div className="mt-8 border-t border-gray-100 pt-8">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-muted)" }}>EXPLORE MORE</p>
+            {/* Contextual internal links (PRD CC-23) */}
+            <section className="border-t pt-8" style={{ borderTopColor: "var(--hairline)" }}>
+              <p className="eyebrow">Explore</p>
               <ContextualLinks
-                intro={`${restaurant.name} is one of many healthy restaurants in our directory. Explore`}
+                intro={`${restaurant.name} is one of many healthy restaurants in our directory. See`}
                 links={getListingHubLinks(restaurant)}
-                className="mb-4"
+                className="mt-3"
               />
-            </div>
+            </section>
 
             {/* Topical authority footer */}
-            <div className="mt-10 border-t border-gray-100 pt-8 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
+            <div
+              className="border-t pt-6 text-sm"
+              style={{ borderTopColor: "var(--hairline)", color: "var(--color-muted)", lineHeight: 1.55, maxWidth: "62ch" }}
+            >
               <p>
                 {restaurant.name} is listed in the{" "}
-                <Link href="/" className="font-medium text-jade underline underline-offset-2 hover:text-forest">Eat Real Food NYC directory</Link>
+                <Link href="/" style={{ color: "var(--color-jade)", textDecoration: "underline", textUnderlineOffset: "2px" }}>
+                  Eat Real Food NYC directory
+                </Link>
                 {restaurant.borough && boroughSlug && (
                   <>{" "}— a curated database of{" "}
-                    <Link href={`/nyc/${boroughSlug}/healthy-restaurants`} className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+                    <Link href={`/nyc/${boroughSlug}/healthy-restaurants`} style={{ color: "var(--color-jade)", textDecoration: "underline", textUnderlineOffset: "2px" }}>
                       healthy restaurants in {restaurant.borough}
                     </Link>
                   </>
                 )}
-                , verified with official NYC Department of Health inspection data.{" "}
-                <Link href="/guides/nyc-health-grades-explained" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-                  Learn how NYC health grades work →
-                </Link>
+                , verified with official NYC Department of Health inspection data.
               </p>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN ── */}
-          <div className="lg:col-span-1">
+          {/* ── RIGHT COLUMN (sidebar) ── */}
+          <aside className="lg:col-span-1">
             <HealthScoreCard restaurant={restaurant} />
 
-            {/* Data freshness signal */}
-            <div className="mt-3 flex items-center gap-2 px-1">
-              <span className="text-xs" style={{ color: "var(--color-muted)" }}>
-                🔄 Data sourced from NYC DOHMH Open Data.
-                {restaurant.inspection_date && (
-                  <> Inspection record dated {new Date(restaurant.inspection_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}.</>
-                )}
-                {" "}Directory updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}.
-              </span>
-            </div>
+            {/* Data freshness */}
+            <p className="mt-3 px-1 text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.55 }}>
+              Data sourced from NYC DOHMH Open Data.
+              {restaurant.inspection_date && (
+                <> Inspection record dated {new Date(restaurant.inspection_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}.</>
+              )}{" "}
+              Directory updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}.
+            </p>
 
-            <div className="mt-6 sticky top-24 rounded-2xl border border-gray-100 bg-white p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
-                Location &amp; Contact
-              </p>
+            {/* Location & contact card — hairline, 4px, no emoji */}
+            <div
+              className="sticky top-24 mt-6 border"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderColor: "var(--hairline)",
+                borderRadius: "4px",
+              }}
+            >
+              <div className="px-5 pt-5">
+                <p className="eyebrow" style={{ color: "var(--color-muted)" }}>Location &amp; contact</p>
+              </div>
 
               {/* Map */}
-              <div className="mb-4 overflow-hidden rounded-xl" style={{ height: "180px" }}>
+              <div className="mx-5 mt-4 overflow-hidden border" style={{ borderColor: "var(--hairline)", borderRadius: "3px", height: "180px" }}>
                 {restaurant.latitude != null && restaurant.longitude != null ? (
                   <div suppressHydrationWarning style={{ height: "180px" }}>
                     <MapWrapper
@@ -448,130 +528,173 @@ export default async function RestaurantPage({
                     />
                   </div>
                 ) : (
-                  <div className="flex h-full items-center justify-center rounded-xl bg-forest/10 text-3xl">
-                    🗺️
+                  <div className="flex h-full items-center justify-center" style={{ backgroundColor: "var(--color-cream)", color: "var(--color-muted)" }}>
+                    <span className="eyebrow">Map unavailable</span>
                   </div>
                 )}
               </div>
 
-              {/* Address */}
-              {restaurant.address && (
-                <div className="flex items-start gap-3 border-b border-gray-100 py-3 text-sm text-gray-700">
-                  <span className="mt-0.5 flex-shrink-0">📍</span>
-                  <span>{restaurant.address}</span>
-                </div>
-              )}
-
-              {/* Phone */}
-              {restaurant.phone && (
-                <a
-                  href={`tel:${restaurant.phone}`}
-                  className="flex items-start gap-3 border-b border-gray-100 py-3 text-sm text-gray-700 hover:text-jade transition-colors"
-                >
-                  <span className="mt-0.5 flex-shrink-0">📞</span>
-                  <span>{restaurant.phone}</span>
-                </a>
-              )}
-
-              {/* Website */}
-              {restaurant.website && (
-                <a
-                  href={restaurant.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-3 border-b border-gray-100 py-3 text-sm text-gray-700 hover:text-jade transition-colors"
-                >
-                  <span className="mt-0.5 flex-shrink-0">🌐</span>
-                  <span className="truncate">{restaurant.website.replace(/^https?:\/\//, "")}</span>
-                </a>
-              )}
-
-              {/* Action buttons */}
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                {restaurant.latitude != null && restaurant.longitude != null && (
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${restaurant.latitude},${restaurant.longitude}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium transition-colors hover:border-jade"
-                  >
-                    Directions
-                  </a>
+              {/* Contact rows */}
+              <div className="px-5 pt-3">
+                {restaurant.address && (
+                  <ContactRow label="Address">
+                    <span>{restaurant.address}</span>
+                  </ContactRow>
                 )}
-                <button className="rounded-xl border border-gray-200 py-2.5 text-sm font-medium transition-colors hover:border-jade">
-                  Share
-                </button>
+                {restaurant.phone && (
+                  <ContactRow label="Phone">
+                    <a href={`tel:${restaurant.phone}`} className="tabular transition-colors hover:underline" style={{ color: "var(--color-forest)", textUnderlineOffset: "2px" }}>
+                      {restaurant.phone}
+                    </a>
+                  </ContactRow>
+                )}
+                {restaurant.website && (
+                  <ContactRow label="Web">
+                    <a
+                      href={restaurant.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="truncate transition-colors hover:underline"
+                      style={{ color: "var(--color-forest)", textUnderlineOffset: "2px" }}
+                    >
+                      {restaurant.website.replace(/^https?:\/\//, "")}
+                    </a>
+                  </ContactRow>
+                )}
               </div>
 
               {/* Hours */}
               {hours.length > 0 && (
-                <div className="mt-6">
-                  <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    Hours of Operation
-                  </p>
-                  <div className="space-y-2">
-                    {hours.map(({ day, hours: h }) => (
-                      <div
-                        key={day}
-                        className={`flex justify-between text-sm ${
-                          day === todayName ? "font-bold text-jade" : ""
-                        }`}
-                      >
-                        <span className={day === todayName ? "text-jade" : "text-gray-500"}>
-                          {day}
-                        </span>
-                        <span className={day === todayName ? "text-jade" : "text-forest font-medium"}>
-                          {h}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="border-t px-5 py-5" style={{ borderTopColor: "var(--hairline)" }}>
+                  <p className="eyebrow mb-3" style={{ color: "var(--color-muted)" }}>Hours</p>
+                  <dl className="space-y-1.5 text-sm">
+                    {hours.map(({ day, hours: h }) => {
+                      const isToday = day === todayName
+                      return (
+                        <div key={day} className="flex items-baseline justify-between gap-3">
+                          <dt
+                            style={{
+                              color: isToday ? "var(--color-jade)" : "var(--color-muted)",
+                              fontWeight: isToday ? 600 : 400,
+                              fontFamily: isToday ? "var(--font-display)" : "var(--font-body)",
+                              fontSize: isToday ? "0.95rem" : "0.875rem",
+                            }}
+                          >
+                            {day}
+                          </dt>
+                          <dd
+                            className="tabular"
+                            style={{
+                              color: isToday ? "var(--color-forest)" : "var(--color-text)",
+                              fontWeight: isToday ? 600 : 500,
+                            }}
+                          >
+                            {h}
+                          </dd>
+                        </div>
+                      )
+                    })}
+                  </dl>
                 </div>
               )}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
 
       {/* ─── EXPLORE MORE ─── */}
-      <div className="mx-auto max-w-7xl border-t border-gray-200 px-6 py-10">
-        <h2 className="font-serif text-2xl font-bold text-forest">Explore More</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {restaurant.neighborhood && boroughSlug && neighborhoodSlug && (
-            <Link
-              href={`/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants`}
-              className="cursor-pointer rounded-xl border border-gray-200 p-4 transition-all hover:border-jade hover:shadow-sm"
-            >
-              <span className="text-xl">🏙️</span>
-              <p className="mt-2 text-xs uppercase tracking-wider text-gray-400">NEIGHBORHOOD</p>
-              <p className="mt-1 text-sm font-semibold text-forest">
-                {restaurant.neighborhood}
-              </p>
-            </Link>
-          )}
-          {restaurant.borough && boroughSlug && (
-            <Link
-              href={`/nyc/${boroughSlug}/healthy-restaurants`}
-              className="cursor-pointer rounded-xl border border-gray-200 p-4 transition-all hover:border-jade hover:shadow-sm"
-            >
-              <span className="text-xl">🗺️</span>
-              <p className="mt-2 text-xs uppercase tracking-wider text-gray-400">BOROUGH</p>
-              <p className="mt-1 text-sm font-semibold text-forest">{restaurant.borough}</p>
-            </Link>
-          )}
-          {tags.slice(0, 2).map((tag) => (
-            <Link
-              key={tag}
-              href={`/healthy-restaurants/${tag}`}
-              className="cursor-pointer rounded-xl border border-gray-200 p-4 transition-all hover:border-jade hover:shadow-sm"
-            >
-              <span className="text-xl">🌿</span>
-              <p className="mt-2 text-xs uppercase tracking-wider text-gray-400">DIETARY</p>
-              <p className="mt-1 text-sm font-semibold text-forest">{formatDietaryTag(tag)}</p>
-            </Link>
-          ))}
+      <div className="mx-auto max-w-7xl px-6 pb-16">
+        <div className="border-t pt-10" style={{ borderTopColor: "var(--hairline)" }}>
+          <p className="eyebrow">Explore more</p>
+          <h2 className="h2-serif mt-2">Find similar spots</h2>
+          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+            {restaurant.neighborhood && boroughSlug && neighborhoodSlug && (
+              <ExploreCard
+                eyebrow="Neighborhood"
+                title={restaurant.neighborhood}
+                href={`/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants`}
+              />
+            )}
+            {restaurant.borough && boroughSlug && (
+              <ExploreCard
+                eyebrow="Borough"
+                title={restaurant.borough}
+                href={`/nyc/${boroughSlug}/healthy-restaurants`}
+              />
+            )}
+            {tags.slice(0, 2).map((tag) => (
+              <ExploreCard
+                key={tag}
+                eyebrow="Dietary"
+                title={formatDietaryTag(tag)}
+                href={`/healthy-restaurants/${tag}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>
+  )
+}
+
+/* ─── Internal pieces ─── */
+
+function ContactRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div
+      className="grid grid-cols-[5rem_1fr] items-baseline gap-3 border-b py-3 text-sm"
+      style={{ borderBottomColor: "var(--hairline)" }}
+    >
+      <dt className="eyebrow" style={{ color: "var(--color-muted)" }}>
+        {label}
+      </dt>
+      <dd style={{ color: "var(--color-text)", lineHeight: 1.5 }}>{children}</dd>
+    </div>
+  )
+}
+
+function ExploreCard({
+  eyebrow,
+  title,
+  href,
+}: {
+  eyebrow: string
+  title: string
+  href: string
+}) {
+  return (
+    <Link
+      href={href}
+      className="group block border p-5 transition-colors"
+      style={{
+        borderColor: "var(--hairline)",
+        backgroundColor: "#FFFFFF",
+        borderRadius: "4px",
+      }}
+    >
+      <p className="eyebrow" style={{ color: "var(--color-muted)" }}>
+        {eyebrow}
+      </p>
+      <p
+        className="mt-3"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "1.125rem",
+          fontWeight: 700,
+          lineHeight: 1.2,
+          color: "var(--color-forest)",
+          letterSpacing: "-0.01em",
+        }}
+      >
+        {title}
+      </p>
+      <p
+        className="mt-3 inline-flex items-center gap-1.5 transition-colors"
+        style={{ color: "var(--color-jade)" }}
+      >
+        <span className="eyebrow">See spots</span>
+        <span aria-hidden="true">→</span>
+      </p>
+    </Link>
   )
 }
