@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Forest field — iOS adds its own rounded mask, but the rx keeps
+       the icon honest in any Android/web context that doesn't mask. -->
+  <rect width="180" height="180" rx="32" fill="#1B3A2D"/>
+
+  <!-- Inset cream frame — echoes the actual NYC DOHMH placard, which
+       carries the letter inside a thin printed border. -->
+  <rect
+    x="14" y="14"
+    width="152" height="152"
+    rx="20"
+    fill="none"
+    stroke="#F8F6F1"
+    stroke-opacity="0.20"
+    stroke-width="1.5"
+  />
+
+  <!-- The letter. Georgia bold, hard-tracked. -->
+  <text
+    x="90" y="128"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-weight="700"
+    font-size="118"
+    fill="#F8F6F1"
+    letter-spacing="-2.4"
+  >A</text>
+</svg>
