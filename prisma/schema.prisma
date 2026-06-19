@@ -46,6 +46,11 @@ model Restaurant {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  /// Postgres tsvector column powering /api/search (FTS via GIN index).
+  /// Managed by DB trigger; Prisma can't query it directly — queries use
+  /// raw SQL. Declared here so prisma db push doesn't drop it.
+  search_vector Unsupported("tsvector")?
+
   @@index([borough])
   @@index([neighborhood])
   @@index([rating(sort: Desc)])
@@ -69,4 +74,31 @@ model NeighborhoodContent {
 
   @@unique([borough, neighborhood])
   @@map("neighborhood_content")
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  // Link to restaurant by slug (matches restaurants.slug) and place_id
+  restaurant_slug  String
+  place_id         String
+  restaurant_name  String?
+
+  // Google review identity
+  google_review_id String   @unique
+  stars            Int
+  reviewer_name    String?
+  is_local_guide   Boolean  @default(false)
+  published_at     DateTime?
+  published_ago    String?
+  likes_count      Int      @default(0)
+  text             String
+  owner_response   String?
+  review_url       String?
+
+  created_at       DateTime @default(now())
+
+  @@index([restaurant_slug])
+  @@index([place_id])
+  @@index([restaurant_slug, stars])
+  @@map("reviews")
 }
