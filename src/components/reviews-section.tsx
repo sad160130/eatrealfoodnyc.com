@@ -68,8 +68,8 @@ export default function ReviewsSection({
       className="my-12 scroll-mt-24"
       aria-label={`Reviews for ${restaurantName}`}
     >
-      <p className="eyebrow">What diners say</p>
-      <h2 className="h2-serif mt-2">Reviews of {restaurantName}</h2>
+      <p className="eyebrow">Reviews</p>
+      <h2 className="h2-serif mt-2">What diners say about {restaurantName}</h2>
       <p
         className="mt-2 text-sm"
         style={{ color: "var(--color-muted)" }}

@@ -19,8 +19,15 @@ import CommunityRating from "@/components/community-rating"
 import ShareExperience from "@/components/share-experience"
 import ContextualLinks from "@/components/contextual-links"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
+import ReviewsSection from "@/components/reviews-section"
 import { getListingHubLinks } from "@/lib/internal-links"
-import { buildRestaurantSchema, ORGANIZATION_SCHEMA } from "@/lib/schema"
+import { getReviewsForRestaurant } from "@/lib/reviews"
+import {
+  buildRestaurantSchema,
+  buildReviewSchema,
+  buildReviewAggregateRating,
+  ORGANIZATION_SCHEMA,
+} from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
@@ -83,7 +90,12 @@ export default async function RestaurantPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const restaurant = await prisma.restaurant.findUnique({ where: { slug } })
+  // Fetch restaurant + reviews in parallel — reviews query keys on slug
+  // so it doesn't depend on the restaurant fetch resolving first.
+  const [restaurant, reviewsSummary] = await Promise.all([
+    prisma.restaurant.findUnique({ where: { slug } }),
+    getReviewsForRestaurant(slug, 15),
+  ])
   if (!restaurant || !restaurant.is_published) notFound()
 
   const price = formatPriceRange(restaurant.price_range)
@@ -119,12 +131,46 @@ export default async function RestaurantPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [buildRestaurantSchema(restaurant), ORGANIZATION_SCHEMA] }),
-        }}
-      />
+      {(() => {
+        // Build the base Restaurant schema. buildRestaurantSchema may
+        // already attach an aggregateRating from Google-sourced columns
+        // (restaurant.rating / restaurant.reviews). When we have real
+        // scraped reviews on the page, that aggregate MUST be replaced
+        // with one that describes the displayed review set — Google
+        // rich-results require the schema's aggregateRating and the
+        // visible review list to be consistent. Mismatched counts (e.g.
+        // schema says 5,618 but page shows 15) can suppress the rich
+        // result and is a structured-data violation.
+        const restaurantSchema = buildRestaurantSchema(restaurant) as ReturnType<
+          typeof buildRestaurantSchema
+        > & {
+          aggregateRating?: NonNullable<ReturnType<typeof buildReviewAggregateRating>>
+          review?: ReturnType<typeof buildReviewSchema>
+        }
+
+        if (reviewsSummary.hasReviews) {
+          const aggregateRating = buildReviewAggregateRating(reviewsSummary)
+          const reviewSchema = buildReviewSchema(reviewsSummary.reviews)
+          // Overwrite the Google aggregate — never coexist; two
+          // aggregateRating values in one schema is invalid.
+          if (aggregateRating) restaurantSchema.aggregateRating = aggregateRating
+          if (reviewSchema.length > 0) restaurantSchema.review = reviewSchema
+        }
+        // else: keep whatever buildRestaurantSchema set (or nothing if
+        // restaurant.rating / restaurant.reviews were absent).
+
+        return (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@graph": [restaurantSchema, ORGANIZATION_SCHEMA],
+              }),
+            }}
+          />
+        )
+      })()}
 
       {/* ─── BREADCRUMB ─── */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
@@ -449,6 +495,9 @@ export default async function RestaurantPage({
               longitude={restaurant.longitude}
               address={restaurant.address ?? ""}
             />
+
+            {/* Real Google reviews — renders nothing when hasReviews is false */}
+            <ReviewsSection summary={reviewsSummary} restaurantName={restaurant.name} />
 
             {/* Share Experience */}
             <ShareExperience
