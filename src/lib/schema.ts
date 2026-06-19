@@ -1,3 +1,5 @@
+import type { RestaurantReview, ReviewsSummary } from "./reviews"
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
 export const FOUNDER_ROHAN = {
@@ -92,5 +94,51 @@ export function buildArticleSchema(guide: { title: string; slug: string; descrip
     author: PUBLISHER_REF,
     publisher: PUBLISHER_REF,
     isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Eat Real Food NYC" },
+  }
+}
+
+/**
+ * Builds Review schema objects to nest inside the Restaurant schema.
+ * This is what makes Google show star ratings + review snippets in SERPs
+ * and captures review-intent queries.
+ *
+ * IMPORTANT: Only include real reviews. Never fabricate. AggregateRating
+ * must reflect the actual review set on the page.
+ */
+export function buildReviewSchema(reviews: RestaurantReview[]) {
+  return reviews
+    .filter((r) => r.text && r.stars >= 1 && r.stars <= 5)
+    .map((r) => ({
+      "@type": "Review",
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.stars,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      author: {
+        "@type": "Person",
+        name: r.reviewerName || "Google user",
+      },
+      ...(r.publishedAt
+        ? { datePublished: r.publishedAt.toISOString().split("T")[0] }
+        : {}),
+      reviewBody: r.text.length > 500 ? r.text.slice(0, 497) + "..." : r.text,
+    }))
+}
+
+/**
+ * Builds AggregateRating from the real review set on the page.
+ * Use the Google-sourced rating/count when available; otherwise derive
+ * from the reviews actually shown.
+ */
+export function buildReviewAggregateRating(summary: ReviewsSummary) {
+  if (!summary.hasReviews || summary.averageStars === null) return null
+  return {
+    "@type": "AggregateRating",
+    ratingValue: summary.averageStars,
+    reviewCount: summary.totalCount,
+    bestRating: 5,
+    worstRating: 1,
   }
 }
