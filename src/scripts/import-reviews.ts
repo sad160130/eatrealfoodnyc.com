@@ -21,7 +21,15 @@ import { parse } from "csv-parse/sync"
 import * as fs from "fs"
 import * as path from "path"
 
-const CSV_PATH = path.join(process.cwd(), "data", "reviews_flat_for_db.csv")
+// Accept the CSV path as a CLI arg so the script can be pointed at any
+// batch file. Falls back to the original batch-1 default when no arg is
+// given. Idempotent upsert by google_review_id means batches can be
+// re-run without duplicating rows.
+const CSV_PATH = process.argv[2]
+  ? path.resolve(process.cwd(), process.argv[2])
+  : path.join(process.cwd(), "data", "reviews_flat_for_db.csv")
+
+console.log(`Importing from: ${CSV_PATH}`)
 
 interface CsvRow {
   slug: string
