@@ -191,6 +191,9 @@ export default function HalalFoodGuide() {
             is an underrated halal destination. Neighborhoods like Fordham, Morris Park, and Parkchester have growing West African and Bangladeshi halal restaurant scenes. Prices in the Bronx tend to be the most affordable in the city, making it an excellent borough for budget-conscious halal diners. Manhattan&apos;s halal options are more scattered but include notable clusters in the East Village, Murray Hill, and of course the famous Midtown cart corridor.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Recent additions confirm this Bronx growth: <Link href="/restaurants/shahs-halal-food-norwood" className="font-semibold text-jade hover:text-forest">Shah&apos;s Halal Food in Norwood</Link> and <Link href="/restaurants/little-greece" className="font-semibold text-jade hover:text-forest">Little Greece in Throgs Neck</Link> both land in the borough&apos;s halal-plus-whole-foods sweet spot, while <Link href="/restaurants/muscat-glatt" className="font-semibold text-jade hover:text-forest">Muscat Glatt in Far Rockaway</Link> extends Queens&apos;s small but distinctive Persian-Yemenite halal-and-kosher scene.
+          </p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Use our{" "}
             <Link href="/nyc/compare" className="font-semibold text-jade hover:text-forest">
               neighborhood comparison tool

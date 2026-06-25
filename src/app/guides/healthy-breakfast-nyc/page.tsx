@@ -347,7 +347,7 @@ export default function HealthyBreakfastGuide() {
             ))}
           </div>
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Two recent Manhattan additions worth a morning detour: <Link href="/restaurants/power-bowls" className="font-semibold text-jade hover:text-forest">Power Bowls in the Financial District</Link>, a whole-foods bowl spot built for the lunch-rush crowd that doubles as a strong breakfast option, and <Link href="/restaurants/project-eats-farm-and-eatery" className="font-semibold text-jade hover:text-forest">Project EATS on the Lower East Side</Link>, which pairs farm-sourced ingredients with a Grade-A kitchen.
+            Four recent additions worth a morning detour: <Link href="/restaurants/mi-cafe" className="font-semibold text-jade hover:text-forest">MI Cafe in Hudson Yards</Link> and <Link href="/restaurants/cool-fresh-juice-bar" className="font-semibold text-jade hover:text-forest">cool fresh juice bar on the Upper West Side</Link> anchor Manhattan&apos;s whole-foods-plus-low-calorie breakfast lineup, <Link href="/restaurants/vela-juice-bar" className="font-semibold text-jade hover:text-forest">Vela Juice Bar in Astoria</Link> brings the same formula to Queens, and <Link href="/restaurants/park-rose-nyc" className="font-semibold text-jade hover:text-forest">Park Rose NYC in Kips Bay</Link> rounds out the vegetarian + whole-foods options.
           </p>
         </section>
 
