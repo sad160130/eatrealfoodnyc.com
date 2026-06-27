@@ -347,7 +347,7 @@ export default function HealthyBreakfastGuide() {
             ))}
           </div>
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Four recent additions worth a morning detour: <Link href="/restaurants/mi-cafe" className="font-semibold text-jade hover:text-forest">MI Cafe in Hudson Yards</Link> and <Link href="/restaurants/cool-fresh-juice-bar" className="font-semibold text-jade hover:text-forest">cool fresh juice bar on the Upper West Side</Link> anchor Manhattan&apos;s whole-foods-plus-low-calorie breakfast lineup, <Link href="/restaurants/vela-juice-bar" className="font-semibold text-jade hover:text-forest">Vela Juice Bar in Astoria</Link> brings the same formula to Queens, and <Link href="/restaurants/park-rose-nyc" className="font-semibold text-jade hover:text-forest">Park Rose NYC in Kips Bay</Link> rounds out the vegetarian + whole-foods options.
+            Four recent additions worth a morning detour: <Link href="/restaurants/bora-bora-smoothie-cafe-harlem-hamilton-heights" className="font-semibold text-jade hover:text-forest">Bora Bora Smoothie Cafe in Harlem Hamilton Heights</Link> and <Link href="/restaurants/complete-by-completebody-union-square" className="font-semibold text-jade hover:text-forest">COMPLETE by CompleteBody in the Flatiron District</Link> anchor Manhattan&apos;s whole-foods-plus-low-calorie breakfast lineup, <Link href="/restaurants/canarsie-blend-juices" className="font-semibold text-jade hover:text-forest">Canarsie Blend Juices</Link> brings the same formula to Brooklyn, and <Link href="/restaurants/asa-bowl" className="font-semibold text-jade hover:text-forest">ASA Bowl in New Brighton</Link> extends it to Staten Island.
           </p>
         </section>
 
