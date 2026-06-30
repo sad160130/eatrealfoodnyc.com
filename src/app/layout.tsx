@@ -81,6 +81,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={dmSans.variable}>
       <head>
         <meta name="msapplication-TileColor" content="#1B3A2D" />
+        {/* Restaurant photos all load from googleusercontent.com. Preconnect
+            saves ~150-300ms of TCP+TLS handshake before the first image
+            request; dns-prefetch is a fallback for browsers that ignore the
+            preconnect hint. */}
+        <link
+          rel="preconnect"
+          href="https://lh3.googleusercontent.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://lh3.googleusercontent.com"
+        />
       </head>
       <body
         className={`${dmSans.className} antialiased`}

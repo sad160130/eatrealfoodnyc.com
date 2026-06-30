@@ -37,6 +37,14 @@ export const metadata: Metadata = {
   },
 }
 
+// ISR — re-validate the homepage at most once per hour. Featured restaurants,
+// hidden gems, and aggregate counts move with the weekly publish cadence, so
+// 1-hour granularity is well within freshness. If the build output for / shows
+// ƒ (dynamic) at HEAD, this also cuts TTFB by removing Prisma roundtrips from
+// the request path. If / is already ○/● (static), this swaps "stale until next
+// deploy" for "stale at most 1 hour" with no TTFB change.
+export const revalidate = 3600
+
 const ALL_DIETS = [
   { tag: "vegan",       label: "Vegan",       emoji: "🌱" },
   { tag: "vegetarian",  label: "Vegetarian",  emoji: "🥦" },
