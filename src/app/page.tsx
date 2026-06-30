@@ -262,7 +262,8 @@ export default async function HomePage() {
                     alt={`${featuredGem.name} — ${featuredGem.neighborhood ?? featuredGem.borough ?? "NYC"} hidden gem restaurant`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    unoptimized
+                    sizes="(max-width: 1024px) 100vw, 25vw"
+                    priority
                   />
                 ) : (
                   <div className="absolute inset-0 bg-forest" />
