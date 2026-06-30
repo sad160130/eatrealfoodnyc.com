@@ -94,6 +94,19 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Restaurant photos are effectively immutable (Google Maps CDN URLs
+    // are content-addressed). Cache transformed variants at the edge for
+    // 31 days to cut re-transformations and cache writes. Next default
+    // minimumCacheTTL is 60s, which is far too aggressive for our case.
+    minimumCacheTTL: 2678400,
+
+    // Allowlist the optimizer to one quality value (Next's default = 75).
+    // No <Image> in the codebase passes an explicit `quality` prop, so
+    // this collapses what could be ~5x transformations per source to 1x
+    // (per format x width), and rejects ?q=... probes from crawlers /
+    // copy-pasted URLs that would otherwise spawn spurious transforms.
+    qualities: [75],
+
     remotePatterns: [
       {
         protocol: "https",
