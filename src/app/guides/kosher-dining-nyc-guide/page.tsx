@@ -177,7 +177,7 @@ export default function KosherGuide() {
             </Link>&apos;s kosher scene is more upscale and geographically dispersed. The Upper West Side has a strong cluster of kosher restaurants catering to the neighborhood&apos;s significant Modern Orthodox population. Midtown has kosher steakhouses and business-lunch spots. The Lower East Side, historically the heart of Jewish New York, retains a few iconic kosher establishments alongside newer additions. Chelsea and the Flatiron District have seen kosher restaurant growth driven by the broader kosher-curious market.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Recent additions add to Manhattan&apos;s kosher scene: <Link href="/restaurants/ama-la-vita" className="font-semibold text-jade hover:text-forest">AMA LA VITA in the Flatiron District</Link> brings a hidden-gem kosher Italian concept to the neighborhood, while <Link href="/restaurants/falafel-crunch" className="font-semibold text-jade hover:text-forest">Falafel Crunch in Washington Heights</Link> is a rare halal-and-kosher overlap that extends kosher dining further uptown.
+            One notable Manhattan addition this batch: <Link href="/restaurants/moshes-falafel" className="font-semibold text-jade hover:text-forest">Moshe&apos;s falafel on the Upper West Side</Link> is a rare triple-tag hidden gem — kosher, halal, and vegetarian all certified in one kitchen — extending kosher-and-vegetarian dining into a stretch of the Upper West Side that had thin coverage.
           </p>
         </section>
 
