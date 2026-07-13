@@ -347,7 +347,7 @@ export default function HealthyBreakfastGuide() {
             ))}
           </div>
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Four recent additions worth a morning detour: <Link href="/restaurants/hutch-and-waldo" className="font-semibold text-jade hover:text-forest">Hutch and Waldo in Battery Park City</Link> anchors Manhattan&apos;s whole-foods-plus-low-calorie breakfast lineup, <Link href="/restaurants/musa-juice-bar" className="font-semibold text-jade hover:text-forest">Musa Juice Bar</Link> brings the same formula to Bushwick (Brooklyn), <Link href="/restaurants/jus-by-julie-great-neck" className="font-semibold text-jade hover:text-forest">Jus by Julie</Link> extends it to Bayside (Queens), and <Link href="/restaurants/fuel-grill-juice-bar" className="font-semibold text-jade hover:text-forest">Fuel Grill &amp; Juice Bar</Link> rounds out Staten Island with a Tottenville juice-and-bowl concept.
+            Four recent additions worth a morning detour: <Link href="/restaurants/salad-house-hudson" className="font-semibold text-jade hover:text-forest">Salad House in Hudson Yards</Link> and <Link href="/restaurants/remi-flower-coffee" className="font-semibold text-jade hover:text-forest">Remi Flower &amp; Coffee in the Financial District</Link> anchor Manhattan&apos;s whole-foods-plus-low-calorie breakfast lineup, <Link href="/restaurants/pure-bowl-go" className="font-semibold text-jade hover:text-forest">Pure Bowl &amp; Go</Link> brings the same formula to Bushwick (Brooklyn), and <Link href="/restaurants/sobol-whitestone" className="font-semibold text-jade hover:text-forest">SoBol Whitestone</Link> extends it to Queens with a Whitestone bowl concept.
           </p>
         </section>
 

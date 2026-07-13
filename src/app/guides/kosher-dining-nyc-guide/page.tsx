@@ -177,7 +177,7 @@ export default function KosherGuide() {
             </Link>&apos;s kosher scene is more upscale and geographically dispersed. The Upper West Side has a strong cluster of kosher restaurants catering to the neighborhood&apos;s significant Modern Orthodox population. Midtown has kosher steakhouses and business-lunch spots. The Lower East Side, historically the heart of Jewish New York, retains a few iconic kosher establishments alongside newer additions. Chelsea and the Flatiron District have seen kosher restaurant growth driven by the broader kosher-curious market.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            One notable Manhattan addition this batch: <Link href="/restaurants/moshes-falafel" className="font-semibold text-jade hover:text-forest">Moshe&apos;s falafel on the Upper West Side</Link> is a rare triple-tag hidden gem — kosher, halal, and vegetarian all certified in one kitchen — extending kosher-and-vegetarian dining into a stretch of the Upper West Side that had thin coverage.
+            Recent additions cluster in Brooklyn&apos;s Borough Park kosher scene: <Link href="/restaurants/shloimys-bake-shoppe" className="font-semibold text-jade hover:text-forest">Shloimy&apos;s Bake Shoppe</Link> and <Link href="/restaurants/sushi-taeem-boro-park" className="font-semibold text-jade hover:text-forest">Sushi Ta&apos;eem Boro Park</Link> both open in the Hasidic-community heart of Brooklyn kosher dining, while <Link href="/restaurants/that-sushi-spot-5towns" className="font-semibold text-jade hover:text-forest">That Sushi Spot 5towns in Rosedale</Link> extends the sushi-specific corner of the Queens kosher scene.
           </p>
         </section>
 
