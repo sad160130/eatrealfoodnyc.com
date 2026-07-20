@@ -190,6 +190,9 @@ export default function GlutenFreeGuide() {
             leads in dedicated GF options, particularly in neighborhoods with high concentrations of health-conscious diners. The West Village, Greenwich Village, and the Upper West Side have the highest density of restaurants with dedicated GF menus or separate preparation areas. The Lower East Side and East Village are also strong, with several all-GF bakeries and cafes that have become neighborhood institutions.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            A recent Chelsea addition is worth flagging for anyone managing celiac or gluten sensitivity: <Link href="/restaurants/the-protein-bakery" className="font-semibold text-jade hover:text-forest">The Protein Bakery in Chelsea</Link> is a dedicated gluten-free (and kosher-certified) bakery that qualified as a hidden gem on its first index — rated 4.5+ with fewer than 200 reviews.
+          </p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Brooklyn&apos;s Park Slope, Williamsburg, and Brooklyn Heights neighborhoods have embraced GF dining enthusiastically. Several Brooklyn pizzerias now offer GF crusts baked in separate ovens — a meaningful distinction from spots that simply bake GF dough in the same oven as regular pizza, which introduces contamination risk. The borough also hosts multiple dedicated GF bakeries.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
