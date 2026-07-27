@@ -95,7 +95,6 @@ export default async function NeighborhoodPage({
         business_status: "OPERATIONAL", is_published: true,
       },
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
-      take: 24,
     }),
     prisma.restaurant.aggregate({
       where: {
@@ -131,8 +130,12 @@ export default async function NeighborhoodPage({
     ],
   }
 
-  const avgRating = restaurants.reduce((sum, r) => sum + (r.rating ?? 0), 0) / restaurants.length
-  const roundedAvg = Math.round(avgRating * 10) / 10
+  // Card grid renders the top N; the full link list below renders all.
+  const CARD_LIMIT = 24
+
+  // ItemList publishes a 10-entry excerpt. Binding itemListElement to this
+  // array keeps the entries and any derived count from drifting apart.
+  const schemaItems = restaurants.slice(0, 10)
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -140,14 +143,7 @@ export default async function NeighborhoodPage({
     name: `Healthy Restaurants in ${neighborhoodName}, ${boroughName}`,
     description: `${restaurants.length} healthy restaurants in ${neighborhoodName}, ${boroughName}, NYC`,
     numberOfItems: restaurants.length,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: roundedAvg || 4.3,
-      reviewCount: restaurants.length,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    itemListElement: restaurants.slice(0, 10).map((r, i) => ({
+    itemListElement: schemaItems.map((r, i) => ({
       "@type": "ListItem",
       position: i + 1,
       item: {
@@ -246,16 +242,68 @@ export default async function NeighborhoodPage({
         {/* ─── Restaurant grid ─── */}
         <div className="mb-12">
           <p className="eyebrow">Listings</p>
-          <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, 24)} spots</h2>
+          <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, CARD_LIMIT)} spots</h2>
           <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
             Ranked by editorial priority, rating, and review depth.
           </p>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {restaurants.map((r, i) => (
+            {restaurants.slice(0, CARD_LIMIT).map((r, i) => (
               <RestaurantCard key={r.id} restaurant={r} priority={i === 0} />
             ))}
           </div>
         </div>
+
+        {/* ─── Full directory link list ───
+             Server-rendered plain anchors covering every published restaurant
+             in this neighbourhood, including the ones already shown as cards.
+             Exists so restaurants ranked below the card cap still receive a
+             crawlable internal link from their own neighbourhood hub.
+             No RestaurantCard, no images, no client component, no JS. */}
+        {restaurants.length > CARD_LIMIT && (
+          <section
+            className="mt-16 border-t pt-10"
+            style={{ borderTopColor: "var(--hairline)" }}
+          >
+            <p className="eyebrow">Full directory</p>
+            <h2 className="h2-serif mt-2">
+              All {restaurants.length} healthy restaurants in {neighborhoodName}
+            </h2>
+            <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
+              Every published listing in {neighborhoodName}, including the{" "}
+              {Math.min(restaurants.length, CARD_LIMIT)} featured above.
+            </p>
+            <ul
+              className="mt-6"
+              style={{
+                columnWidth: "260px",
+                columnGap: "2rem",
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+              }}
+            >
+              {restaurants.map((r) => (
+                <li
+                  key={r.id}
+                  style={{ breakInside: "avoid", padding: "0.4rem 0" }}
+                >
+                  <a
+                    href={`/restaurants/${r.slug}`}
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "0.9375rem",
+                      lineHeight: 1.45,
+                      color: "var(--color-forest)",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {r.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* ─── Diet sub-links ─── */}
         <section
