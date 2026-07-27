@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 
 export async function GET() {
   try {
@@ -16,7 +17,10 @@ export async function GET() {
 
     const enriched = await Promise.all(
       neighborhoods
-        .filter((n: typeof neighborhoods[number]) => n.neighborhood && n.borough && n._count.id >= 3)
+        .filter(
+          (n: typeof neighborhoods[number]) =>
+            n.neighborhood && n.borough && n._count.id >= NEIGHBORHOOD_HUB_MIN_RESTAURANTS
+        )
         .map(async (n: typeof neighborhoods[number]) => {
           const [gradeA, hiddenGems, dietaryData] = await Promise.all([
             prisma.restaurant.count({

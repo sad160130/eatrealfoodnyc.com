@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
+import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -69,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       borough: { not: null },
       neighborhood: { not: null },
     },
-    having: { id: { _count: { gte: 3 } } },
+    having: { id: { _count: { gte: NEIGHBORHOOD_HUB_MIN_RESTAURANTS } } },
   })
   const neighborhoodPages: MetadataRoute.Sitemap = neighborhoods
     .filter((n) => n.borough && n.neighborhood)

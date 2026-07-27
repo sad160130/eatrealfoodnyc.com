@@ -8,6 +8,15 @@ dotenv.config({ path: path.join(process.cwd(), ".env") })
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { prisma } = require("../lib/db") as { prisma: import("@prisma/client").PrismaClient }
 
+// Required AFTER dotenv.config() for the same reason as lib/db above: this
+// module transitively imports lib/db, which instantiates the Prisma client at
+// module-evaluation time and reads DATABASE_URL. A top-level ES import would
+// evaluate it before the env files are loaded.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } = require("../lib/neighborhood-hubs") as {
+  NEIGHBORHOOD_HUB_MIN_RESTAURANTS: number
+}
+
 interface RestaurantRow {
   name: string
   slug: string
@@ -109,7 +118,7 @@ async function pullBestRatedRestaurants() {
     take: 30,
   })
   const byNeighborhood = neighborhoodGroups
-    .filter((n) => n._count.id >= 3)
+    .filter((n) => n._count.id >= NEIGHBORHOOD_HUB_MIN_RESTAURANTS)
     .slice(0, 12)
     .map((n) => ({
       neighborhood: n.neighborhood,

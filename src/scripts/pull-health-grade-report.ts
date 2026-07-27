@@ -111,6 +111,8 @@ async function pullHealthGradeReport() {
   })
 
   const neighborhoodStats = neighborhoodTotals
+    // Intentionally independent of NEIGHBORHOOD_HUB_MIN_RESTAURANTS: this is a
+    // statistical-significance floor for grade-rate reporting, not a hub gate.
     .filter((n) => n._count.id >= 10)
     .map((n) => {
       const total = n._count.id

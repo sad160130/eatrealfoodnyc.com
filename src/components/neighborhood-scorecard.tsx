@@ -5,15 +5,25 @@ import type { NeighborhoodScore } from "@/data/neighborhood-scorecards"
 interface NeighborhoodScorecardProps {
   borough: string
   neighborhoods: NeighborhoodScore[]
+  /**
+   * Hub keys ("borough-slug/neighborhood-slug") that were actually built.
+   * Gating happens HERE rather than in pull-neighborhood-scorecards.ts so the
+   * contents of the generated JSON can never produce a link to an unbuilt hub.
+   * Passed as a plain string[] rather than a Set: this crosses a component
+   * boundary and an array is unambiguous if this ever becomes client-side.
+   */
+  validHubSlugs: string[]
 }
 
 export default function NeighborhoodScorecard({
   borough,
   neighborhoods,
+  validHubSlugs,
 }: NeighborhoodScorecardProps) {
   if (neighborhoods.length === 0) return null
 
   const boroughSlug = boroughToSlug(borough)
+  const validHubs = new Set(validHubSlugs)
   const sorted = [...neighborhoods].sort((a, b) => b.total - a.total)
 
   const gradeALeader = [...neighborhoods].sort((a, b) => b.gradeARate - a.gradeARate)[0]
@@ -166,12 +176,18 @@ export default function NeighborhoodScorecard({
                     >
                       {i + 1}
                     </span>
-                    <Link
-                      href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
-                      className="truncate text-sm font-semibold text-forest transition-colors hover:text-jade"
-                    >
-                      {n.neighborhood}
-                    </Link>
+                    {validHubs.has(`${boroughSlug}/${hoodSlug}`) ? (
+                      <Link
+                        href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
+                        className="truncate text-sm font-semibold text-forest transition-colors hover:text-jade"
+                      >
+                        {n.neighborhood}
+                      </Link>
+                    ) : (
+                      <span className="truncate text-sm font-semibold text-forest">
+                        {n.neighborhood}
+                      </span>
+                    )}
                   </th>
 
                   <td className="col-span-2 hidden text-center sm:block">

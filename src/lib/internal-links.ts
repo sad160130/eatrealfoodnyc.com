@@ -1,4 +1,5 @@
 import { boroughToSlug, neighborhoodToSlug, formatDietaryTag, parseDietaryTags } from "./utils"
+import { hasBuiltHub } from "./neighborhood-hubs"
 
 export const ANCHOR_TEXT = {
   boroughHub: (borough: string) => `healthy restaurants in ${borough}`,
@@ -23,11 +24,20 @@ export function getBoroughContextualLinks(borough: string): Array<[string, strin
   ]
 }
 
-export function getNeighborhoodContextualLinks(neighborhood: string, borough: string): Array<[string, string]> {
+export function getNeighborhoodContextualLinks(
+  neighborhood: string,
+  borough: string,
+  validHubs: Set<string>
+): Array<[string, string]> {
   const boroughSlug = boroughToSlug(borough)
   const hoodSlug = neighborhoodToSlug(neighborhood)
   return [
-    [ANCHOR_TEXT.neighborhoodHub(neighborhood, borough), `/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`],
+    // Only emit the neighbourhood hub when it cleared the threshold and was built.
+    ...(hasBuiltHub(validHubs, borough, neighborhood)
+      ? ([
+          [ANCHOR_TEXT.neighborhoodHub(neighborhood, borough), `/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`],
+        ] as Array<[string, string]>)
+      : []),
     [ANCHOR_TEXT.boroughHub(borough), `/nyc/${boroughSlug}/healthy-restaurants`],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
@@ -113,7 +123,7 @@ export function getListingHubLinks(restaurant: {
   borough: string | null
   neighborhood: string | null
   dietary_tags: string | null
-}): Array<[string, string]> {
+}, validHubs: Set<string>): Array<[string, string]> {
   const links: Array<[string, string]> = []
   const seen = new Set<string>()
   const add = (anchor: string, href: string) => {
@@ -124,8 +134,9 @@ export function getListingHubLinks(restaurant: {
 
   const { slug, borough, neighborhood } = restaurant
 
-  // 1 — Neighbourhood hub (strongest local relevance)
-  if (neighborhood && borough) {
+  // 1 — Neighbourhood hub (strongest local relevance).
+  //     Only when the hub cleared NEIGHBORHOOD_HUB_MIN_RESTAURANTS and was built.
+  if (neighborhood && borough && hasBuiltHub(validHubs, borough, neighborhood)) {
     add(
       pickAnchor(NEIGHBORHOOD_ANCHORS, slug, 1)(neighborhood),
       `/nyc/${boroughToSlug(borough)}/${neighborhoodToSlug(neighborhood)}/healthy-restaurants`
@@ -152,10 +163,14 @@ export function getListingHubLinks(restaurant: {
     })
 
   // 4 — Enforce the CC-23 floor: pad with authority/money pages if still short.
+  //     Ordered crawlable-first: /search is Disallow'd in robots.txt, so those
+  //     entries satisfy the count but are invisible to the link graph. Listings
+  //     whose neighbourhood hub was gated out above rely on this ordering to
+  //     still reach three CRAWLABLE links.
   const FALLBACKS: Array<[string, string]> = [
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
-    [ANCHOR_TEXT.gradeAFilter, "/search?grade=A"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
+    [ANCHOR_TEXT.gradeAFilter, "/search?grade=A"],
     [ANCHOR_TEXT.hiddenGems, "/search?hidden_gem=true"],
   ]
   for (const [anchor, href] of FALLBACKS) {

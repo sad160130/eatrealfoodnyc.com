@@ -21,6 +21,7 @@ import ContextualLinks from "@/components/contextual-links"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ReviewsSection from "@/components/reviews-section"
 import { getListingHubLinks } from "@/lib/internal-links"
+import { getBuiltNeighborhoodHubs, hasBuiltHub } from "@/lib/neighborhood-hubs"
 import { getReviewsForRestaurant } from "@/lib/reviews"
 import {
   buildRestaurantSchema,
@@ -98,6 +99,12 @@ export default async function RestaurantPage({
   ])
   if (!restaurant || !restaurant.is_published) notFound()
 
+  // Memoised — see neighborhood-hubs.ts. Gates the breadcrumb, the Explore
+  // card, and getListingHubLinks below so none of them can link to a
+  // neighbourhood hub that fell under NEIGHBORHOOD_HUB_MIN_RESTAURANTS.
+  const validHubs = await getBuiltNeighborhoodHubs()
+  const neighborhoodHubExists = hasBuiltHub(validHubs, restaurant.borough, restaurant.neighborhood)
+
   const price = formatPriceRange(restaurant.price_range)
   const priceLabel =
     restaurant.price_range === 1
@@ -125,7 +132,18 @@ export default async function RestaurantPage({
   const breadcrumbItems = [
     { label: "NYC Healthy Restaurants", href: "/search" },
     ...(restaurant.borough && boroughSlug ? [{ label: restaurant.borough, href: `/nyc/${boroughSlug}/healthy-restaurants` }] : []),
-    ...(restaurant.neighborhood && boroughSlug && neighborhoodSlug ? [{ label: restaurant.neighborhood, href: `/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants` }] : []),
+    // Neighbourhood level always present so the chain and the JSON-LD positions
+    // stay stable. href is omitted when the hub was not built: TopicalBreadcrumb
+    // then renders plain text and drops `item` from the ListItem, keeping
+    // position and name intact.
+    ...(restaurant.neighborhood && boroughSlug && neighborhoodSlug
+      ? [{
+          label: restaurant.neighborhood,
+          ...(neighborhoodHubExists
+            ? { href: `/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants` }
+            : {}),
+        }]
+      : []),
     { label: restaurant.name },
   ]
 
@@ -513,7 +531,7 @@ export default async function RestaurantPage({
               <p className="eyebrow">Explore</p>
               <ContextualLinks
                 intro={`${restaurant.name} is one of many healthy restaurants in our directory. See`}
-                links={getListingHubLinks(restaurant)}
+                links={getListingHubLinks(restaurant, validHubs)}
                 className="mt-3"
               />
             </section>
@@ -657,7 +675,7 @@ export default async function RestaurantPage({
           <p className="eyebrow">Explore more</p>
           <h2 className="h2-serif mt-2">Find similar spots</h2>
           <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {restaurant.neighborhood && boroughSlug && neighborhoodSlug && (
+            {restaurant.neighborhood && boroughSlug && neighborhoodSlug && neighborhoodHubExists && (
               <ExploreCard
                 eyebrow="Neighborhood"
                 title={restaurant.neighborhood}

@@ -11,6 +11,7 @@ import FAQSection from "@/components/faq-section"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
+import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
 import AboutThisData from "@/components/about-this-data"
 
 export async function generateStaticParams() {
@@ -21,7 +22,7 @@ export async function generateStaticParams() {
       borough: { not: null },
       neighborhood: { not: null },
     },
-    having: { id: { _count: { gte: 3 } } },
+    having: { id: { _count: { gte: NEIGHBORHOOD_HUB_MIN_RESTAURANTS } } },
     _count: { id: true },
   })
 
@@ -114,7 +115,10 @@ export default async function NeighborhoodPage({
     }),
   ])
 
-  if (restaurants.length < 3) notFound()
+  if (restaurants.length < NEIGHBORHOOD_HUB_MIN_RESTAURANTS) notFound()
+
+  // Gate for the contextual-links block below. Memoised — see neighborhood-hubs.ts.
+  const validHubs = await getBuiltNeighborhoodHubs()
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
   const dietLinks = ["vegan", "halal", "gluten-free"]
@@ -371,7 +375,7 @@ export default async function NeighborhoodPage({
         </p>
         <ContextualLinks
           intro="Explore further:"
-          links={getNeighborhoodContextualLinks(neighborhoodName, boroughName)}
+          links={getNeighborhoodContextualLinks(neighborhoodName, boroughName, validHubs)}
         />
       </div>
 

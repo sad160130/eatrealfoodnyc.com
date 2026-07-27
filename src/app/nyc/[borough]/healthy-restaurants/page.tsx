@@ -13,6 +13,7 @@ import BackToTop from "@/components/back-to-top"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import { getBoroughContextualLinks } from "@/lib/internal-links"
+import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
 import scorecardsData from "@/data/neighborhood-scorecards"
 import AboutThisData from "@/components/about-this-data"
@@ -92,6 +93,12 @@ export default async function BoroughPage({
   }, {} as Record<string, typeof restaurants>)
 
   const neighborhoodsSorted = Object.entries(byNeighborhood).sort((a, b) => b[1].length - a[1].length)
+
+  // Hubs that actually exist. Neighbourhoods below NEIGHBORHOOD_HUB_MIN_RESTAURANTS
+  // still get a section on this page (their restaurants are real and their cards
+  // should render) but must not be linked — those hub URLs are never built.
+  const validHubs = await getBuiltNeighborhoodHubs()
+  const hubExists = (hood: string) => validHubs.has(hubKey(boroughName, hood))
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -354,14 +361,16 @@ export default async function BoroughPage({
                       )}
                     </div>
                   </div>
-                  <Link
-                    href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
-                    className="eyebrow inline-flex flex-shrink-0 items-center gap-1.5 transition-colors"
-                    style={{ color: "var(--color-jade)" }}
-                  >
-                    View {neighborhood}
-                    <span aria-hidden="true">→</span>
-                  </Link>
+                  {hubExists(neighborhood) && (
+                    <Link
+                      href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
+                      className="eyebrow inline-flex flex-shrink-0 items-center gap-1.5 transition-colors"
+                      style={{ color: "var(--color-jade)" }}
+                    >
+                      View {neighborhood}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -430,7 +439,10 @@ export default async function BoroughPage({
             The top {Math.min(8, neighborhoodsSorted.length)} neighborhoods by published listing count.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {neighborhoodsSorted.slice(0, 8).map(([hood, rs]) => (
+            {neighborhoodsSorted
+              .filter(([hood]) => hubExists(hood))
+              .slice(0, 8)
+              .map(([hood, rs]) => (
               <Link
                 key={hood}
                 href={`/nyc/${boroughSlug}/${neighborhoodToSlug(hood)}/healthy-restaurants`}
@@ -526,6 +538,7 @@ export default async function BoroughPage({
           <NeighborhoodScorecard
             borough={boroughName}
             neighborhoods={neighborhoodScorecard}
+            validHubSlugs={[...validHubs]}
           />
         </div>
       )}
