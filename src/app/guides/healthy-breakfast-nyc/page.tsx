@@ -347,7 +347,7 @@ export default function HealthyBreakfastGuide() {
             ))}
           </div>
           <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Four recent additions worth a morning detour: <Link href="/restaurants/chelsea-juice" className="font-semibold text-jade hover:text-forest">Chelsea Juice in Greenwich Village</Link> (Grade A) and <Link href="/restaurants/busy-bee-organics" className="font-semibold text-jade hover:text-forest">Busy Bee Organics in the West Village</Link> anchor Manhattan&apos;s whole-foods breakfast lineup, <Link href="/restaurants/diem-eatery" className="font-semibold text-jade hover:text-forest">Diem Eatery in Brooklyn Heights</Link> brings a Grade A cafe version to Brooklyn, and <Link href="/restaurants/bean-berry" className="font-semibold text-jade hover:text-forest">Bean &amp; Berry in Far Rockaway</Link> extends it to Queens with a coffee-and-bowls counter.
+            Four recent additions worth a morning detour: <Link href="/restaurants/juke-box-juice-salads" className="font-semibold text-jade hover:text-forest">Juke Box Juice &amp; Salads in Harlem</Link> and <Link href="/restaurants/hawa-smoothies-bubble-tea" className="font-semibold text-jade hover:text-forest">Hawa Smoothies &amp; Bubble Tea on the Lower East Side</Link> anchor Manhattan&apos;s whole-foods breakfast lineup, <Link href="/restaurants/familiars-bagels-coffee" className="font-semibold text-jade hover:text-forest">Familiars Bagels &amp; Coffee in Bushwick</Link> brings it to Brooklyn as a hidden gem, and <Link href="/restaurants/julias" className="font-semibold text-jade hover:text-forest">Julia&apos;s in Ridgewood</Link> extends it to Queens.
           </p>
         </section>
 
