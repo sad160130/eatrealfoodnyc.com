@@ -189,6 +189,18 @@ export default function NYCHealthGradesGuide() {
             visible from the street. This has been the law since 2010.
           </p>
 
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            <a
+              href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j"
+              className="font-medium text-jade underline underline-offset-2 hover:text-forest"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Official NYC DOHMH inspection grade
+            </a>{" "}
+            letters on this site come from NYC Open Data dataset 43nn-pn8j. A restaurant page links to that dataset filtered by the restaurant name, or by CAMIS when an id is stored.
+          </p>
+
           {/* Quick reference table — breaks the paragraph pattern */}
           <div className="my-8 overflow-hidden rounded-xl border border-gray-200">
             <table className="w-full text-sm">
