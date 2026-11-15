@@ -119,16 +119,6 @@ export default async function BoroughPage({
   const validHubs = await getBuiltNeighborhoodHubs()
   const hubExists = (hood: string) => validHubs.has(hubKey(boroughName, hood))
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: boroughName, item: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants` },
-      { "@type": "ListItem", position: 3, name: "Healthy Restaurants" },
-    ],
-  }
-
   const itemListJsonLd = {
     ...buildHubItemList({
       name: `Healthy Restaurants in ${boroughName}, NYC`,
@@ -173,7 +163,7 @@ export default async function BoroughPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd]),
+          __html: JSON.stringify([itemListJsonLd, datasetJsonLd]),
         }}
       />
 
@@ -181,7 +171,7 @@ export default async function BoroughPage({
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 md:px-6">
           <TopicalBreadcrumb items={[
-            { label: "NYC Healthy Restaurants", href: "/search" },
+            { label: "Healthy Restaurants", href: "/healthy-restaurants" },
             { label: boroughName },
           ]} />
 
@@ -194,7 +184,7 @@ export default async function BoroughPage({
           </p>
 
           <h1 className="display-1 mt-3">
-            Healthy restaurants in {boroughName}.
+            Healthy restaurants in {boroughName}
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>

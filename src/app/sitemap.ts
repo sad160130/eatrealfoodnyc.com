@@ -137,9 +137,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  const dietPages = DIET_TYPES.map((tag) =>
-    entry(siteUrl, `/healthy-restaurants/${tag}`, 0.95, "weekly", latest(byDiet.get(tag) ?? []))
-  )
+  const dietPages = [
+    entry(siteUrl, "/healthy-restaurants", 0.9, "weekly", directoryUpdated),
+    ...DIET_TYPES.map((tag) =>
+      entry(siteUrl, `/healthy-restaurants/${tag}`, 0.95, "weekly", latest(byDiet.get(tag) ?? []))
+    ),
+  ]
 
   const boroughPages = BOROUGHS.map((borough) =>
     entry(siteUrl, `/nyc/${borough}/healthy-restaurants`, 0.9, "weekly", latest(byBorough.get(borough) ?? []))

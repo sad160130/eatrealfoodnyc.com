@@ -159,16 +159,6 @@ export default async function DietBoroughPage({
     ...config.faqs.slice(0, 2),
   ]
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: boroughName, item: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants` },
-      { "@type": "ListItem", position: 3, name: `${config.label} Restaurants` },
-    ],
-  }
-
   const itemListJsonLd = buildHubItemList({
     name: `${config.label} Restaurants in ${boroughName}, NYC`,
     description: `${totalCount} ${dietLower} restaurants in ${boroughName}, New York City, with NYC health inspection grades.`,
@@ -195,21 +185,11 @@ export default async function DietBoroughPage({
     variableMeasured: [`${config.label} classification`, "Health inspection grade", "Community rating", "Neighborhood"],
   }
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: comboFaqs.map((f) => ({
-      "@type": "Question",
-      name: f.question,
-      acceptedAnswer: { "@type": "Answer", text: f.answer },
-    })),
-  }
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd, faqJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([itemListJsonLd, datasetJsonLd]) }}
       />
 
       {/* ─── HERO ─── */}
@@ -217,7 +197,7 @@ export default async function DietBoroughPage({
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6">
           <TopicalBreadcrumb
             items={[
-              { label: "NYC Healthy Restaurants", href: "/search" },
+              { label: "Healthy Restaurants", href: "/healthy-restaurants" },
               { label: boroughName, href: `/nyc/${boroughSlug}/healthy-restaurants` },
               { label: `${config.label} Restaurants` },
             ]}
@@ -229,7 +209,7 @@ export default async function DietBoroughPage({
           </p>
 
           <h1 className="display-1 mt-3">
-            {config.label} restaurants in {boroughName}.
+            {config.label} restaurants in {boroughName}
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
