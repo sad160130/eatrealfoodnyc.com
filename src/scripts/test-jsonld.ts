@@ -1,16 +1,18 @@
 import assert from "node:assert/strict"
 import {
-  aggregateRatingFields,
   buildBreadcrumbList,
   buildHubItemList,
   buildRestaurantSchema,
   siteGraph,
+  stateCode,
 } from "../lib/schema"
+import { stripReviewMarkup } from "../lib/review-text"
 import { extractJsonLd, validateJsonLd, validateVisibleHtml } from "../lib/validate-jsonld"
 
-assert.equal(aggregateRatingFields(4.5, 0), undefined)
-assert.equal(aggregateRatingFields(null, 10), undefined)
-assert.equal(aggregateRatingFields(4.2, 3)?.reviewCount, 3)
+assert.equal(stripReviewMarkup("Fries, OMG!!<br>The Beyond"), "Fries, OMG!! The Beyond")
+assert.equal(stripReviewMarkup("A&lt;br&gt;B"), "A B")
+assert.equal(stateCode("New York"), "NY")
+assert.equal(stateCode("ny"), "NY")
 
 const restaurant = buildRestaurantSchema({
   name: "Joe's Pizza",
@@ -27,12 +29,22 @@ const restaurant = buildRestaurantSchema({
   reviews: 120,
   inspection_grade: "A",
   inspection_score: 9,
+  photo: "https://example.com/photo.jpg",
+  working_hours: JSON.stringify({ Monday: ["8AM-11PM"] }),
   updated_at: "2026-03-02T00:00:00.000Z",
 })
 assert.equal(restaurant["@type"], "Restaurant")
 assert.equal(restaurant.address.streetAddress, "7 Carmine St")
+assert.equal(restaurant.address.addressRegion, "NY")
+assert.equal(restaurant.image, "https://example.com/photo.jpg")
+assert.equal(restaurant.openingHoursSpecification?.[0]?.opens, "08:00")
+assert.equal(restaurant.openingHoursSpecification?.[0]?.closes, "23:00")
+assert.equal("aggregateRating" in restaurant, false)
+assert.equal("review" in restaurant, false)
 assert.ok(restaurant.additionalProperty.some((property) => property.value === "NYC DOHMH Grade A"))
 assert.ok(restaurant.additionalProperty.some((property) => property.value === 9))
+assert.equal(siteGraph()["@graph"][0].name, "Eat Real Food NYC")
+assert.equal("founder" in siteGraph()["@graph"][0], false)
 
 const unrated = buildRestaurantSchema({
   name: "No Reviews",
@@ -61,6 +73,7 @@ const list = buildHubItemList({
   ],
 })
 assert.equal(list.numberOfItems, 2)
+assert.equal("aggregateRating" in list.itemListElement[0].item, false)
 assert.equal("aggregateRating" in list.itemListElement[1].item, false)
 
 const crumbs = buildBreadcrumbList([

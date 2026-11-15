@@ -1,18 +1,8 @@
 import type { RestaurantReview, ReviewsSummary } from "./reviews"
 import { presentGrade } from "@/lib/grade-display"
+import { stripReviewMarkup } from "@/lib/review-text"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
-
-export const FOUNDER_ROHAN = {
-  "@type": "Person",
-  "@id": `${SITE_URL}/#rohan-kadam`,
-  name: "Rohan Kadam",
-  jobTitle: "Founder & Marketing Lead",
-  url: `${SITE_URL}/about/team`,
-  sameAs: ["https://www.linkedin.com/in/rohan-kadam-176922204"],
-  alumniOf: { "@type": "CollegeOrUniversity", name: "University of Mumbai" },
-  worksFor: { "@id": `${SITE_URL}/#organization` },
-}
 
 export const ORGANIZATION_SCHEMA = {
   "@type": "Organization",
@@ -20,9 +10,8 @@ export const ORGANIZATION_SCHEMA = {
   name: "Eat Real Food NYC",
   url: SITE_URL,
   logo: { "@type": "ImageObject", "@id": `${SITE_URL}/#logo`, url: `${SITE_URL}/logo.png`, contentUrl: `${SITE_URL}/logo.png`, caption: "Eat Real Food NYC" },
-  description: "NYC's most trusted healthy restaurant directory, built on verified NYC Department of Health inspection data.",
+  description: "A directory of healthy restaurants in New York City, with NYC Department of Health inspection grades when a record is matched.",
   foundingDate: "2026",
-  founder: [FOUNDER_ROHAN],
   areaServed: { "@type": "City", name: "New York City", address: { "@type": "PostalAddress", addressRegion: "NY", addressCountry: "US" } },
   knowsAbout: [
     "Healthy restaurants in New York City",
@@ -60,18 +49,45 @@ export const PUBLISHER_REF = {
   url: SITE_URL,
 }
 
-export function aggregateRatingFields(
-  rating: number | null | undefined,
-  reviewCount: number | null | undefined
-) {
-  if (rating == null || reviewCount == null || reviewCount < 1) return undefined
-  return {
-    "@type": "AggregateRating",
-    ratingValue: rating,
-    reviewCount,
-    bestRating: 5,
-    worstRating: 1,
+export function stateCode(state: string | null | undefined): string {
+  const value = (state ?? "").trim()
+  if (!value || /^new york$/i.test(value) || value.toUpperCase() === "NY") return "NY"
+  if (/^[A-Za-z]{2}$/.test(value)) return value.toUpperCase()
+  return "NY"
+}
+
+function clockToken(token: string): string | null {
+  const match = token.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i)
+  if (!match) return null
+  let hour = Number(match[1])
+  const minute = match[2] ?? "00"
+  const meridiem = match[3].toUpperCase()
+  if (hour < 1 || hour > 12 || Number(minute) > 59) return null
+  if (meridiem === "AM") hour = hour === 12 ? 0 : hour
+  else if (hour !== 12) hour += 12
+  return `${String(hour).padStart(2, "0")}:${minute}`
+}
+
+export function openingHoursSpecification(raw: string | null | undefined) {
+  if (!raw) return undefined
+  let parsed: Record<string, string[]>
+  try {
+    parsed = JSON.parse(raw) as Record<string, string[]>
+  } catch {
+    return undefined
   }
+  const specs: Array<{ "@type": "OpeningHoursSpecification"; dayOfWeek: string; opens: string; closes: string }> = []
+  for (const day of ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]) {
+    for (const range of parsed[day] ?? []) {
+      const [openRaw, closeRaw] = range.split(/\s*[–-]\s*/)
+      if (!openRaw || !closeRaw) continue
+      const opens = clockToken(openRaw)
+      const closes = clockToken(closeRaw)
+      if (!opens || !closes) continue
+      specs.push({ "@type": "OpeningHoursSpecification", dayOfWeek: day, opens, closes })
+    }
+  }
+  return specs.length > 0 ? specs : undefined
 }
 
 export function buildRestaurantSchema(restaurant: {
@@ -80,10 +96,12 @@ export function buildRestaurantSchema(restaurant: {
   phone: string | null; website: string | null; type: string | null; rating: number | null;
   reviews: number | null; inspection_grade: string | null; inspection_score?: number | null;
   inspection_date?: string | null;
+  photo?: string | null;
+  working_hours?: string | null;
   updated_at: string | Date;
 }) {
   const gradeView = presentGrade(restaurant.inspection_grade)
-  const aggregateRating = aggregateRatingFields(restaurant.rating, restaurant.reviews)
+  const hours = openingHoursSpecification(restaurant.working_hours)
   const additionalProperty = [
     { "@type": "PropertyValue" as const, name: "NYC Health Inspection Grade", value: gradeView.title },
     ...(restaurant.inspection_score != null
@@ -99,14 +117,15 @@ export function buildRestaurantSchema(restaurant: {
       "@type": "PostalAddress",
       streetAddress: restaurant.address,
       addressLocality: restaurant.city || "New York",
-      addressRegion: restaurant.state || "NY",
+      addressRegion: stateCode(restaurant.state),
       addressCountry: "US",
     },
+    ...(restaurant.photo ? { image: restaurant.photo } : {}),
     ...(restaurant.latitude && restaurant.longitude && { geo: { "@type": "GeoCoordinates", latitude: restaurant.latitude, longitude: restaurant.longitude } }),
     ...(restaurant.phone && { telephone: restaurant.phone }),
     ...(restaurant.website && { sameAs: restaurant.website }),
+    ...(hours ? { openingHoursSpecification: hours } : {}),
     servesCuisine: restaurant.type ? [restaurant.type] : ["Healthy food"],
-    ...(aggregateRating && { aggregateRating }),
     additionalProperty,
     publisher: PUBLISHER_REF,
     dateModified: new Date(restaurant.updated_at).toISOString(),
@@ -126,15 +145,13 @@ export function buildHubItemList(input: {
     description: input.description,
     numberOfItems: input.restaurants.length,
     itemListElement: input.restaurants.map((restaurant, index) => {
-      const aggregateRating = aggregateRatingFields(restaurant.rating, restaurant.reviews)
-      return {
+        return {
         "@type": "ListItem",
         position: index + 1,
         item: {
           "@type": "Restaurant",
           name: restaurant.name,
           url: `${input.siteUrl}/restaurants/${restaurant.slug}`,
-          ...(aggregateRating && { aggregateRating }),
         },
       }
     }),
@@ -205,7 +222,10 @@ export function buildReviewSchema(reviews: RestaurantReview[]) {
       ...(r.publishedAt
         ? { datePublished: r.publishedAt.toISOString().split("T")[0] }
         : {}),
-      reviewBody: r.text.length > 500 ? r.text.slice(0, 497) + "..." : r.text,
+      reviewBody: (() => {
+        const text = stripReviewMarkup(r.text)
+        return text.length > 500 ? text.slice(0, 497) + "..." : text
+      })(),
     }))
 }
 

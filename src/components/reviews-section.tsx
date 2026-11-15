@@ -1,4 +1,5 @@
 import type { ReviewsSummary } from "@/lib/reviews"
+import { stripReviewMarkup } from "@/lib/review-text"
 
 /**
  * Reviews display. Information architecture from the spec:
@@ -259,7 +260,7 @@ export default function ReviewsSection({
                     lineHeight: 1.6,
                   }}
                 >
-                  {review.text}
+                  {stripReviewMarkup(review.text)}
                 </p>
 
                 {/* Likes */}
@@ -297,7 +298,7 @@ export default function ReviewsSection({
                         lineHeight: 1.55,
                       }}
                     >
-                      {review.ownerResponse}
+                      {stripReviewMarkup(review.ownerResponse)}
                     </p>
                   </div>
                 )}

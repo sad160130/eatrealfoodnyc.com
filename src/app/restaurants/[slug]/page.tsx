@@ -25,12 +25,7 @@ import ReviewsSection from "@/components/reviews-section"
 import { getListingHubLinks } from "@/lib/internal-links"
 import { getBuiltNeighborhoodHubs, hasBuiltHub } from "@/lib/neighborhood-hubs"
 import { getReviewsForRestaurant } from "@/lib/reviews"
-import {
-  buildRestaurantSchema,
-  buildReviewSchema,
-  buildReviewAggregateRating,
-  ORGANIZATION_SCHEMA,
-} from "@/lib/schema"
+import { buildRestaurantSchema, PUBLISHER_REF } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
 import OfficialGradeLink from "@/components/official-grade-link"
@@ -51,7 +46,7 @@ import NearbyGradeAList from "@/components/nearby-grade-a"
 import FAQSection from "@/components/faq-section"
 import { nearbyGradeA } from "@/lib/nearby-grade-a"
 import { restaurantFaqs } from "@/lib/restaurant-faq"
-import { formatMonthYear } from "@/lib/inspection-dates"
+import { formatMonthYear, parseInspectionDate } from "@/lib/inspection-dates"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
@@ -163,6 +158,11 @@ export default async function RestaurantPage({
 
   const todayName = DAYS_ORDER[new Date().getDay()]
   const gradeView = presentGrade(restaurant.inspection_grade)
+  const parsedInspection = parseInspectionDate(restaurant.inspection_date)
+  const snapshot = await getDirectorySnapshot()
+  const dataThrough = parsedInspection
+    ? formatMonthYear(parsedInspection)
+    : snapshot.lastPublishLabel ?? "the latest directory update"
 
   const breadcrumbItems = [
     { label: "Healthy Restaurants", href: "/healthy-restaurants" },
@@ -184,46 +184,15 @@ export default async function RestaurantPage({
 
   return (
     <>
-      {(() => {
-        // Build the base Restaurant schema. buildRestaurantSchema may
-        // already attach an aggregateRating from Google-sourced columns
-        // (restaurant.rating / restaurant.reviews). When we have real
-        // scraped reviews on the page, that aggregate MUST be replaced
-        // with one that describes the displayed review set — Google
-        // rich-results require the schema's aggregateRating and the
-        // visible review list to be consistent. Mismatched counts (e.g.
-        // schema says 5,618 but page shows 15) can suppress the rich
-        // result and is a structured-data violation.
-        const restaurantSchema = buildRestaurantSchema(restaurant) as ReturnType<
-          typeof buildRestaurantSchema
-        > & {
-          aggregateRating?: NonNullable<ReturnType<typeof buildReviewAggregateRating>>
-          review?: ReturnType<typeof buildReviewSchema>
-        }
-
-        if (reviewsSummary.hasReviews) {
-          const aggregateRating = buildReviewAggregateRating(reviewsSummary)
-          const reviewSchema = buildReviewSchema(reviewsSummary.reviews)
-          // Overwrite the Google aggregate — never coexist; two
-          // aggregateRating values in one schema is invalid.
-          if (aggregateRating) restaurantSchema.aggregateRating = aggregateRating
-          if (reviewSchema.length > 0) restaurantSchema.review = reviewSchema
-        }
-        // else: keep whatever buildRestaurantSchema set (or nothing if
-        // restaurant.rating / restaurant.reviews were absent).
-
-        return (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@graph": [restaurantSchema, ORGANIZATION_SCHEMA],
-              }),
-            }}
-          />
-        )
-      })()}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [buildRestaurantSchema(restaurant), PUBLISHER_REF],
+          }),
+        }}
+      />
 
       {/* ─── BREADCRUMB ─── */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
@@ -275,6 +244,13 @@ export default async function RestaurantPage({
                 address: restaurant.address,
                 type: restaurant.type,
               })}
+            </p>
+            <p className="mt-2 text-sm" style={{ color: "var(--color-muted)" }}>
+              Data through{" "}
+              <Link href="/about/our-data" className="underline underline-offset-2" style={{ color: "var(--color-jade)" }}>
+                {dataThrough}
+              </Link>
+              .
             </p>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2" style={{ maxWidth: "62ch" }}>
               <div>
@@ -487,53 +463,6 @@ export default async function RestaurantPage({
               <p className="eyebrow">The brief</p>
               <h2 className="h2-serif mt-2">About {restaurant.name}</h2>
               <ListingBodyLinks restaurant={restaurant} validHubs={validHubs} />
-
-              {/* Editorial asides */}
-              {restaurant.rating && restaurant.rating >= 4.5 && (restaurant.reviews ?? 0) >= 500 && (
-                <aside
-                  className="mt-6 border-l pl-5 py-1"
-                  style={{
-                    borderLeftWidth: "2px",
-                    borderLeftColor: "var(--color-sage)",
-                    maxWidth: "62ch",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontStyle: "italic",
-                      fontSize: "1rem",
-                      lineHeight: 1.55,
-                      color: "var(--color-text)",
-                    }}
-                  >
-                    A {restaurant.rating}/5 across {(restaurant.reviews ?? 0).toLocaleString()} reviews is unusually consistent for{" "}
-                    {restaurant.neighborhood || "NYC"} — the kind of volume-with-score combination that suggests genuine quality, not hype.
-                  </p>
-                </aside>
-              )}
-              {restaurant.inspection_grade === "A" && restaurant.is_hidden_gem && (
-                <aside
-                  className="mt-6 border-l pl-5 py-1"
-                  style={{
-                    borderLeftWidth: "2px",
-                    borderLeftColor: "var(--color-amber)",
-                    maxWidth: "62ch",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontStyle: "italic",
-                      fontSize: "1rem",
-                      lineHeight: 1.55,
-                      color: "var(--color-text)",
-                    }}
-                  >
-                    <span className="gem-mark">✦</span> A hidden gem with a clean Grade A — the kind of spot regulars keep to themselves.
-                  </p>
-                </aside>
-              )}
             </section>
 
             {/* NYC Health Inspection — the placard, the explanation. No bespoke colors. */}
