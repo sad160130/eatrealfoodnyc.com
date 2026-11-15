@@ -1,16 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { GUIDES, GUIDE_CATEGORIES, getFeaturedGuides, getGuidesByCategory } from "@/config/guides"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
-export const metadata: Metadata = {
-  title: "NYC Healthy Dining Guides — Expert Advice on Eating Well in New York City",
+export const metadata: Metadata = pageMeta({
+  path: "/guides",
+  title: "NYC Healthy Dining Guides",
   description:
     "In-depth guides for health-conscious diners in NYC. Learn about health inspection grades, dietary options, neighborhood rankings, and how to find the best healthy restaurants.",
-  alternates: { canonical: getCanonicalUrl("/guides") },
-  robots: { index: true, follow: true },
-}
+})
 
 export default async function GuidesPage() {
   const { restaurants } = await getPublishedDirectoryCounts()

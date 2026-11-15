@@ -1,16 +1,14 @@
 import { prisma } from "@/lib/db"
 import ComparePageView from "@/components/compare-page-view"
 import Link from "next/link"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata = {
-  title: "Compare Restaurants — Eat Real Food NYC",
+export const metadata = pageMeta({
+  path: "/compare",
+  title: "Compare Restaurants",
   description: "Side-by-side restaurant comparison.",
-  robots: {
-    index: false,
-    follow: true,
-    googleBot: { index: false, follow: true },
-  },
-}
+  index: false,
+})
 
 export default async function ComparePage({
   searchParams,

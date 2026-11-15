@@ -16,6 +16,8 @@
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@tailwindcss/postcss": "^4.2.2",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.1.0",
     "dotenv": "^17.3.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.14.0",

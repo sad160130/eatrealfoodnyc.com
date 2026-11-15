@@ -1,127 +1,197 @@
 import type { MetadataRoute } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
-import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
+import { COMBO_MIN_RESTAURANTS, DIET_CONFIG } from "@/config/dietary-tags"
+import { GUIDES } from "@/config/guides"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
+import healthGradeReport from "@/data/health-grade-report"
+import bestRatedReport from "@/data/best-rated-restaurants"
+
+const DIET_TYPES = Object.keys(DIET_CONFIG)
+const BOROUGHS = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"] as const
+
+/**
+ * Editorial pages don't have a row timestamp. These are the last dates the
+ * copy itself was revised, not the clock at build time.
+ */
+const STATIC_LASTMOD: Record<string, string> = {
+  "/about": "2026-03-01",
+  "/about/our-data": "2026-04-01",
+  "/about/editorial-standards": "2026-03-01",
+  "/about/team": "2026-03-01",
+  "/contact": "2026-03-01",
+  "/press": "2026-03-01",
+  "/partner-with-us": "2026-11-15",
+  "/privacy": "2026-03-01",
+  "/terms": "2026-03-01",
+  "/map": "2026-04-01",
+  "/nyc/compare": "2026-04-01",
+  "/guides": "2026-02-15",
+}
+
+export function editorialPaths(): string[] {
+  return [
+    ...GUIDES.map((guide) => `/guides/${guide.slug}`),
+    "/data/nyc-restaurant-health-grade-report",
+    "/data/best-rated-restaurants",
+  ]
+}
+
+function asDate(value: string | Date | null | undefined): Date | undefined {
+  if (!value) return undefined
+  const date = value instanceof Date ? value : new Date(value)
+  return Number.isNaN(date.getTime()) ? undefined : date
+}
+
+function latest(dates: Array<Date | undefined>): Date | undefined {
+  let max = 0
+  for (const date of dates) {
+    if (!date) continue
+    const time = date.getTime()
+    if (time > max) max = time
+  }
+  return max > 0 ? new Date(max) : undefined
+}
+
+function entry(
+  siteUrl: string,
+  path: string,
+  priority: number,
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
+  lastModified?: Date
+): MetadataRoute.Sitemap[number] {
+  return {
+    url: path === "/" ? siteUrl : `${siteUrl}${path}`,
+    lastModified,
+    changeFrequency,
+    priority,
+  }
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com").replace(/\/$/, "")
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: siteUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${siteUrl}/about`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${siteUrl}/about/our-data`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${siteUrl}/about/editorial-standards`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${siteUrl}/about/team`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${siteUrl}/contact`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${siteUrl}/press`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${siteUrl}/partner-with-us`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${siteUrl}/privacy`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${siteUrl}/terms`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${siteUrl}/map`, changeFrequency: "weekly", priority: 0.75 },
-    { url: `${siteUrl}/nyc/compare`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${siteUrl}/guides`, changeFrequency: "monthly", priority: 0.8 },
-  ]
-
-  // Guide pages
-  const guideSlugs = [
-    "nyc-health-grades-explained",
-    "nyc-restaurant-inspection-process",
-    "vegan-nyc-borough-guide",
-    "halal-food-guide-nyc",
-    "gluten-free-dining-nyc",
-    "how-eat-healthy-nyc-15-dollars",
-    "best-healthy-neighborhoods-nyc",
-    "hidden-gem-restaurants-nyc",
-    "kosher-dining-nyc-guide",
-    "late-night-healthy-eating-nyc",
-  ]
-  const guidePages: MetadataRoute.Sitemap = guideSlugs.map((slug) => ({
-    url: `${siteUrl}/guides/${slug}`,
-    changeFrequency: "monthly",
-    priority: 0.85,
-  }))
-
-  // Diet-type hub pages
-  const dietTypes = [
-    "vegan", "vegetarian", "gluten-free", "halal", "kosher",
-    "dairy-free", "keto", "paleo", "whole-foods", "low-calorie", "raw-food", "nut-free",
-  ]
-  const dietPages: MetadataRoute.Sitemap = dietTypes.map((tag) => ({
-    url: `${siteUrl}/healthy-restaurants/${tag}`,
-    changeFrequency: "weekly",
-    priority: 0.95,
-  }))
-
-  // Borough hub pages
-  const boroughs = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"]
-  const boroughPages: MetadataRoute.Sitemap = boroughs.map((b) => ({
-    url: `${siteUrl}/nyc/${b}/healthy-restaurants`,
-    changeFrequency: "weekly",
-    priority: 0.9,
-  }))
-
-  // Neighborhood hub pages
-  const neighborhoods = await prisma.restaurant.groupBy({
-    by: ["borough", "neighborhood"],
-    where: {
-      business_status: "OPERATIONAL",
-      is_published: true,
-      borough: { not: null },
-      neighborhood: { not: null },
-    },
-    having: { id: { _count: { gte: NEIGHBORHOOD_HUB_MIN_RESTAURANTS } } },
-  })
-  const neighborhoodPages: MetadataRoute.Sitemap = neighborhoods
-    .filter((n) => n.borough && n.neighborhood)
-    .map((n) => ({
-      url: `${siteUrl}/nyc/${boroughToSlug(n.borough!)}/${neighborhoodToSlug(n.neighborhood!)}/healthy-restaurants`,
-      changeFrequency: "weekly" as const,
-      priority: 0.85,
-    }))
-
-  // Diet + borough combo hub pages (gated to avoid thin pages)
-  const comboGroups = await Promise.all(
-    dietTypes.map((tag) =>
-      prisma.restaurant
-        .groupBy({
-          by: ["borough"],
-          where: {
-            business_status: "OPERATIONAL",
-            is_published: true,
-            dietary_tags: { contains: tag },
-            borough: { not: null },
-          },
-          having: { id: { _count: { gte: COMBO_MIN_RESTAURANTS } } },
-        })
-        .then((rows) => ({ tag, rows }))
-    )
-  )
-  const comboPages: MetadataRoute.Sitemap = comboGroups.flatMap(({ tag, rows }) =>
-    rows
-      .filter((r) => r.borough)
-      .map((r) => ({
-        url: `${siteUrl}/nyc/${boroughToSlug(r.borough!)}/${tag}-restaurants`,
-        changeFrequency: "weekly" as const,
-        priority: 0.85,
-      }))
-  )
-
-  // Published restaurant pages
   const restaurants = await prisma.restaurant.findMany({
-    where: { is_published: true },
-    select: { slug: true },
+    where: { is_published: true, business_status: "OPERATIONAL" },
+    select: {
+      slug: true,
+      updated_at: true,
+      borough: true,
+      neighborhood: true,
+      dietary_tags: true,
+    },
   })
-  const restaurantPages: MetadataRoute.Sitemap = restaurants.map((r) => ({
-    url: `${siteUrl}/restaurants/${r.slug}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }))
+
+  const directoryUpdated = latest(restaurants.map((row) => row.updated_at))
+
+  const staticPages = [
+    entry(siteUrl, "/", 1, "daily", directoryUpdated),
+    ...Object.entries(STATIC_LASTMOD).map(([path, date]) =>
+      entry(siteUrl, path, path.startsWith("/about") ? 0.7 : path === "/guides" ? 0.8 : path === "/nyc/compare" ? 0.8 : path === "/map" ? 0.75 : 0.5, path === "/map" || path === "/nyc/compare" ? "weekly" : "monthly", asDate(date))
+    ),
+  ]
+
+  const guidePages = GUIDES.map((guide) =>
+    entry(siteUrl, `/guides/${guide.slug}`, 0.85, "monthly", asDate(guide.publishedDate))
+  )
+
+  const byDiet = new Map<string, Date[]>()
+  const byBorough = new Map<string, Date[]>()
+  const byNeighborhood = new Map<string, { borough: string; neighborhood: string; dates: Date[]; count: number }>()
+  const byCombo = new Map<string, { borough: string; tag: string; dates: Date[]; count: number }>()
+
+  for (const row of restaurants) {
+    const tags = (row.dietary_tags ?? "").split("|").map((tag) => tag.trim()).filter(Boolean)
+    for (const tag of tags) {
+      if (!DIET_TYPES.includes(tag)) continue
+      const dates = byDiet.get(tag) ?? []
+      dates.push(row.updated_at)
+      byDiet.set(tag, dates)
+      if (row.borough) {
+        const key = `${row.borough}::${tag}`
+        const combo = byCombo.get(key) ?? { borough: row.borough, tag, dates: [], count: 0 }
+        combo.dates.push(row.updated_at)
+        combo.count += 1
+        byCombo.set(key, combo)
+      }
+    }
+    if (row.borough) {
+      const slug = boroughToSlug(row.borough)
+      const dates = byBorough.get(slug) ?? []
+      dates.push(row.updated_at)
+      byBorough.set(slug, dates)
+    }
+    if (row.borough && row.neighborhood) {
+      const key = `${row.borough}::${row.neighborhood}`
+      const hood = byNeighborhood.get(key) ?? {
+        borough: row.borough,
+        neighborhood: row.neighborhood,
+        dates: [],
+        count: 0,
+      }
+      hood.dates.push(row.updated_at)
+      hood.count += 1
+      byNeighborhood.set(key, hood)
+    }
+  }
+
+  const dietPages = DIET_TYPES.map((tag) =>
+    entry(siteUrl, `/healthy-restaurants/${tag}`, 0.95, "weekly", latest(byDiet.get(tag) ?? []))
+  )
+
+  const boroughPages = BOROUGHS.map((borough) =>
+    entry(siteUrl, `/nyc/${borough}/healthy-restaurants`, 0.9, "weekly", latest(byBorough.get(borough) ?? []))
+  )
+
+  const neighborhoodPages = [...byNeighborhood.values()]
+    .filter((hood) => hood.count >= NEIGHBORHOOD_HUB_MIN_RESTAURANTS)
+    .map((hood) =>
+      entry(
+        siteUrl,
+        `/nyc/${boroughToSlug(hood.borough)}/${neighborhoodToSlug(hood.neighborhood)}/healthy-restaurants`,
+        0.85,
+        "weekly",
+        latest(hood.dates)
+      )
+    )
+
+  const comboPages = [...byCombo.values()]
+    .filter((combo) => combo.count >= COMBO_MIN_RESTAURANTS)
+    .map((combo) =>
+      entry(
+        siteUrl,
+        `/nyc/${boroughToSlug(combo.borough)}/${combo.tag}-restaurants`,
+        0.85,
+        "weekly",
+        latest(combo.dates)
+      )
+    )
+
+  const dataPages = [
+    entry(
+      siteUrl,
+      "/data/nyc-restaurant-health-grade-report",
+      0.9,
+      "monthly",
+      asDate(healthGradeReport.generatedAt)
+    ),
+    entry(
+      siteUrl,
+      "/data/best-rated-restaurants",
+      0.9,
+      "monthly",
+      asDate(bestRatedReport.generatedAt)
+    ),
+  ]
+
+  const restaurantPages = restaurants.map((row) =>
+    entry(siteUrl, `/restaurants/${row.slug}`, 0.8, "monthly", row.updated_at)
+  )
 
   return [
     ...staticPages,
     ...guidePages,
+    ...dataPages,
     ...dietPages,
     ...boroughPages,
     ...neighborhoodPages,

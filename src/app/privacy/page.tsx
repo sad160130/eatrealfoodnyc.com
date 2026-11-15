@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy — Eat Real Food NYC",
+export const metadata: Metadata = pageMeta({
+  path: "/privacy",
+  title: "Privacy Policy",
   description:
     "Eat Real Food NYC privacy policy: what data we collect, what we do not collect, how we use cookies, and your rights. Effective March 2026.",
-  alternates: { canonical: getCanonicalUrl("/privacy") },
-  robots: { index: true, follow: true },
-}
+})
 
 export default function PrivacyPage() {
   return (

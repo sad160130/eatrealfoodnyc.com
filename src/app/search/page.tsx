@@ -1,18 +1,13 @@
 import { Suspense } from "react"
 import SearchPageClient from "@/components/search-page-client"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata = {
+export const metadata = pageMeta({
+  path: "/search",
   title: "Search Healthy Restaurants — NYC",
   description: "Search and filter healthy restaurants across New York City.",
-  robots: {
-    index: false,
-    follow: true,
-    googleBot: {
-      index: false,
-      follow: true,
-    },
-  },
-}
+  index: false,
+})
 
 export default async function SearchPage({
   searchParams,

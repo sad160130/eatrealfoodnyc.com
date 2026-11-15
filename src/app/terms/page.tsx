@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata: Metadata = {
-  title: "Terms of Service — Eat Real Food NYC",
+export const metadata: Metadata = pageMeta({
+  path: "/terms",
+  title: "Terms of Service",
   description:
     "Terms of Service for Eat Real Food NYC: service description, data accuracy disclaimer, user content, intellectual property, and governing law. Effective March 2026.",
-  alternates: { canonical: getCanonicalUrl("/terms") },
-  robots: { index: true, follow: true },
-}
+})
 
 export default function TermsPage() {
   return (

@@ -1,17 +1,17 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 import AboutThisData from "@/components/about-this-data"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { restaurants } = await getPublishedDirectoryCounts()
-  return {
+  return pageMeta({
+    path: "/about/our-data",
     title: "Our Data — NYC Restaurant Health Inspection Grades",
     description: `How Eat Real Food NYC sources, verifies, and scores ${restaurants.toLocaleString()} published restaurants using NYC Health Department data, Google Maps listings, and AI-assisted dietary tagging.`,
-    alternates: { canonical: getCanonicalUrl("/about/our-data") },
-    robots: { index: true, follow: true },
-  }
+  })
 }
 
 export default function OurDataPage() {

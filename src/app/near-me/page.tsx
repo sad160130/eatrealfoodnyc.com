@@ -1,15 +1,13 @@
 import { Suspense } from "react"
 import NearMePageClient from "@/components/near-me-page-client"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata = {
+export const metadata = pageMeta({
+  path: "/near-me",
   title: "Healthy Restaurants Near Me — NYC",
   description: "Find healthy restaurants near your current location in NYC.",
-  robots: {
-    index: false,
-    follow: true,
-    googleBot: { index: false, follow: true },
-  },
-}
+  index: false,
+})
 
 export default function NearMePage() {
   return (

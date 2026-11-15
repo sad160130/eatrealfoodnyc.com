@@ -1,0 +1,91 @@
+# Eat Real Food NYC — extended agent index
+# https://www.eatrealfoodnyc.com/llms-full.txt
+# Companion to https://www.eatrealfoodnyc.com/llms.txt
+# Last updated: 2026-11-15
+
+This file lists the public, indexable documents. It does not list individual
+restaurant URLs. Those live in the sitemap, which also carries each URL's
+lastmod:
+
+https://www.eatrealfoodnyc.com/sitemap.xml
+
+## Do not request
+
+robots.txt disallows /search, /near-me, /compare, /saved, and /api/.
+Those paths are user interface or private endpoints. Neighbourhood and dietary
+hubs are the public way to enumerate restaurants.
+
+## Core
+
+https://www.eatrealfoodnyc.com/
+https://www.eatrealfoodnyc.com/map
+https://www.eatrealfoodnyc.com/nyc/compare
+https://www.eatrealfoodnyc.com/guides
+https://www.eatrealfoodnyc.com/about
+https://www.eatrealfoodnyc.com/about/our-data
+https://www.eatrealfoodnyc.com/about/editorial-standards
+https://www.eatrealfoodnyc.com/about/team
+https://www.eatrealfoodnyc.com/contact
+https://www.eatrealfoodnyc.com/press
+https://www.eatrealfoodnyc.com/privacy
+https://www.eatrealfoodnyc.com/terms
+
+## Borough hubs
+
+https://www.eatrealfoodnyc.com/nyc/manhattan/healthy-restaurants
+https://www.eatrealfoodnyc.com/nyc/brooklyn/healthy-restaurants
+https://www.eatrealfoodnyc.com/nyc/queens/healthy-restaurants
+https://www.eatrealfoodnyc.com/nyc/bronx/healthy-restaurants
+https://www.eatrealfoodnyc.com/nyc/staten-island/healthy-restaurants
+
+## Dietary hubs
+
+https://www.eatrealfoodnyc.com/healthy-restaurants/vegan
+https://www.eatrealfoodnyc.com/healthy-restaurants/vegetarian
+https://www.eatrealfoodnyc.com/healthy-restaurants/gluten-free
+https://www.eatrealfoodnyc.com/healthy-restaurants/halal
+https://www.eatrealfoodnyc.com/healthy-restaurants/kosher
+https://www.eatrealfoodnyc.com/healthy-restaurants/dairy-free
+https://www.eatrealfoodnyc.com/healthy-restaurants/keto
+https://www.eatrealfoodnyc.com/healthy-restaurants/paleo
+https://www.eatrealfoodnyc.com/healthy-restaurants/whole-foods
+https://www.eatrealfoodnyc.com/healthy-restaurants/low-calorie
+https://www.eatrealfoodnyc.com/healthy-restaurants/raw-food
+https://www.eatrealfoodnyc.com/healthy-restaurants/nut-free
+
+## Guides
+
+https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process
+https://www.eatrealfoodnyc.com/guides/vegan-nyc-borough-guide
+https://www.eatrealfoodnyc.com/guides/halal-food-guide-nyc
+https://www.eatrealfoodnyc.com/guides/gluten-free-dining-nyc
+https://www.eatrealfoodnyc.com/guides/how-eat-healthy-nyc-15-dollars
+https://www.eatrealfoodnyc.com/guides/best-healthy-neighborhoods-nyc
+https://www.eatrealfoodnyc.com/guides/hidden-gem-restaurants-nyc
+https://www.eatrealfoodnyc.com/guides/kosher-dining-nyc-guide
+https://www.eatrealfoodnyc.com/guides/late-night-healthy-eating-nyc
+https://www.eatrealfoodnyc.com/guides/seafood-healthy-restaurants-nyc
+https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
+
+## Original research
+
+https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-grade-report
+https://www.eatrealfoodnyc.com/data/best-rated-restaurants
+
+## Restaurant listings
+
+Every published restaurant is a page at:
+
+https://www.eatrealfoodnyc.com/restaurants/{slug}
+
+Unpublished slugs return 404 and are omitted from the sitemap.
+Diet-and-borough pages use:
+
+https://www.eatrealfoodnyc.com/nyc/{borough}/{diet-tag}-restaurants
+
+Neighbourhood hubs use:
+
+https://www.eatrealfoodnyc.com/nyc/{borough}/{neighborhood}/healthy-restaurants
+
+Both are included in the sitemap when they have enough published listings.
