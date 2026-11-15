@@ -5,6 +5,7 @@ import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
 import PartnerTierCards from "@/components/partner-tier-cards"
+import { PartnerCta } from "@/components/tracked-external-link"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
@@ -232,18 +233,20 @@ export default async function PartnerWithUsPage() {
             live in the Editorial &amp; Partnership Policy. This page does not override that policy.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
+            <PartnerCta
+              tier="inquiry"
               href={PARTNER_INQUIRY_PATH}
               className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest"
             >
               Ask about eligibility
-            </Link>
-            <a
+            </PartnerCta>
+            <PartnerCta
+              tier="inquiry"
               href={`mailto:${PARTNER_INQUIRY_EMAIL}?subject=Partnership%20inquiry`}
               className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white transition-all hover:bg-white/20"
             >
               {PARTNER_INQUIRY_EMAIL}
-            </a>
+            </PartnerCta>
           </div>
           <p className="mt-6 text-sm text-white/50">
             <Link href="/about/editorial-standards#editorial-partnership-policy" className="underline decoration-white/30 underline-offset-4 hover:text-white">

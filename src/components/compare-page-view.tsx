@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { track } from "@vercel/analytics"
 import type { Restaurant } from "@/types"
 import {
   parseDietaryTags,
@@ -165,6 +166,7 @@ export default function ComparePageView({ restaurants }: ComparePageViewProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm text-jade transition-colors hover:text-forest hover:underline"
+          onClick={() => track("directions_click")}
         >
           {r.address}
         </a>
@@ -395,6 +397,7 @@ export default function ComparePageView({ restaurants }: ComparePageViewProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block rounded-xl border border-sage/30 px-4 py-2.5 text-center text-sm font-medium text-jade transition-colors hover:border-jade"
+                  onClick={() => track("outbound_website_click")}
                 >
                   Visit website →
                 </a>

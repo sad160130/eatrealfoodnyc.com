@@ -44,6 +44,7 @@ import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
 import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
 import ClaimListing from "@/components/claim-listing"
+import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
 
@@ -354,16 +355,15 @@ export default async function RestaurantPage({
         {/* Action row — typographic actions, no pill buttons */}
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-5" style={{ borderTopColor: "var(--hairline)" }}>
           {restaurant.website && (
-            <a
+            <OutboundWebsiteLink
               href={restaurant.website}
-              target="_blank"
               rel={partnerLinkRel(partnerStatus)}
               className="eyebrow inline-flex items-center gap-1.5 transition-colors"
               style={{ color: "var(--color-forest)" }}
             >
               Visit website
               <span aria-hidden="true" style={{ color: "var(--color-jade)" }}>↗</span>
-            </a>
+            </OutboundWebsiteLink>
           )}
           {restaurant.phone && (
             <a
@@ -378,16 +378,14 @@ export default async function RestaurantPage({
             </a>
           )}
           {restaurant.latitude != null && restaurant.longitude != null && (
-            <a
+            <DirectionsLink
               href={`https://www.google.com/maps/search/?api=1&query=${restaurant.latitude},${restaurant.longitude}`}
-              target="_blank"
-              rel="noopener noreferrer"
               className="eyebrow inline-flex items-center gap-1.5 transition-colors"
               style={{ color: "var(--color-forest)" }}
             >
               Directions
               <span aria-hidden="true" style={{ color: "var(--color-jade)" }}>→</span>
-            </a>
+            </DirectionsLink>
           )}
           <span className="ml-auto inline-flex items-center gap-3">
             <SaveButton
@@ -671,15 +669,14 @@ export default async function RestaurantPage({
                 )}
                 {restaurant.website && (
                   <ContactRow label="Web">
-                    <a
+                    <OutboundWebsiteLink
                       href={restaurant.website}
-                      target="_blank"
                       rel={partnerLinkRel(partnerStatus)}
                       className="truncate transition-colors hover:underline"
                       style={{ color: "var(--color-forest)", textUnderlineOffset: "2px" }}
                     >
                       {restaurant.website.replace(/^https?:\/\//, "")}
-                    </a>
+                    </OutboundWebsiteLink>
                   </ContactRow>
                 )}
               </div>
