@@ -39,6 +39,7 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/nyc/compare": "2026-04-01",
   "/guides": "2026-02-15",
   "/newsletter": "2026-11-15",
+  "/data": "2026-11-15",
 }
 
 export function editorialPaths(): string[] {
@@ -99,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     entry(siteUrl, "/", 1, "daily", directoryUpdated),
     ...Object.entries(STATIC_LASTMOD).map(([path, date]) =>
-      entry(siteUrl, path, path.startsWith("/about") ? 0.7 : path === "/guides" ? 0.8 : path === "/nyc/compare" ? 0.8 : path === "/map" ? 0.75 : 0.5, path === "/map" || path === "/nyc/compare" ? "weekly" : "monthly", asDate(date))
+      entry(siteUrl, path, path.startsWith("/about") ? 0.7 : path === "/guides" || path === "/data" ? 0.8 : path === "/nyc/compare" ? 0.8 : path === "/map" ? 0.75 : 0.5, path === "/map" || path === "/nyc/compare" || path === "/data" ? "weekly" : "monthly", asDate(date))
     ),
   ]
 
