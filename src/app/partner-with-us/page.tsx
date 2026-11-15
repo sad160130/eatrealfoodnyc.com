@@ -65,8 +65,16 @@ const FAQ = [
   },
 ]
 
-export default async function PartnerWithUsPage() {
-  const counts = await getPublishedDirectoryCounts()
+export default async function PartnerWithUsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>
+}) {
+  const [{ status }, counts] = await Promise.all([
+    searchParams,
+    getPublishedDirectoryCounts(),
+  ])
+  const purchaseConfirmed = status === "success"
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -97,6 +105,15 @@ export default async function PartnerWithUsPage() {
       </div>
 
       <div className="mx-auto max-w-4xl px-6 py-16">
+        {purchaseConfirmed && (
+          <p
+            role="status"
+            className="mb-10 rounded-md border bg-white px-5 py-4 text-base leading-relaxed"
+            style={{ borderColor: "var(--color-jade)", color: "var(--color-forest)" }}
+          >
+            Thanks! Your placement is confirmed. We&apos;ll email you within 1 business day to set it up.
+          </p>
+        )}
         <section className="mb-16">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">THE DIRECTORY</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -183,7 +200,7 @@ export default async function PartnerWithUsPage() {
           </div>
           <PartnerTierCards />
           <p className="mt-6 text-sm leading-relaxed text-gray-700">
-            Stripe Payment Links are not connected yet. Each button emails {PARTNER_INQUIRY_EMAIL} with the tier in the subject until a link is set on that tier.
+            Each paid button opens Stripe checkout in this tab. After payment, Stripe brings you back here. Questions still go to {PARTNER_INQUIRY_EMAIL}.
           </p>
         </section>
 
