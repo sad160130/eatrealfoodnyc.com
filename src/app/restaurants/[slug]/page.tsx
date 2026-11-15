@@ -43,6 +43,7 @@ import PartnerLabel, { PartnerDisclosure } from "@/components/partner-label"
 import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
 import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
+import ClaimListing from "@/components/claim-listing"
 
 export const revalidate = 86400
 
@@ -428,6 +429,7 @@ export default async function RestaurantPage({
             />
           </span>
         </div>
+        <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} />
       </header>
 
       {/* ─── PHOTO GALLERY — comes after the hero, editorial-style ─── */}
