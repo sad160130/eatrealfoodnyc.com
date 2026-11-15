@@ -53,7 +53,7 @@ const ABOUT_LINKS = [
   { label: "Editorial Standards", href: "/about/editorial-standards" },
   { label: "Team", href: "/about/team" },
   { label: "Contact", href: "/contact" },
-  { label: "Own a restaurant? Get featured", href: "/partners" },
+  { label: "Own a restaurant? Get featured", href: "/partner-with-us" },
 ]
 
 type DropdownKey = "boroughs" | "dietary" | "guides" | "data" | "about" | null

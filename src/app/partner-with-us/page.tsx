@@ -4,68 +4,18 @@ import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
+import PartnerTierCards from "@/components/partner-tier-cards"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "Partner with Us — Eat Real Food NYC",
   description:
-    "Optional, labeled Partner listings and sponsorships for eligible NYC restaurants. Listing stays free. Grades and rankings are never for sale. Contact us for rates.",
+    "Featured is $49 a month, Spotlight is $149 a month, and Neighborhood Sponsor is $299 a month. Listing stays free. Payment never changes a grade or a ranking.",
   alternates: { canonical: getCanonicalUrl("/partner-with-us") },
   robots: { index: true, follow: true },
 }
 
 export const revalidate = 3600
-
-const PRODUCTS = [
-  {
-    name: "Partner Listing",
-    who: "For an independent restaurant that already belongs in the directory and wants to be easier to notice.",
-    includes: [
-      "A clear Partner badge on your listing and in Partner modules",
-      "Placement in the labeled “Partner restaurants” module on your neighborhood page and, where relevant, on matching diet-tag pages",
-      "An upgraded listing profile: owner-approved photos, a short owner description we review for accuracy, and one current offer or booking or website link",
-      "A public listing page that already carries the official grade, score, date, and dietary tags — unchanged by the partnership",
-      "A simple monthly note on what ran: placement inventory, not unverified visit numbers",
-    ],
-    excludes:
-      "A higher official grade, a higher Health Score, a purchased dietary tag, hidden-gem status, or a better slot in the unlabeled organic list.",
-  },
-  {
-    name: "Neighborhood or diet-category sponsor",
-    who: "One sponsor at a time on a chosen neighborhood page or diet-tag page, for example a neighborhood hub or a diet such as halal or gluten-free.",
-    includes: [
-      "A labeled Presented by or Sponsored unit at the top of that page",
-      "Logo, short sponsor line, and link to the sponsor’s listing or site",
-      "Priority in the labeled Partner module on that page",
-      "The Partner Listing package for the sponsor’s own restaurant, if the sponsor is a restaurant",
-      "Category or neighborhood exclusivity while the sponsorship is live",
-      "A monthly placement report. Visit figures only once we can pull them from analytics",
-    ],
-    excludes:
-      "A change to the page’s organic restaurant order, or a health or diet claim the sponsor has not earned.",
-  },
-  {
-    name: "Homepage sponsor",
-    who: "One sponsor at a time on the Eat Real Food NYC homepage. This is a limited product, offered after Partner Listings and the disclosure rules are in place.",
-    includes: [
-      "A labeled Presented by or Sponsored unit on the homepage",
-      "Logo, short sponsor line, and link",
-      "The Partner Listing package if the sponsor is a restaurant",
-      "Homepage exclusivity while the sponsorship is live",
-      "A monthly placement report. Visit figures only once we can pull them from analytics",
-    ],
-    excludes: "Any change to homepage organic modules, grades, or rankings.",
-  },
-  {
-    name: "Newsletter sponsor",
-    who: "Not for sale today. When a newsletter is running and we can show a current subscriber count and recent open performance from a real report, we will offer a labeled sponsor unit in a single edition or a short run of editions.",
-    includes: [
-      "A labeled Sponsored unit in the edition",
-      "A rate set from the actual list, shared only when that list exists",
-    ],
-    excludes: "We do not pitch this tier, and we do not publish a subscriber number, until those metrics exist.",
-  },
-]
 
 const FAQ = [
   {
@@ -220,45 +170,20 @@ export default async function PartnerWithUsPage() {
           </h2>
           <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             <p className="text-base leading-relaxed text-gray-700">
-              Introductory pricing may apply to the first months of a new partnership. After that,
-              standard month-to-month rates apply. Cancel before the next billing date and the Partner
-              label comes off at the end of the paid period. Exclusive sponsorships may require a
-              minimum term so a page presenter is not constantly rotating.
+              Three paid tiers are for sale. Featured is $49 a month, Spotlight is $149 a month, and Neighborhood Sponsor is $299 a month. Payment never changes an official grade, a Health Score, a dietary tag, or a ranking. Listing in the directory stays free.
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
-              Eligibility is required for every product: current Grade A, or no current grade and no
-              current violations, plus a genuine fit with this directory. We may decline a sale that
-              does not meet the policy. Rates are not listed here.
+              On a diner-facing page the words are Partner or Sponsored. Featured and Spotlight are the names of these paid products. They are not an editorial pick. The{" "}
+              <Link href="/about/editorial-standards#editorial-partnership-policy" className="font-semibold text-jade hover:text-forest">
+                Editorial &amp; Partnership Policy
+              </Link>{" "}
+              is the rule. Eligibility is still required: current Grade A, or no current grade and no current violations, plus a genuine fit with this directory.
             </p>
-            <Link
-              href={PARTNER_INQUIRY_PATH}
-              className="mt-6 inline-block rounded-xl bg-forest px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-jade"
-            >
-              Contact us for rates
-            </Link>
           </div>
-          <div className="space-y-4">
-            {PRODUCTS.map((product, index) => (
-              <article key={product.name} className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-widest text-sage">0{index + 1}</p>
-                <h3 className="mt-2 text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                  {product.name}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-700">{product.who}</p>
-                <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-forest">Includes</p>
-                <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
-                  {product.includes.map((item) => (
-                    <li key={item} className="flex gap-3">
-                      <span className="flex-shrink-0 text-sage" aria-hidden="true">–</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-forest">Does not include</p>
-                <p className="mt-3 text-sm leading-relaxed text-gray-700">{product.excludes}</p>
-              </article>
-            ))}
-          </div>
+          <PartnerTierCards />
+          <p className="mt-6 text-sm leading-relaxed text-gray-700">
+            Stripe Payment Links are not connected yet. Each button emails {PARTNER_INQUIRY_EMAIL} with the tier in the subject until a link is set on that tier.
+          </p>
         </section>
 
         <section className="mb-16">
@@ -300,10 +225,10 @@ export default async function PartnerWithUsPage() {
 
         <section className="rounded-2xl bg-forest p-10 text-center">
           <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "Georgia, serif" }}>
-            Contact us for rates
+            Ask about eligibility
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-base text-white/60">
-            Partnership questions go to the contact page or {PARTNER_INQUIRY_EMAIL}. The full rules
+            The three prices are above. Partnership questions still go to {PARTNER_INQUIRY_EMAIL}. The full rules
             live in the Editorial &amp; Partnership Policy. This page does not override that policy.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
@@ -311,7 +236,7 @@ export default async function PartnerWithUsPage() {
               href={PARTNER_INQUIRY_PATH}
               className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest"
             >
-              Contact us for rates
+              Ask about eligibility
             </Link>
             <a
               href={`mailto:${PARTNER_INQUIRY_EMAIL}?subject=Partnership%20inquiry`}

@@ -23,7 +23,6 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/contact": "2026-03-01",
   "/press": "2026-03-01",
   "/partner-with-us": "2026-11-15",
-  "/partners": "2026-11-15",
   "/privacy": "2026-03-01",
   "/terms": "2026-03-01",
   "/map": "2026-04-01",
