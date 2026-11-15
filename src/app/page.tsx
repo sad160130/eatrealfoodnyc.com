@@ -506,6 +506,7 @@ export default async function HomePage() {
                 <Stat number={counts.restaurants.toLocaleString()} label="Published listings" />
                 <Stat number={counts.gradeA.toLocaleString()} label="Grade A, published" />
                 <Stat number={counts.neighborhoods.toLocaleString()} label="Neighborhoods with a listing" />
+                <Stat number={counts.hiddenGems.toLocaleString()} label="Hidden gems, published" />
                 <Stat number={String(snapshot.dietaryTagCount)} label="Dietary tags, applied conservatively" />
                 <Stat number={snapshot.lastPublishLabel ?? "—"} label="Last publish" />
               </dl>

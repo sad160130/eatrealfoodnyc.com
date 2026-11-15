@@ -9,7 +9,8 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
-import stats from "@/data/guide-stats"
+import { prisma } from "@/lib/db"
+import { getPublishedDirectoryCounts, PUBLISHED_LISTING_WHERE } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("hidden-gem-restaurants-nyc")!
@@ -45,7 +46,30 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function HiddenGemsGuide() {
+export default async function HiddenGemsGuide() {
+  const gemWhere = { ...PUBLISHED_LISTING_WHERE, is_hidden_gem: true }
+  const [counts, gemsByBorough, gradeAGems, topNeighborhoods] = await Promise.all([
+    getPublishedDirectoryCounts(),
+    prisma.restaurant.groupBy({
+      by: ["borough"],
+      where: { ...gemWhere, borough: { not: null } },
+      _count: { id: true },
+    }),
+    prisma.restaurant.count({ where: { ...gemWhere, inspection_grade: "A" } }),
+    prisma.restaurant.groupBy({
+      by: ["borough", "neighborhood"],
+      where: { ...gemWhere, borough: { not: null }, neighborhood: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 1,
+    }),
+  ])
+  const hiddenGemsByBorough = Object.fromEntries(
+    gemsByBorough.map((row) => [row.borough ?? "", row._count.id]),
+  )
+  const hiddenGemCount = counts.hiddenGems.toLocaleString()
+  const gradeAShare = counts.hiddenGems > 0 ? Math.round((gradeAGems / counts.hiddenGems) * 100) : 0
+  const topNeighborhood = topNeighborhoods[0]
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -70,7 +94,7 @@ export default function HiddenGemsGuide() {
         guide={guide}
         subtitle="How we identify underrated restaurants in NYC. Our algorithm, criteria, and why low review counts are sometimes a very good sign."
         stats={[
-          { label: "Hidden gems", stat: "984" },
+          { label: "Hidden gems", stat: hiddenGemCount },
           { label: "Avg rating", stat: "4.6/5" },
           { label: "Avg reviews", stat: "<200" },
           { label: "All 5 boroughs", stat: "Yes" },
@@ -93,35 +117,35 @@ export default function HiddenGemsGuide() {
 
         <DataCallout
           heading="Hidden Gem Count — Current Data"
-          intro={`Our algorithm currently identifies ${stats.hiddenGems.total.toLocaleString()} hidden gem restaurants across NYC — restaurants rated 4.5 stars or above with fewer than 200 community reviews. Here is the distribution.`}
+          intro={`The directory currently flags ${hiddenGemCount} published hidden gems. The flag is high ratings with a lower review count, on restaurants that are operating now. Here is the distribution.`}
           dataPoints={[
             {
-              stat: stats.hiddenGems.total.toLocaleString(),
-              label: "Total hidden gems in NYC",
-              source: "Rating ≥4.5 · Reviews <200 · Active",
+              stat: hiddenGemCount,
+              label: "Published hidden gems",
+              source: "Same published hidden-gem count used on About and the homepage",
             },
             {
-              stat: (stats.hiddenGems.byBorough["Manhattan"] ?? 0).toLocaleString(),
+              stat: (hiddenGemsByBorough["Manhattan"] ?? 0).toLocaleString(),
               label: "Hidden gems in Manhattan",
             },
             {
               stat: (
-                (stats.hiddenGems.byBorough["Brooklyn"] ?? 0) +
-                (stats.hiddenGems.byBorough["Queens"] ?? 0)
+                (hiddenGemsByBorough["Brooklyn"] ?? 0) +
+                (hiddenGemsByBorough["Queens"] ?? 0)
               ).toLocaleString(),
               label: "Hidden gems in Brooklyn + Queens",
-              source: "Outer boroughs lead for undiscovered spots",
+              source: "Outer boroughs, from the same published count",
             },
             {
-              stat: `${stats.hiddenGems.percentWithGradeA}%`,
+              stat: `${gradeAShare}%`,
               label: "Hold a Grade A health inspection",
-              source: "Quality and safety combined",
+              source: "Published hidden gems with a current Grade A",
             },
           ]}
           sourceNote={
-            stats.hiddenGems.topNeighborhoods[0]
-              ? `Top neighborhood for hidden gems: ${stats.hiddenGems.topNeighborhoods[0].neighborhood}, ${stats.hiddenGems.topNeighborhoods[0].borough} (${stats.hiddenGems.topNeighborhoods[0].count} gems). This list updates automatically as restaurants gain reviews.`
-              : "Hidden gem detection is recalculated each time new ratings sync from our data sources. This list updates automatically as restaurants gain reviews."
+            topNeighborhood
+              ? `Top neighborhood for published hidden gems: ${topNeighborhood.neighborhood}, ${topNeighborhood.borough} (${topNeighborhood._count.id} gems). Counts use the published hidden-gem flag.`
+              : "Counts use the published hidden-gem flag."
           }
           variant="amber"
         />
@@ -137,7 +161,7 @@ export default function HiddenGemsGuide() {
             The hidden gem concept matters because review platforms have an inherent bias toward visibility. Restaurants in high-traffic locations, restaurants with active social media marketing, and restaurants that have received press coverage accumulate reviews rapidly. A restaurant in a residential corner of the Bronx may serve the best lamb chops in the city, but if only neighborhood regulars know about it, the review count stays low. Low visibility does not mean low quality — and in many cases, it means the opposite.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Our directory currently identifies 984 hidden gems across all five NYC boroughs. These restaurants have an average rating of 4.6 out of 5 — significantly higher than the directory-wide average of 4.2. They span every cuisine and dietary category, from{" "}
+            Our directory currently identifies {hiddenGemCount} hidden gems across all five NYC boroughs: published restaurants rated 4.5 or higher with fewer than 200 reviews. They span cuisines and dietary categories, from{" "}
             <Link href="/search?hidden_gem=true" className="font-semibold text-jade hover:text-forest">
               vegan hidden gems
             </Link>{" "}
@@ -286,7 +310,7 @@ export default function HiddenGemsGuide() {
 
         <GuideCTA
           heading="Discover NYC's hidden gems"
-          body="Browse 984 hidden gem restaurants across all five boroughs. High ratings, low review counts, and waiting to be discovered by you."
+          body={`Browse ${hiddenGemCount} hidden gem restaurants across all five boroughs. High ratings, low review counts, and waiting to be discovered by you.`}
           primaryLabel="Browse hidden gems →"
           primaryHref="/search?hidden_gem=true"
           secondaryLabel="Near me"

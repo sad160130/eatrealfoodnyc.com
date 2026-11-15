@@ -48,9 +48,11 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
   const locationLabel = [restaurant.neighborhood, restaurant.borough].filter(Boolean).join(" · ")
   const cardLabel = `${restaurant.name} — healthy restaurant${locationLabel ? ` in ${locationLabel}` : " in New York City"}`
   const grade = restaurant.inspection_grade || ""
-  const gradeAria = grade
-    ? `NYC Department of Health inspection grade ${grade}`
-    : "NYC Department of Health inspection grade pending"
+  const gradeAria = grade === "Z" || grade === "P"
+    ? "NYC Department of Health grade pending"
+    : grade
+      ? `NYC Department of Health inspection grade ${grade}`
+      : "NYC Department of Health inspection grade pending"
 
   return (
     <article

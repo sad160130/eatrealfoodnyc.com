@@ -1,6 +1,7 @@
 import Link from "next/link"
-import stats from "@/data/guide-stats"
+import { prisma } from "@/lib/db"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { getPublishedDirectoryCounts, PUBLISHED_LISTING_WHERE } from "@/lib/directory-stats"
 
 type Variant = "hub" | "guide" | "full"
 
@@ -32,6 +33,19 @@ export default async function AboutThisData({
   const inspectionNote = lastRefreshed
     ? `Snapshot date: ${lastRefreshed}`
     : `Newest inspection date on file: ${snapshot?.latestInspectionLabel ?? "not recorded"}`
+  const [live, taggedCount] = await Promise.all([
+    getPublishedDirectoryCounts(),
+    prisma.restaurant.count({
+      where: {
+        ...PUBLISHED_LISTING_WHERE,
+        dietary_tags: { not: null },
+        NOT: { dietary_tags: "" },
+      },
+    }),
+  ])
+  const liveGradeCoverage = live.restaurants > 0
+    ? Math.round((live.gradeA / live.restaurants) * 100)
+    : 0
   // ── HUB VARIANT ───────────────────────────────────────────────
   if (variant === "hub") {
     return (
@@ -108,11 +122,10 @@ export default async function AboutThisData({
 
   // ── GUIDE VARIANT ─────────────────────────────────────────────
   if (variant === "guide") {
-    const totalRestaurants = stats.global.totalPublished
-    const gradeCoverage = stats.global.gradeACoverage
-    const taggedTotal = Object.values(stats.dietary.counts).reduce((a, b) => a + b, 0)
-    const tagCoverage = Math.round((taggedTotal / totalRestaurants) * 100)
-    const hiddenGemTotal = stats.global.totalHiddenGems
+    const totalRestaurants = live.restaurants
+    const gradeCoverage = liveGradeCoverage
+    const tagCoverage = totalRestaurants > 0 ? Math.round((taggedCount / totalRestaurants) * 100) : 0
+    const hiddenGemTotal = live.hiddenGems
 
     return (
       <aside
@@ -142,7 +155,7 @@ export default async function AboutThisData({
                 <strong className="text-gray-700">
                   {(restaurantCount ?? totalRestaurants).toLocaleString()} active NYC restaurants
                 </strong>{" "}
-                across all five boroughs and {stats.global.totalUniqueNeighborhoods} neighborhoods.
+                across all five boroughs and {live.neighborhoods} neighborhoods.
               </p>
               <p>
                 <strong className="text-gray-700">Health inspection grades:</strong> Sourced
@@ -155,18 +168,16 @@ export default async function AboutThisData({
                 >
                   NYC Department of Health and Mental Hygiene Open Data portal
                 </a>
-                . We match inspection records to restaurant listings using name and address. Grade
-                coverage:{" "}
-                <strong className="text-gray-700">{gradeCoverage}%</strong> of our directory has a
-                verified inspection grade — the remainder are unmatched or uninspected. Updated
-                quarterly.
+                . We match inspection records to restaurant listings using name and address                .{" "}
+                <strong className="text-gray-700">{gradeCoverage}%</strong> of published listings
+                currently hold Grade A. Updated when the inspection refresh script is run.
               </p>
               <p>
                 <strong className="text-gray-700">Dietary tags:</strong> Applied conservatively
                 using AI-assisted classification reviewed editorially. We only tag a restaurant when
                 it genuinely specialises in that dietary style — not because it might theoretically
                 have one qualifying item. Tag coverage:{" "}
-                <strong className="text-gray-700">{tagCoverage}%</strong> of our directory. Generic
+                <strong className="text-gray-700">{tagCoverage}%</strong> of published listings carry at least one tag. Generic
                 restaurants correctly have no tags.
               </p>
               <p>
@@ -203,10 +214,9 @@ export default async function AboutThisData({
   }
 
   // ── FULL VARIANT (About → Our Data page) ──────────────────────
-  const totalRestaurants = stats.global.totalPublished
-  const gradeCoverage = stats.global.gradeACoverage
-  const taggedTotal = Object.values(stats.dietary.counts).reduce((a, b) => a + b, 0)
-  const tagCoverage = Math.round((taggedTotal / totalRestaurants) * 100)
+  const totalRestaurants = live.restaurants
+  const gradeCoverage = liveGradeCoverage
+  const tagCoverage = totalRestaurants > 0 ? Math.round((taggedCount / totalRestaurants) * 100) : 0
 
   const sources = [
     {
@@ -215,7 +225,7 @@ export default async function AboutThisData({
       url: DOHMH_URL,
       what: "Health inspection grades (A, B, C), inspection dates, violation scores, and violation records for every inspected NYC restaurant.",
       how: "We pull this data from the NYC Open Data API and join it to our restaurant listings using name and address matching. We keep only the most recent grade per restaurant.",
-      coverage: `${gradeCoverage}% of our directory has a verified health inspection grade. The remainder have not been matched or have not yet received a grade.`,
+      coverage: `${gradeCoverage}% of published listings currently hold Grade A. Listings without a letter have not been matched or have not yet received a grade.`,
     },
     {
       source: "Google Maps Platform",
@@ -231,7 +241,7 @@ export default async function AboutThisData({
       url: "https://data.cityofnewyork.us/City-Government/2010-Neighborhood-Tabulation-Areas-NTAs-/cpf4-rkhq",
       what: "Official NYC neighborhood boundary polygons used to assign every restaurant to its correct neighborhood.",
       how: "Point-in-polygon algorithm assigns each restaurant's coordinates to the correct NTA boundary — giving us the official NYC neighborhood name and borough.",
-      coverage: `100% of published restaurants have a verified borough and neighborhood (${stats.global.totalUniqueNeighborhoods} unique neighborhoods covered).`,
+      coverage: `100% of published restaurants have a verified borough and neighborhood (${live.neighborhoods} unique neighborhoods covered).`,
     },
     {
       source: "AI-assisted dietary classification",

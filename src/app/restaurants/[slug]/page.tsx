@@ -467,7 +467,11 @@ export default async function RestaurantPage({
             {restaurant.inspection_grade && (
               <section>
                 <p className="eyebrow">Health inspection</p>
-                <h2 className="h2-serif mt-2">NYC DOHMH Grade {restaurant.inspection_grade}</h2>
+                <h2 className="h2-serif mt-2">
+                  {restaurant.inspection_grade === "Z" || restaurant.inspection_grade === "P"
+                    ? "NYC DOHMH Grade Pending"
+                    : `NYC DOHMH Grade ${restaurant.inspection_grade}`}
+                </h2>
                 <div className="mt-5 flex items-start gap-5">
                   <span
                     className="plaque flex-shrink-0"
