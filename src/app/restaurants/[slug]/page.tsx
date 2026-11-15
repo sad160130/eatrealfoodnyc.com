@@ -421,6 +421,7 @@ export default async function RestaurantPage({
                   Description coming soon.
                 </p>
               )}
+              <ListingBodyLinks restaurant={restaurant} validHubs={validHubs} />
 
               {/* Editorial asides */}
               {restaurant.rating && restaurant.rating >= 4.5 && (restaurant.reviews ?? 0) >= 500 && (
@@ -724,6 +725,33 @@ export default async function RestaurantPage({
 }
 
 /* ─── Internal pieces ─── */
+
+function ListingBodyLinks({
+  restaurant,
+  validHubs,
+}: {
+  restaurant: { slug: string; name: string; borough: string | null; neighborhood: string | null; dietary_tags: string | null }
+  validHubs: Set<string>
+}) {
+  const links = getListingHubLinks(restaurant, validHubs).filter(
+    ([, href]) => href.startsWith("/nyc/") || href.startsWith("/healthy-restaurants/")
+  )
+  if (links.length === 0) return null
+  return (
+    <p className="mt-4 text-base leading-relaxed" style={{ color: "var(--color-text)", maxWidth: "65ch" }}>
+      {restaurant.name} is listed with{" "}
+      {links.map(([anchor, href], index) => (
+        <span key={href}>
+          {index > 0 && (index === links.length - 1 ? " and " : ", ")}
+          <Link href={href} className="underline underline-offset-2" style={{ color: "var(--color-jade)" }}>
+            {anchor}
+          </Link>
+        </span>
+      ))}
+      .
+    </p>
+  )
+}
 
 function ContactRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (

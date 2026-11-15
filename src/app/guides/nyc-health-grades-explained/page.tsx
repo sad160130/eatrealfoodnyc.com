@@ -10,6 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import stats from "@/data/guide-stats"
+import GradeHubLinks from "@/components/grade-hub-links"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
@@ -168,6 +169,8 @@ export default function NYCHealthGradesGuide() {
             </Link>
           </p>
         </div>
+
+        <GradeHubLinks />
 
         {/* Section 1 */}
         <section id="what-is-a-health-grade" className="mb-16 scroll-mt-24">

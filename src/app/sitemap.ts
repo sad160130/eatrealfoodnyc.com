@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
+import { neighborhoodIndexPath, pageCount } from "@/lib/restaurant-index"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -22,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/map`, changeFrequency: "weekly", priority: 0.75 },
     { url: `${siteUrl}/nyc/compare`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/guides`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/html-sitemap`, changeFrequency: "weekly", priority: 0.5 },
   ]
 
   // Guide pages
@@ -108,6 +110,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }))
   )
 
+  const indexGroups = await prisma.restaurant.groupBy({
+    by: ["borough", "neighborhood"],
+    where: { is_published: true, borough: { not: null }, neighborhood: { not: null } },
+    _count: { id: true },
+  })
+  const indexPages: MetadataRoute.Sitemap = indexGroups.flatMap((group) => {
+    if (!group.borough || !group.neighborhood) return []
+    const pages = pageCount(group._count.id)
+    return Array.from({ length: pages }, (_, index) => ({
+      url: `${siteUrl}${neighborhoodIndexPath(group.borough!, group.neighborhood!, index + 1)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }))
+  })
+
   // Published restaurant pages
   const restaurants = await prisma.restaurant.findMany({
     where: { is_published: true },
@@ -126,6 +143,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...boroughPages,
     ...neighborhoodPages,
     ...comboPages,
+    ...indexPages,
     ...restaurantPages,
   ]
 }

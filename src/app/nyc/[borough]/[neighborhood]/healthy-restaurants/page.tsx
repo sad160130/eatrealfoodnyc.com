@@ -279,7 +279,11 @@ export default async function NeighborhoodPage({
             </h2>
             <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
               Every published listing in {neighborhoodName}, including the{" "}
-              {Math.min(restaurants.length, CARD_LIMIT)} featured above.
+              {Math.min(restaurants.length, CARD_LIMIT)} featured above.{" "}
+              <Link href={`/nyc/${boroughSlug}/${neighborhoodSlug}/restaurants`} style={{ color: "var(--color-jade)" }}>
+                All restaurants in {neighborhoodName}
+              </Link>
+              .
             </p>
             <ul
               className="mt-6"
