@@ -28,7 +28,7 @@ const TOOLS = [
   { label: "Interactive Map", href: "/map" },
   { label: "Compare Neighborhoods", href: "/nyc/compare" },
   { label: "Open Right Now", href: "/search?open=true" },
-  { label: "Hidden Gems", href: "/search?hidden_gem=true" },
+  { label: "Hidden Gems", href: "/guides/hidden-gem-restaurants-nyc" },
   { label: "Grade A Only", href: "/healthy-restaurants/grade-a" },
 ]
 

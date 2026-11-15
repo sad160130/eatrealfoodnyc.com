@@ -408,7 +408,7 @@ export default async function HealthyBreakfastGuide() {
           </p>
           <p className="text-lg leading-relaxed text-gray-700">
             Our{" "}
-            <Link href="/search?hidden_gem=true" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+            <Link href="/guides/hidden-gem-restaurants-nyc" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
               hidden gem filter
             </Link>{" "}
             surfaces the highest-rated restaurants with fewer reviews — often the best-value

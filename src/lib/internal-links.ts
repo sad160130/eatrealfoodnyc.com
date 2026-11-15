@@ -19,7 +19,7 @@ export function getBoroughContextualLinks(borough: string): Array<[string, strin
   return [
     [ANCHOR_TEXT.boroughHub(borough), `/nyc/${slug}/healthy-restaurants`],
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
-    [ANCHOR_TEXT.hiddenGems, `/search?borough=${borough}&hidden_gem=true`],
+    [ANCHOR_TEXT.hiddenGems, "/guides/hidden-gem-restaurants-nyc"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
   ]
 }
@@ -47,7 +47,7 @@ export function getNeighborhoodContextualLinks(
 export function getDietContextualLinks(dietTag: string, dietLabel: string): Array<[string, string]> {
   return [
     [ANCHOR_TEXT.dietHub(dietLabel), `/healthy-restaurants/${dietTag}`],
-    [ANCHOR_TEXT.hiddenGems, `/search?diet=${dietTag}&hidden_gem=true`],
+    [ANCHOR_TEXT.hiddenGems, "/guides/hidden-gem-restaurants-nyc"],
     [ANCHOR_TEXT.gradeAFilter, "/healthy-restaurants/grade-a"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
   ]
@@ -171,7 +171,7 @@ export function getListingHubLinks(restaurant: {
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
     [ANCHOR_TEXT.gradeAFilter, borough ? `/nyc/${boroughToSlug(borough)}/grade-a-restaurants` : "/healthy-restaurants/grade-a"],
-    [ANCHOR_TEXT.hiddenGems, "/search?hidden_gem=true"],
+    [ANCHOR_TEXT.hiddenGems, "/guides/hidden-gem-restaurants-nyc"],
   ]
   for (const [anchor, href] of FALLBACKS) {
     if (links.length >= MIN_LISTING_HUB_LINKS) break

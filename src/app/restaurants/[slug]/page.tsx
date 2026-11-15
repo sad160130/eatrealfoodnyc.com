@@ -143,7 +143,7 @@ export default async function RestaurantPage({
   const gradeView = presentGrade(restaurant.inspection_grade)
 
   const breadcrumbItems = [
-    { label: "NYC Healthy Restaurants", href: "/search" },
+    { label: "Healthy Restaurants", href: "/healthy-restaurants" },
     ...(restaurant.borough && boroughSlug ? [{ label: restaurant.borough, href: `/nyc/${boroughSlug}/healthy-restaurants` }] : []),
     // Neighbourhood level always present so the chain and the JSON-LD positions
     // stay stable. href is omitted when the hub was not built: TopicalBreadcrumb

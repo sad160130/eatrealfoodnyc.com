@@ -208,7 +208,7 @@ export default async function BudgetHealthyGuide() {
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Our directory identifies nearly 1,000{" "}
-            <Link href="/search?hidden_gem=true" className="font-semibold text-jade hover:text-forest">
+            <Link href="/guides/hidden-gem-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
               hidden gem restaurants
             </Link>{" "}
             across NYC — places with high ratings but relatively few reviews. These restaurants are a budget diner&apos;s best friend, and the data explains why. Hidden gems average 4.6 out of 5 stars compared to 4.2 for the overall directory. They&apos;re concentrated in outer-borough neighborhoods where rent is lower and prices follow suit.
@@ -296,7 +296,7 @@ export default async function BudgetHealthyGuide() {
           primaryLabel="Search restaurants →"
           primaryHref="/search"
           secondaryLabel="Hidden gems"
-          secondaryHref="/search?hidden_gem=true"
+          secondaryHref="/guides/hidden-gem-restaurants-nyc"
         />
       </div>
         <AboutThisData variant="guide" />

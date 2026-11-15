@@ -162,7 +162,7 @@ export default async function HiddenGemsGuide() {
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Our directory currently identifies {hiddenGemCount} hidden gems across all five NYC boroughs: published restaurants rated 4.5 or higher with fewer than 200 reviews. They span cuisines and dietary categories, from{" "}
-            <Link href="/search?hidden_gem=true" className="font-semibold text-jade hover:text-forest">
+            <Link href="/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
               vegan hidden gems
             </Link>{" "}
             to halal spots to family-run Italian trattorias. The common denominator is not what they cook but the quality with which they cook it.
@@ -273,7 +273,7 @@ export default async function HiddenGemsGuide() {
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             To browse hidden gems filtered by your specific dietary need, use the{" "}
-            <Link href="/search?hidden_gem=true" className="font-semibold text-jade hover:text-forest">
+            <Link href="/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
               hidden gem search filter
             </Link>. You can combine it with any dietary category, borough, neighborhood, or health grade filter to find exactly the type of undiscovered restaurant you&apos;re looking for. The{" "}
             <Link href="/near-me" className="font-semibold text-jade hover:text-forest">
@@ -312,7 +312,7 @@ export default async function HiddenGemsGuide() {
           heading="Discover NYC's hidden gems"
           body={`Browse ${hiddenGemCount} hidden gem restaurants across all five boroughs. High ratings, low review counts, and waiting to be discovered by you.`}
           primaryLabel="Browse hidden gems →"
-          primaryHref="/search?hidden_gem=true"
+          primaryHref="/healthy-restaurants"
           secondaryLabel="Near me"
           secondaryHref="/near-me"
         />
