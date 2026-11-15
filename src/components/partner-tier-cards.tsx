@@ -1,5 +1,6 @@
 import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
 import { partnerTierCta, partnerTierHref, PARTNER_TIERS } from "@/config/partner-tiers"
+import { PartnerCta } from "@/components/tracked-external-link"
 
 export default function PartnerTierCards() {
   return (
@@ -26,12 +27,13 @@ export default function PartnerTierCards() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <a
+          <PartnerCta
+            tier={tier.name}
             href={partnerTierHref(tier)}
             className="mt-8 inline-flex h-12 items-center justify-center rounded-md bg-forest px-5 text-sm font-semibold text-cream transition-colors hover:bg-jade"
           >
             {partnerTierCta(tier)}
-          </a>
+          </PartnerCta>
           <p className="mt-3 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
             {tier.stripePaymentLink
               ? "Opens a Stripe Payment Link."

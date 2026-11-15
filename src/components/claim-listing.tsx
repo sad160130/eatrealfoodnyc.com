@@ -1,6 +1,7 @@
 "use client"
 
 import { useId, useState } from "react"
+import { track } from "@vercel/analytics"
 
 interface ClaimListingProps {
   restaurantSlug: string
@@ -53,7 +54,10 @@ export default function ClaimListing({ restaurantSlug, restaurantName }: ClaimLi
         className="eyebrow transition-colors"
         style={{ color: "var(--color-jade)" }}
         aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          track("claim_listing_click")
+          setOpen((value) => !value)
+        }}
       >
         Claim this listing
       </button>
