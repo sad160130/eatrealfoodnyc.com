@@ -9,7 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("vegan-nyc-borough-guide")!
@@ -30,7 +30,8 @@ const GUIDE_FAQS = [
   { question: "Can I find vegan restaurants open late in NYC?", answer: "Yes, several vegan restaurants in Manhattan and Brooklyn stay open past 10 PM. Use our Open Now filter to find currently open vegan restaurants, or check our guide to late night healthy eating in NYC for specific recommendations." },
 ]
 
-export default function VeganNYCGuide() {
+export default async function VeganNYCGuide() {
+  const stats = await getLiveGuideStats()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />

@@ -292,9 +292,9 @@ export default async function HealthGradeReportPage() {
             Overall grade distribution
           </h2>
           <p className="mb-8 text-base" style={{ color: "var(--color-muted)" }}>
-            Across all {summary.totalRestaurants.toLocaleString()} active NYC restaurants in our
-            directory, {summary.gradedPct}% have a verified health inspection grade from the NYC
-            Department of Health.
+            In the {snapshotDate} snapshot, {summary.totalRestaurants.toLocaleString()} restaurants
+            were published and {summary.gradedPct}% of them had a verified health inspection grade.
+            Live directory counts are in the header.
           </p>
 
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -701,8 +701,8 @@ export default async function HealthGradeReportPage() {
           </h2>
           <div className="space-y-4 leading-relaxed text-gray-700">
             <p>
-              This report analyzes health inspection data for{" "}
-              <strong>{summary.totalRestaurants.toLocaleString()} active NYC restaurants</strong> in
+              This report analyzes the {snapshotDate} snapshot of health inspection data for{" "}
+              <strong>{summary.totalRestaurants.toLocaleString()} restaurants published then</strong> in
               the Eat Real Food NYC directory. Restaurant listings are sourced from Google Maps
               Platform and filtered to operational businesses only.
             </p>

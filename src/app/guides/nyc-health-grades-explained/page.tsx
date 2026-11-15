@@ -10,7 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import GradeHubLinks from "@/components/grade-hub-links"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -92,7 +92,17 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function NYCHealthGradesGuide() {
+export default async function NYCHealthGradesGuide() {
+  const stats = await getLiveGuideStats()
+  const graded = stats.global.totalWithGrade
+  const shareOfGraded = (count: number) => (graded > 0 ? Math.round((count / graded) * 100) : 0)
+  const gradeAShare = shareOfGraded(stats.letters.A)
+  const gradeBShare = shareOfGraded(stats.letters.B)
+  const gradeCShare = shareOfGraded(stats.letters.C)
+  const boroughTotal = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"].reduce(
+    (sum, name) => sum + (stats.global.boroughs[name]?.total ?? 0),
+    0
+  )
   return (
     <GuideLayout guide={guide}>
       {/* JSON-LD schemas */}
@@ -121,8 +131,8 @@ export default function NYCHealthGradesGuide() {
         guide={guide}
         subtitle="A is 0–13 points, B is 14–27 on a reinspection, and C is 28 or more. Grade Pending and a Z in the city data are not letter grades."
         stats={[
-          { stat: "~27,000", label: "Restaurants inspected yearly" },
-          { stat: "~90%", label: "Earn a Grade A" },
+          { stat: stats.global.totalPublished.toLocaleString(), label: "Published listings" },
+          { stat: `${stats.global.gradeAPercent}%`, label: "Grade A in this directory" },
           { stat: "1x/year", label: "Minimum inspection frequency" },
           { stat: "0-13", label: "Points for Grade A" },
         ]}
@@ -201,30 +211,16 @@ export default function NYCHealthGradesGuide() {
 
         <DataCallout
           heading="NYC Health Grade Data — Eat Real Food NYC Directory"
-          intro={`Of the ${stats.global.totalPublished.toLocaleString()} active NYC restaurants in our directory, ${stats.global.totalWithGrade.toLocaleString()} (${stats.global.gradeACoverage}%) have a verified health inspection grade from the NYC Department of Health. Here is how Grade A certification is distributed across the five boroughs.`}
-          dataPoints={[
-            {
-              stat: `${stats.global.boroughs["Manhattan"]?.rate ?? 0}%`,
-              label: "Manhattan restaurants with Grade A",
-              source: `${stats.global.boroughs["Manhattan"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Manhattan"]?.total.toLocaleString()} restaurants`,
-            },
-            {
-              stat: `${stats.global.boroughs["Brooklyn"]?.rate ?? 0}%`,
-              label: "Brooklyn restaurants with Grade A",
-              source: `${stats.global.boroughs["Brooklyn"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Brooklyn"]?.total.toLocaleString()} restaurants`,
-            },
-            {
-              stat: `${stats.global.boroughs["Queens"]?.rate ?? 0}%`,
-              label: "Queens restaurants with Grade A",
-              source: `${stats.global.boroughs["Queens"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Queens"]?.total.toLocaleString()} restaurants`,
-            },
-            {
-              stat: `${stats.global.boroughs["Bronx"]?.rate ?? 0}%`,
-              label: "Bronx restaurants with Grade A",
-              source: `${stats.global.boroughs["Bronx"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Bronx"]?.total.toLocaleString()} restaurants`,
-            },
-          ]}
-          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Each grade is the latest matched DOHMH record. New listings are published weekly."
+          intro={`Of the ${stats.global.totalPublished.toLocaleString()} active NYC restaurants in our directory, ${stats.letters.A.toLocaleString()} (${stats.global.gradeAPercent}%) hold a NYC DOHMH Grade A. ${stats.global.totalWithGrade.toLocaleString()} (${stats.global.letterGradePercent}%) have a letter grade (A, B, or C). The same Grade A share is in the data note at the bottom of this page. Borough counts below cover all five boroughs and add up to ${boroughTotal.toLocaleString()} published listings${stats.global.unassignedBorough > 0 ? `; ${stats.global.unassignedBorough.toLocaleString()} published listings have no borough on file` : ""}.`}
+          dataPoints={["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"].map((name) => {
+            const borough = stats.global.boroughs[name]
+            return {
+              stat: `${borough?.rate ?? 0}%`,
+              label: `${name} restaurants with Grade A`,
+              source: `${(borough?.gradeA ?? 0).toLocaleString()} Grade A of ${(borough?.total ?? 0).toLocaleString()} published`,
+            }
+          })}
+          sourceNote="Counts are published listings in this directory. Grade A share is Grade A divided by published listings in that borough, not the citywide inspection rate. Each grade is the latest matched NYC DOHMH record."
           variant="green"
         />
 
@@ -281,7 +277,7 @@ export default function NYCHealthGradesGuide() {
                   <th className="px-4 py-3 text-left font-semibold">Grade</th>
                   <th className="px-4 py-3 text-left font-semibold">Score Range</th>
                   <th className="px-4 py-3 text-left font-semibold">What It Means</th>
-                  <th className="px-4 py-3 text-right font-semibold">% of NYC</th>
+                  <th className="px-4 py-3 text-right font-semibold">% of graded listings here</th>
                 </tr>
               </thead>
               <tbody>
@@ -289,19 +285,19 @@ export default function NYCHealthGradesGuide() {
                   <td className="px-4 py-3 text-lg font-bold text-green-700">A</td>
                   <td className="px-4 py-3 text-gray-700">0 – 13 points</td>
                   <td className="px-4 py-3 text-gray-700">Excellent food safety</td>
-                  <td className="px-4 py-3 text-right font-semibold text-green-700">~90%</td>
+                  <td className="px-4 py-3 text-right font-semibold text-green-700">{gradeAShare}%</td>
                 </tr>
                 <tr className="border-b border-gray-100 bg-yellow-50/50">
                   <td className="px-4 py-3 text-lg font-bold text-yellow-700">B</td>
                   <td className="px-4 py-3 text-gray-700">14 – 27 points</td>
                   <td className="px-4 py-3 text-gray-700">Some violations found</td>
-                  <td className="px-4 py-3 text-right font-semibold text-yellow-700">~8%</td>
+                  <td className="px-4 py-3 text-right font-semibold text-yellow-700">{gradeBShare}%</td>
                 </tr>
                 <tr className="bg-orange-50/50">
                   <td className="px-4 py-3 text-lg font-bold text-orange-700">C</td>
                   <td className="px-4 py-3 text-gray-700">28+ points</td>
                   <td className="px-4 py-3 text-gray-700">Serious violations</td>
-                  <td className="px-4 py-3 text-right font-semibold text-orange-700">~2%</td>
+                  <td className="px-4 py-3 text-right font-semibold text-orange-700">{gradeCShare}%</td>
                 </tr>
               </tbody>
             </table>
@@ -315,8 +311,9 @@ export default function NYCHealthGradesGuide() {
           {/* Conversational aside — tone shift */}
           <div className="my-6 border-l-4 border-sage pl-5">
             <p className="text-base italic text-gray-600">
-              Worth noting: about 90% of NYC restaurants hold a Grade A at any given time. So if
-              you see a B or C in the window, it genuinely stands out — and it should.
+              In this directory, {gradeAShare}% of listings that have a letter grade are Grade A
+              ({stats.letters.A.toLocaleString()} of {graded.toLocaleString()}). That is our matched
+              records, not a citywide inspection rate.
             </p>
           </div>
         </section>
@@ -341,16 +338,17 @@ export default function NYCHealthGradesGuide() {
                   <p className="text-sm text-green-600">Score of 0 to 13 points</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <p className="text-2xl font-bold text-green-700">~90%</p>
-                  <p className="text-xs text-green-600">of NYC restaurants</p>
+                  <p className="text-2xl font-bold text-green-700">{gradeAShare}%</p>
+                  <p className="text-xs text-green-600">of graded listings here</p>
                 </div>
               </div>
               <div className="px-6 py-5">
                 <p className="leading-relaxed text-gray-700">
                   A Grade A restaurant has demonstrated very good food safety practices during its
                   most recent inspection. With a score of 13 points or fewer, the restaurant may
-                  have minor violations but nothing that poses a significant risk to diners. The vast
-                  majority of NYC restaurants — approximately 90% — earn a Grade A.
+                  have minor violations but nothing that poses a significant risk to diners. In this
+                  directory, {gradeAShare}% of letter-graded listings are Grade A
+                  ({stats.letters.A.toLocaleString()} of {graded.toLocaleString()}).
                 </p>
                 <p className="mt-3 leading-relaxed text-gray-700">
                   For diners, a Grade A is the clearest signal that a restaurant takes food safety
@@ -381,8 +379,8 @@ export default function NYCHealthGradesGuide() {
                   <p className="text-sm text-yellow-600">Score of 14 to 27 points</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <p className="text-2xl font-bold text-yellow-700">~8%</p>
-                  <p className="text-xs text-yellow-600">of NYC restaurants</p>
+                  <p className="text-2xl font-bold text-yellow-700">{gradeBShare}%</p>
+                  <p className="text-xs text-yellow-600">of graded listings here</p>
                 </div>
               </div>
               <div className="px-6 py-5">
@@ -423,8 +421,8 @@ export default function NYCHealthGradesGuide() {
                   <p className="text-sm text-orange-600">Score of 28 or more points</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <p className="text-2xl font-bold text-orange-700">~2%</p>
-                  <p className="text-xs text-orange-600">of NYC restaurants</p>
+                  <p className="text-2xl font-bold text-orange-700">{gradeCShare}%</p>
+                  <p className="text-xs text-orange-600">of graded listings here</p>
                 </div>
               </div>
               <div className="px-6 py-5">

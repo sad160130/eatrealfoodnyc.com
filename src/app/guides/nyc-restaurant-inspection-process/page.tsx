@@ -10,7 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-restaurant-inspection-process")!
@@ -33,7 +33,8 @@ const GUIDE_FAQS = [
   { question: "How can I look up a restaurant's inspection history?", answer: "Every NYC restaurant inspection record is public data. You can search by restaurant name on the NYC Open Data portal at data.cityofnewyork.us. Our directory also shows the current grade, score, and inspection date for every listed restaurant." },
 ]
 
-export default function InspectionProcessGuide() {
+export default async function InspectionProcessGuide() {
+  const stats = await getLiveGuideStats()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -56,7 +57,7 @@ export default function InspectionProcessGuide() {
         guide={guide}
         subtitle="A step-by-step breakdown of how NYC restaurants are inspected, what happens when they fail, and how to read an inspection report."
         stats={[
-          { stat: "~27,000", label: "Restaurants inspected/year" },
+          { stat: stats.global.totalPublished.toLocaleString(), label: "Published listings" },
           { stat: "2 chances", label: "To earn a Grade A" },
           { stat: "1-3 hours", label: "Per inspection" },
           { stat: "28+ pts", label: "Triggers Grade C" },
@@ -86,7 +87,7 @@ export default function InspectionProcessGuide() {
             {
               stat: stats.global.totalWithGrade.toLocaleString(),
               label: "Have a verified DOHMH grade",
-              source: `${stats.global.gradeACoverage}% grade coverage`,
+              source: `${stats.global.letterGradePercent}% of published listings have an A, B, or C`,
             },
             {
               stat: stats.neighborhoods.topByGradeA[0]?.neighborhood ?? "",
@@ -200,7 +201,7 @@ export default function InspectionProcessGuide() {
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Can restaurants appeal their grade?</h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">Yes. NYC restaurants have the right to contest their inspection results through a formal hearing at the Office of Administrative Trials and Hearings (OATH). During the appeal process, the restaurant displays a &quot;Grade Pending&quot; sign rather than its letter grade.</p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">At the OATH hearing, an administrative law judge reviews the inspection report and hears testimony from both the health inspector and the restaurant operator. The judge can dismiss violations, reduce point values, or uphold the original findings. If the appeal results in a lower total score, the restaurant&apos;s grade is adjusted accordingly.</p>
-          <p className="text-lg leading-relaxed text-gray-700">The appeals process is an important safeguard that ensures restaurants have due process. However, it is worth noting that the majority of inspected restaurants — approximately 90% — earn a Grade A without needing to appeal.</p>
+          <p className="text-lg leading-relaxed text-gray-700">The appeals process is an important safeguard that ensures restaurants have due process. In this directory, {stats.global.gradeAPercent}% of published listings hold Grade A ({stats.letters.A.toLocaleString()} of {stats.global.totalPublished.toLocaleString()}).</p>
         </section>
 
         <GuideLinkIndex
