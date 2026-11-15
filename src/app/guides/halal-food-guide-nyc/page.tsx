@@ -64,7 +64,7 @@ export default function HalalFoodGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: guide.publishedDate,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}
@@ -118,7 +118,7 @@ export default function HalalFoodGuide() {
               source: `${stats.dietary.topNeighborhoodsByTag["halal"]?.[0]?.count ?? 0} halal restaurants — ${stats.dietary.topNeighborhoodsByTag["halal"]?.[0]?.borough ?? ""}`,
             },
           ]}
-          sourceNote="Data: Eat Real Food NYC directory. Halal tag applied only when restaurant is certified or explicitly identifies as halal in public materials. Updated quarterly."
+          sourceNote="Data: Eat Real Food NYC directory. Halal tag applied only when restaurant is certified or explicitly identifies as halal in public materials. Tags are reviewed editorially before they are applied."
           variant="green"
         />
 

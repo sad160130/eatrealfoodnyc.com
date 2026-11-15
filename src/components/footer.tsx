@@ -195,6 +195,8 @@ export default function Footer() {
           >
             &copy; {new Date().getFullYear()} Eat Real Food NYC. All rights reserved.
             <span className="mx-2" style={{ color: "rgba(248, 246, 241, 0.25)" }}>·</span>
+            <Link href="/html-sitemap" style={{ color: "rgba(248, 246, 241, 0.55)" }}>HTML sitemap</Link>
+            <span className="mx-2" style={{ color: "rgba(248, 246, 241, 0.25)" }}>·</span>
             <Link href="/sitemap.xml" style={{ color: "rgba(248, 246, 241, 0.55)" }}>Sitemap</Link>
             <span className="mx-2" style={{ color: "rgba(248, 246, 241, 0.25)" }}>·</span>
             <Link href="/privacy" style={{ color: "rgba(248, 246, 241, 0.55)" }}>Privacy</Link>
@@ -210,7 +212,7 @@ export default function Footer() {
               letterSpacing: "-0.005em",
             }}
           >
-            Updated weekly. Sundays.
+            New listings each week, on Sundays.
           </p>
         </div>
       </div>

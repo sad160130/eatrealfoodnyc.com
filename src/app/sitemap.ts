@@ -4,6 +4,7 @@ import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { COMBO_MIN_RESTAURANTS, DIET_CONFIG } from "@/config/dietary-tags"
 import { GUIDES } from "@/config/guides"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
+import { neighborhoodIndexPath, pageCount } from "@/lib/restaurant-index"
 import healthGradeReport from "@/data/health-grade-report"
 import bestRatedReport from "@/data/best-rated-restaurants"
 
@@ -188,6 +189,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry(siteUrl, `/restaurants/${row.slug}`, 0.8, "monthly", row.updated_at)
   )
 
+  const indexPages = [...byNeighborhood.values()].flatMap((hood) => {
+    const pages = pageCount(hood.count)
+    return Array.from({ length: pages }, (_, index) =>
+      entry(
+        siteUrl,
+        neighborhoodIndexPath(hood.borough, hood.neighborhood, index + 1),
+        0.6,
+        "weekly",
+        latest(hood.dates)
+      )
+    )
+  })
+
   return [
     ...staticPages,
     ...guidePages,
@@ -196,6 +210,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...boroughPages,
     ...neighborhoodPages,
     ...comboPages,
+    entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
+    ...indexPages,
     ...restaurantPages,
   ]
 }

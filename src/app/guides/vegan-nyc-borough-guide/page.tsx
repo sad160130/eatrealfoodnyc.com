@@ -34,7 +34,7 @@ export default function VeganNYCGuide() {
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.description, author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl }, publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl }, datePublished: guide.publishedDate, dateModified: new Date().toISOString().split("T")[0], mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` } }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.description, author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl }, publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl }, datePublished: guide.publishedDate, dateModified: guide.publishedDate, mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` } }) }} />
 
       <GuideHero guide={guide} subtitle="The definitive guide to vegan dining across all five NYC boroughs. Best neighborhoods, what to expect, and how to find the most committed plant-based kitchens." stats={[
         { stat: "107+", label: "Vegan restaurants" },

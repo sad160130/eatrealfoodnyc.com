@@ -7,6 +7,7 @@ import reportData from "@/data/health-grade-report"
 import bestRatedData from "@/data/best-rated-restaurants"
 import { formatLongDate } from "@/lib/inspection-dates"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 const { summary, byBorough, neighborhoods, byType, keyFindings, generatedAt } = reportData
 const snapshotDate = formatLongDate(new Date(generatedAt))
@@ -73,7 +74,7 @@ function GradeBar({
 
 export default async function HealthGradeReportPage() {
   const live = await getDirectorySnapshot()
-  const dateModified = new Date().toISOString().split("T")[0]
+  const dateModified = live.lastPublishLabel ?? snapshotDate
 
   const reportJsonLd = {
     "@context": "https://schema.org",
@@ -187,6 +188,7 @@ export default async function HealthGradeReportPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "NYC health grade report", path: "/data/nyc-restaurant-health-grade-report" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reportJsonLd) }}

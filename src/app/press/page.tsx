@@ -3,6 +3,7 @@ import Link from "next/link"
 import { pageMeta } from "@/lib/page-meta"
 import SocialLinks from "@/components/social-links"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
   path: "/press",
@@ -18,6 +19,7 @@ export default async function PressPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Press", path: "/press" }]} />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

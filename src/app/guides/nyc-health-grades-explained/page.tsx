@@ -11,6 +11,7 @@ import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import stats from "@/data/guide-stats"
+import GradeHubLinks from "@/components/grade-hub-links"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
@@ -223,7 +224,7 @@ export default function NYCHealthGradesGuide() {
               source: `${stats.global.boroughs["Bronx"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Bronx"]?.total.toLocaleString()} restaurants`,
             },
           ]}
-          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Updated quarterly."
+          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Each grade is the latest matched DOHMH record. New listings are published weekly."
           variant="green"
         />
 
@@ -241,6 +242,8 @@ export default function NYCHealthGradesGuide() {
           </p>
         </div>
 
+        <GradeHubLinks />
+
         {/* Section 1 */}
         <section id="what-is-a-health-grade" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -256,6 +259,18 @@ export default function NYCHealthGradesGuide() {
             Every restaurant, food cart, and food service establishment that is open to the public
             in New York City is required to be inspected and to post its grade card in a window
             visible from the street. This has been the law since 2010.
+          </p>
+
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            <a
+              href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j"
+              className="font-medium text-jade underline underline-offset-2 hover:text-forest"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Official NYC DOHMH inspection grade
+            </a>{" "}
+            letters on this site come from NYC Open Data dataset 43nn-pn8j. A restaurant page links to that dataset filtered by the restaurant name, or by CAMIS when an id is stored.
           </p>
 
           {/* Quick reference table — breaks the paragraph pattern */}

@@ -4,6 +4,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "Partner with Us — Eat Real Food NYC",
@@ -118,6 +119,7 @@ export default async function PartnerWithUsPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Partner with us", path: "/partner-with-us" }]} />
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center gap-2 text-xs uppercase tracking-widest text-white/50">

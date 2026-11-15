@@ -10,8 +10,9 @@ import {
   neighborhoodToSlug,
   parseWorkingHours,
   getRestaurantImageAlt,
-  buildTitle,
 } from "@/lib/utils"
+import { restaurantTitle, withBrand } from "@/lib/seo-titles"
+import { inspectionFact, restaurantCapsule } from "@/lib/answer-capsule"
 import MapWrapper from "@/components/map-wrapper"
 import RestaurantPhotoGallery from "@/components/restaurant-photo-gallery"
 import HealthScoreCard from "@/components/health-score-card"
@@ -30,6 +31,8 @@ import {
   ORGANIZATION_SCHEMA,
 } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
+import InspectionRecord from "@/components/inspection-record"
+import OfficialGradeLink from "@/components/official-grade-link"
 import { getCanonicalUrl } from "@/config/seo"
 import { buildRestaurantMetaDescription } from "@/lib/restaurant-description"
 import SaveButton from "@/components/save-button"
@@ -62,21 +65,23 @@ export async function generateMetadata({
     return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
   }
 
-  const locationStr = restaurant.neighborhood ? `${restaurant.neighborhood}, NYC` : "New York City"
+  const gradeView = presentGrade(restaurant.inspection_grade)
+  const title = restaurantTitle({
+    name: restaurant.name,
+    inspectionGrade: gradeView.dataGrade || null,
+    inspectionDate: restaurant.inspection_date,
+    neighborhood: restaurant.neighborhood,
+  })
   const description = buildRestaurantMetaDescription(restaurant)
 
   const canonicalUrl = getCanonicalUrl(`/restaurants/${restaurant.slug}`)
 
   return {
-    title: buildTitle({
-      name: restaurant.name,
-      location: locationStr,
-      suffix: "Healthy Restaurant",
-    }),
+    title,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: `${restaurant.name} — ${restaurant.neighborhood ?? "NYC"}`,
+      title: withBrand(title),
       description,
       url: canonicalUrl,
       type: "website",
@@ -231,6 +236,47 @@ export default async function RestaurantPage({
               )}
             </h1>
 
+            <p className="mt-4 text-base leading-relaxed" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
+              {restaurantCapsule({
+                name: restaurant.name,
+                neighborhood: restaurant.neighborhood,
+                borough: restaurant.borough,
+                grade: gradeView.dataGrade || null,
+                statusLabel: gradeView.dataGrade ? null : gradeView.title,
+                score: restaurant.inspection_score,
+                inspectionDate: restaurant.inspection_date,
+                tags: tags.map(formatDietaryTag),
+                address: restaurant.address,
+                type: restaurant.type,
+              })}
+            </p>
+            <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2" style={{ maxWidth: "62ch" }}>
+              <div>
+                <dt className="eyebrow">Grade</dt>
+                <dd>
+                  {gradeView.title}
+                  {gradeView.dataGrade && (
+                    <>
+                      {" "}
+                      <OfficialGradeLink name={restaurant.name} />
+                    </>
+                  )}
+                </dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Score</dt>
+                <dd>{restaurant.inspection_score ?? "Not matched"}</dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Inspection date</dt>
+                <dd>{inspectionFact(restaurant.inspection_date) ?? "Not matched"}</dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Address</dt>
+                <dd>{restaurant.address || "Not on file"}</dd>
+              </div>
+            </dl>
+
             {/* Subtitle: neighborhood · borough · price */}
             <p className="dek mt-3" style={{ color: "var(--color-text)" }}>
               {[
@@ -265,6 +311,7 @@ export default async function RestaurantPage({
             <span className="eyebrow" style={{ color: "var(--color-muted)" }}>
               {gradeView.title}
             </span>
+            {gradeView.dataGrade && <OfficialGradeLink name={restaurant.name} />}
           </div>
         </div>
 
@@ -404,15 +451,7 @@ export default async function RestaurantPage({
             <section>
               <p className="eyebrow">The brief</p>
               <h2 className="h2-serif mt-2">About {restaurant.name}</h2>
-              {restaurant.description ? (
-                <p className="dek mt-4" style={{ maxWidth: "65ch" }}>
-                  {restaurant.description}
-                </p>
-              ) : (
-                <p className="dek mt-4 italic" style={{ color: "var(--color-muted)", maxWidth: "65ch" }}>
-                  Description coming soon.
-                </p>
-              )}
+              <ListingBodyLinks restaurant={restaurant} validHubs={validHubs} />
 
               {/* Editorial asides */}
               {restaurant.rating && restaurant.rating >= 4.5 && (restaurant.reviews ?? 0) >= 500 && (
@@ -466,6 +505,11 @@ export default async function RestaurantPage({
             <section>
                 <p className="eyebrow">Health inspection</p>
                 <h2 className="h2-serif mt-2">{gradeView.title}</h2>
+                {gradeView.dataGrade && (
+                  <p className="mt-2 text-sm">
+                    <OfficialGradeLink name={restaurant.name} />
+                  </p>
+                )}
                 <div className="mt-5 flex items-start gap-5">
                   <span
                     className="plaque flex-shrink-0"
@@ -509,6 +553,8 @@ export default async function RestaurantPage({
                   </div>
                 </div>
               </section>
+
+            <InspectionRecord restaurant={restaurant} />
 
             {/* Community Rating */}
             <CommunityRating
@@ -572,7 +618,7 @@ export default async function RestaurantPage({
             <p className="mt-3 px-1 text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.55 }}>
               Data sourced from NYC DOHMH Open Data.
               {restaurant.inspection_date && (
-                <> Inspection record dated {new Date(restaurant.inspection_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}.</>
+                <> Inspection record dated {restaurant.inspection_date}.</>
               )}{" "}
               The directory publish date is on the homepage.
             </p>
@@ -711,6 +757,33 @@ export default async function RestaurantPage({
 }
 
 /* ─── Internal pieces ─── */
+
+function ListingBodyLinks({
+  restaurant,
+  validHubs,
+}: {
+  restaurant: { slug: string; name: string; borough: string | null; neighborhood: string | null; dietary_tags: string | null }
+  validHubs: Set<string>
+}) {
+  const links = getListingHubLinks(restaurant, validHubs).filter(
+    ([, href]) => href.startsWith("/nyc/") || href.startsWith("/healthy-restaurants/")
+  )
+  if (links.length === 0) return null
+  return (
+    <p className="mt-4 text-base leading-relaxed" style={{ color: "var(--color-text)", maxWidth: "65ch" }}>
+      {restaurant.name} is listed with{" "}
+      {links.map(([anchor, href], index) => (
+        <span key={href}>
+          {index > 0 && (index === links.length - 1 ? " and " : ", ")}
+          <Link href={href} className="underline underline-offset-2" style={{ color: "var(--color-jade)" }}>
+            {anchor}
+          </Link>
+        </span>
+      ))}
+      .
+    </p>
+  )
+}
 
 function ContactRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
