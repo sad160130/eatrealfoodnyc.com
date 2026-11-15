@@ -19,6 +19,7 @@ import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { fitDescription, neighborhoodHubTitle, shortMonth } from "@/lib/seo-titles"
+import { placeIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { neighborhoodCapsule } from "@/lib/answer-capsule"
 import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
@@ -203,7 +204,7 @@ export default async function NeighborhoodPage({
           </p>
 
           <h1 className="display-1 mt-3">
-            Healthy restaurants in {neighborhoodName}
+            Healthy restaurants in {neighborhoodName}, {boroughName}
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
@@ -416,7 +417,18 @@ export default async function NeighborhoodPage({
             maxWidth: "62ch",
           }}
         >
-          {neighborhoodName} is one of the dining areas we track in {boroughName}, New York City. Every listing includes the official NYC Department of Health inspection grade.
+          {placeIntro({
+            place: neighborhoodName,
+            borough: boroughName,
+            count: restaurants.length,
+            gradeA: gradeACount,
+            gradeB: restaurants.filter((row) => row.inspection_grade === "B").length,
+            gradeC: restaurants.filter((row) => row.inspection_grade === "C").length,
+            latestMonth: latestInspection ? formatMonthYear(latestInspection) : null,
+            diets: dietLinks.map((link) => ({ label: link.tag, count: link.count })),
+          }).map((paragraph) => (
+            <span key={paragraph.slice(0, 40)}>{paragraph} </span>
+          ))}
         </p>
         <ContextualLinks
           intro="Explore further:"

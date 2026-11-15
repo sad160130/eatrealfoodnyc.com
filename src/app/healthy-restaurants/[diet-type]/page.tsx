@@ -16,6 +16,7 @@ import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { dietFaqs, dietIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dietCapsule } from "@/lib/answer-capsule"
 import { buildHubItemList } from "@/lib/schema"
@@ -99,7 +100,7 @@ export default async function DietTypePage({
     is_published: true,
     dietary_tags: { contains: tag },
   }
-  const [restaurantRows, totalCount, boroughBreakdown, ratingAgg] = await Promise.all([
+  const [restaurantRows, totalCount, boroughBreakdown, ratingAgg, neighborhoodBreakdown] = await Promise.all([
     prisma.restaurant.findMany({
       where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
@@ -118,8 +119,19 @@ export default async function DietTypePage({
       where: { ...listedWhere, rating: { gt: 0 } },
       _avg: { rating: true },
     }),
+    prisma.restaurant.groupBy({
+      by: ["neighborhood", "borough"],
+      where: { ...listedWhere, neighborhood: { not: null }, borough: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 1,
+    }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
+  const topHood = neighborhoodBreakdown[0]
+  const topNeighborhood = topHood?.neighborhood && topHood.borough
+    ? { name: topHood.neighborhood, borough: topHood.borough, count: topHood._count.id }
+    : null
   const gradeSplit = await gradeStatsFor({ dietary_tags: { contains: tag } })
   const capsule = dietCapsule({
     label: config.label,
@@ -145,7 +157,7 @@ export default async function DietTypePage({
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: `${config.label} Restaurants in NYC — ${config.label} Certification & Health Grade Data`,
-    description: `${config.label} certifications, health inspection grades, dietary tags, and restaurant data for ${totalCount} verified ${config.label.toLowerCase()} restaurants across all five NYC boroughs. Sourced from NYC DOHMH Open Data and Eat Real Food NYC editorial classification.`,
+    description: `Published ${config.label.toLowerCase()} listings in NYC: ${totalCount} restaurants, with the matched NYC DOHMH grade when one is stored. A tag is not a certification, and a missing grade is not Grade A.`,
     url: `${siteUrl}/healthy-restaurants/${tag}`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
@@ -238,11 +250,15 @@ export default async function DietTypePage({
           </aside>
 
           {/* Intro */}
-          {config.intro && (
-            <p className="dek mt-6" style={{ maxWidth: "62ch" }}>
-              {config.intro}
-            </p>
-          )}
+          <p className="dek mt-6" style={{ maxWidth: "62ch" }}>
+            {dietIntro({
+              label: config.label,
+              place: "NYC",
+              count: totalCount,
+              gradeA: gradeSplit.gradeA,
+              graded: gradeSplit.graded,
+            })}
+          </p>
 
           {/* Editorial aside */}
           <aside
@@ -453,13 +469,22 @@ export default async function DietTypePage({
       </div>
 
       {/* ─── FAQ ─── */}
-      {config.faqs.length > 0 && (
-        <FAQSection
-          faqs={config.faqs}
-          heading={`${config.label} Restaurants in NYC — FAQ`}
-          subheading={`Everything you need to know about finding ${config.label.toLowerCase()} restaurants across New York City.`}
-        />
-      )}
+      <FAQSection
+        faqs={dietFaqs({
+          label: config.label,
+          place: "NYC",
+          count: totalCount,
+          gradeA: gradeSplit.gradeA,
+          graded: gradeSplit.graded,
+          topBorough: boroughBreakdown[0]?.borough
+            ? { name: boroughBreakdown[0].borough, count: boroughBreakdown[0]._count.id }
+            : null,
+          topNeighborhood: topNeighborhood,
+          policy: `We tag a restaurant ${config.label.toLowerCase()} only when it identifies that way or has substantial ${config.label.toLowerCase()} menu coverage. A single dish is not enough, and a missing grade is not a dietary claim.`,
+        })}
+        heading={`${config.label} restaurants in NYC`}
+        subheading="Counts from the published listings."
+      />
       <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
         <div className="mx-auto max-w-7xl">
           <NewsletterSignup />

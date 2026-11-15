@@ -3,11 +3,13 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
-import { neighborhoodToSlug } from "@/lib/utils"
+import { neighborhoodToSlug, parseDietaryTags } from "@/lib/utils"
+import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
 import { getCanonicalUrl } from "@/config/seo"
-import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
+import { BOROUGH_MAP } from "@/config/boroughs"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { fitDescription, neighborhoodHubTitle, shortMonth } from "@/lib/seo-titles"
+import { boroughHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { placeFaqs, placeIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { buildHubItemList } from "@/lib/schema"
 import RestaurantCard from "@/components/restaurant-card"
@@ -46,7 +48,7 @@ export async function generateMetadata({
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/healthy-restaurants`)
   const snapshot = await getDirectorySnapshot()
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
-  const title = neighborhoodHubTitle(name, "NYC", stats.gradeA, year)
+  const title = boroughHubTitle(name, stats.gradeA, year)
   const dataMonth = shortMonth(snapshot.lastPublishAt)
   const description = fitDescription(
     [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name}, NYC: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`],
@@ -114,6 +116,33 @@ export default async function BoroughPage({
   }, {} as Record<string, typeof restaurants>)
 
   const neighborhoodsSorted = Object.entries(byNeighborhood).sort((a, b) => b[1].length - a[1].length)
+  const gradeBCount = restaurants.filter((row) => row.inspection_grade === "B").length
+  const gradeCCount = restaurants.filter((row) => row.inspection_grade === "C").length
+  const latestBoroughInspection = latestInspectionDate(restaurants.map((row) => row.inspection_date))
+  const dietCounts = [
+    { label: "Vegan", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("vegan")).length },
+    { label: "Halal", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("halal")).length },
+    { label: "Gluten-free", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("gluten-free")).length },
+  ]
+  const boroughParagraphs = placeIntro({
+    place: boroughName,
+    count: totalCount,
+    gradeA: gradeACount,
+    gradeB: gradeBCount,
+    gradeC: gradeCCount,
+    latestMonth: latestBoroughInspection ? formatMonthYear(latestBoroughInspection) : null,
+    diets: dietCounts,
+    neighborhoodCount: neighborhoodsSorted.length,
+  })
+  const topNeighborhood = neighborhoodsSorted[0]
+  const boroughFaqList = placeFaqs({
+    place: boroughName,
+    count: totalCount,
+    gradeA: gradeACount,
+    graded: gradeACount + gradeBCount + gradeCCount,
+    topNeighborhood: topNeighborhood ? { name: topNeighborhood[0], count: topNeighborhood[1].length } : null,
+    diets: dietCounts,
+  })
 
   // Hubs that actually exist. Neighbourhoods below NEIGHBORHOOD_HUB_MIN_RESTAURANTS
   // still get a section on this page (their restaurants are real and their cards
@@ -154,7 +183,6 @@ export default async function BoroughPage({
     variableMeasured: ["Health inspection grade", "Dietary certifications", "Community rating", "Hidden gem status"],
   }
 
-  const intro = BOROUGH_INTROS[boroughSlug] || ""
   const gradeARate = totalCount > 0 ? Math.round((gradeACount / totalCount) * 100) : 0
   // Full RestaurantCards for every listing made Manhattan's HTML about 2 MB.
   // Cards are capped; every other listing is a server-rendered anchor.
@@ -189,10 +217,9 @@ export default async function BoroughPage({
             Healthy restaurants in {boroughName}
           </h1>
 
-          <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> curated spots across{" "}
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{neighborhoodsSorted.length}</span> {boroughName} neighborhoods — every listing tied to a real NYC Department of Health inspection grade.
-          </p>
+          {boroughParagraphs.map((paragraph) => (
+            <p key={paragraph.slice(0, 48)} className="dek mt-4" style={{ maxWidth: "62ch" }}>{paragraph}</p>
+          ))}
 
           {/* Inline stats — mid-dot separators, tabular nums, no pipes */}
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
@@ -202,12 +229,6 @@ export default async function BoroughPage({
             <Dot />
             <StatInline label="Neighborhoods" value={neighborhoodsSorted.length.toString()} />
           </div>
-
-          {intro && (
-            <p className="dek mt-5" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
-              {intro}
-            </p>
-          )}
 
           {/* Editorial insight */}
           {gradeACount > 0 && (
@@ -228,11 +249,7 @@ export default async function BoroughPage({
                   color: "var(--color-text)",
                 }}
               >
-                {gradeARate > 70
-                  ? `${gradeARate}% of ${boroughName}'s healthy restaurants hold a Grade A — well above the city average. Straight from NYC Health Department records.`
-                  : gradeARate > 40
-                    ? `About ${gradeARate}% of the healthy restaurants listed here carry a Grade A. Some neighborhoods perform noticeably better than others.`
-                    : `Grade A coverage in ${boroughName} sits at ${gradeARate}%. The restaurants that do hold an A tend to be genuinely committed to food safety.`}
+                {`${gradeARate}% of the ${totalCount.toLocaleString("en-US")} published listings in ${boroughName} hold Grade A. That share includes listings with no letter, which are not Grade A.`}
               </p>
             </aside>
           )}
@@ -577,13 +594,11 @@ export default async function BoroughPage({
       </div>
 
       {/* ─── FAQ ─── */}
-      {BOROUGH_FAQS[boroughSlug]?.length > 0 && (
-        <FAQSection
-          faqs={BOROUGH_FAQS[boroughSlug]}
-          heading={`Healthy Restaurants in ${boroughName} — FAQ`}
-          subheading={`Common questions about finding healthy food in ${boroughName}, NYC.`}
-        />
-      )}
+      <FAQSection
+        faqs={boroughFaqList}
+        heading={`Healthy restaurants in ${boroughName}`}
+        subheading={`Counts from the published ${boroughName} listings.`}
+      />
 
       <BackToTop />
     </>
