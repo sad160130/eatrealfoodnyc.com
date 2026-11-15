@@ -44,6 +44,7 @@ import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
 import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
 import ClaimListing from "@/components/claim-listing"
+import BadgeReferral from "@/components/badge-referral"
 import BookingActions from "@/components/booking-actions"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
@@ -439,7 +440,8 @@ export default async function RestaurantPage({
             Request catering
           </Link>
         </p>
-        <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} />
+        <BadgeReferral />
+        <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} showBadge={gradeView.dataGrade === "A"} />
       </header>
 
       {/* ─── PHOTO GALLERY — comes after the hero, editorial-style ─── */}

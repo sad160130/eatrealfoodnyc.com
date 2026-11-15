@@ -11,7 +11,7 @@ import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 export const metadata: Metadata = {
   title: "Partner with Us — Eat Real Food NYC",
   description:
-    "Featured is $49 a month, Spotlight is $149 a month, and Neighborhood Sponsor is $299 a month. Listing stays free. Payment never changes a grade or a ranking.",
+    "A listing, a claim, and a Grade A badge are free. Paid Partner placements are optional and never change a grade or a ranking.",
   alternates: { canonical: getCanonicalUrl("/partner-with-us") },
   robots: { index: true, follow: true },
 }
@@ -92,9 +92,13 @@ export default async function PartnerWithUsPage({
             <span className="text-sage">Eat Real Food NYC</span>
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            A labeled placement for restaurants that already belong in the directory.
-            Listing stays free. Grades and default rankings stay unpaid.
+            Start with a free listing, a claim, and a Grade A badge.
+            A labeled placement is optional. Grades and default rankings stay unpaid.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/claim" className="rounded-xl bg-sage px-5 py-3 text-sm font-semibold text-white">Claim a listing</Link>
+            <Link href="/healthy-restaurants/grade-a" className="rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white">See Grade A listings</Link>
+          </div>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <span className="text-sm text-white/70">Diners see</span>
             <PartnerLabel kind="partner" tone="on-dark" />
@@ -114,6 +118,29 @@ export default async function PartnerWithUsPage({
             Thanks! Your placement is confirmed. We&apos;ll email you within 1 business day to set it up.
           </p>
         )}
+        <section className="mb-16">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">START HERE</p>
+          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            Free before anything paid
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Free listing</h3>
+              <p className="mt-3 text-sm leading-relaxed text-gray-700">If the restaurant fits the directory, the listing is free. Payment is not how a restaurant gets in.</p>
+            </div>
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Claim it</h3>
+              <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                <Link href="/claim" className="font-semibold text-jade hover:text-forest">Claim the listing</Link> to correct hours, photos, the address, or diet tags. A person reviews it. The grade does not change.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Grade A badge</h3>
+              <p className="mt-3 text-sm leading-relaxed text-gray-700">A restaurant that currently holds a Grade A can embed a free badge. It shows the official NYC grade and updates when the grade does.</p>
+            </div>
+          </div>
+        </section>
+
         <section className="mb-16">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">THE DIRECTORY</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -184,7 +211,7 @@ export default async function PartnerWithUsPage({
         <section className="mb-16">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">THE OFFER</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            What you can buy
+            Optional paid placement
           </h2>
           <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             <p className="text-base leading-relaxed text-gray-700">
