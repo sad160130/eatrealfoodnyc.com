@@ -15,6 +15,8 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titles"
+import { neighborhoodCapsule } from "@/lib/answer-capsule"
+import { latestStoredDate } from "@/lib/freshness"
 import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
@@ -133,6 +135,18 @@ export default async function NeighborhoodPage({
 
   if (restaurants.length < NEIGHBORHOOD_HUB_MIN_RESTAURANTS) notFound()
 
+  const gradedCount = restaurants.filter((row) => row.inspection_grade === "A" || row.inspection_grade === "B" || row.inspection_grade === "C").length
+  const taggedCount = restaurants.filter((row) => row.dietary_tags?.trim()).length
+  const latestInspection = latestStoredDate(restaurants.map((row) => row.inspection_date))
+  const capsule = neighborhoodCapsule({
+    neighborhood: neighborhoodName,
+    count: restaurants.length,
+    graded: gradedCount,
+    gradeA: restaurants.filter((row) => row.inspection_grade === "A").length,
+    latestMonth: latestInspection?.monthYear ?? null,
+    tagged: taggedCount,
+  })
+
   // Gate for the contextual-links block below. Memoised — see neighborhood-hubs.ts.
   const validHubs = await getBuiltNeighborhoodHubs()
 
@@ -193,7 +207,19 @@ export default async function NeighborhoodPage({
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{stats._count.id.toLocaleString()}</span> curated spots in {neighborhoodName} — every listing tied to a real NYC Department of Health inspection grade.
+            {capsule}
+          </p>
+          <h2 className="h2-serif mt-8">How many Grade A restaurants are in {neighborhoodName}?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {gradedCount === 0
+              ? `None of the ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} has a matched NYC DOHMH letter grade.`
+              : `${restaurants.filter((row) => row.inspection_grade === "A").length.toLocaleString("en-US")} of ${gradedCount.toLocaleString("en-US")} graded restaurants in ${neighborhoodName} hold Grade A. The share is among graded listings, not every published row.`}
+          </p>
+          <h2 className="h2-serif mt-8">Which diets are tagged in {neighborhoodName}?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {taggedCount === 0
+              ? `None of the published restaurants in ${neighborhoodName} carries a dietary tag. Tags are applied only when a kitchen identifies with that diet.`
+              : `${taggedCount.toLocaleString("en-US")} of ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} carry at least one dietary tag.`}
           </p>
 
           {/* Inline stats */}

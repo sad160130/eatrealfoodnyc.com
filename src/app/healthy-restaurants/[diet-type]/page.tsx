@@ -14,6 +14,7 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { dietCapsule } from "@/lib/answer-capsule"
 import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
@@ -94,6 +95,15 @@ export default async function DietTypePage({
     }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
+  const gradeSplit = await gradeStatsFor({ dietary_tags: { contains: tag } })
+  const capsule = dietCapsule({
+    label: config.label,
+    count: totalCount,
+    gradeA: gradeSplit.gradeA,
+    gradeB: gradeSplit.gradeB,
+    gradeC: gradeSplit.gradeC,
+    latestMonth: gradeSplit.latestMonth,
+  })
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
@@ -180,7 +190,13 @@ export default async function DietTypePage({
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {config.label.toLowerCase()} restaurants in NYC — each tied to a real NYC Department of Health inspection grade.
+            {capsule}
+          </p>
+          <h2 className="h2-serif mt-8">How many {config.label.toLowerCase()} restaurants hold a Grade A?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {gradeSplit.graded === 0
+              ? `None of the ${totalCount.toLocaleString("en-US")} published ${config.label.toLowerCase()} restaurants has a matched NYC DOHMH letter grade.`
+              : `${gradeSplit.gradeA.toLocaleString("en-US")} of ${gradeSplit.graded.toLocaleString("en-US")} graded ${config.label.toLowerCase()} restaurants hold Grade A. ${gradeSplit.gradeB.toLocaleString("en-US")} hold Grade B and ${gradeSplit.gradeC.toLocaleString("en-US")} hold Grade C.`}
           </p>
 
           {/* What it is — quiet editorial pull, no green box */}

@@ -12,6 +12,7 @@ import {
   getRestaurantImageAlt,
 } from "@/lib/utils"
 import { restaurantMetaDescription, restaurantTitle, withBrand } from "@/lib/seo-titles"
+import { inspectionFact, restaurantCapsule } from "@/lib/answer-capsule"
 import MapWrapper from "@/components/map-wrapper"
 import RestaurantPhotoGallery from "@/components/restaurant-photo-gallery"
 import HealthScoreCard from "@/components/health-score-card"
@@ -241,6 +242,38 @@ export default async function RestaurantPage({
               )}
             </h1>
 
+            <p className="mt-4 text-base leading-relaxed" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
+              {restaurantCapsule({
+                name: restaurant.name,
+                neighborhood: restaurant.neighborhood,
+                borough: restaurant.borough,
+                grade: restaurant.inspection_grade,
+                score: restaurant.inspection_score,
+                inspectionDate: restaurant.inspection_date,
+                tags: tags.map(formatDietaryTag),
+                address: restaurant.address,
+                type: restaurant.type,
+              })}
+            </p>
+            <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2" style={{ maxWidth: "62ch" }}>
+              <div>
+                <dt className="eyebrow">Grade</dt>
+                <dd>{restaurant.inspection_grade || "Not matched"}</dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Score</dt>
+                <dd>{restaurant.inspection_score ?? "Not matched"}</dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Inspection date</dt>
+                <dd>{inspectionFact(restaurant.inspection_date) ?? "Not matched"}</dd>
+              </div>
+              <div>
+                <dt className="eyebrow">Address</dt>
+                <dd>{restaurant.address || "Not on file"}</dd>
+              </div>
+            </dl>
+
             {/* Subtitle: neighborhood · borough · price */}
             <p className="dek mt-3" style={{ color: "var(--color-text)" }}>
               {[
@@ -413,15 +446,6 @@ export default async function RestaurantPage({
             <section>
               <p className="eyebrow">The brief</p>
               <h2 className="h2-serif mt-2">About {restaurant.name}</h2>
-              {restaurant.description ? (
-                <p className="dek mt-4" style={{ maxWidth: "65ch" }}>
-                  {restaurant.description}
-                </p>
-              ) : (
-                <p className="dek mt-4 italic" style={{ color: "var(--color-muted)", maxWidth: "65ch" }}>
-                  Description coming soon.
-                </p>
-              )}
               <ListingBodyLinks restaurant={restaurant} validHubs={validHubs} />
 
               {/* Editorial asides */}

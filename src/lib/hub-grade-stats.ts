@@ -16,12 +16,11 @@ export async function gradeStatsFor(where: {
     is_published: true,
     business_status: "OPERATIONAL" as const,
   }
-  const [count, gradeA, graded, dated] = await Promise.all([
+  const [count, gradeA, gradeB, gradeC, dated] = await Promise.all([
     prisma.restaurant.count({ where: published }),
     prisma.restaurant.count({ where: { ...published, inspection_grade: "A" } }),
-    prisma.restaurant.count({
-      where: { ...published, inspection_grade: { in: ["A", "B", "C"] } },
-    }),
+    prisma.restaurant.count({ where: { ...published, inspection_grade: "B" } }),
+    prisma.restaurant.count({ where: { ...published, inspection_grade: "C" } }),
     prisma.restaurant.findMany({
       where: { ...published, inspection_date: { not: null } },
       select: { inspection_date: true },
@@ -33,7 +32,9 @@ export async function gradeStatsFor(where: {
   return {
     count,
     gradeA,
-    graded,
+    gradeB,
+    gradeC,
+    graded: gradeA + gradeB + gradeC,
     latestMonth: latest?.monthYear ?? null,
     latestIso: latest?.iso ?? null,
   }
