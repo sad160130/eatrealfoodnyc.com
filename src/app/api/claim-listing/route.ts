@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db"
-import { claimContent, validateClaim } from "@/lib/claim-submission"
+import { claimContent, claimHoneypotTripped, validateClaim } from "@/lib/claim-submission"
+import { allowNewsletterSignup } from "@/lib/newsletter-rate-limit"
+import { notifyClaim } from "@/lib/claim-notify"
 
 function isMissingSubmissionsTable(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error)
@@ -18,6 +20,17 @@ function text(record: Record<string, unknown>, key: string): string {
   return typeof record[key] === "string" ? record[key].trim() : ""
 }
 
+function list(record: Record<string, unknown>, key: string): string[] {
+  const value = record[key]
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === "string")
+}
+
+function clientIp(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+  return forwarded || "unknown"
+}
+
 export async function POST(request: NextRequest) {
   let body: unknown
   try {
@@ -27,12 +40,21 @@ export async function POST(request: NextRequest) {
   }
 
   const record = body && typeof body === "object" ? (body as Record<string, unknown>) : {}
+  if (claimHoneypotTripped(text(record, "company_website"))) {
+    return NextResponse.json({ success: true })
+  }
+  if (!allowNewsletterSignup(`claim:${clientIp(request)}`)) {
+    return NextResponse.json({ error: "Too many claims from this network. Please try again later." }, { status: 429 })
+  }
   const fields = {
     restaurantSlug: text(record, "restaurantSlug"),
     name: text(record, "name"),
     role: text(record, "role"),
     email: text(record, "email"),
     phone: text(record, "phone"),
+    fixes: list(record, "fixes"),
+    dietTags: list(record, "dietTags"),
+    notes: text(record, "notes"),
   }
   const problem = validateClaim(fields)
   if (problem === "email") {
@@ -62,6 +84,15 @@ export async function POST(request: NextRequest) {
         status: "pending",
       },
     })
+    try {
+      await notifyClaim({
+        restaurantName: restaurant.name,
+        restaurantSlug: restaurant.slug,
+        content: claimContent(fields),
+      })
+    } catch {
+      console.error("claim notification failed")
+    }
     return NextResponse.json({ success: true })
   } catch (error) {
     if (isMissingSubmissionsTable(error)) {
