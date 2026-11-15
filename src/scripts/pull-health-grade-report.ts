@@ -188,9 +188,14 @@ async function pullHealthGradeReport() {
   const overallGradeAPct =
     totalGraded > 0 ? Math.round((totalGradeA / totalGraded) * 100) : 0
 
+  const generatedAt = new Date().toISOString()
   const report = {
-    generatedAt: new Date().toISOString(),
-    reportDate: "May 2026",
+    generatedAt,
+    reportDate: new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(generatedAt)),
     summary: {
       totalRestaurants,
       totalGraded,

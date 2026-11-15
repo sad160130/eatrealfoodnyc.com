@@ -38,6 +38,8 @@ const GUIDE_LINKS = [
   { label: "Hidden Gem Restaurants", href: "/guides/hidden-gem-restaurants-nyc" },
   { label: "Healthy on $15", href: "/guides/how-eat-healthy-nyc-15-dollars" },
   { label: "Late-Night Healthy", href: "/guides/late-night-healthy-eating-nyc" },
+  { label: "Healthy Breakfast", href: "/guides/healthy-breakfast-nyc" },
+  { label: "Healthy Seafood", href: "/guides/seafood-healthy-restaurants-nyc" },
 ]
 
 const DATA_LINKS = [

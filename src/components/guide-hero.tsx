@@ -8,8 +8,11 @@ interface GuideHeroProps {
 }
 
 export default function GuideHero({ guide, subtitle, stats }: GuideHeroProps) {
-  const updatedLabel = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })
-  const publishedLabel = new Date(guide.publishedDate).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+  const publishedLabel = new Date(`${guide.publishedDate}T00:00:00Z`).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  })
 
   return (
     <header
@@ -37,8 +40,6 @@ export default function GuideHero({ guide, subtitle, stats }: GuideHeroProps) {
           <span style={{ color: "var(--color-muted)" }}>{guide.readTime}</span>
           <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
           <span style={{ color: "var(--color-muted)" }}>Published {publishedLabel}</span>
-          <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
-          <span style={{ color: "var(--color-jade)" }}>Updated {updatedLabel}</span>
         </p>
 
         {/* Title */}

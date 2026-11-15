@@ -1,46 +1,65 @@
 # Eat Real Food NYC
 
-NYC's most trusted healthy restaurant directory. Built on verified NYC Department of Health inspection data.
-
-**Live site:** https://eatrealfoodnyc.com
+NYC healthy restaurant directory. Live at https://www.eatrealfoodnyc.com.
 
 ## Stack
-- Next.js 14 (App Router, TypeScript, SSG)
-- Supabase (PostgreSQL)
-- Prisma ORM
-- Tailwind CSS
-- Vercel (hosting)
+
+- Next.js 16 (App Router, TypeScript, `src/` layout)
+- React 19
+- Tailwind CSS 4
+- Supabase PostgreSQL and Prisma 7 (`DATABASE_URL` pooled, `DIRECT_URL` for migrations)
+- Leaflet and OpenStreetMap
+- Vercel (production deploys from `main` only — do not use the Vercel CLI to deploy)
 
 ## Development
+
 ```bash
 npm install
+cp .env.local.example .env.local
 npm run dev
 ```
 
-## Deployment
+## Checks
 
-Deployments are automatic via GitHub.
-- Push to `main` → triggers Vercel production deployment
-- All environment variables are configured in Vercel dashboard
+```bash
+npx tsc --noEmit
+npm run build
+```
 
-## Weekly publish workflow
+There is no ESLint config in this repo. `tsc` is the typecheck.
 
-See `WEEKLY_PUBLISH.md` for the weekly process of publishing new restaurant pages.
+## Weekly publish
 
-## Environment variables
-
-Copy `.env.local.example` to `.env.local` and fill in your values.
-Never commit `.env.local` to version control.
+See [WEEKLY_PUBLISH.md](WEEKLY_PUBLISH.md). Publishing is a reviewed batch, not an automatic Sunday job.
 
 ## Scripts
+
 ```bash
-# Check publish status
+# How many restaurants are published
 npx tsx src/scripts/publish-status.ts
 
-# Publish next 100 restaurants (run weekly)
+# Newest parsed inspection date and publish timestamp
+npx tsx src/scripts/check-data-freshness.ts
+
+# Preview the next 100 eligible unpublished restaurants
+npx tsx src/scripts/list-next-publish-batch.ts
+
+# Publish that batch (writes is_published)
 npx tsx src/scripts/weekly-publish.ts
 
-# Full data pipeline (run after major data updates)
-npx tsx src/scripts/ingest.ts
-npx tsx src/scripts/build-search-index.ts
+# Report published rows that fail the directory rules. Dry-run.
+npx tsx src/scripts/unpublish-ineligible.ts
+# Write the unpublish after reviewing the report
+npx tsx src/scripts/unpublish-ineligible.ts --apply
+
+# Create the experience-form table. Dry-run, then apply.
+npx tsx src/scripts/create-user-submissions-table.ts
+npx tsx src/scripts/create-user-submissions-table.ts --apply
+
+# Refresh DOHMH grades. Dry-run, then apply. Do not point this at production
+# until the dry-run sample looks right.
+npx tsx src/scripts/refresh-dohmh-inspections.ts
+npx tsx src/scripts/refresh-dohmh-inspections.ts --apply
 ```
+
+Environment variables live in `.env.local` (gitignored) and in the Vercel project. Never commit them.

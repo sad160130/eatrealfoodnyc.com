@@ -16,6 +16,7 @@ import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import PartnerLabel from "@/components/partner-label"
 import { isPartnerStatus } from "@/lib/partner-status"
+import { presentGrade } from "@/lib/grade-display"
 
 interface RestaurantCardProps {
   restaurant: Restaurant
@@ -47,10 +48,7 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
   const restaurantUrl = `/restaurants/${restaurant.slug}`
   const locationLabel = [restaurant.neighborhood, restaurant.borough].filter(Boolean).join(" · ")
   const cardLabel = `${restaurant.name} — healthy restaurant${locationLabel ? ` in ${locationLabel}` : " in New York City"}`
-  const grade = restaurant.inspection_grade || ""
-  const gradeAria = grade
-    ? `NYC Department of Health inspection grade ${grade}`
-    : "NYC Department of Health inspection grade pending"
+  const gradeView = presentGrade(restaurant.inspection_grade)
 
   return (
     <article
@@ -99,10 +97,11 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
         {/* Plaque — the signature element. Top-left corner of the photo. */}
         <span
           className="plaque pointer-events-none absolute left-3 top-3 z-10"
-          data-grade={grade}
-          aria-label={gradeAria}
+          data-grade={gradeView.dataGrade}
+          aria-label={gradeView.ariaLabel}
+          title={gradeView.explanation}
         >
-          {grade || "–"}
+          {gradeView.plaque}
         </span>
 
         {/* Action buttons — top-right corner of the photo */}

@@ -1,0 +1,2127 @@
+{
+  "date": "2026-11-15",
+  "action": "is_published set to false",
+  "note": "Re-publish by setting is_published true for these slugs. Rows were not deleted.",
+  "count": 211,
+  "slugs": [
+    "alamo-drafthouse-cinema-lower-manhattan",
+    "aldi-pelham",
+    "aldi-rego",
+    "american-museum-of-natural-history",
+    "applebees-grill-bar-concourse",
+    "applebees-grill-bar-east",
+    "applebees-grill-bar-elmhurst",
+    "applebees-grill-bar-fordham",
+    "applebees-grill-bar-fort",
+    "applebees-grill-bar-fresh",
+    "applebees-grill-bar-kingsbridge",
+    "applebees-grill-bar-mariners",
+    "applebees-grill-bar-midtown",
+    "applebees-grill-bar-rosedale-qn",
+    "applebees-grill-bar-rosedale-qn-832",
+    "applebees-grill-bar-rosedale-qn-844",
+    "applebees-grill-bar-sheepshead",
+    "applebees-grill-bar-throgs",
+    "arlo-soho",
+    "arlo-williamsburg",
+    "arons-kissena-farms",
+    "awesome-hibachi-hibachi-at-home-hibachi-catering",
+    "barclays-center",
+    "bartleby-sage",
+    "bathhouse-flatiron",
+    "bathhouse-williamsburg",
+    "bella-lulus",
+    "bloomingdales",
+    "bon-appetite",
+    "brookfield-place",
+    "brooklyn-botanic-garden",
+    "bryant-park",
+    "buffalo-wild-wings-east",
+    "burger-king",
+    "catercow",
+    "cedar-star-catering",
+    "central-park",
+    "chefelix-catering",
+    "chelsea-market",
+    "chick-fil-a-elmhurst",
+    "chick-fil-a-financial",
+    "chick-fil-a-fort",
+    "chick-fil-a-midtown-mn",
+    "chick-fil-a-midtown-mn-3562",
+    "chuck-e-cheese-concourse",
+    "chuck-e-cheese-fort",
+    "city-point-bklyn",
+    "clubdog-nyc",
+    "columbia-university",
+    "dennys-jackson",
+    "dish-food-events",
+    "el-puerto-seafood",
+    "elmhurst-park",
+    "even-hotel-brooklyn-by-ihg",
+    "fairfield-by-marriott-inn-suites-new-york-manhattanfinancial-district",
+    "fairway-market-of-74th-street",
+    "farmbria-by-food-bazaar",
+    "fishs-eddy",
+    "five-guys-midtown",
+    "food-bazaar-bayside",
+    "food-bazaar-brownsville",
+    "food-bazaar-canarsie",
+    "food-bazaar-concourse",
+    "food-bazaar-red",
+    "foods-of-ny-tours",
+    "funny-hibachi-catering",
+    "fusion-fare-nyc",
+    "gantry-plaza-state-park",
+    "garden-gourmet-market-supermarket",
+    "glen-oaks-shopping-center",
+    "great-kills-park",
+    "h-mart-bayside",
+    "hampton-inn-brooklyndowntown",
+    "hampton-inn-manhattantimes-square-central",
+    "hilton-garden-inn-queensjfk-airport",
+    "hilton-new-york-fashion-district",
+    "holiday-inn-express-nyc-chelsea-nomad-area-by-ihg",
+    "home-grown-meals",
+    "hudson-yards",
+    "hugh-j-grant-circle",
+    "ihop-downtown",
+    "ihop-flatbush",
+    "ihop-flushing",
+    "ihop-gramercy",
+    "ihop-jamaica",
+    "ihop-port",
+    "ihop-rosedale-qn",
+    "ihop-rosedale-qn-8296",
+    "ihop-soundview",
+    "ihop-wakefield",
+    "ihop-williamsbridge",
+    "innside-by-meli-new-york-nomad",
+    "jacob-riis-park-gateway-national-recreation-area",
+    "jmart",
+    "john-f-kennedy-international-airport",
+    "just-a-nibble-nyc",
+    "kalustyans",
+    "key-food-supermarkets-pelham",
+    "knockdown-center",
+    "laguardia-airport",
+    "lake-success-shopping-center",
+    "lci-caterers",
+    "loveat-for-you",
+    "maleen-banquet-hall-and-restaurant",
+    "mcdonalds",
+    "mcdonalds-bayside-qn",
+    "mcdonalds-college",
+    "mcdonalds-east-bk",
+    "mcdonalds-east-bk-1345",
+    "mcdonalds-east-bk-1356",
+    "mcdonalds-east-bk-1366",
+    "mcdonalds-far",
+    "mcdonalds-greenwich",
+    "mcdonalds-howard",
+    "mcdonalds-jamaica",
+    "mcdonalds-mariners",
+    "mcdonalds-pelham",
+    "mcdonalds-rosedale-qn-1306",
+    "mcdonalds-upper",
+    "mcdonalds-washington",
+    "mcdonalds-williamsbridge",
+    "mcdonalds-woodhaven",
+    "metro-mall",
+    "mg-foodstuff-catering-events",
+    "mymedcater",
+    "new-horizons-shopping-mall",
+    "new-york-botanical-garden",
+    "new-york-hilton-midtown",
+    "new-york-marriott-marquis",
+    "new-york-stock-exchange",
+    "new-york-university",
+    "newark-liberty-international-airport",
+    "nyc-health-hospitals-bellevue",
+    "nyc-health-hospitalselmhurst",
+    "one-vanderbilt",
+    "palm-tree-marketplace",
+    "pelham-bay-park",
+    "petco",
+    "petes-grill",
+    "petsmart",
+    "pomegranate-supermarket",
+    "popeyes-louisiana-kitchen-brownsville",
+    "poppy-seed-bagels-catering",
+    "primeclass-lounge-jfk-t1",
+    "queens-hospital-center",
+    "rabs-country-lanes",
+    "rego-center",
+    "rockaway-beach",
+    "rockefeller-center",
+    "shoprite-of-forest-richmond",
+    "shoprite-of-gateway-center",
+    "shoprite-of-hoboken",
+    "shoprite-of-new-hyde-park",
+    "shoprite-of-pelham-parkway",
+    "snug-harbor-cultural-center-botanical-garden",
+    "spa-castle-new-york",
+    "stop-shop-far",
+    "stop-shop-sheepshead",
+    "stuyvesant-square-park",
+    "taco-bell-cantina",
+    "taco-bell-soundview",
+    "tashkent-supermarket-brighton-beach",
+    "tashkent-supermarket-halal-food-ave-z",
+    "the-bay-terrace-shopping-center",
+    "the-food-emporium-midtown",
+    "the-inn-at-new-hyde-park-wedding-corporate-event-venue",
+    "the-shops-at-bruckner",
+    "the-shops-at-riverside",
+    "the-st-regis-new-york",
+    "throggs-neck-shopping-center",
+    "trader-joes-downtown",
+    "trader-joes-gramercy",
+    "trader-joes-kips",
+    "trader-joes-lincoln",
+    "trader-joes-lower",
+    "trader-joes-rego",
+    "trader-joes-willowbrook",
+    "turnstyle-underground-market",
+    "union-square-greenmarket",
+    "walmart-supercenter-hudson",
+    "walmart-supercenter-rosedale",
+    "walmart-supercenter-upper",
+    "warwick-new-york",
+    "wegmans-downtown",
+    "wendys-briarwood",
+    "wendys-east-bk",
+    "wendys-east-bk-0524",
+    "wendys-east-bk-0536",
+    "wendys-rego",
+    "wendys-ridgewood",
+    "wendys-south",
+    "wendys-williamsbridge",
+    "western-beef-supermarket-soundview",
+    "westside-market-nyc-morningside",
+    "white-castle-east",
+    "white-castle-soundview",
+    "whitney-museum-of-american-art",
+    "whole-foods-market-chelsea",
+    "whole-foods-market-flatiron",
+    "whole-foods-market-fort",
+    "whole-foods-market-gowanus",
+    "whole-foods-market-harlem",
+    "whole-foods-market-lincoln",
+    "whole-foods-market-midtown-mn",
+    "whole-foods-market-midtown-mn-0665",
+    "whole-foods-market-morningside",
+    "whole-foods-market-soho",
+    "whole-foods-market-tribeca",
+    "whole-foods-market-upper",
+    "whole-foods-market-williamsburg",
+    "zabars"
+  ],
+  "rows": [
+    {
+      "slug": "alamo-drafthouse-cinema-lower-manhattan",
+      "name": "Alamo Drafthouse Cinema Lower Manhattan",
+      "type": "Restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "non-food: cinema"
+      ]
+    },
+    {
+      "slug": "aldi-pelham",
+      "name": "ALDI",
+      "type": "Supermarket",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "aldi-rego",
+      "name": "ALDI",
+      "type": "Supermarket",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "american-museum-of-natural-history",
+      "name": "American Museum of Natural History",
+      "type": "Natural history museum",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Natural history museum"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-concourse",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-east",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-elmhurst",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-fordham",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-fort",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-fresh",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-kingsbridge",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-mariners",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Staten Island",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-midtown",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-rosedale-qn",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-rosedale-qn-832",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-rosedale-qn-844",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-sheepshead",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "applebees-grill-bar-throgs",
+      "name": "Applebee's Grill + Bar",
+      "type": "Restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Applebee's"
+      ]
+    },
+    {
+      "slug": "arlo-soho",
+      "name": "Arlo SoHo",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "arlo-williamsburg",
+      "name": "Arlo Williamsburg",
+      "type": "Hotel",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "arons-kissena-farms",
+      "name": "Aron's Kissena Farms",
+      "type": "Supermarket",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "awesome-hibachi-hibachi-at-home-hibachi-catering",
+      "name": "Awesome Hibachi | Hibachi At Home Hibachi Catering",
+      "type": "Mobile caterer",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Mobile caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "barclays-center",
+      "name": "Barclays Center",
+      "type": "Arena",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Arena"
+      ]
+    },
+    {
+      "slug": "bartleby-sage",
+      "name": "Bartleby & Sage",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "bathhouse-flatiron",
+      "name": "Bathhouse Flatiron",
+      "type": "Sauna",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Sauna"
+      ]
+    },
+    {
+      "slug": "bathhouse-williamsburg",
+      "name": "Bathhouse Williamsburg",
+      "type": "Sauna",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Sauna"
+      ]
+    },
+    {
+      "slug": "bella-lulus",
+      "name": "Bella LuLu's",
+      "type": "Caterer",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "bloomingdales",
+      "name": "Bloomingdale's",
+      "type": "Department store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Department store"
+      ]
+    },
+    {
+      "slug": "bon-appetite",
+      "name": "Bon Appetite",
+      "type": "Catering food and drink supplier",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Catering food and drink supplier"
+      ]
+    },
+    {
+      "slug": "brookfield-place",
+      "name": "Brookfield Place",
+      "type": "Tourist attraction",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Tourist attraction"
+      ]
+    },
+    {
+      "slug": "brooklyn-botanic-garden",
+      "name": "Brooklyn Botanic Garden",
+      "type": "Botanical garden",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Botanical garden"
+      ]
+    },
+    {
+      "slug": "bryant-park",
+      "name": "Bryant Park",
+      "type": "Park",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "buffalo-wild-wings-east",
+      "name": "Buffalo Wild Wings",
+      "type": "Chicken wings restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Buffalo Wild Wings"
+      ]
+    },
+    {
+      "slug": "burger-king",
+      "name": "Burger King",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Burger King"
+      ]
+    },
+    {
+      "slug": "catercow",
+      "name": "CaterCow",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "cedar-star-catering",
+      "name": "Cedar Star Catering",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "central-park",
+      "name": "Central Park",
+      "type": "Park",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "chefelix-catering",
+      "name": "CheFelix Catering",
+      "type": "Caterer",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "chelsea-market",
+      "name": "Chelsea Market",
+      "type": "Market",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Market"
+      ]
+    },
+    {
+      "slug": "chick-fil-a-elmhurst",
+      "name": "Chick-fil-A",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Chick-fil-A"
+      ]
+    },
+    {
+      "slug": "chick-fil-a-financial",
+      "name": "Chick-fil-A",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Chick-fil-A"
+      ]
+    },
+    {
+      "slug": "chick-fil-a-fort",
+      "name": "Chick-fil-A",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Chick-fil-A"
+      ]
+    },
+    {
+      "slug": "chick-fil-a-midtown-mn",
+      "name": "Chick-fil-A",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Chick-fil-A"
+      ]
+    },
+    {
+      "slug": "chick-fil-a-midtown-mn-3562",
+      "name": "Chick-fil-A",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Chick-fil-A"
+      ]
+    },
+    {
+      "slug": "chuck-e-cheese-concourse",
+      "name": "Chuck E. Cheese",
+      "type": "Children's amusement center",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Children's amusement center"
+      ]
+    },
+    {
+      "slug": "chuck-e-cheese-fort",
+      "name": "Chuck E. Cheese",
+      "type": "Children's amusement center",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Children's amusement center"
+      ]
+    },
+    {
+      "slug": "city-point-bklyn",
+      "name": "City Point BKLYN",
+      "type": "Shopping mall",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "clubdog-nyc",
+      "name": "Clubdog NYC",
+      "type": "Caterer",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "columbia-university",
+      "name": "Columbia University",
+      "type": "University",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: University"
+      ]
+    },
+    {
+      "slug": "dennys-jackson",
+      "name": "Denny's",
+      "type": "Restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Denny's"
+      ]
+    },
+    {
+      "slug": "dish-food-events",
+      "name": "Dish Food & Events",
+      "type": "Caterer",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "el-puerto-seafood",
+      "name": "El Puerto Seafood",
+      "type": "Seafood market",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Seafood market"
+      ]
+    },
+    {
+      "slug": "elmhurst-park",
+      "name": "Elmhurst Park",
+      "type": "Park",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "even-hotel-brooklyn-by-ihg",
+      "name": "EVEN Hotel Brooklyn by IHG",
+      "type": "Hotel",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "fairfield-by-marriott-inn-suites-new-york-manhattanfinancial-district",
+      "name": "Fairfield by Marriott Inn & Suites New York Manhattan/Financial District",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "fairway-market-of-74th-street",
+      "name": "Fairway Market of 74th Street",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "farmbria-by-food-bazaar",
+      "name": "FARMBRIA by FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "fishs-eddy",
+      "name": "Fishs Eddy",
+      "type": "Home goods store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Home goods store"
+      ]
+    },
+    {
+      "slug": "five-guys-midtown",
+      "name": "Five Guys",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Five Guys"
+      ]
+    },
+    {
+      "slug": "food-bazaar-bayside",
+      "name": "FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "food-bazaar-brownsville",
+      "name": "FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "food-bazaar-canarsie",
+      "name": "FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "food-bazaar-concourse",
+      "name": "FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "food-bazaar-red",
+      "name": "FOOD BAZAAR",
+      "type": "Supermarket",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "foods-of-ny-tours",
+      "name": "Foods of NY Tours",
+      "type": "Sightseeing tour agency",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Sightseeing tour agency",
+        "non-food: tour"
+      ]
+    },
+    {
+      "slug": "funny-hibachi-catering",
+      "name": "Funny Hibachi Catering",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "fusion-fare-nyc",
+      "name": "Fusion Fare NYC",
+      "type": "Catering food and drink supplier",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Catering food and drink supplier"
+      ]
+    },
+    {
+      "slug": "gantry-plaza-state-park",
+      "name": "Gantry Plaza State Park",
+      "type": "State park",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: State park"
+      ]
+    },
+    {
+      "slug": "garden-gourmet-market-supermarket",
+      "name": "Garden Gourmet Market - Supermarket",
+      "type": "Gourmet grocery store",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Gourmet grocery store"
+      ]
+    },
+    {
+      "slug": "glen-oaks-shopping-center",
+      "name": "Glen Oaks Shopping Center",
+      "type": "Shopping mall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "great-kills-park",
+      "name": "Great Kills Park",
+      "type": "Park",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "h-mart-bayside",
+      "name": "H Mart Bayside",
+      "type": "Korean grocery store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Korean grocery store"
+      ]
+    },
+    {
+      "slug": "hampton-inn-brooklyndowntown",
+      "name": "Hampton Inn Brooklyn/Downtown",
+      "type": "Hotel",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "hampton-inn-manhattantimes-square-central",
+      "name": "Hampton Inn Manhattan/Times Square Central",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "hilton-garden-inn-queensjfk-airport",
+      "name": "Hilton Garden Inn Queens/JFK Airport",
+      "type": "Hotel",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "hilton-new-york-fashion-district",
+      "name": "Hilton New York Fashion District",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "holiday-inn-express-nyc-chelsea-nomad-area-by-ihg",
+      "name": "Holiday Inn Express Nyc Chelsea - Nomad Area by IHG",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "home-grown-meals",
+      "name": "Home Grown Meals",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "hudson-yards",
+      "name": "Hudson Yards",
+      "type": "Shopping mall",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "hugh-j-grant-circle",
+      "name": "Hugh J. Grant Circle",
+      "type": "Park",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "ihop-downtown",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-flatbush",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-flushing",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-gramercy",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-jamaica",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-port",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Staten Island",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-rosedale-qn",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-rosedale-qn-8296",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-soundview",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-wakefield",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "ihop-williamsbridge",
+      "name": "IHOP",
+      "type": "Breakfast restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: IHOP"
+      ]
+    },
+    {
+      "slug": "innside-by-meli-new-york-nomad",
+      "name": "INNSiDE by Meliá New York NOMAD",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "jacob-riis-park-gateway-national-recreation-area",
+      "name": "Jacob Riis Park (Gateway National Recreation Area)",
+      "type": "Park",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "jmart",
+      "name": "Jmart 新世界超市",
+      "type": "Supermarket",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "john-f-kennedy-international-airport",
+      "name": "John F. Kennedy International Airport",
+      "type": "International airport",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: International airport"
+      ]
+    },
+    {
+      "slug": "just-a-nibble-nyc",
+      "name": "Just a Nibble NYC",
+      "type": "Caterer",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "kalustyans",
+      "name": "Kalustyan's",
+      "type": "Gourmet grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Gourmet grocery store"
+      ]
+    },
+    {
+      "slug": "key-food-supermarkets-pelham",
+      "name": "Key Food Supermarkets",
+      "type": "Supermarket",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "knockdown-center",
+      "name": "Knockdown Center",
+      "type": "Live music venue",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Live music venue"
+      ]
+    },
+    {
+      "slug": "laguardia-airport",
+      "name": "LaGuardia Airport",
+      "type": "International airport",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: International airport"
+      ]
+    },
+    {
+      "slug": "lake-success-shopping-center",
+      "name": "Lake Success Shopping Center",
+      "type": "Shopping mall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "lci-caterers",
+      "name": "LCI Caterers",
+      "type": "Caterer",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "loveat-for-you",
+      "name": "LovEat For You",
+      "type": "Catering food and drink supplier",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Catering food and drink supplier"
+      ]
+    },
+    {
+      "slug": "maleen-banquet-hall-and-restaurant",
+      "name": "Maleen Banquet Hall and Restaurant",
+      "type": "Banquet hall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Banquet hall"
+      ]
+    },
+    {
+      "slug": "mcdonalds",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-bayside-qn",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-college",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-east-bk",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-east-bk-1345",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-east-bk-1356",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-east-bk-1366",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-far",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-greenwich",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-howard",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-jamaica",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-mariners",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Staten Island",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-pelham",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-rosedale-qn-1306",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-upper",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-washington",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-williamsbridge",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "mcdonalds-woodhaven",
+      "name": "McDonald's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: McDonald's"
+      ]
+    },
+    {
+      "slug": "metro-mall",
+      "name": "Metro Mall",
+      "type": "Shopping mall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "mg-foodstuff-catering-events",
+      "name": "M&G Foodstuff - Catering & Events",
+      "type": "Caterer",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Caterer",
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "mymedcater",
+      "name": "MyMedCater",
+      "type": "Caterer",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Caterer"
+      ]
+    },
+    {
+      "slug": "new-horizons-shopping-mall",
+      "name": "New Horizons Shopping Mall",
+      "type": "Shopping mall",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "new-york-botanical-garden",
+      "name": "New York Botanical Garden",
+      "type": "Botanical garden",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Botanical garden"
+      ]
+    },
+    {
+      "slug": "new-york-hilton-midtown",
+      "name": "New York Hilton Midtown",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "new-york-marriott-marquis",
+      "name": "New York Marriott Marquis",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "new-york-stock-exchange",
+      "name": "New York Stock Exchange",
+      "type": "Stock broker",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Stock broker"
+      ]
+    },
+    {
+      "slug": "new-york-university",
+      "name": "New York University",
+      "type": "University",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: University"
+      ]
+    },
+    {
+      "slug": "newark-liberty-international-airport",
+      "name": "Newark Liberty International Airport",
+      "type": "International airport",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: International airport"
+      ]
+    },
+    {
+      "slug": "nyc-health-hospitals-bellevue",
+      "name": "NYC Health + Hospitals / Bellevue",
+      "type": "Hospital",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hospital"
+      ]
+    },
+    {
+      "slug": "nyc-health-hospitalselmhurst",
+      "name": "NYC Health + Hospitals/Elmhurst",
+      "type": "General hospital",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: General hospital"
+      ]
+    },
+    {
+      "slug": "one-vanderbilt",
+      "name": "One Vanderbilt",
+      "type": "Business center",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Business center"
+      ]
+    },
+    {
+      "slug": "palm-tree-marketplace",
+      "name": "Palm Tree Marketplace",
+      "type": "Supermarket",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "pelham-bay-park",
+      "name": "Pelham Bay Park",
+      "type": "Park",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "petco",
+      "name": "Petco",
+      "type": "Pet store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Pet store"
+      ]
+    },
+    {
+      "slug": "petes-grill",
+      "name": "Pete's Grill",
+      "type": "Grill",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Grill"
+      ]
+    },
+    {
+      "slug": "petsmart",
+      "name": "PetSmart",
+      "type": "Pet supply store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Pet supply store"
+      ]
+    },
+    {
+      "slug": "pomegranate-supermarket",
+      "name": "Pomegranate Supermarket",
+      "type": "Kosher grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Kosher grocery store"
+      ]
+    },
+    {
+      "slug": "popeyes-louisiana-kitchen-brownsville",
+      "name": "Popeyes Louisiana Kitchen",
+      "type": "Chicken restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Popeyes"
+      ]
+    },
+    {
+      "slug": "poppy-seed-bagels-catering",
+      "name": "Poppy Seed Bagels & Catering",
+      "type": "Bagel shop",
+      "borough": "Staten Island",
+      "reasons": [
+        "catering: catering business"
+      ]
+    },
+    {
+      "slug": "primeclass-lounge-jfk-t1",
+      "name": "Primeclass Lounge - JFK T1",
+      "type": "Travel lounge",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Travel lounge"
+      ]
+    },
+    {
+      "slug": "queens-hospital-center",
+      "name": "Queens Hospital Center",
+      "type": "Family planning center",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Family planning center"
+      ]
+    },
+    {
+      "slug": "rabs-country-lanes",
+      "name": "Rab's Country Lanes",
+      "type": "Bowling alley",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: Bowling alley"
+      ]
+    },
+    {
+      "slug": "rego-center",
+      "name": "Rego Center",
+      "type": "Shopping mall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "rockaway-beach",
+      "name": "Rockaway Beach",
+      "type": "Beach",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Beach"
+      ]
+    },
+    {
+      "slug": "rockefeller-center",
+      "name": "Rockefeller Center",
+      "type": "Historical landmark",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Historical landmark"
+      ]
+    },
+    {
+      "slug": "shoprite-of-forest-richmond",
+      "name": "ShopRite of Forest & Richmond",
+      "type": "Grocery store",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "shoprite-of-gateway-center",
+      "name": "ShopRite of Gateway Center",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "shoprite-of-hoboken",
+      "name": "ShopRite of Hoboken",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "shoprite-of-new-hyde-park",
+      "name": "ShopRite of New Hyde Park",
+      "type": "Grocery store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "shoprite-of-pelham-parkway",
+      "name": "ShopRite of Pelham Parkway",
+      "type": "Grocery store",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "snug-harbor-cultural-center-botanical-garden",
+      "name": "Snug Harbor Cultural Center & Botanical Garden",
+      "type": "Cultural center",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: Cultural center"
+      ]
+    },
+    {
+      "slug": "spa-castle-new-york",
+      "name": "Spa Castle New York",
+      "type": "Spa",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Spa"
+      ]
+    },
+    {
+      "slug": "stop-shop-far",
+      "name": "Stop & Shop",
+      "type": "Grocery store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "stop-shop-sheepshead",
+      "name": "Stop & Shop",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "stuyvesant-square-park",
+      "name": "Stuyvesant Square Park",
+      "type": "Park",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Park"
+      ]
+    },
+    {
+      "slug": "taco-bell-cantina",
+      "name": "Taco Bell Cantina",
+      "type": "Fast food restaurant",
+      "borough": "Manhattan",
+      "reasons": [
+        "chain: Taco Bell"
+      ]
+    },
+    {
+      "slug": "taco-bell-soundview",
+      "name": "Taco Bell",
+      "type": "Fast food restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Taco Bell"
+      ]
+    },
+    {
+      "slug": "tashkent-supermarket-brighton-beach",
+      "name": "Tashkent Supermarket - Brighton Beach",
+      "type": "Supermarket",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "tashkent-supermarket-halal-food-ave-z",
+      "name": "Tashkent Supermarket Halal Food - Ave Z",
+      "type": "Gourmet grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Gourmet grocery store"
+      ]
+    },
+    {
+      "slug": "the-bay-terrace-shopping-center",
+      "name": "The Bay Terrace Shopping Center",
+      "type": "Shopping mall",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "the-food-emporium-midtown",
+      "name": "The Food Emporium",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "the-inn-at-new-hyde-park-wedding-corporate-event-venue",
+      "name": "The Inn at New Hyde Park - Wedding & Corporate Event Venue",
+      "type": "Wedding venue",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Wedding venue"
+      ]
+    },
+    {
+      "slug": "the-shops-at-bruckner",
+      "name": "The Shops at Bruckner",
+      "type": "Shopping mall",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "the-shops-at-riverside",
+      "name": "The Shops at Riverside",
+      "type": "Shopping mall",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "the-st-regis-new-york",
+      "name": "The St. Regis New York",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "throggs-neck-shopping-center",
+      "name": "Throggs Neck Shopping Center",
+      "type": "Shopping mall",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Shopping mall"
+      ]
+    },
+    {
+      "slug": "trader-joes-downtown",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-gramercy",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-kips",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-lincoln",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-lower",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-rego",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "trader-joes-willowbrook",
+      "name": "Trader Joe's",
+      "type": "Grocery store",
+      "borough": "Staten Island",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "turnstyle-underground-market",
+      "name": "Turnstyle Underground Market",
+      "type": "Market",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Market"
+      ]
+    },
+    {
+      "slug": "union-square-greenmarket",
+      "name": "Union Square Greenmarket",
+      "type": "Farmers' market",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Farmers' market"
+      ]
+    },
+    {
+      "slug": "walmart-supercenter-hudson",
+      "name": "Walmart Supercenter",
+      "type": "Department store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Department store"
+      ]
+    },
+    {
+      "slug": "walmart-supercenter-rosedale",
+      "name": "Walmart Supercenter",
+      "type": "Department store",
+      "borough": "Queens",
+      "reasons": [
+        "type-not-allowed: Department store"
+      ]
+    },
+    {
+      "slug": "walmart-supercenter-upper",
+      "name": "Walmart Supercenter",
+      "type": "Department store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Department store"
+      ]
+    },
+    {
+      "slug": "warwick-new-york",
+      "name": "Warwick New York",
+      "type": "Hotel",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Hotel"
+      ]
+    },
+    {
+      "slug": "wegmans-downtown",
+      "name": "Wegmans",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "wendys-briarwood",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-east-bk",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-east-bk-0524",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-east-bk-0536",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-rego",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-ridgewood",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-south",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Queens",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "wendys-williamsbridge",
+      "name": "Wendy's",
+      "type": "Fast food restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: Wendy's"
+      ]
+    },
+    {
+      "slug": "western-beef-supermarket-soundview",
+      "name": "Western Beef Supermarket",
+      "type": "Supermarket",
+      "borough": "Bronx",
+      "reasons": [
+        "type-not-allowed: Supermarket"
+      ]
+    },
+    {
+      "slug": "westside-market-nyc-morningside",
+      "name": "Westside Market NYC",
+      "type": "Gourmet grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Gourmet grocery store"
+      ]
+    },
+    {
+      "slug": "white-castle-east",
+      "name": "White Castle",
+      "type": "Fast food restaurant",
+      "borough": "Brooklyn",
+      "reasons": [
+        "chain: White Castle"
+      ]
+    },
+    {
+      "slug": "white-castle-soundview",
+      "name": "White Castle",
+      "type": "Fast food restaurant",
+      "borough": "Bronx",
+      "reasons": [
+        "chain: White Castle"
+      ]
+    },
+    {
+      "slug": "whitney-museum-of-american-art",
+      "name": "Whitney Museum of American Art",
+      "type": "Modern art museum",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Modern art museum"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-chelsea",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-flatiron",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-fort",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-gowanus",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-harlem",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-lincoln",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-midtown-mn",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-midtown-mn-0665",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-morningside",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-soho",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-tribeca",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-upper",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "whole-foods-market-williamsburg",
+      "name": "Whole Foods Market",
+      "type": "Grocery store",
+      "borough": "Brooklyn",
+      "reasons": [
+        "type-not-allowed: Grocery store"
+      ]
+    },
+    {
+      "slug": "zabars",
+      "name": "Zabar's",
+      "type": "Gourmet grocery store",
+      "borough": "Manhattan",
+      "reasons": [
+        "type-not-allowed: Gourmet grocery store"
+      ]
+    }
+  ]
+}

@@ -11,27 +11,27 @@ import {
   isRestaurantOpenNow,
   getClosingTime,
 } from "@/lib/utils"
+import { presentGrade } from "@/lib/grade-display"
 
 interface ComparePageViewProps {
   restaurants: Restaurant[]
 }
 
 function GradeCell({ grade }: { grade: string | null }) {
+  const view = presentGrade(grade)
   const style =
-    grade === "A"
+    view.dataGrade === "A"
       ? "bg-green-50 text-green-700 border-green-200"
-      : grade === "B"
+      : view.dataGrade === "B"
         ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-        : grade === "C"
+        : view.dataGrade === "C"
           ? "bg-orange-50 text-orange-700 border-orange-200"
-          : "bg-gray-50 text-gray-400 border-gray-200"
+          : "bg-gray-50 text-gray-500 border-gray-200"
 
-  return grade ? (
+  return (
     <span className={`inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-bold ${style}`}>
-      Grade {grade}
+      {view.title}
     </span>
-  ) : (
-    <span className="text-sm text-gray-400">Not graded</span>
   )
 }
 

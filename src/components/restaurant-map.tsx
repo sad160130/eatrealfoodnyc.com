@@ -7,6 +7,7 @@ import Link from "next/link"
 import { isRestaurantOpenNow } from "@/lib/utils"
 import PartnerLabel from "@/components/partner-label"
 import { isPartnerStatus } from "@/lib/partner-status"
+import { presentGrade } from "@/lib/grade-display"
 
 interface MapRestaurant {
   id: number
@@ -143,16 +144,9 @@ export default function RestaurantMap({
                 {restaurant.neighborhood}, {restaurant.borough}
               </p>
               <div className="mt-2 flex items-center gap-2">
-                {restaurant.inspection_grade && (
-                  <span
-                    className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
-                    style={{
-                      backgroundColor: getGradeColor(restaurant.inspection_grade),
-                    }}
-                  >
-                    Grade {restaurant.inspection_grade}
-                  </span>
-                )}
+                <span className="text-xs font-semibold text-forest">
+                  {presentGrade(restaurant.inspection_grade).title}
+                </span>
                 {restaurant.rating && (
                   <span className="text-xs font-semibold" style={{ color: "var(--color-amber)" }}>
                     ★ {restaurant.rating}

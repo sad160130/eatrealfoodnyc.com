@@ -348,7 +348,7 @@ export default async function HealthyNeighborhoodsGuide() {
           secondaryHref="/map"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

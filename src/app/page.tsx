@@ -12,6 +12,8 @@ import reportData from "@/data/health-grade-report"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
+import DirectoryAsOf from "@/components/directory-as-of"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 
 const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
 
@@ -70,7 +72,7 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [counts, editorPickRows, hiddenGemRows, gradeACount] = await Promise.all([
+  const [counts, editorPickRows, hiddenGemRows, snapshot] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.findMany({
       where: {
@@ -88,7 +90,7 @@ export default async function HomePage() {
       orderBy: { rating: "desc" },
       take: 4,
     }),
-    prisma.restaurant.count({ where: { inspection_grade: "A" } }),
+    getDirectorySnapshot(),
   ])
 
   const [editorsPicks, hiddenGems] = await Promise.all([
@@ -116,7 +118,7 @@ export default async function HomePage() {
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
             <span className="tabular">{totalCount.toLocaleString()} verified spots</span>
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
-            <span>Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+            <DirectoryAsOf />
           </p>
 
           {/* Display headline — the thesis. The phrasing foregrounds the
@@ -501,11 +503,12 @@ export default async function HomePage() {
               </p>
 
               <dl className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
-                <Stat number={totalCount.toLocaleString()} label="Published listings" />
-                <Stat number={gradeACount.toLocaleString()} label="Grade A inspections" />
-                <Stat number="116" label="Neighborhoods covered" />
-                <Stat number="12" label="Dietary tags, applied conservatively" />
-                <Stat number="+100 / wk" label="New listings every Sunday" />
+                <Stat number={counts.restaurants.toLocaleString()} label="Published listings" />
+                <Stat number={counts.gradeA.toLocaleString()} label="Grade A, published" />
+                <Stat number={counts.neighborhoods.toLocaleString()} label="Neighborhoods with a listing" />
+                <Stat number={counts.hiddenGems.toLocaleString()} label="Hidden gems, published" />
+                <Stat number={String(snapshot.dietaryTagCount)} label="Dietary tags, applied conservatively" />
+                <Stat number={snapshot.lastPublishLabel ?? "—"} label="Last publish" />
               </dl>
             </div>
 
@@ -542,8 +545,10 @@ export default async function HomePage() {
                     }}
                   >
                     DOHMH Open Data joined to conservative dietary tagging.
-                    Weekly publish cadence. Grades and rankings stay unpaid.
-                    No fabricated reviews, no editorial personas.
+                    Labeled Partner placements never change a grade or a ranking.
+                    No fabricated reviews, no editorial personas. The full dataset has{" "}
+                    {snapshot.gradeAAll.toLocaleString()} Grade A records, including
+                    restaurants that are not published yet.
                   </p>
                 </div>
                 <Link

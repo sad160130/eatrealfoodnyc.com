@@ -485,7 +485,7 @@ export default async function HealthyBreakfastGuide() {
           secondaryHref="/healthy-restaurants/vegan"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

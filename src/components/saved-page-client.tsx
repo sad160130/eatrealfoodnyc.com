@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSavedRestaurants } from "@/hooks/use-saved-restaurants"
 import { parseDietaryTags, formatDietaryTag } from "@/lib/utils"
+import { presentGrade } from "@/lib/grade-display"
 
 interface SharedRestaurant {
   slug: string
@@ -62,16 +63,6 @@ export default function SavedPageClient({ sharedRestaurants }: SavedPageClientPr
     if (sortBy === "name") return a.name.localeCompare(b.name)
     return 0
   })
-
-  function gradeColor(grade: string | null): string {
-    return grade === "A"
-      ? "#52B788"
-      : grade === "B"
-        ? "#D4A853"
-        : grade === "C"
-          ? "#E07B54"
-          : "#9CA3AF"
-  }
 
   if (!isLoaded) {
     return (
@@ -307,14 +298,9 @@ export default function SavedPageClient({ sharedRestaurants }: SavedPageClientPr
                         ★ {restaurant.rating}
                       </span>
                     )}
-                    {restaurant.inspection_grade && (
-                      <span
-                        className="rounded-full px-2.5 py-0.5 text-xs font-bold text-white"
-                        style={{ backgroundColor: gradeColor(restaurant.inspection_grade) }}
-                      >
-                        Grade {restaurant.inspection_grade}
-                      </span>
-                    )}
+                    <span className="text-xs font-semibold" style={{ color: "var(--color-forest)" }}>
+                      {presentGrade(restaurant.inspection_grade).title}
+                    </span>
                     {tags.slice(0, 2).map((tag) => (
                       <span
                         key={tag}

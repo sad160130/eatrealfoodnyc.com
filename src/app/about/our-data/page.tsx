@@ -61,7 +61,7 @@ export default function OurDataPage() {
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Where our data comes from
           </h2>
-          <AboutThisData variant="full" lastRefreshed="April 2026" />
+          <AboutThisData variant="full" />
         </section>
 
         {/* Health Score Formula */}
@@ -138,7 +138,7 @@ export default function OurDataPage() {
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="space-y-4">
               {[
-                { frequency: "Weekly", item: "NYC DOHMH inspection grades and scores are refreshed weekly from the NYC Open Data portal to reflect the latest inspection results." },
+                { frequency: "On refresh", item: "NYC DOHMH inspection grades and scores are updated when we run the inspection refresh script against the NYC Open Data portal. Each listing shows the inspection date on the matched record." },
                 { frequency: "Monthly", item: "Google Maps ratings, review counts, and business status (open/closed) are updated monthly to keep our listings current." },
                 { frequency: "Quarterly", item: "Dietary tags are re-evaluated quarterly. New restaurants added to the DOHMH database are processed through our full pipeline within 30 days of appearing in the city data." },
                 { frequency: "Ongoing", item: "User-submitted corrections are reviewed within 48 hours and applied to the database if verified." },
