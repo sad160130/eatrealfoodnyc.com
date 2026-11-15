@@ -187,6 +187,11 @@ export default async function HomePage() {
               Search
             </button>
           </form>
+          <p className="mt-4 text-sm">
+            <Link href="/catering" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+              Request catering
+            </Link>
+          </p>
 
           {/* Quick filter callouts — initial-letter cards. The "A." card is a mini
               placard echoing the per-restaurant grade signature on every card below. */}

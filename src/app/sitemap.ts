@@ -40,6 +40,7 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/guides": "2026-02-15",
   "/newsletter": "2026-11-15",
   "/data": "2026-11-15",
+  "/catering": "2026-11-15",
 }
 
 export function editorialPaths(): string[] {
