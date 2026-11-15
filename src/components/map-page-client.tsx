@@ -7,6 +7,7 @@ import type { MapRestaurant } from "@/components/restaurant-map"
 import NearMeButton from "@/components/near-me-button"
 import PartnerLabel from "@/components/partner-label"
 import { isPartnerStatus } from "@/lib/partner-status"
+import { presentGrade } from "@/lib/grade-display"
 
 const RestaurantMap = dynamic(() => import("@/components/restaurant-map"), {
   ssr: false,
@@ -278,21 +279,9 @@ export default function MapPageClient() {
                 {selectedRestaurant.neighborhood}, {selectedRestaurant.borough}
               </p>
               <div className="mt-2 flex items-center gap-2">
-                {selectedRestaurant.inspection_grade && (
-                  <span
-                    className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
-                    style={{
-                      backgroundColor:
-                        selectedRestaurant.inspection_grade === "A"
-                          ? "#52B788"
-                          : selectedRestaurant.inspection_grade === "B"
-                            ? "#D4A853"
-                            : "#E07B54",
-                    }}
-                  >
-                    Grade {selectedRestaurant.inspection_grade}
-                  </span>
-                )}
+                <span className="text-xs font-semibold" style={{ color: "var(--color-forest)" }}>
+                  {presentGrade(selectedRestaurant.inspection_grade).title}
+                </span>
                 {selectedRestaurant.rating && (
                   <span className="text-xs font-semibold" style={{ color: "var(--color-amber)" }}>
                     ★ {selectedRestaurant.rating}

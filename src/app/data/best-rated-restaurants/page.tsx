@@ -12,6 +12,7 @@ import {
 import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants"
 import { formatLongDate } from "@/lib/inspection-dates"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { presentGrade } from "@/lib/grade-display"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
 const snapshotDate = formatLongDate(new Date(bestRatedData.generatedAt))
@@ -51,7 +52,7 @@ const {
 } = bestRatedData
 
 function GradeChip({ grade }: { grade: string | null }) {
-  if (!grade) return null
+  const view = presentGrade(grade)
   const colors: Record<string, string> = {
     A: "bg-green-50 text-green-700 border-green-200",
     B: "bg-amber-50 text-amber-700 border-amber-200",
@@ -59,12 +60,13 @@ function GradeChip({ grade }: { grade: string | null }) {
   }
   return (
     <span
-      aria-label={`NYC Department of Health inspection grade ${grade}`}
+      aria-label={view.ariaLabel}
+      title={view.explanation}
       className={`rounded-full border px-2 py-0.5 text-xs font-bold ${
-        colors[grade] ?? "border-gray-200 bg-gray-50 text-gray-500"
+        colors[view.dataGrade] ?? "border-gray-200 bg-gray-50 text-gray-500"
       }`}
     >
-      Grade {grade}
+      {view.title}
     </span>
   )
 }

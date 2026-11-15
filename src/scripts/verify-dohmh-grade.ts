@@ -4,6 +4,7 @@ import {
   addressKeyFromListing,
   type DohmhInspection,
 } from "../lib/dohmh-grade"
+import { presentGrade } from "../lib/grade-display"
 
 function row(partial: Partial<DohmhInspection> & Pick<DohmhInspection, "camis" | "name" | "inspectionDate">): DohmhInspection {
   return {
@@ -60,6 +61,26 @@ const tap = matchLatestGrades(
 )
 if (tap.changes.length !== 1 || tap.changes[0].toGrade !== "B" || tap.changes[0].matchedBy !== "address") {
   console.error("expected TAP NYC to match by address and replace A with B", tap)
+  process.exit(1)
+}
+
+for (const code of ["Z", "P", "N", ""] as const) {
+  const view = presentGrade(code)
+  if (view.plaque === "Z" || view.plaque === "P" || view.plaque === "N" || view.plaque === code && code !== "") {
+    console.error("placard must not show a non-letter code", code, view)
+    process.exit(1)
+  }
+}
+if (presentGrade("Z").title !== "Grade Pending" || presentGrade("P").title !== "Grade Pending") {
+  console.error("Z and P must read as Grade Pending")
+  process.exit(1)
+}
+if (presentGrade("N").title !== "Not Yet Graded" || presentGrade(null).title !== "Not Yet Graded") {
+  console.error("N and blank must read as Not Yet Graded")
+  process.exit(1)
+}
+if (presentGrade("A").plaque !== "A") {
+  console.error("A stays a letter")
   process.exit(1)
 }
 

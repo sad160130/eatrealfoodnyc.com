@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useSavedRestaurants } from "@/hooks/use-saved-restaurants"
+import { presentGrade } from "@/lib/grade-display"
 
 export default function SavedPreview() {
   const { saved, isLoaded } = useSavedRestaurants()
@@ -67,11 +68,9 @@ export default function SavedPreview() {
                 <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
                   {restaurant.neighborhood}
                 </p>
-                {restaurant.inspection_grade && (
-                  <span className="mt-2 inline-block text-xs font-bold text-jade">
-                    Grade {restaurant.inspection_grade}
-                  </span>
-                )}
+                <span className="mt-2 inline-block text-xs font-bold text-jade">
+                  {presentGrade(restaurant.inspection_grade).title}
+                </span>
               </div>
             </Link>
           ))}

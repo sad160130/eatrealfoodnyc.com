@@ -7,12 +7,17 @@
  * and a Google Maps marketing name often does not equal the DOHMH DBA, so
  * address is the first match key.
  *
- * Dry-run by default. Nothing is written unless --apply is passed.
+ * Dry-run by default. --apply writes only address matches (building, street,
+ * zip, and borough when both sides have one). Name-only matches are skipped.
+ * The restaurants table has no CAMIS column, so there is no CAMIS join.
+ * Before any write, the previous grade fields are saved to
+ * data/grade-backup-2026-11-15.json.
  *
  *   npx tsx src/scripts/refresh-dohmh-inspections.ts
  *   npx tsx src/scripts/refresh-dohmh-inspections.ts --since=2024-01-01
  *   npx tsx src/scripts/refresh-dohmh-inspections.ts --apply
  */
+import * as fs from "fs"
 import * as path from "path"
 import dotenv from "dotenv"
 import {
@@ -103,7 +108,16 @@ async function main() {
 
   const [restaurants, inspections] = await Promise.all([
     prisma.restaurant.findMany({
-      select: { id: true, name: true, borough: true, address: true, inspection_grade: true },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        borough: true,
+        address: true,
+        inspection_grade: true,
+        inspection_score: true,
+        inspection_date: true,
+      },
     }),
     fetchInspections(since),
   ])
@@ -115,7 +129,12 @@ async function main() {
   console.log(`Restaurants: ${restaurants.length}`)
   console.log(`Matched: ${matched}`)
   console.log(`Unmatched: ${unmatched}`)
+  const addressChanges = changes.filter((change) => change.matchedBy === "address")
+  const nameChanges = changes.filter((change) => change.matchedBy === "name")
   console.log(`Grade would change: ${changes.length}`)
+  console.log(`Address matches eligible to write: ${addressChanges.length}`)
+  console.log(`Name-only matches skipped: ${nameChanges.length}`)
+  console.log("CAMIS matches: 0 (restaurants has no CAMIS column)")
   const interesting = changes.filter((change) =>
     /chamoun|ras plant|coletta|loaded|tap brazilian/i.test(
       restaurants.find((row) => row.id === change.id)?.name ?? ""
@@ -133,13 +152,53 @@ async function main() {
   }
 
   if (!apply) {
-    console.log("\nDry run only. Re-run with --apply to write inspection_grade, inspection_score, and inspection_date.")
+    console.log("\nDry run only. Re-run with --apply to write address matches. Name-only matches stay unchanged.")
     await prisma.$disconnect()
     return
   }
 
+  const byId = new Map(restaurants.map((row) => [row.id, row]))
+  const backup = {
+    generatedAt: new Date().toISOString(),
+    since,
+    applied: addressChanges.length,
+    skippedNameOnly: nameChanges.length,
+    camisMatches: 0,
+    rows: addressChanges.map((change) => {
+      const row = byId.get(change.id)
+      return {
+        id: change.id,
+        slug: row?.slug ?? null,
+        name: row?.name ?? null,
+        matchedBy: change.matchedBy,
+        camis: change.camis,
+        previous: {
+          inspection_grade: row?.inspection_grade ?? null,
+          inspection_score: row?.inspection_score ?? null,
+          inspection_date: row?.inspection_date ?? null,
+        },
+        next: {
+          inspection_grade: change.toGrade,
+          inspection_score: change.score,
+          inspection_date: change.inspectionDate,
+        },
+      }
+    }),
+    skippedNameOnlySample: nameChanges.slice(0, 10).map((change) => ({
+      id: change.id,
+      name: byId.get(change.id)?.name ?? null,
+      fromGrade: change.fromGrade,
+      toGrade: change.toGrade,
+      camis: change.camis,
+    })),
+  }
+  const backupPath = path.join(process.cwd(), "data", "grade-backup-2026-11-15.json")
+  fs.mkdirSync(path.dirname(backupPath), { recursive: true })
+  fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2))
+  console.log(`Wrote backup ${backupPath} (${backup.rows.length} rows) before any update.`)
+
   let written = 0
-  for (const change of changes) {
+  for (const change of addressChanges) {
     await prisma.restaurant.update({
       where: { id: change.id },
       data: {
@@ -150,7 +209,7 @@ async function main() {
     })
     written += 1
   }
-  console.log(`\nUpdated ${written} restaurants.`)
+  console.log(`\nUpdated ${written} address-matched restaurants. Skipped ${nameChanges.length} name-only matches.`)
   await prisma.$disconnect()
 }
 

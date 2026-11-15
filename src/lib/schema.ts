@@ -1,4 +1,5 @@
 import type { RestaurantReview, ReviewsSummary } from "./reviews"
+import { presentGrade } from "@/lib/grade-display"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
@@ -76,7 +77,7 @@ export function buildRestaurantSchema(restaurant: {
     ...(restaurant.website && { sameAs: restaurant.website }),
     servesCuisine: restaurant.type ? [restaurant.type] : ["Healthy food"],
     ...(restaurant.rating && restaurant.reviews && { aggregateRating: { "@type": "AggregateRating", ratingValue: restaurant.rating, reviewCount: restaurant.reviews, bestRating: 5, worstRating: 1 } }),
-    ...(restaurant.inspection_grade && { additionalProperty: [{ "@type": "PropertyValue", name: "NYC Health Inspection Grade", value: restaurant.inspection_grade }] }),
+    additionalProperty: [{ "@type": "PropertyValue", name: "NYC Health Inspection Grade", value: presentGrade(restaurant.inspection_grade).title }],
     publisher: PUBLISHER_REF,
     dateModified: new Date(restaurant.updated_at).toISOString(),
   }

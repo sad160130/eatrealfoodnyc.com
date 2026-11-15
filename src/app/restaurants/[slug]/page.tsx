@@ -38,6 +38,7 @@ import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import PartnerLabel, { PartnerDisclosure } from "@/components/partner-label"
 import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
+import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
 
 export const revalidate = 86400
@@ -130,10 +131,7 @@ export default async function RestaurantPage({
     : null
 
   const todayName = DAYS_ORDER[new Date().getDay()]
-  const grade = restaurant.inspection_grade || ""
-  const gradeAria = grade
-    ? `NYC Department of Health inspection grade ${grade}`
-    : "NYC Department of Health inspection grade pending"
+  const gradeView = presentGrade(restaurant.inspection_grade)
 
   const breadcrumbItems = [
     { label: "NYC Healthy Restaurants", href: "/search" },
@@ -257,14 +255,15 @@ export default async function RestaurantPage({
           <div className="hidden flex-shrink-0 flex-col items-center gap-2 sm:flex">
             <span
               className="plaque"
-              data-grade={grade}
-              aria-label={gradeAria}
+              data-grade={gradeView.dataGrade}
+              aria-label={gradeView.ariaLabel}
+              title={gradeView.explanation}
               style={{ width: "5.5rem", height: "5.5rem", fontSize: "3rem" }}
             >
-              {grade || "–"}
+              {gradeView.plaque}
             </span>
             <span className="eyebrow" style={{ color: "var(--color-muted)" }}>
-              NYC Health Grade
+              {gradeView.title}
             </span>
           </div>
         </div>
@@ -464,22 +463,18 @@ export default async function RestaurantPage({
             </section>
 
             {/* NYC Health Inspection — the placard, the explanation. No bespoke colors. */}
-            {restaurant.inspection_grade && (
-              <section>
+            <section>
                 <p className="eyebrow">Health inspection</p>
-                <h2 className="h2-serif mt-2">
-                  {restaurant.inspection_grade === "Z" || restaurant.inspection_grade === "P"
-                    ? "NYC DOHMH Grade Pending"
-                    : `NYC DOHMH Grade ${restaurant.inspection_grade}`}
-                </h2>
+                <h2 className="h2-serif mt-2">{gradeView.title}</h2>
                 <div className="mt-5 flex items-start gap-5">
                   <span
                     className="plaque flex-shrink-0"
-                    data-grade={grade}
-                    aria-label={gradeAria}
+                    data-grade={gradeView.dataGrade}
+                    aria-label={gradeView.ariaLabel}
+                    title={gradeView.explanation}
                     style={{ width: "4.5rem", height: "4.5rem", fontSize: "2.5rem" }}
                   >
-                    {restaurant.inspection_grade}
+                    {gradeView.plaque}
                   </span>
                   <div className="space-y-2 pt-1">
                     {restaurant.inspection_score != null && (
@@ -499,11 +494,7 @@ export default async function RestaurantPage({
                       className="text-sm"
                       style={{ color: "var(--color-muted)", maxWidth: "52ch", lineHeight: 1.55 }}
                     >
-                      {restaurant.inspection_grade === "A"
-                        ? "Grade A is the highest mark from NYC's Department of Health — about 90% of restaurants earn it."
-                        : restaurant.inspection_grade === "B"
-                          ? "A Grade B means some violations were found. Many B-graded spots earn an A on re-inspection within weeks."
-                          : "Grade C indicates serious violations. The restaurant is subject to accelerated re-inspection by the DOHMH."}
+                      {gradeView.explanation}
                     </p>
                     <p className="mt-2">
                       <Link
@@ -518,7 +509,6 @@ export default async function RestaurantPage({
                   </div>
                 </div>
               </section>
-            )}
 
             {/* Community Rating */}
             <CommunityRating

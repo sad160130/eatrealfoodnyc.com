@@ -182,8 +182,11 @@ export function matchLatestGrades(
 
   for (const restaurant of restaurants) {
     const addressKey = addressKeyFromListing(restaurant.address)
-    const addressHits = addressKey ? byAddress.get(addressKey) ?? [] : []
     const borough = normalizeBorough(restaurant.borough)
+    const addressHits = (addressKey ? byAddress.get(addressKey) ?? [] : []).filter((snapshot) => {
+      if (!snapshot.borough || !borough) return true
+      return snapshot.borough === borough
+    })
     const nameHits = borough
       ? byName.get(`${normalizePlaceName(restaurant.name)}|${borough}`) ?? []
       : []
