@@ -9,7 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -48,6 +48,7 @@ const GUIDE_FAQS = [
 
 export default async function HealthyNeighborhoodsGuide() {
   const { restaurants } = await getPublishedDirectoryCounts()
+  const stats = await getLiveGuideStats()
   const faqs = GUIDE_FAQS.map((faq) =>
     faq.question === "How do you rank neighborhoods for healthy dining?"
       ? {

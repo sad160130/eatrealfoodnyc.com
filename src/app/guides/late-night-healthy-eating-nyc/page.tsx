@@ -10,7 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("late-night-healthy-eating-nyc")!
@@ -46,7 +46,8 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function LateNightGuide() {
+export default async function LateNightGuide() {
+  const stats = await getLiveGuideStats()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />

@@ -28,7 +28,6 @@ module.exports = {
           '/compare',
           '/saved',
           '/api/',
-          '/_next/',
         ],
       },
     ],

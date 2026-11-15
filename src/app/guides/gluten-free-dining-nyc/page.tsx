@@ -9,7 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
-import stats from "@/data/guide-stats"
+import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("gluten-free-dining-nyc")!
@@ -49,7 +49,8 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function GlutenFreeGuide() {
+export default async function GlutenFreeGuide() {
+  const stats = await getLiveGuideStats()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />

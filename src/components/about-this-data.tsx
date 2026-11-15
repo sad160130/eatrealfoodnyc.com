@@ -168,7 +168,7 @@ export default async function AboutThisData({
                 >
                   NYC Department of Health and Mental Hygiene Open Data portal
                 </a>
-                . We match inspection records to restaurant listings using name and address                .{" "}
+                . We match inspection records to restaurant listings using name and address.{" "}
                 <strong className="text-gray-700">{gradeCoverage}%</strong> of published listings
                 currently hold Grade A. Updated when the inspection refresh script is run.
               </p>
