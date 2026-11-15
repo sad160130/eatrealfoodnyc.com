@@ -23,6 +23,7 @@ const COMPANY = [
 ]
 
 const TOOLS = [
+  { label: "Compliance Weekly", href: "/data" },
   { label: "Health Grade Report", href: "/data/nyc-restaurant-health-grade-report" },
   { label: "Best-Rated Restaurants", href: "/data/best-rated-restaurants" },
   { label: "Interactive Map", href: "/map" },

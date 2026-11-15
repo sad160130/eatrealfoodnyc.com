@@ -43,6 +43,7 @@ const GUIDE_LINKS = [
 ]
 
 const DATA_LINKS = [
+  { label: "Compliance Weekly", href: "/data" },
   { label: "Health Grade Report", href: "/data/nyc-restaurant-health-grade-report" },
   { label: "Best-Rated Restaurants", href: "/data/best-rated-restaurants" },
 ]
