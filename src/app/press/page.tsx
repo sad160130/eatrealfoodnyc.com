@@ -1,16 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 import SocialLinks from "@/components/social-links"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
-export const metadata: Metadata = {
-  title: "Press & Media — Eat Real Food NYC | NYC Restaurant Data",
+export const metadata: Metadata = pageMeta({
+  path: "/press",
+  title: "Press and Media — NYC Restaurant Data",
   description:
     "Press resources for Eat Real Food NYC: quick facts, story angles, media contact, and background on NYC's first directory combining health inspection data with dietary filtering.",
-  alternates: { canonical: getCanonicalUrl("/press") },
-  robots: { index: true, follow: true },
-}
+})
 
 export const revalidate = 3600
 

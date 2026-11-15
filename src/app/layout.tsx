@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { DM_Sans } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import ComparisonTray from "@/components/comparison-tray"
@@ -51,7 +53,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: SEO_CONFIG.siteUrl,
     siteName: SEO_CONFIG.siteName,
     title: SEO_CONFIG.defaultTitle,
     description: SEO_CONFIG.defaultDescription,
@@ -64,9 +65,8 @@ export const metadata: Metadata = {
     description: SEO_CONFIG.defaultDescription,
     images: [SEO_CONFIG.ogImage],
   },
-  alternates: {
-    canonical: "https://www.eatrealfoodnyc.com",
-  },
+  // Canonical and og:url are set per page. A value here is inherited by
+  // every route that does not override it, including the 404 page.
   // Icons handled by Next.js file conventions:
   //   src/app/icon.svg        → favicon
   //   src/app/apple-icon.svg  → apple-touch-icon
@@ -111,6 +111,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <ComparisonTray />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

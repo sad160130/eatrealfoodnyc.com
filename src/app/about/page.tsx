@@ -1,16 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { ORGANIZATION_SCHEMA } from "@/lib/schema"
 
-export const metadata: Metadata = {
-  title: "About Eat Real Food NYC — NYC Healthy Restaurant Directory",
+export const metadata: Metadata = pageMeta({
+  path: "/about",
+  title: "About — NYC Healthy Restaurant Directory",
   description:
     "A curated NYC healthy restaurant directory built on real Health Department inspection data. Our mission, methodology, and team.",
-  alternates: { canonical: getCanonicalUrl("/about") },
-  robots: { index: true, follow: true },
-}
+})
 
 export const revalidate = 3600
 

@@ -177,6 +177,9 @@ export default async function BoroughPage({
 
   const intro = BOROUGH_INTROS[boroughSlug] || ""
   const gradeARate = totalCount > 0 ? Math.round((gradeACount / totalCount) * 100) : 0
+  // Full RestaurantCards for every listing made Manhattan's HTML about 2 MB.
+  // Cards are capped; every other listing is a server-rendered anchor.
+  let boroughCardBudget = 24
 
   return (
     <>
@@ -385,27 +388,55 @@ export default async function BoroughPage({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {neighborhoodRestaurants.slice(0, 8).map((restaurant, index) => (
-                    <RestaurantCard
-                      key={restaurant.id}
-                      restaurant={restaurant}
-                      priority={neighborhoodIndex === 0 && index < 8}
-                    />
-                  ))}
-                </div>
-                {neighborhoodRestaurants.length > 8 && (
-                  <div className="mt-6">
-                    <Link
-                      href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
-                      className="eyebrow inline-flex items-center gap-1.5 transition-colors"
-                      style={{ color: "var(--color-jade)" }}
-                    >
-                      View all <span className="tabular mx-1">{neighborhoodRestaurants.length}</span> in {neighborhood}
-                      <span aria-hidden="true">→</span>
-                    </Link>
-                  </div>
-                )}
+                {(() => {
+                  const featuredCount = Math.min(4, boroughCardBudget, neighborhoodRestaurants.length)
+                  boroughCardBudget -= featuredCount
+                  const featured = neighborhoodRestaurants.slice(0, featuredCount)
+                  const rest = neighborhoodRestaurants.slice(featuredCount)
+                  return (
+                    <>
+                      {featured.length > 0 && (
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {featured.map((restaurant, index) => (
+                            <RestaurantCard
+                              key={restaurant.id}
+                              restaurant={restaurant}
+                              priority={neighborhoodIndex === 0 && index < 4}
+                            />
+                          ))}
+                        </div>
+                      )}
+                      {rest.length > 0 && (
+                        <ul className="mt-4 columns-2 gap-x-8 sm:columns-3 lg:columns-4" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                          {rest.map((restaurant) => (
+                            <li key={restaurant.id} className="break-inside-avoid py-1">
+                              <a
+                                href={`/restaurants/${restaurant.slug}`}
+                                className="text-sm hover:underline"
+                                style={{ color: "var(--color-forest)" }}
+                              >
+                                {restaurant.name}
+                                {restaurant.inspection_grade ? ` (${restaurant.inspection_grade})` : ""}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {hubExists(neighborhood) && neighborhoodRestaurants.length > featuredCount && (
+                        <div className="mt-6">
+                          <Link
+                            href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
+                            className="eyebrow inline-flex items-center gap-1.5 transition-colors"
+                            style={{ color: "var(--color-jade)" }}
+                          >
+                            View all <span className="tabular mx-1">{neighborhoodRestaurants.length}</span> in {neighborhood}
+                            <span aria-hidden="true">→</span>
+                          </Link>
+                        </div>
+                      )}
+                    </>
+                  )
+                })()}
               </section>
             </React.Fragment>
           )

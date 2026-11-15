@@ -1,15 +1,13 @@
 import { prisma } from "@/lib/db"
 import SavedPageClient from "@/components/saved-page-client"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata = {
-  title: "Your Saved Restaurants — Eat Real Food NYC",
+export const metadata = pageMeta({
+  path: "/saved",
+  title: "Your Saved Restaurants",
   description: "Your personal collection of saved NYC healthy restaurants.",
-  robots: {
-    index: false,
-    follow: true,
-    googleBot: { index: false, follow: true },
-  },
-}
+  index: false,
+})
 
 export default async function SavedPage({
   searchParams,

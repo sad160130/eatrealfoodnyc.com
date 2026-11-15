@@ -12,7 +12,7 @@ const REPORT_URL = "https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-gr
 const PAGE_DESCRIPTION = `Analysis of NYC restaurant health inspection grades across all 5 boroughs and ${neighborhoods.totalAnalyzed} neighborhoods. Data sourced from NYC DOHMH Open Data. ${summary.totalGradeA.toLocaleString()} Grade A restaurants tracked across ${summary.totalRestaurants.toLocaleString()} active NYC restaurants.`
 
 export const metadata: Metadata = {
-  title: "NYC Restaurant Health Grade Report 2026 — Eat Real Food NYC",
+  title: "NYC Restaurant Health Grade Report 2026",
   description: PAGE_DESCRIPTION,
   alternates: {
     canonical: getCanonicalUrl("/data/nyc-restaurant-health-grade-report"),

@@ -31,6 +31,7 @@ import {
 } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import { getCanonicalUrl } from "@/config/seo"
+import { buildRestaurantMetaDescription } from "@/lib/restaurant-description"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
@@ -56,14 +57,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const restaurant = await prisma.restaurant.findUnique({ where: { slug } })
-  if (!restaurant) return { title: "Restaurant Not Found" }
+  if (!restaurant || !restaurant.is_published) {
+    return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
+  }
 
-  const tags = parseDietaryTags(restaurant.dietary_tags)
   const locationStr = restaurant.neighborhood ? `${restaurant.neighborhood}, NYC` : "New York City"
-  const tagStr = tags.length > 0 ? `${tags.slice(0, 3).map(formatDietaryTag).join(", ")}. ` : ""
-  const gradeStr = restaurant.inspection_grade ? `NYC health grade: ${restaurant.inspection_grade}. ` : ""
-  const ratingStr = restaurant.rating ? `Rated ${restaurant.rating}/5 from ${(restaurant.reviews ?? 0).toLocaleString()} reviews.` : ""
-  const description = `${restaurant.name} is a healthy restaurant in ${locationStr}. ${tagStr}${gradeStr}${ratingStr}`.slice(0, 160)
+  const description = buildRestaurantMetaDescription(restaurant)
 
   const canonicalUrl = getCanonicalUrl(`/restaurants/${restaurant.slug}`)
 

@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata: Metadata = {
-  title: "Meet the Team — Eat Real Food NYC",
+export const metadata: Metadata = pageMeta({
+  path: "/about/team",
+  title: "Meet the Team",
   description:
     "Meet Rohan Kadam — the founder behind Eat Real Food NYC, NYC's most trusted healthy restaurant directory.",
-  alternates: { canonical: getCanonicalUrl("/about/team") },
-  robots: { index: true, follow: true },
-}
+})
 
 export default function TeamPage() {
   return (

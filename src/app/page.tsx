@@ -12,7 +12,7 @@ import reportData from "@/data/health-grade-report"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
-const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC"
+const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { restaurants } = await getPublishedDirectoryCounts()

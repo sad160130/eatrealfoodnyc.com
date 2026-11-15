@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import ComparePageClient from "@/components/compare-page-client"
+import { pageMeta } from "@/lib/page-meta"
 
 // §6 equity routing: /nyc/compare is a high-inbound internal hub — pass that
 // equity to all five borough money pages (incl. Staten Island, previously orphaned).
@@ -13,18 +14,11 @@ const BOROUGH_LINKS: Array<[string, string]> = [
   ["Staten Island", "staten-island"],
 ]
 
-export const metadata: Metadata = {
-  title: "NYC Neighborhood Health Rankings — Compare Healthy Dining",
+export const metadata: Metadata = pageMeta({
+  path: "/nyc/compare",
+  title: "NYC Neighborhood Health Rankings",
   description: "Compare NYC neighborhoods by health inspection grades, average ratings, and dietary diversity. Rank the healthiest dining areas.",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
-  },
-  alternates: {
-    canonical: "https://www.eatrealfoodnyc.com/nyc/compare",
-  },
-}
+})
 
 export default function ComparePage() {
   return (

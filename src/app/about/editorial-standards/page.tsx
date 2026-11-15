@@ -1,15 +1,14 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getCanonicalUrl } from "@/config/seo"
 import EditorialPartnershipPolicy from "@/components/editorial-partnership-policy"
+import { pageMeta } from "@/lib/page-meta"
 
-export const metadata: Metadata = {
-  title: "Editorial Standards — Eat Real Food NYC Directory",
+export const metadata: Metadata = pageMeta({
+  path: "/about/editorial-standards",
+  title: "Editorial Standards",
   description:
     "Editorial principles for Eat Real Food NYC, including how labeled Partner placements stay separate from grades, Health Scores, and organic rankings.",
-  alternates: { canonical: getCanonicalUrl("/about/editorial-standards") },
-  robots: { index: true, follow: true },
-}
+})
 
 export default function EditorialStandardsPage() {
   return (
