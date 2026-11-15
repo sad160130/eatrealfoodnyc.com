@@ -13,6 +13,7 @@ import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { skipImageOptimizer } from "@/lib/photo-src"
 
 const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
 
@@ -279,6 +280,7 @@ export default async function HomePage() {
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     sizes="(max-width: 1024px) 100vw, 25vw"
                     priority
+                    unoptimized={skipImageOptimizer(featuredGem.photo)}
                   />
                 ) : (
                   <div className="absolute inset-0 bg-forest" />
