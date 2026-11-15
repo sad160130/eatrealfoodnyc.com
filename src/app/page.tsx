@@ -193,7 +193,7 @@ export default async function HomePage() {
               </span>
               <span className="callout-label">Near me</span>
             </Link>
-            <Link href="/search?grade=A" className="callout">
+            <Link href="/healthy-restaurants/grade-a" className="callout">
               <span className="callout-initial">
                 A<span style={{ color: "var(--color-muted)" }}>.</span>
               </span>

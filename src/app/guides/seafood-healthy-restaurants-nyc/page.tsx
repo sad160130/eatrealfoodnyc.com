@@ -123,7 +123,7 @@ export default async function SeafoodGuide() {
 
           <p className="text-lg leading-relaxed text-gray-700">
             The{" "}
-            <Link href="/search?grade=A" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+            <Link href="/healthy-restaurants/grade-a" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
               Grade A filter in our directory
             </Link>{" "}
             gives health-conscious diners a genuine edge when choosing where to eat seafood safely.
@@ -377,7 +377,7 @@ export default async function SeafoodGuide() {
 
           <p className="text-lg leading-relaxed text-gray-700">
             Use the{" "}
-            <Link href="/search?grade=A" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
+            <Link href="/healthy-restaurants/grade-a" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
               Grade A filter
             </Link>{" "}
             in our directory to find restaurants that meet the highest food safety standard.
@@ -462,7 +462,7 @@ export default async function SeafoodGuide() {
           heading="Find healthy seafood restaurants in NYC"
           body="Browse our directory of Grade A-certified NYC restaurants and filter by whole foods, halal, kosher, or gluten-free to find the right seafood spot for you."
           primaryLabel="Search restaurants →"
-          primaryHref="/search?grade=A"
+          primaryHref="/healthy-restaurants/grade-a"
           secondaryLabel="How health grades work"
           secondaryHref="/guides/nyc-health-grades-explained"
         />

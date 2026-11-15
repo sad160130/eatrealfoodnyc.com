@@ -29,7 +29,7 @@ const TOOLS = [
   { label: "Compare Neighborhoods", href: "/nyc/compare" },
   { label: "Open Right Now", href: "/search?open=true" },
   { label: "Hidden Gems", href: "/search?hidden_gem=true" },
-  { label: "Grade A Only", href: "/search?grade=A" },
+  { label: "Grade A Only", href: "/healthy-restaurants/grade-a" },
 ]
 
 function boroughToSlug(borough: string): string {

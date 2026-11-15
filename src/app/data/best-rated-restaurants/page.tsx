@@ -763,7 +763,7 @@ export default async function BestRatedRestaurantsPage() {
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href="/search?grade=A"
+              href="/healthy-restaurants/grade-a"
               className="rounded-xl bg-amber px-8 py-4 font-semibold text-forest transition-all hover:bg-white hover:text-forest"
             >
               Browse Grade A restaurants →

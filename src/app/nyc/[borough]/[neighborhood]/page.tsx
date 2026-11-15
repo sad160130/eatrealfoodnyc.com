@@ -290,7 +290,7 @@ export default async function DietBoroughPage({
 
           {/* Quick filters — homepage callout pattern */}
           <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <Link href={`/search?borough=${boroughName}&diet=${tag}&grade=A`} className="callout">
+            <Link href={`/nyc/${boroughSlug}/grade-a-restaurants`} className="callout">
               <span className="callout-initial">A<span style={{ color: "var(--color-muted)" }}>.</span></span>
               <span className="callout-label">Grade A only</span>
             </Link>
