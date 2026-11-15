@@ -5,7 +5,6 @@ import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
-import { DIET_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
@@ -13,6 +12,8 @@ import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import { ANCHOR_TEXT, DIET_HUB_CROSSLINKS } from "@/lib/internal-links"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -30,15 +31,22 @@ export async function generateMetadata({
   if (!config) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/healthy-restaurants/${tag}`)
-  const kwds = DIET_KEYWORDS[tag]
-  const count = await prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true, dietary_tags: { contains: tag } } })
+  const stats = await gradeStatsFor({ dietary_tags: { contains: tag } })
+  const title = dietTitle(config.label, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: "NYC",
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+    dietLabel: config.label,
+  })
   return {
-    title: kwds?.metaTitle || `Best ${config.label} Restaurants in NYC (2026)`,
-    description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: kwds?.h1,
-      description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
+      title: withBrand(title),
+      description,
       url: canonicalUrl,
       type: "website",
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${config.label} Restaurants in NYC` }],

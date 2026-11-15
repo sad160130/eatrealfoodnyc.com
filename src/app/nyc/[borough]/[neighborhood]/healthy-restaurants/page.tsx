@@ -4,7 +4,6 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug, formatDietaryTag } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
-import { buildNeighborhoodKeywords } from "@/config/keywords"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -14,6 +13,8 @@ import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titles"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -68,12 +69,22 @@ export async function generateMetadata({
   if (!resolved) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/${neighborhood}/healthy-restaurants`)
-  const kwds = buildNeighborhoodKeywords(resolved.neighborhoodName, resolved.boroughName)
+  const stats = await gradeStatsFor({
+    borough: resolved.boroughName,
+    neighborhood: resolved.neighborhoodName,
+  })
+  const title = neighborhoodTitle(resolved.neighborhoodName, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: `${resolved.neighborhoodName}, ${resolved.boroughName}`,
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+  })
   return {
-    title: kwds.metaTitle,
-    description: kwds.metaDescription(0),
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
-    openGraph: { url: canonicalUrl, type: "website" },
+    openGraph: { title: withBrand(title), description, url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
   }
 }
@@ -111,6 +122,8 @@ export default async function NeighborhoodPage({
       where: {
         borough: boroughName,
         neighborhood: neighborhoodName,
+        business_status: "OPERATIONAL",
+        is_published: true,
         inspection_grade: "A",
       },
     }),

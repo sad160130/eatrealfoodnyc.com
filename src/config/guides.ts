@@ -1,3 +1,5 @@
+import { GUIDE_DESCRIPTIONS, guideTitle } from "@/lib/seo-titles"
+
 export interface GuideArticle {
   slug: string
   title: string
@@ -27,9 +29,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "nyc-health-grades-explained",
     title: "NYC Restaurant Health Grades Explained — A to C, What They Really Mean",
-    metaTitle: "NYC Restaurant Health Grades — A, B, C Explained",
+    metaTitle: guideTitle("nyc-health-grades-explained", "NYC Restaurant Grades"),
     shortTitle: "NYC Health Grades Explained",
-    description: "What Grade A, B, and C really mean, how the NYC inspection process works, and what every diner should know before eating out.",
+    description: GUIDE_DESCRIPTIONS["nyc-health-grades-explained"],
     category: "Health & Safety",
     emoji: "🏥",
     readTime: "8 min read",
@@ -46,9 +48,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "nyc-restaurant-inspection-process",
     title: "How the NYC Restaurant Inspection Process Works — A Diner's Guide",
-    metaTitle: "NYC Restaurant Inspections — How It Works",
+    metaTitle: guideTitle("nyc-restaurant-inspection-process", "NYC Inspections"),
     shortTitle: "NYC Restaurant Inspection Process",
-    description: "A step-by-step breakdown of how NYC restaurants are inspected, what happens when they fail, and how to read an inspection report.",
+    description: GUIDE_DESCRIPTIONS["nyc-restaurant-inspection-process"],
     category: "Health & Safety",
     emoji: "📋",
     readTime: "7 min read",
@@ -64,9 +66,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "vegan-nyc-borough-guide",
     title: "Vegan NYC — A Borough-by-Borough Guide to Plant-Based Dining",
-    metaTitle: "Vegan NYC Restaurants — Borough-by-Borough Guide",
+    metaTitle: guideTitle("vegan-nyc-borough-guide", "Vegan Restaurants NYC"),
     shortTitle: "Vegan NYC Guide",
-    description: "The definitive guide to vegan dining across all five NYC boroughs. Best neighborhoods, what to expect, and how to find the most committed plant-based kitchens.",
+    description: GUIDE_DESCRIPTIONS["vegan-nyc-borough-guide"],
     category: "Dietary Guides",
     emoji: "🌱",
     readTime: "10 min read",
@@ -83,9 +85,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "halal-food-guide-nyc",
     title: "The Complete Halal Food Guide to NYC — Every Borough Covered",
-    metaTitle: "Halal Restaurants NYC — Complete Guide (2026)",
+    metaTitle: guideTitle("halal-food-guide-nyc", "Halal Restaurants NYC"),
     shortTitle: "Halal Food Guide NYC",
-    description: "Where to find the best halal restaurants in NYC, which neighborhoods have the highest concentration, and what to know about halal certification in New York.",
+    description: GUIDE_DESCRIPTIONS["halal-food-guide-nyc"],
     category: "Dietary Guides",
     emoji: "🕌",
     readTime: "9 min read",
@@ -102,9 +104,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "gluten-free-dining-nyc",
     title: "Gluten-Free Dining in NYC — What You Need to Know Before You Go",
-    metaTitle: "Gluten-Free Restaurants NYC — What to Know",
+    metaTitle: guideTitle("gluten-free-dining-nyc", "Gluten-Free NYC"),
     shortTitle: "Gluten-Free NYC Guide",
-    description: "How to find genuinely gluten-free restaurants in NYC, what questions to ask about cross-contamination, and which neighborhoods are safest for celiac diners.",
+    description: GUIDE_DESCRIPTIONS["gluten-free-dining-nyc"],
     category: "Dietary Guides",
     emoji: "🌾",
     readTime: "8 min read",
@@ -120,9 +122,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "how-eat-healthy-nyc-15-dollars",
     title: "How to Eat Healthy in NYC on $15 a Day — The Practical Guide",
-    metaTitle: "Eat Healthy in NYC for $15 — Practical Guide",
+    metaTitle: guideTitle("how-eat-healthy-nyc-15-dollars", "Eat Healthy NYC for $15"),
     shortTitle: "Eat Healthy in NYC on $15",
-    description: "Practical strategies for eating nutritious meals in New York City without breaking the bank. Best cheap healthy restaurants, neighborhoods, and ordering strategies.",
+    description: GUIDE_DESCRIPTIONS["how-eat-healthy-nyc-15-dollars"],
     category: "Budget Dining",
     emoji: "💵",
     readTime: "9 min read",
@@ -139,9 +141,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "best-healthy-neighborhoods-nyc",
     title: "The Best Healthy Neighborhoods in NYC for Dining Out — Ranked",
-    metaTitle: "Healthiest NYC Neighborhoods for Dining — Ranked",
+    metaTitle: guideTitle("best-healthy-neighborhoods-nyc", "Healthy NYC Neighborhoods"),
     shortTitle: "Best Healthy Neighborhoods NYC",
-    description: "Which NYC neighborhoods have the highest concentration of healthy restaurants, best health inspection grades, and most dietary diversity. Data-driven rankings across all five boroughs.",
+    description: GUIDE_DESCRIPTIONS["best-healthy-neighborhoods-nyc"],
     category: "Neighborhood Guides",
     emoji: "🗺️",
     readTime: "10 min read",
@@ -158,9 +160,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "hidden-gem-restaurants-nyc",
     title: "What Are Hidden Gem Restaurants — and How We Find Them in NYC",
-    metaTitle: "Hidden Gem Restaurants NYC — How We Find Them",
+    metaTitle: guideTitle("hidden-gem-restaurants-nyc", "Hidden Gems NYC"),
     shortTitle: "Hidden Gem Restaurants NYC",
-    description: "How we identify underrated, exceptional restaurants in NYC that most people walk past every day. Our algorithm, our criteria, and why low review counts are sometimes a very good sign.",
+    description: GUIDE_DESCRIPTIONS["hidden-gem-restaurants-nyc"],
     category: "About Our Data",
     emoji: "💎",
     readTime: "6 min read",
@@ -177,9 +179,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "kosher-dining-nyc-guide",
     title: "Kosher Dining in NYC — The Complete Borough-by-Borough Guide",
-    metaTitle: "Kosher Restaurants NYC — Borough-by-Borough Guide",
+    metaTitle: guideTitle("kosher-dining-nyc-guide", "Kosher Restaurants NYC"),
     shortTitle: "Kosher Dining NYC Guide",
-    description: "Where to find kosher restaurants across all five NYC boroughs, how kosher certification works, and which neighborhoods have the strongest kosher dining scenes.",
+    description: GUIDE_DESCRIPTIONS["kosher-dining-nyc-guide"],
     category: "Dietary Guides",
     emoji: "✡️",
     readTime: "8 min read",
@@ -196,9 +198,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "late-night-healthy-eating-nyc",
     title: "Late Night Healthy Eating in NYC — Where to Go After 10PM",
-    metaTitle: "Late Night Healthy Eating NYC — Where to Go",
+    metaTitle: guideTitle("late-night-healthy-eating-nyc", "Late Night Healthy NYC"),
     shortTitle: "Late Night Healthy NYC",
-    description: "The best healthy restaurants open late in New York City, organized by borough and dietary need. Because eating well should not stop when the sun goes down.",
+    description: GUIDE_DESCRIPTIONS["late-night-healthy-eating-nyc"],
     category: "Dining Situations",
     emoji: "🌙",
     readTime: "7 min read",
@@ -215,9 +217,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "seafood-healthy-restaurants-nyc",
     title: "The Best Seafood Restaurants in NYC for Health-Conscious Diners",
-    metaTitle: "Best Seafood Restaurants in NYC — Health Guide 2026",
+    metaTitle: guideTitle("seafood-healthy-restaurants-nyc", "Healthy Seafood NYC"),
     shortTitle: "Healthy Seafood NYC",
-    description: "Where to find the best healthy seafood in New York City — from tuna and salmon to halibut and fish tacos. Every restaurant verified with NYC health inspection grades.",
+    description: GUIDE_DESCRIPTIONS["seafood-healthy-restaurants-nyc"],
     category: "Dietary Guides",
     emoji: "🐟",
     readTime: "9 min read",
@@ -244,9 +246,9 @@ export const GUIDES: GuideArticle[] = [
   {
     slug: "healthy-breakfast-nyc",
     title: "The Best Healthy Breakfast Spots in NYC — Where to Eat Well in the Morning",
-    metaTitle: "Best Healthy Breakfast NYC — Where to Eat 2026",
+    metaTitle: guideTitle("healthy-breakfast-nyc", "Healthy Breakfast NYC"),
     shortTitle: "Healthy Breakfast NYC",
-    description: "Where to find the best healthy breakfast in New York City — from granola and açaí bowls to whole food cafes. Every spot verified with NYC health inspection grades.",
+    description: GUIDE_DESCRIPTIONS["healthy-breakfast-nyc"],
     category: "Dining Situations",
     emoji: "🌅",
     readTime: "8 min read",

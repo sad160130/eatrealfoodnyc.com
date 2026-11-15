@@ -6,7 +6,8 @@ import { prisma } from "@/lib/db"
 import { neighborhoodToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
-import { BOROUGH_KEYWORDS } from "@/config/keywords"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { boroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import BackToTop from "@/components/back-to-top"
@@ -36,19 +37,22 @@ export async function generateMetadata({
   const name = BOROUGH_MAP[borough]
   if (!name) return { title: "Not Found" }
 
-  const count = await prisma.restaurant.count({
-    where: { borough: name, business_status: "OPERATIONAL", is_published: true },
-  })
+  const stats = await gradeStatsFor({ borough: name })
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/healthy-restaurants`)
-
-  const kwds = BOROUGH_KEYWORDS[borough]
+  const title = boroughTitle(name, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: `${name}, NYC`,
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+  })
   return {
-    title: kwds?.metaTitle || `Healthy Restaurants in ${name}, NYC (2026)`,
-    description: kwds?.metaDescription(count) || `Find ${count}+ healthy restaurants in ${name}, NYC — verified with NYC health inspection grades.`,
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: kwds?.h1,
-      description: kwds?.metaDescription(count) || `Find ${count}+ healthy restaurants in ${name}, NYC — verified with NYC health inspection grades.`,
+      title: withBrand(title),
+      description,
       url: canonicalUrl,
       type: "website",
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `Healthy Restaurants in ${name}, NYC` }],

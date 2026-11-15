@@ -6,7 +6,8 @@ import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
-import { buildDietBoroughKeywords } from "@/config/keywords"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { dietBoroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
 import { ANCHOR_TEXT } from "@/lib/internal-links"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -64,19 +65,27 @@ export async function generateMetadata({
   if (!combo) return { title: "Not Found" }
   const { boroughName, tag, config } = combo
 
-  const count = await prisma.restaurant.count({
-    where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true, dietary_tags: { contains: tag } },
+  const stats = await gradeStatsFor({
+    borough: boroughName,
+    dietary_tags: { contains: tag },
   })
-  const kw = buildDietBoroughKeywords(config.label, boroughName)
+  const title = dietBoroughTitle(config.label, boroughName, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: `${boroughName}, NYC`,
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+    dietLabel: config.label,
+  })
   const canonicalUrl = getCanonicalUrl(`/nyc/${boroughSlug}/${tag}${SUFFIX}`)
 
   return {
-    title: kw.metaTitle,
-    description: kw.metaDescription(count),
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: kw.h1,
-      description: kw.metaDescription(count),
+      title: withBrand(title),
+      description,
       url: canonicalUrl,
       type: "website",
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${config.label} Restaurants in ${boroughName}, NYC` }],

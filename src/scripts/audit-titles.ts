@@ -1,68 +1,66 @@
-import { BOROUGH_MAP } from "../config/boroughs"
-import { DIET_CONFIG } from "../config/dietary-tags"
 import { GUIDES } from "../config/guides"
-import { buildTitle } from "../lib/utils"
+import {
+  TITLE_MAX,
+  boroughTitle,
+  dietTitle,
+  neighborhoodTitle,
+  renderedTitleLength,
+  restaurantTitle,
+  withBrand,
+} from "../lib/seo-titles"
 
 const issues: Array<{ page: string; title: string; length: number }> = []
 
-function checkTitle(page: string, title: string) {
-  if (title.length > 60) {
+function checkTitle(page: string, inner: string) {
+  const title = withBrand(inner)
+  if (title.length > TITLE_MAX) {
     issues.push({ page, title, length: title.length })
   }
 }
 
-console.log("\n=== META TITLE LENGTH AUDIT ===\n")
+console.log("\n=== META TITLE LENGTH AUDIT (rendered title, including brand) ===\n")
 
-// Homepage
-checkTitle("/", "Eat Real Food NYC — All 5 Boroughs")
+const boroughs = ["Manhattan", "Brooklyn", "Queens", "the Bronx", "Staten Island"]
+for (const name of boroughs) {
+  checkTitle(`/nyc/${name}`, boroughTitle(name, 120))
+  checkTitle(`/nyc/${name} (no grade)`, boroughTitle(name, 0))
+}
 
-// Borough hub pages
-Object.entries(BOROUGH_MAP).forEach(([slug, name]) => {
-  checkTitle(`/nyc/${slug}/healthy-restaurants`, `Healthy Restaurants in ${name}, NYC (2026)`)
-})
+const diets = ["Vegan", "Vegetarian", "Gluten-Free", "Halal", "Kosher", "Dairy-Free", "Keto", "Paleo", "Whole Foods", "Low-Calorie", "Raw Food", "Nut-Free"]
+for (const label of diets) {
+  checkTitle(`/healthy-restaurants/${label}`, dietTitle(label, 80))
+  checkTitle(`/healthy-restaurants/${label} (no grade)`, dietTitle(label, 0))
+}
 
-// Diet-type hub pages
-Object.entries(DIET_CONFIG).forEach(([tag, config]) => {
-  checkTitle(`/healthy-restaurants/${tag}`, `Best ${config.label} Restaurants in NYC (2026)`)
-})
-
-// Guide pages (metaTitle)
-GUIDES.forEach((guide) => {
+for (const guide of GUIDES) {
   checkTitle(`/guides/${guide.slug}`, guide.metaTitle)
-})
+}
 
-// Simulate long restaurant names to test buildTitle
-const testRestaurants = [
-  { name: "Farmer's Fridge", neighborhood: "Chelsea" },
-  { name: "Awesome Hibachi At Home Hibachi Catering", neighborhood: "Astoria" },
-  { name: "The Very Long Restaurant Name That Goes On And On", neighborhood: "Williamsburg" },
-  { name: "Short Name", neighborhood: "SoHo" },
+const neighborhoods = ["SoHo", "Williamsburg", "Bedford-Stuyvesant", "Washington Heights", "Financial District", "Long Island City"]
+for (const name of neighborhoods) {
+  checkTitle(name, neighborhoodTitle(name, 42))
+  checkTitle(`${name} no grade`, neighborhoodTitle(name, 0))
+}
+
+const restaurants = [
+  { name: "Joe's Pizza", inspectionGrade: "A", inspectionDate: "2026-03-02", neighborhood: "SoHo" },
+  { name: "Farmer's Fridge", inspectionGrade: null, inspectionDate: null, neighborhood: "Chelsea" },
+  { name: "Awesome Hibachi At Home Hibachi Catering", inspectionGrade: "B", inspectionDate: "2024-01-15", neighborhood: "Astoria" },
+  { name: "The Very Long Restaurant Name That Goes On And On", inspectionGrade: null, inspectionDate: null, neighborhood: "Williamsburg" },
 ]
-
-testRestaurants.forEach((r) => {
-  const title = buildTitle({ name: r.name, location: `${r.neighborhood}, NYC` })
-  checkTitle(`/restaurants/sample`, title)
-})
-
-// Sample long neighborhood names
-const testNeighborhoods = [
-  { name: "Bedford-Stuyvesant", borough: "Brooklyn" },
-  { name: "Long Island City", borough: "Queens" },
-  { name: "Washington Heights", borough: "Manhattan" },
-  { name: "Tottenville", borough: "Staten Island" },
-]
-
-testNeighborhoods.forEach((n) => {
-  checkTitle(`/nyc/.../healthy-restaurants`, `Healthy Restaurants in ${n.name} — ${n.borough}`)
-})
+for (const restaurant of restaurants) {
+  checkTitle(restaurant.name, restaurantTitle(restaurant))
+}
 
 if (issues.length === 0) {
-  console.log("✅ All titles are within 60 characters")
+  console.log(`All sampled rendered titles are within ${TITLE_MAX} characters.`)
+  console.log("Example:", withBrand(neighborhoodTitle("SoHo", 12)), `(${renderedTitleLength(neighborhoodTitle("SoHo", 12))})`)
 } else {
-  console.log(`⚠️  Found ${issues.length} titles over 60 characters:\n`)
-  issues.forEach((issue) => {
+  console.log(`Found ${issues.length} titles over ${TITLE_MAX} characters:\n`)
+  for (const issue of issues) {
     console.log(`  [${issue.length} chars] ${issue.page}`)
     console.log(`  Title: "${issue.title}"`)
     console.log()
-  })
+  }
+  process.exitCode = 1
 }

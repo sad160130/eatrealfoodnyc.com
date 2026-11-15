@@ -10,8 +10,8 @@ import {
   neighborhoodToSlug,
   parseWorkingHours,
   getRestaurantImageAlt,
-  buildTitle,
 } from "@/lib/utils"
+import { restaurantMetaDescription, restaurantTitle, withBrand } from "@/lib/seo-titles"
 import MapWrapper from "@/components/map-wrapper"
 import RestaurantPhotoGallery from "@/components/restaurant-photo-gallery"
 import HealthScoreCard from "@/components/health-score-card"
@@ -58,25 +58,31 @@ export async function generateMetadata({
   const restaurant = await prisma.restaurant.findUnique({ where: { slug } })
   if (!restaurant) return { title: "Restaurant Not Found" }
 
-  const tags = parseDietaryTags(restaurant.dietary_tags)
-  const locationStr = restaurant.neighborhood ? `${restaurant.neighborhood}, NYC` : "New York City"
-  const tagStr = tags.length > 0 ? `${tags.slice(0, 3).map(formatDietaryTag).join(", ")}. ` : ""
-  const gradeStr = restaurant.inspection_grade ? `NYC health grade: ${restaurant.inspection_grade}. ` : ""
-  const ratingStr = restaurant.rating ? `Rated ${restaurant.rating}/5 from ${(restaurant.reviews ?? 0).toLocaleString()} reviews.` : ""
-  const description = `${restaurant.name} is a healthy restaurant in ${locationStr}. ${tagStr}${gradeStr}${ratingStr}`.slice(0, 160)
+  const tags = parseDietaryTags(restaurant.dietary_tags).map(formatDietaryTag)
+  const title = restaurantTitle({
+    name: restaurant.name,
+    inspectionGrade: restaurant.inspection_grade,
+    inspectionDate: restaurant.inspection_date,
+    neighborhood: restaurant.neighborhood,
+  })
+  const description = restaurantMetaDescription({
+    name: restaurant.name,
+    neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    inspectionGrade: restaurant.inspection_grade,
+    inspectionScore: restaurant.inspection_score,
+    inspectionDate: restaurant.inspection_date,
+    tags,
+  })
 
   const canonicalUrl = getCanonicalUrl(`/restaurants/${restaurant.slug}`)
 
   return {
-    title: buildTitle({
-      name: restaurant.name,
-      location: locationStr,
-      suffix: "Healthy Restaurant",
-    }),
+    title,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: `${restaurant.name} — ${restaurant.neighborhood ?? "NYC"}`,
+      title: withBrand(title),
       description,
       url: canonicalUrl,
       type: "website",
