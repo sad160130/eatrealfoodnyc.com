@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
-import { prisma } from "@/lib/db"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { ORGANIZATION_SCHEMA } from "@/lib/schema"
 
 export const metadata: Metadata = {
@@ -12,12 +12,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
+export const revalidate = 3600
+
 export default async function AboutPage() {
-  const [totalRestaurants, gradeACount, hiddenGemCount] = await Promise.all([
-    prisma.restaurant.count({ where: { business_status: "OPERATIONAL" } }),
-    prisma.restaurant.count({ where: { business_status: "OPERATIONAL", inspection_grade: "A" } }),
-    prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_hidden_gem: true } }),
-  ])
+  const counts = await getPublishedDirectoryCounts()
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -54,11 +52,12 @@ export default async function AboutPage() {
 
       {/* Stats */}
       <div className="border-b border-gray-100 bg-white px-6 py-10">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
           {[
-            { stat: totalRestaurants.toLocaleString(), label: "NYC restaurants in our directory", icon: "🍽️" },
-            { stat: gradeACount.toLocaleString(), label: "Grade A certified restaurants", icon: "⭐" },
-            { stat: hiddenGemCount.toLocaleString(), label: "Hidden gems discovered", icon: "💎" },
+            { stat: counts.restaurants.toLocaleString(), label: "Published restaurant listings", icon: "🍽️" },
+            { stat: counts.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing", icon: "📍" },
+            { stat: counts.gradeA.toLocaleString(), label: "Grade A among published listings", icon: "⭐" },
+            { stat: counts.hiddenGems.toLocaleString(), label: "Hidden gems among published listings", icon: "💎" },
             { stat: "5", label: "NYC boroughs fully covered", icon: "🗺️" },
           ].map((item) => (
             <div key={item.label} className="text-center">
@@ -99,7 +98,7 @@ export default async function AboutPage() {
             {[
               { icon: "🏥", title: "Health Department data, not opinions", body: "Every restaurant in our directory shows the actual NYC DOHMH inspection grade, score, and date — pulled directly from the city's open data portal. Not a summary. Not a badge. The real grade the inspector assigned." },
               { icon: "🏷️", title: "Verified dietary tags, not guesswork", body: "Our 12 dietary tags — from vegan and halal to gluten-free and kosher — are applied conservatively. We only tag a restaurant when it genuinely specializes in or is certified for that dietary need." },
-              { icon: "💎", title: "Hidden gems, not paid placement", body: "We identify hidden gem restaurants algorithmically — high ratings, lower review counts, currently operating. No restaurant pays to appear in our directory. No promoted listings. No sponsored placements." },
+              { icon: "💎", title: "Hidden gems, not paid rankings", body: "We identify hidden gem restaurants algorithmically — high ratings, lower review counts, currently operating. No restaurant pays to appear in our directory, and no restaurant can pay for hidden-gem status or a higher place in our default rankings. Some eligible restaurants may choose a clearly labeled Partner placement. Those placements are disclosed, optional, and kept separate from organic results. They never change a health grade, a Health Score, or a dietary tag." },
               { icon: "📊", title: "Neighborhood-level health data", body: "We are the only NYC restaurant directory that lets you compare neighborhoods by health inspection grade rates, dietary diversity, and restaurant quality." },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -119,11 +118,11 @@ export default async function AboutPage() {
           </h2>
           <div className="space-y-4">
             {[
-              { promise: "No paid listings or sponsored placements", detail: "Our rankings are determined entirely by data — health scores, ratings, and dietary relevance." },
+              { promise: "Rankings and grades are never for sale", detail: "Our default rankings are determined by data — health scores, ratings, and dietary relevance. Health grades come from official NYC Department of Health records. Partner and sponsor placements, when we offer them, are clearly labeled and do not affect grades or organic rankings." },
               { promise: "No fake reviews or fabricated content", detail: "The only reviews on our site come from real diners who submit through our experience form and are manually reviewed before publishing." },
               { promise: "Data sourced from official government records", detail: "Our health inspection data is sourced directly from the NYC DOHMH Open Data portal. We only show verified official records." },
               { promise: "Regular data updates", detail: "We refresh our health inspection data regularly to reflect the latest NYC DOHMH records." },
-              { promise: "No advertising in search results or content", detail: "Eat Real Food NYC does not display advertising or accept payment to influence our content or recommendations." },
+              { promise: "Advertising is labeled, never hidden", detail: "Eat Real Food NYC does not sell our recommendations, our Health Scores, or our official inspection data. When we accept a Partner listing or a sponsorship, we mark it clearly as Partner or Sponsored and keep it out of unlabeled organic results. Payment never buys a better grade or a quieter violation record." },
             ].map((item) => (
               <div key={item.promise} className="flex gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                 <span className="mt-0.5 flex-shrink-0 text-lg text-sage">✓</span>
@@ -134,6 +133,14 @@ export default async function AboutPage() {
               </div>
             ))}
           </div>
+          <p className="mt-6 text-sm leading-relaxed text-gray-600">
+            Paid Partner and sponsor placements are clearly labeled. They never change a health grade,
+            a Health Score, or our default rankings. Read the{" "}
+            <Link href="/about/editorial-standards#editorial-partnership-policy" className="font-semibold text-jade hover:text-forest">
+              Editorial &amp; Partnership Policy
+            </Link>
+            .
+          </p>
         </section>
 
         {/* Navigation to sub-pages */}
@@ -166,6 +173,7 @@ export default async function AboutPage() {
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link href="/contact" className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest">Contact us →</Link>
             <Link href="/press" className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white transition-all hover:bg-white/20">Press & media kit</Link>
+            <Link href="/partner-with-us" className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white transition-all hover:bg-white/20">Partner with us</Link>
           </div>
         </section>
       </div>

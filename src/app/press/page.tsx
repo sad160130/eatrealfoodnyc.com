@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import SocialLinks from "@/components/social-links"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 export const metadata: Metadata = {
   title: "Press & Media — Eat Real Food NYC | NYC Restaurant Data",
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function PressPage() {
+export const revalidate = 3600
+
+export default async function PressPage() {
+  const counts = await getPublishedDirectoryCounts()
+
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
       {/* Hero */}
@@ -44,12 +49,12 @@ export default function PressPage() {
           </h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {[
-              { stat: "8,835", label: "Restaurants listed" },
+              { stat: counts.restaurants.toLocaleString(), label: "Published restaurants listed" },
+              { stat: counts.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing" },
               { stat: "5", label: "NYC boroughs covered" },
               { stat: "12", label: "Dietary filters available" },
               { stat: "Free", label: "No cost to use" },
-              { stat: "Zero", label: "Advertising on the site" },
-              { stat: "100%", label: "Health-graded listings" },
+              { stat: "Never for sale", label: "Official grades" },
             ].map((item) => (
               <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm">
                 <p className="text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{item.stat}</p>
@@ -79,8 +84,11 @@ export default function PressPage() {
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
               The result is a resource that lets health-conscious NYC diners make decisions based on
-              transparent, verified data rather than algorithmic recommendations influenced by advertising spend.
-              The directory is entirely free, contains no advertising, and does not accept payment for placement.
+              transparent, verified data rather than unpaid-for recommendations dressed up as editorial judgment.
+              The directory remains free to use. Restaurants do not pay to be listed, to receive a health grade,
+              or to move up in our default rankings. If a restaurant becomes a Partner or sponsors a page, that
+              relationship is labeled in plain language and is kept separate from official inspection data and
+              organic results.
             </p>
           </div>
         </section>
@@ -153,7 +161,13 @@ export default function PressPage() {
               <div className="flex-shrink-0 rounded-xl bg-gray-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-forest">We can provide</p>
                 <div className="mt-2 space-y-1">
-                  {["Data and statistics", "Expert quotes", "Background briefings", "Custom data pulls"].map((item) => (
+                  {[
+                    "Data and statistics",
+                    "Expert quotes",
+                    "Background briefings",
+                    "Custom data pulls",
+                    "Background on our Editorial & Partnership Policy, including how Partner placements are disclosed and why grades and rankings are never for sale",
+                  ].map((item) => (
                     <p key={item} className="text-sm text-gray-700">- {item}</p>
                   ))}
                 </div>

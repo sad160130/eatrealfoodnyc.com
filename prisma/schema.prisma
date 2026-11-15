@@ -6,6 +6,16 @@ datasource db {
   provider = "postgresql"
 }
 
+/// Advertising label only. Null means the restaurant is not a partner.
+/// Must never affect rating, reviews, inspection_grade, inspection_score,
+/// dietary_tags, is_hidden_gem, Health Score, or organic sort order.
+enum PartnerStatus {
+  partner
+  sponsored
+
+  @@map("partner_status")
+}
+
 model Restaurant {
   id               Int      @id @default(autoincrement())
   name             String
@@ -36,6 +46,10 @@ model Restaurant {
   is_hidden_gem    Boolean  @default(false)
   is_published     Boolean  @default(false)
   isVerified       Boolean  @default(false) @map("is_verified")
+  /// Paid placement label. Leave null. Do not backfill.
+  /// A non-null value must not change rating, inspection grade, Health Score,
+  /// dietary tags, hidden-gem status, or organic sort order.
+  partner_status   PartnerStatus?
   priorityRank     Int      @default(0)     @map("priority_rank")
   email            String?
   company_facebook  String?

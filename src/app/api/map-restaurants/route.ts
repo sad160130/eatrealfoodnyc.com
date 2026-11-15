@@ -23,6 +23,7 @@ export async function GET() {
         dietary_tags: true,
         photo: true,
         is_hidden_gem: true,
+        partner_status: true,
         working_hours: true,
         latitude: true,
         longitude: true,

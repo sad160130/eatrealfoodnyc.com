@@ -35,6 +35,8 @@ import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
+import PartnerLabel, { PartnerDisclosure } from "@/components/partner-label"
+import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
 
 export const revalidate = 86400
 
@@ -220,6 +222,11 @@ export default async function RestaurantPage({
                   <VerifiedBadge />
                 </span>
               )}
+              {isPartnerStatus(restaurant.partner_status) && (
+                <span className="ml-3 inline-flex align-middle" style={{ verticalAlign: "0.2em" }}>
+                  <PartnerLabel kind={restaurant.partner_status} />
+                </span>
+              )}
             </h1>
 
             {/* Subtitle: neighborhood · borough · price */}
@@ -239,6 +246,7 @@ export default async function RestaurantPage({
                   </span>
                 ))}
             </p>
+            <PartnerDisclosure kind={restaurant.partner_status} />
           </div>
 
           {/* The subject anchor — monumental plaque echoing the DOHMH inspection placard */}
@@ -298,7 +306,7 @@ export default async function RestaurantPage({
             <a
               href={restaurant.website}
               target="_blank"
-              rel="noopener noreferrer"
+              rel={partnerLinkRel(restaurant.partner_status)}
               className="eyebrow inline-flex items-center gap-1.5 transition-colors"
               style={{ color: "var(--color-forest)" }}
             >
@@ -620,7 +628,7 @@ export default async function RestaurantPage({
                     <a
                       href={restaurant.website}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel={partnerLinkRel(restaurant.partner_status)}
                       className="truncate transition-colors hover:underline"
                       style={{ color: "var(--color-forest)", textUnderlineOffset: "2px" }}
                     >

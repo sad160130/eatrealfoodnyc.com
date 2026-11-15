@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import Link from "next/link"
 import { isRestaurantOpenNow } from "@/lib/utils"
+import PartnerLabel from "@/components/partner-label"
+import { isPartnerStatus } from "@/lib/partner-status"
 
 interface MapRestaurant {
   id: number
@@ -20,6 +22,7 @@ interface MapRestaurant {
   dietary_tags: string | null
   photo: string | null
   is_hidden_gem: boolean
+  partner_status?: "partner" | "sponsored" | null
   working_hours: string | null
   latitude: number | null
   longitude: number | null
@@ -130,7 +133,12 @@ export default function RestaurantMap({
         >
           <Popup>
             <div className="min-w-48 p-1">
-              <p className="text-sm font-bold text-forest">{restaurant.name}</p>
+              <p className="text-sm font-bold text-forest">
+                {restaurant.name}
+                {isPartnerStatus(restaurant.partner_status) && (
+                  <PartnerLabel kind={restaurant.partner_status} />
+                )}
+              </p>
               <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
                 {restaurant.neighborhood}, {restaurant.borough}
               </p>

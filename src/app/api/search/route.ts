@@ -39,6 +39,8 @@ const SELECT_COLUMNS = {
   photo: true,
   business_status: true,
   is_hidden_gem: true,
+  // Advertising label for the card badge. Not a sort or score input.
+  partner_status: true,
   created_at: true,
   updated_at: true,
 };
@@ -177,6 +179,7 @@ async function handleFullTextSearch(params: SearchParams) {
            ts_rank(search_vector, plainto_tsquery('english', $1)) as search_rank
     FROM restaurants
     WHERE ${whereClause}
+    -- partner_status is not a sort key. Paid placement must not change rank.
     ORDER BY search_rank DESC, rating DESC NULLS LAST
     LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
   `;
@@ -190,7 +193,8 @@ async function handleFullTextSearch(params: SearchParams) {
              ts_rank(search_vector, plainto_tsquery('english', $1)) as search_rank
       FROM restaurants
       WHERE ${whereClause}
-      ORDER BY search_rank DESC, rating DESC NULLS LAST
+      -- partner_status is not a sort key. Paid placement must not change rank.
+    ORDER BY search_rank DESC, rating DESC NULLS LAST
       LIMIT $${paramIndex} OFFSET 0
     `;
     const bigValues = [...values.slice(0, -2), fetchLimit, 0];
@@ -251,6 +255,7 @@ async function handleFilterSearch(params: SearchParams) {
     const allRestaurants = await prisma.restaurant.findMany({
       where,
       select: SELECT_COLUMNS,
+      // Rating only. partner_status must not change this order.
       orderBy: { rating: { sort: "desc", nulls: "last" } },
       take: fetchLimit,
     });
@@ -272,6 +277,7 @@ async function handleFilterSearch(params: SearchParams) {
     prisma.restaurant.findMany({
       where,
       select: SELECT_COLUMNS,
+      // Rating only. partner_status must not change this order.
       orderBy: { rating: { sort: "desc", nulls: "last" } },
       skip: offset,
       take: limit,
@@ -317,6 +323,7 @@ async function handleGeoSearch(params: SearchParams & { lat: number; lng: number
       distance: getDistanceMiles(lat, lng, r.latitude!, r.longitude!),
     }))
     .filter((r) => r.distance <= radius)
+    // Distance only. partner_status must not change this order.
     .sort((a, b) => a.distance - b.distance);
 
   if (openNow) {

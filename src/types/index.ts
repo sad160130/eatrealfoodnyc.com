@@ -28,6 +28,8 @@ export interface Restaurant {
   is_hidden_gem: boolean
   isVerified?: boolean
   priorityRank?: number
+  /** Advertising label. Null or absent means not a partner. Never a sort or score input. */
+  partner_status?: "partner" | "sponsored" | null
   created_at: string | Date
   updated_at: string | Date
 }

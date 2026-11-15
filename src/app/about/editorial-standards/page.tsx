@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
+import EditorialPartnershipPolicy from "@/components/editorial-partnership-policy"
 
 export const metadata: Metadata = {
   title: "Editorial Standards — Eat Real Food NYC Directory",
   description:
-    "The editorial principles guiding Eat Real Food NYC: data before opinion, no commercial influence, transparency about limitations, and conservative dietary tagging.",
+    "Editorial principles for Eat Real Food NYC, including how labeled Partner placements stay separate from grades, Health Scores, and organic rankings.",
   alternates: { canonical: getCanonicalUrl("/about/editorial-standards") },
   robots: { index: true, follow: true },
 }
@@ -58,7 +59,7 @@ export default function EditorialStandardsPage() {
               {
                 number: "03",
                 title: "No commercial influence",
-                body: "No restaurant, food brand, delivery service, or advertising partner has any influence over our data, our rankings, our Health Scores, or our editorial decisions. We do not accept payment for placement, reviews, or higher scores. We do not have affiliate relationships with restaurants. Our revenue model is independent of restaurant cooperation. If we ever introduce advertising or partnerships in the future, they will be clearly disclosed and will never affect the data layer.",
+                body: "No restaurant, food brand, delivery service, or advertising partner has any influence over our data, our default rankings, our Health Scores, our dietary tags, or our editorial decisions. We do not accept payment for reviews, higher scores, hidden-gem status, or a better official grade. Listing in the directory is free and does not depend on a restaurant paying us or cooperating with a sale. We may offer clearly labeled Partner listings and sponsorships to eligible restaurants and brands. Those placements are disclosed, optional, and kept separate from the data layer: they never change inspection records, Health Scores, tags, or organic sort order. If we add booking or reservation affiliate links, those links will also be disclosed and will not affect rankings or grades. The full rules are in our Editorial & Partnership Policy below.",
               },
               {
                 number: "04",
@@ -135,7 +136,7 @@ export default function EditorialStandardsPage() {
           </p>
           <div className="space-y-3">
             {[
-              "Accept payment from restaurants in exchange for listing placement, higher scores, or favorable descriptions.",
+              "Accept payment in exchange for a better health grade, a higher Health Score, a dietary tag, hidden-gem status, a higher place in our default or organic rankings, or a favorable description presented as editorial judgment. Directory listing remains free. Paid Partner and sponsor placements are optional, clearly labeled, and governed by our Editorial & Partnership Policy.",
               "Publish fake reviews, fabricated testimonials, or AI-generated reviews that impersonate real diners.",
               "Remove or suppress negative inspection data for any restaurant, regardless of the circumstances.",
               "Apply dietary tags without sufficient evidence, even if a restaurant owner requests the tag.",
@@ -150,6 +151,8 @@ export default function EditorialStandardsPage() {
             ))}
           </div>
         </section>
+
+        <EditorialPartnershipPolicy />
 
         {/* CTA */}
         <section className="rounded-2xl bg-forest p-10 text-center">

@@ -58,6 +58,15 @@ Interactive health map: https://www.eatrealfoodnyc.com/map
 Editorial guides: https://www.eatrealfoodnyc.com/guides
   NYC restaurant health grades, vegan dining, halal guide, seafood guide, and more
 
+Editorial & Partnership Policy: https://www.eatrealfoodnyc.com/about/editorial-standards
+  Listing is free. Health grades, Health Scores, dietary tags, hidden-gem status,
+  and default rankings are never for sale. Clearly labeled Partner and Sponsored
+  placements may be offered. They do not change official inspection data or organic sort.
+
+Partner with us: https://www.eatrealfoodnyc.com/partner-with-us
+  Optional labeled placements for eligible restaurants. Rates on request.
+  Contact: https://www.eatrealfoodnyc.com/contact
+
 ## Data sources
 
 - NYC Department of Health and Mental Hygiene (DOHMH) Open Data

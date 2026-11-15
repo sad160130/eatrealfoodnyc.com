@@ -70,6 +70,7 @@ export default async function HomePage() {
         rating: { gte: 4.5 },
         reviews: { gte: 200 },
       },
+      // Rating and review count only. partner_status must not change this order.
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
       take: 8,
     }),
@@ -479,7 +480,7 @@ export default async function HomePage() {
                 Real data. No bylines.
               </h2>
               <p className="dek mt-5" style={{ maxWidth: "58ch" }}>
-                We don&apos;t pay critics, and we don&apos;t accept paid placements.
+                We don&apos;t pay critics, and we don&apos;t sell grades or rankings.
                 Every restaurant here is cross-referenced with NYC Department of
                 Health inspection records — public, sourced, verifiable.
               </p>
@@ -527,8 +528,8 @@ export default async function HomePage() {
                     }}
                   >
                     DOHMH Open Data joined to conservative dietary tagging.
-                    Weekly publish cadence. No paid placements, no fabricated
-                    reviews, no editorial personas.
+                    Weekly publish cadence. Grades and rankings stay unpaid.
+                    No fabricated reviews, no editorial personas.
                   </p>
                 </div>
                 <Link

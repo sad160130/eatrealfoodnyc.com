@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx src/scripts/test-slugs.ts && tsx src/scripts/test-partner-status.ts"
   },
   "keywords": [],
   "author": "",

@@ -5,6 +5,8 @@ import { useState, useCallback } from "react"
 import Link from "next/link"
 import type { MapRestaurant } from "@/components/restaurant-map"
 import NearMeButton from "@/components/near-me-button"
+import PartnerLabel from "@/components/partner-label"
+import { isPartnerStatus } from "@/lib/partner-status"
 
 const RestaurantMap = dynamic(() => import("@/components/restaurant-map"), {
   ssr: false,
@@ -268,6 +270,9 @@ export default function MapPageClient() {
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 {selectedRestaurant.name}
+                {isPartnerStatus(selectedRestaurant.partner_status) && (
+                  <PartnerLabel kind={selectedRestaurant.partner_status} />
+                )}
               </p>
               <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
                 {selectedRestaurant.neighborhood}, {selectedRestaurant.borough}
