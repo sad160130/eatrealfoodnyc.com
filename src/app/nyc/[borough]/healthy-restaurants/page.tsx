@@ -18,6 +18,7 @@ import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
 import scorecardsData from "@/data/neighborhood-scorecards"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -66,23 +67,32 @@ export default async function BoroughPage({
   const boroughName = BOROUGH_MAP[boroughSlug]
   if (!boroughName) notFound()
 
-  const [restaurantRows, stats, gradeACount] = await Promise.all([
+  const listedWhere = {
+    borough: boroughName,
+    business_status: "OPERATIONAL" as const,
+    is_published: true,
+  }
+  const [restaurantRows, stats, ratingAgg, gradeACount] = await Promise.all([
     prisma.restaurant.findMany({
-      where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true },
+      where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
     }),
     prisma.restaurant.aggregate({
-      where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true },
+      where: listedWhere,
       _count: { id: true },
+    }),
+    prisma.restaurant.aggregate({
+      where: { ...listedWhere, rating: { gt: 0 } },
       _avg: { rating: true },
     }),
     prisma.restaurant.count({
-      where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true, inspection_grade: "A" },
+      where: { ...listedWhere, inspection_grade: "A" },
     }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
 
   const totalCount = stats._count.id
+  const avgRating = roundAverage(ratingAgg._avg.rating)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
   const neighborhoodScorecard = scorecardsData[boroughName] ?? []
@@ -123,13 +133,16 @@ export default async function BoroughPage({
       name: boroughName,
       containedInPlace: { "@type": "City", name: "New York City" },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: stats._avg.rating ? Math.round(stats._avg.rating * 10) / 10 : 4.3,
-      reviewCount: totalCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
+    ...(avgRating
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
     itemListElement: restaurants.slice(0, 20).map((r, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -203,7 +216,7 @@ export default async function BoroughPage({
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
             <StatInline label="Grade A" value={`${gradeACount.toLocaleString()} (${gradeARate}%)`} />
             <Dot />
-            <StatInline label="Avg rating" value={stats._avg.rating ? `${stats._avg.rating.toFixed(1)} ★` : "—"} />
+            <StatInline label="Avg rating" value={formatAverageRating(avgRating)} />
             <Dot />
             <StatInline label="Neighborhoods" value={neighborhoodsSorted.length.toString()} />
           </div>
@@ -304,10 +317,7 @@ export default async function BoroughPage({
         {neighborhoodsSorted.map(([neighborhood, neighborhoodRestaurants], neighborhoodIndex) => {
           const hoodSlug = neighborhoodToSlug(neighborhood)
           const gradeAInHood = neighborhoodRestaurants.filter((r) => r.inspection_grade === "A").length
-          const ratedRestaurants = neighborhoodRestaurants.filter((r) => r.rating)
-          const avgRating = ratedRestaurants.length > 0
-            ? ratedRestaurants.reduce((sum, r) => sum + (r.rating ?? 0), 0) / ratedRestaurants.length
-            : 0
+          const hoodAverage = averageRating(neighborhoodRestaurants.map((r) => r.rating))
 
           return (
             <React.Fragment key={neighborhood}>
@@ -355,10 +365,10 @@ export default async function BoroughPage({
                           <span className="tabular">{gradeAInHood}</span> Grade A
                         </span>
                       )}
-                      {avgRating > 0 && (
+                      {hoodAverage != null && (
                         <span style={{ color: "var(--color-muted)" }}>
                           <span aria-hidden="true" style={{ color: "var(--color-amber)" }}>★</span>{" "}
-                          <span className="tabular">{Math.round(avgRating * 10) / 10}</span> avg
+                          <span className="tabular">{hoodAverage.toFixed(1)}</span> avg
                         </span>
                       )}
                     </div>

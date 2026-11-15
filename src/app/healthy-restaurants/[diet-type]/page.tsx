@@ -13,6 +13,7 @@ import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import { ANCHOR_TEXT, DIET_HUB_CROSSLINKS } from "@/lib/internal-links"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { formatAverageRating, roundAverage } from "@/lib/ratings"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -58,30 +59,29 @@ export default async function DietTypePage({
 
   const crossLinks = DIET_HUB_CROSSLINKS[tag]
 
-  const [restaurantRows, totalCount, boroughBreakdown] = await Promise.all([
+  const listedWhere = {
+    business_status: "OPERATIONAL" as const,
+    is_published: true,
+    dietary_tags: { contains: tag },
+  }
+  const [restaurantRows, totalCount, boroughBreakdown, ratingAgg] = await Promise.all([
     prisma.restaurant.findMany({
-      where: {
-        business_status: "OPERATIONAL", is_published: true,
-        dietary_tags: { contains: tag },
-      },
+      where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
       take: 24,
     }),
-    prisma.restaurant.count({
-      where: {
-        business_status: "OPERATIONAL", is_published: true,
-        dietary_tags: { contains: tag },
-      },
-    }),
+    prisma.restaurant.count({ where: listedWhere }),
     prisma.restaurant.groupBy({
       by: ["borough"],
-      where: {
-        business_status: "OPERATIONAL", is_published: true,
-        dietary_tags: { contains: tag },
-        borough: { not: null },
-      },
+      where: { ...listedWhere, borough: { not: null } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
+    }),
+    // Average every rated listing, not the first page of cards. Unrated rows
+    // sort first under Postgres DESC (NULLS FIRST) and must not count as 0.
+    prisma.restaurant.aggregate({
+      where: { ...listedWhere, rating: { gt: 0 } },
+      _avg: { rating: true },
     }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
@@ -98,10 +98,7 @@ export default async function DietTypePage({
     ],
   }
 
-  const avgRating = restaurants.length > 0
-    ? restaurants.reduce((sum, r) => sum + (r.rating ?? 0), 0) / restaurants.length
-    : 0
-  const roundedAvg = Math.round(avgRating * 10) / 10
+  const roundedAvg = roundAverage(ratingAgg._avg.rating)
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -109,13 +106,16 @@ export default async function DietTypePage({
     name: `Best ${config.label} Restaurants in NYC`,
     description: `${totalCount} ${config.label.toLowerCase()} restaurants in New York City`,
     numberOfItems: totalCount,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: roundedAvg || 4.3,
-      reviewCount: totalCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
+    ...(roundedAvg
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: roundedAvg,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
     itemListElement: restaurants.slice(0, 10).map((r, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -265,7 +265,7 @@ export default async function DietTypePage({
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-text)" }}>
               <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Avg rating</span>
-              <span className="tabular font-semibold">{roundedAvg || "—"}{roundedAvg ? " ★" : ""}</span>
+              <span className="tabular font-semibold">{formatAverageRating(roundedAvg)}</span>
             </span>
           </div>
         </div>

@@ -14,6 +14,7 @@ import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { formatAverageRating, roundAverage } from "@/lib/ratings"
 
 // This route serves the diet+borough combo pages, e.g. /nyc/brooklyn/vegan-restaurants.
 // It lives under the [neighborhood] dynamic segment because Next.js requires a single
@@ -110,14 +111,17 @@ export default async function DietBoroughPage({
     }),
     prisma.restaurant.count({ where: baseWhere }),
     prisma.restaurant.count({ where: { ...baseWhere, inspection_grade: "A" } }),
-    prisma.restaurant.aggregate({ where: baseWhere, _avg: { rating: true } }),
+    prisma.restaurant.aggregate({
+      where: { ...baseWhere, rating: { gt: 0 } },
+      _avg: { rating: true },
+    }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
 
   // Gate thin pages — never index a doorway page with too few listings.
   if (totalCount < COMBO_MIN_RESTAURANTS) notFound()
 
-  const avgRating = agg._avg.rating ? Math.round(agg._avg.rating * 10) / 10 : 0
+  const avgRating = roundAverage(agg._avg.rating)
   const dietLower = config.label.toLowerCase()
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
   const pageUrl = `${siteUrl}/nyc/${boroughSlug}/${tag}${SUFFIX}`
@@ -136,10 +140,10 @@ export default async function DietBoroughPage({
           ? `Yes — ${gradeACount} of the ${totalCount} ${dietLower} restaurants we list in ${boroughName} currently hold a Grade A from the NYC DOHMH. Every listing shows its official grade, score, and inspection date.`
           : `Every ${dietLower} restaurant we list in ${boroughName} shows its official NYC DOHMH inspection grade, score, and date wherever the city has published one.`,
     },
-    ...(avgRating > 0
+    ...(avgRating != null
       ? [{
           question: `What's the average rating of ${dietLower} restaurants in ${boroughName}?`,
-          answer: `The ${dietLower} restaurants in ${boroughName} in our directory average ${avgRating}/5 across community reviews sourced from Google Maps.`,
+          answer: `The rated ${dietLower} restaurants in ${boroughName} in our directory average ${avgRating.toFixed(1)}/5 across community reviews sourced from Google Maps. Unrated listings are left out of that average.`,
         }]
       : []),
     ...config.faqs.slice(0, 2),
@@ -161,8 +165,8 @@ export default async function DietBoroughPage({
     name: `${config.label} Restaurants in ${boroughName}, NYC`,
     description: `${totalCount} ${dietLower} restaurants in ${boroughName}, New York City, with NYC health inspection grades.`,
     numberOfItems: totalCount,
-    ...(avgRating > 0 && {
-      aggregateRating: { "@type": "AggregateRating", ratingValue: avgRating, reviewCount: totalCount, bestRating: 5, worstRating: 1 },
+    ...(avgRating != null && {
+      aggregateRating: { "@type": "AggregateRating", ratingValue: avgRating, bestRating: 5, worstRating: 1 },
     }),
     itemListElement: restaurants.slice(0, 10).map((r, i) => ({
       "@type": "ListItem",
@@ -278,12 +282,12 @@ export default async function DietBoroughPage({
                 </span>
               </>
             )}
-            {avgRating > 0 && (
+            {avgRating != null && (
               <>
                 <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
                 <span style={{ color: "var(--color-text)" }}>
                   <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Avg rating</span>
-                  <span className="tabular font-semibold">{avgRating} ★</span>
+                  <span className="tabular font-semibold">{formatAverageRating(avgRating)}</span>
                 </span>
               </>
             )}

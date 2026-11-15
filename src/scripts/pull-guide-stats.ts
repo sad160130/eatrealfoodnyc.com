@@ -220,7 +220,7 @@ async function pullGuideStats() {
     where: {
       is_published: true,
       business_status: "OPERATIONAL",
-      rating: { not: null },
+      rating: { gt: 0 },
       borough: { not: null },
     },
     _avg: { rating: true },
@@ -248,10 +248,9 @@ async function pullGuideStats() {
       hiddenGemGradeA,
       boroughs: boroughGradeAMap,
       avgRatingByBorough: Object.fromEntries(
-        avgRatingByBorough.map((b) => [
-          b.borough,
-          Math.round((b._avg.rating || 0) * 10) / 10,
-        ])
+        avgRatingByBorough
+          .filter((b) => b.borough && b._avg.rating != null && b._avg.rating > 0)
+          .map((b) => [b.borough, Math.round(b._avg.rating! * 10) / 10])
       ),
     },
     neighborhoods: {

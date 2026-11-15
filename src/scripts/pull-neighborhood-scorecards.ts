@@ -66,8 +66,25 @@ async function pullNeighborhoodScorecards() {
         neighborhood: { not: null },
       },
       _count: { id: true },
-      _avg: { rating: true },
       orderBy: { _count: { id: "desc" } },
+    })
+
+    const ratedNeighborhoods = await prisma.restaurant.groupBy({
+      by: ["neighborhood"],
+      where: {
+        borough,
+        is_published: true,
+        business_status: "OPERATIONAL",
+        neighborhood: { not: null },
+        rating: { gt: 0 },
+      },
+      _avg: { rating: true },
+    })
+    const avgRatingMap: Record<string, number> = {}
+    ratedNeighborhoods.forEach((n) => {
+      if (n.neighborhood && n._avg.rating) {
+        avgRatingMap[n.neighborhood] = Math.round(n._avg.rating * 10) / 10
+      }
     })
 
     const gradeACounts = await prisma.restaurant.groupBy({
@@ -129,7 +146,7 @@ async function pullNeighborhoodScorecards() {
       const gradeA = gradeAMap[neighborhood] || 0
       const gradeARate = total > 0 ? Math.round((gradeA / total) * 100) : 0
       const hiddenGems = hiddenGemMap[neighborhood] || 0
-      const avgRating = n._avg.rating ? Math.round(n._avg.rating * 10) / 10 : null
+      const avgRating = avgRatingMap[neighborhood] ?? null
 
       const tagCounts = dietaryCountsPerHood[neighborhood] || {}
       const topTag = Object.entries(tagCounts)
