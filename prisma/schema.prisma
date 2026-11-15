@@ -121,6 +121,18 @@ model Review {
 /// Rows stay `pending` until a person reviews them. The table is created
 /// by prisma/migrations/20261115180000_user_submissions and by the
 /// idempotent script src/scripts/create-user-submissions-table.ts.
+/// Weekly "Grade A Eats This Week" signups. confirmed stays false until
+/// a confirmation step exists. No third-party email service is wired up.
+model NewsletterSubscriber {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  source_path String
+  confirmed   Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
 model UserSubmission {
   id               Int      @id @default(autoincrement())
   restaurant_slug  String

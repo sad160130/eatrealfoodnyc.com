@@ -45,6 +45,7 @@ import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
 import ClaimListing from "@/components/claim-listing"
 import BookingActions from "@/components/booking-actions"
+import NewsletterSignup from "@/components/newsletter-signup"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
@@ -751,6 +752,12 @@ export default async function RestaurantPage({
               />
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <NewsletterSignup />
         </div>
       </div>
     </>

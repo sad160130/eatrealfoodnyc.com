@@ -13,6 +13,7 @@ import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import NewsletterSignup from "@/components/newsletter-signup"
 import { skipImageOptimizer } from "@/lib/photo-src"
 
 const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
@@ -639,6 +640,12 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="border-t px-6 py-16" style={{ borderColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <NewsletterSignup />
         </div>
       </section>
 

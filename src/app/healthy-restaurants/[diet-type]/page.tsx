@@ -18,6 +18,7 @@ import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
 import { dietCapsule } from "@/lib/answer-capsule"
 import { buildHubItemList } from "@/lib/schema"
+import NewsletterSignup from "@/components/newsletter-signup"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -446,6 +447,11 @@ export default async function DietTypePage({
           subheading={`Everything you need to know about finding ${config.label.toLowerCase()} restaurants across New York City.`}
         />
       )}
+      <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <NewsletterSignup />
+        </div>
+      </div>
     </>
   )
 }

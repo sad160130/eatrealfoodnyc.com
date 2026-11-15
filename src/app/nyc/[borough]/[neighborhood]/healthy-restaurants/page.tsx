@@ -20,6 +20,7 @@ import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titl
 import { neighborhoodCapsule } from "@/lib/answer-capsule"
 import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
 import { buildHubItemList } from "@/lib/schema"
+import NewsletterSignup from "@/components/newsletter-signup"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -450,6 +451,11 @@ export default async function NeighborhoodPage({
         heading={`Healthy Restaurants in ${neighborhoodName} — FAQ`}
         subheading={`Common questions about dining in ${neighborhoodName}, ${boroughName}.`}
       />
+      <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <NewsletterSignup />
+        </div>
+      </div>
     </>
   )
 }
