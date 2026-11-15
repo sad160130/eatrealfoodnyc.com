@@ -1,19 +1,34 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
+import { roundAverage } from "@/lib/ratings"
 
 export async function GET() {
   try {
-    const neighborhoods = await prisma.restaurant.groupBy({
-      by: ["neighborhood", "borough"],
-      where: {
-        business_status: "OPERATIONAL",
-        neighborhood: { not: null },
-        borough: { not: null },
-      },
-      _count: { id: true },
-      _avg: { rating: true },
-    })
+    const publishedWhere = {
+      business_status: "OPERATIONAL" as const,
+      is_published: true,
+      neighborhood: { not: null },
+      borough: { not: null },
+    }
+    const [neighborhoods, ratedNeighborhoods] = await Promise.all([
+      prisma.restaurant.groupBy({
+        by: ["neighborhood", "borough"],
+        where: publishedWhere,
+        _count: { id: true },
+      }),
+      prisma.restaurant.groupBy({
+        by: ["neighborhood", "borough"],
+        where: { ...publishedWhere, rating: { gt: 0 } },
+        _avg: { rating: true },
+      }),
+    ])
+    const avgByHood = new Map(
+      ratedNeighborhoods.map((row) => [
+        `${row.borough}::${row.neighborhood}`,
+        roundAverage(row._avg.rating),
+      ])
+    )
 
     const enriched = await Promise.all(
       neighborhoods
@@ -28,6 +43,7 @@ export async function GET() {
                 neighborhood: n.neighborhood,
                 borough: n.borough,
                 business_status: "OPERATIONAL",
+                is_published: true,
                 inspection_grade: "A",
               },
             }),
@@ -36,6 +52,7 @@ export async function GET() {
                 neighborhood: n.neighborhood,
                 borough: n.borough,
                 business_status: "OPERATIONAL",
+                is_published: true,
                 is_hidden_gem: true,
               },
             }),
@@ -47,6 +64,7 @@ export async function GET() {
               WHERE neighborhood = ${n.neighborhood}
                 AND borough = ${n.borough}
                 AND business_status = 'OPERATIONAL'
+                AND is_published = true
                 AND dietary_tags IS NOT NULL
                 AND dietary_tags != ''
               GROUP BY tag
@@ -57,7 +75,7 @@ export async function GET() {
 
           const total = n._count.id
           const gradeAPercent = total > 0 ? Math.round((gradeA / total) * 100) : 0
-          const avgRating = n._avg.rating ? Math.round(n._avg.rating * 10) / 10 : null
+          const avgRating = avgByHood.get(`${n.borough}::${n.neighborhood}`) ?? null
           const topTag = dietaryData.length > 0 ? dietaryData[0].tag : null
 
           const healthScore = Math.round(

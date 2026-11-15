@@ -14,6 +14,7 @@ import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { formatAverageRating, roundAverage } from "@/lib/ratings"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -89,33 +90,31 @@ export default async function NeighborhoodPage({
 
   const { boroughName, neighborhoodName } = resolved
 
-  const [restaurantRows, stats, gradeACount] = await Promise.all([
+  const listedWhere = {
+    borough: boroughName,
+    neighborhood: neighborhoodName,
+    business_status: "OPERATIONAL" as const,
+    is_published: true,
+  }
+  const [restaurantRows, stats, ratingAgg, gradeACount] = await Promise.all([
     prisma.restaurant.findMany({
-      where: {
-        borough: boroughName,
-        neighborhood: neighborhoodName,
-        business_status: "OPERATIONAL", is_published: true,
-      },
+      where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
     }),
     prisma.restaurant.aggregate({
-      where: {
-        borough: boroughName,
-        neighborhood: neighborhoodName,
-        business_status: "OPERATIONAL", is_published: true,
-      },
+      where: listedWhere,
       _count: { id: true },
+    }),
+    prisma.restaurant.aggregate({
+      where: { ...listedWhere, rating: { gt: 0 } },
       _avg: { rating: true },
     }),
     prisma.restaurant.count({
-      where: {
-        borough: boroughName,
-        neighborhood: neighborhoodName,
-        inspection_grade: "A",
-      },
+      where: { ...listedWhere, inspection_grade: "A" },
     }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
+  const avgRating = roundAverage(ratingAgg._avg.rating)
 
   if (restaurants.length < NEIGHBORHOOD_HUB_MIN_RESTAURANTS) notFound()
 
@@ -203,7 +202,7 @@ export default async function NeighborhoodPage({
             <span style={{ color: "var(--color-text)" }}>
               <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Avg rating</span>
               <span className="tabular font-semibold">
-                {stats._avg.rating ? `${stats._avg.rating.toFixed(1)} ★` : "—"}
+                {formatAverageRating(avgRating)}
               </span>
             </span>
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>

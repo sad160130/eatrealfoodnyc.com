@@ -116,3 +116,21 @@ model Review {
   @@index([restaurant_slug, stars])
   @@map("reviews")
 }
+
+/// Anonymous diner notes from the restaurant-page experience form.
+/// Rows stay `pending` until a person reviews them. The table is created
+/// by prisma/migrations/20261115180000_user_submissions and by the
+/// idempotent script src/scripts/create-user-submissions-table.ts.
+model UserSubmission {
+  id               Int      @id @default(autoincrement())
+  restaurant_slug  String
+  restaurant_name  String   @default("")
+  submission_type  String   @default("experience")
+  content          String
+  status           String   @default("pending")
+  created_at       DateTime @default(now())
+
+  @@index([restaurant_slug])
+  @@index([status])
+  @@map("user_submissions")
+}
