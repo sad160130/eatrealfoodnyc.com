@@ -53,6 +53,7 @@ const ABOUT_LINKS = [
   { label: "Editorial Standards", href: "/about/editorial-standards" },
   { label: "Team", href: "/about/team" },
   { label: "Contact", href: "/contact" },
+  { label: "Own a restaurant? Get featured", href: "/partner-with-us" },
 ]
 
 type DropdownKey = "boroughs" | "dietary" | "guides" | "data" | "about" | null
@@ -203,7 +204,7 @@ export default function Header() {
             label="About"
             isOpen={openDropdown === "about"}
             onClick={() => setOpenDropdown(openDropdown === "about" ? null : "about")}
-            width="w-56"
+            width="w-72"
           >
             <ul role="list">
               {ABOUT_LINKS.map((a) => (

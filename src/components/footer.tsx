@@ -16,6 +16,7 @@ const COMPANY = [
   { label: "Contact", href: "/contact" },
   { label: "Press", href: "/press" },
   { label: "Partner with us", href: "/partner-with-us" },
+  { label: "Own a restaurant? Get featured", href: "/partner-with-us" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
 ]

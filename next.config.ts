@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       // ── ABOUT (1 RD, DR54) ──
       { source: "/about/", destination: "/about", permanent: true },
 
+      // Paid tiers live on the page outreach emails already use.
+      { source: "/partners", destination: "/partner-with-us", statusCode: 301 },
+      { source: "/partners/", destination: "/partner-with-us", statusCode: 301 },
+
       // ── RECIPE HUB (2 RD, DR82) ──
       { source: "/allrecipes", destination: "/guides", permanent: true },
       { source: "/allrecipes/", destination: "/guides", permanent: true },
