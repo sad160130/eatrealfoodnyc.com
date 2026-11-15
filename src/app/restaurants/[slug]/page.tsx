@@ -30,6 +30,7 @@ import {
   ORGANIZATION_SCHEMA,
 } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
+import InspectionRecord from "@/components/inspection-record"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
@@ -523,6 +524,8 @@ export default async function RestaurantPage({
                 </div>
               </section>
             )}
+
+            <InspectionRecord restaurant={restaurant} />
 
             {/* Community Rating */}
             <CommunityRating
