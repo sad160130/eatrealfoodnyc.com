@@ -11,6 +11,7 @@ import RestaurantCard from "@/components/restaurant-card"
 import reportData from "@/data/health-grade-report"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { isDirectoryEligible } from "@/config/publishable-types"
 
 const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
 
@@ -80,7 +81,7 @@ export default async function HomePage() {
       },
       // Rating and review count only. partner_status must not change this order.
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
-      take: 8,
+      take: 40,
     }),
     prisma.restaurant.findMany({
       where: { business_status: "OPERATIONAL", is_published: true, is_hidden_gem: true, photo: { not: null } },
@@ -95,8 +96,8 @@ export default async function HomePage() {
     withPartnerStatus(hiddenGemRows),
   ])
   const totalCount = counts.restaurants
-
-  const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null
+  const journalPicks = editorsPicks.filter((restaurant) => isDirectoryEligible(restaurant)).slice(0, 8)
+  const featuredGem = hiddenGems.filter((restaurant) => isDirectoryEligible(restaurant))[0] ?? journalPicks[1] ?? null
 
   return (
     <>
@@ -465,7 +466,7 @@ export default async function HomePage() {
 
           {/* Horizontal scroll using the canonical RestaurantCard */}
           <div className="scrollbar-hide mt-10 -mx-6 flex gap-5 overflow-x-auto px-6 pb-4">
-            {editorsPicks.map((r) => (
+            {journalPicks.map((r) => (
               <div key={r.id} className="w-80 shrink-0 sm:w-72">
                 <RestaurantCard restaurant={r} priority={false} />
               </div>
