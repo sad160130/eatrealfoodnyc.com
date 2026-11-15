@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { ORGANIZATION_SCHEMA } from "@/lib/schema"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "About Eat Real Food NYC — NYC Healthy Restaurant Directory",
@@ -19,6 +20,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "About", path: "/about" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

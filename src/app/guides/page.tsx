@@ -3,6 +3,7 @@ import Link from "next/link"
 import { GUIDES, GUIDE_CATEGORIES, getFeaturedGuides, getGuidesByCategory } from "@/config/guides"
 import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "NYC Healthy Dining Guides — Expert Advice on Eating Well in New York City",
@@ -18,6 +19,7 @@ export default async function GuidesPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Guides", path: "/guides" }]} />
       {/* ─── HERO ─── */}
       <header
         className="border-b"

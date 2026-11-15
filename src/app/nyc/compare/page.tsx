@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import ComparePageClient from "@/components/compare-page-client"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 // §6 equity routing: /nyc/compare is a high-inbound internal hub — pass that
 // equity to all five borough money pages (incl. Staten Island, previously orphaned).
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
 export default function ComparePage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Compare neighborhoods", path: "/nyc/compare" }]} />
       <ComparePageClient />
 
       <section className="mx-auto max-w-5xl px-6 pb-16">

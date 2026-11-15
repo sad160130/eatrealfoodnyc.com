@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import MapPageClient from "@/components/map-page-client"
 import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { restaurants } = await getPublishedDirectoryCounts()
@@ -19,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function MapPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Map", path: "/map" }]} />
       <MapPageClient />
     </div>
   )

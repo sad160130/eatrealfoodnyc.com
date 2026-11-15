@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "Meet the Team — Eat Real Food NYC",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 export default function TeamPage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "About", path: "/about" }, { name: "Team", path: "/about/team" }]} />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

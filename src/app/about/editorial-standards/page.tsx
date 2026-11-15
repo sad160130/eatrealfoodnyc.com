@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import EditorialPartnershipPolicy from "@/components/editorial-partnership-policy"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
   title: "Editorial Standards — Eat Real Food NYC Directory",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function EditorialStandardsPage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "About", path: "/about" }, { name: "Editorial standards", path: "/about/editorial-standards" }]} />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

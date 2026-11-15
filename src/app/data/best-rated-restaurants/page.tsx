@@ -10,6 +10,7 @@ import {
   boroughToSlug,
 } from "@/lib/utils"
 import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
 
@@ -242,6 +243,7 @@ export default function BestRatedRestaurantsPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Best-rated restaurants", path: "/data/best-rated-restaurants" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reportJsonLd) }}

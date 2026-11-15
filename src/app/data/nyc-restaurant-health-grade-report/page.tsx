@@ -5,6 +5,7 @@ import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import AboutThisData from "@/components/about-this-data"
 import reportData from "@/data/health-grade-report"
 import bestRatedData from "@/data/best-rated-restaurants"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 const { summary, byBorough, neighborhoods, byType, keyFindings, reportDate } = reportData
 
@@ -183,6 +184,7 @@ export default function HealthGradeReportPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "NYC health grade report", path: "/data/nyc-restaurant-health-grade-report" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reportJsonLd) }}

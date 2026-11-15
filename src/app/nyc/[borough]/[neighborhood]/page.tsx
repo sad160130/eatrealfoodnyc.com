@@ -8,6 +8,7 @@ import { BOROUGH_MAP } from "@/config/boroughs"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietBoroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { buildHubItemList } from "@/lib/schema"
 import { ANCHOR_TEXT } from "@/lib/internal-links"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -164,26 +165,12 @@ export default async function DietBoroughPage({
     ],
   }
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
+  const itemListJsonLd = buildHubItemList({
     name: `${config.label} Restaurants in ${boroughName}, NYC`,
     description: `${totalCount} ${dietLower} restaurants in ${boroughName}, New York City, with NYC health inspection grades.`,
-    numberOfItems: totalCount,
-    ...(avgRating > 0 && {
-      aggregateRating: { "@type": "AggregateRating", ratingValue: avgRating, reviewCount: totalCount, bestRating: 5, worstRating: 1 },
-    }),
-    itemListElement: restaurants.slice(0, 10).map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
-  }
+    siteUrl,
+    restaurants: restaurants.slice(0, 10),
+  })
 
   const datasetJsonLd = {
     "@context": "https://schema.org",

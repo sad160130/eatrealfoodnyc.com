@@ -14,6 +14,7 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -106,35 +107,17 @@ export default async function DietTypePage({
     ],
   }
 
-  const avgRating = restaurants.length > 0
-    ? restaurants.reduce((sum, r) => sum + (r.rating ?? 0), 0) / restaurants.length
+  const rated = restaurants.filter((restaurant) => restaurant.rating != null)
+  const roundedAvg = rated.length
+    ? Math.round((rated.reduce((sum, restaurant) => sum + (restaurant.rating ?? 0), 0) / rated.length) * 10) / 10
     : 0
-  const roundedAvg = Math.round(avgRating * 10) / 10
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: `Best ${config.label} Restaurants in NYC`,
+  const itemListJsonLd = buildHubItemList({
+    name: `${config.label} Restaurants in NYC`,
     description: `${totalCount} ${config.label.toLowerCase()} restaurants in New York City`,
-    numberOfItems: totalCount,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: roundedAvg || 4.3,
-      reviewCount: totalCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    itemListElement: restaurants.slice(0, 10).map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
-  }
+    siteUrl,
+    restaurants: restaurants.slice(0, 10),
+  })
 
   const datasetJsonLd = {
     "@context": "https://schema.org",

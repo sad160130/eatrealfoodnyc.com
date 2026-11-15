@@ -4,6 +4,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import ComparisonTray from "@/components/comparison-tray"
 import { SEO_CONFIG } from "@/config/seo"
+import SiteSchema from "@/components/site-schema"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
+        <SiteSchema />
         <Header />
         <main id="main-content" role="main" tabIndex={-1} className="pt-16">
           {children}

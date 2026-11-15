@@ -4,7 +4,6 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
-import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA } from "@/lib/schema"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import RestaurantCard from "@/components/restaurant-card"
@@ -100,8 +99,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [WEBSITE_SCHEMA, ORGANIZATION_SCHEMA] }) }} />
-
       {/* ─── HERO ─── Type-led, cream-on-cream. Restraint balances the
            placard signature that fires on every restaurant card below. */}
       <section

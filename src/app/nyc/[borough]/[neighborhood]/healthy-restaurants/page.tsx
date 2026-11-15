@@ -15,6 +15,7 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titles"
+import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -156,23 +157,12 @@ export default async function NeighborhoodPage({
   // array keeps the entries and any derived count from drifting apart.
   const schemaItems = restaurants.slice(0, 10)
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
+  const itemListJsonLd = buildHubItemList({
     name: `Healthy Restaurants in ${neighborhoodName}, ${boroughName}`,
     description: `${restaurants.length} healthy restaurants in ${neighborhoodName}, ${boroughName}, NYC`,
-    numberOfItems: restaurants.length,
-    itemListElement: schemaItems.map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
-  }
+    siteUrl,
+    restaurants: schemaItems,
+  })
 
   return (
     <>

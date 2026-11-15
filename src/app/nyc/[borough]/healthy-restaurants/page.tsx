@@ -8,6 +8,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { boroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { buildHubItemList } from "@/lib/schema"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import BackToTop from "@/components/back-to-top"
@@ -117,33 +118,17 @@ export default async function BoroughPage({
   }
 
   const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: `Healthy Restaurants in ${boroughName}, NYC`,
-    description: `Complete guide to ${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, with NYC health inspection grades and dietary filters.`,
-    numberOfItems: totalCount,
+    ...buildHubItemList({
+      name: `Healthy Restaurants in ${boroughName}, NYC`,
+      description: `${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, with NYC health inspection grades and dietary filters.`,
+      siteUrl,
+      restaurants: restaurants.slice(0, 20),
+    }),
     about: {
       "@type": "City",
       name: boroughName,
       containedInPlace: { "@type": "City", name: "New York City" },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: stats._avg.rating ? Math.round(stats._avg.rating * 10) / 10 : 4.3,
-      reviewCount: totalCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    itemListElement: restaurants.slice(0, 20).map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
   }
 
   const datasetJsonLd = {
