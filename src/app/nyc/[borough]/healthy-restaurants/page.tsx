@@ -7,7 +7,8 @@ import { neighborhoodToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP, BOROUGH_FAQS, BOROUGH_INTROS } from "@/config/boroughs"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { boroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { fitDescription, neighborhoodHubTitle, shortMonth } from "@/lib/seo-titles"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { buildHubItemList } from "@/lib/schema"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -43,19 +44,20 @@ export async function generateMetadata({
 
   const stats = await gradeStatsFor({ borough: name })
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/healthy-restaurants`)
-  const title = boroughTitle(name, stats.gradeA)
-  const description = hubMetaDescription({
-    count: stats.count,
-    place: `${name}, NYC`,
-    gradeA: stats.gradeA,
-    latestMonth: stats.latestMonth,
-  })
+  const snapshot = await getDirectorySnapshot()
+  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
+  const title = neighborhoodHubTitle(name, "NYC", stats.gradeA, year)
+  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const description = fitDescription(
+    [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name}, NYC: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`],
+    [dataMonth ? `Data as of ${dataMonth}.` : ""].filter(Boolean)
+  )
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: withBrand(title),
+      title,
       description,
       url: canonicalUrl,
       type: "website",

@@ -11,6 +11,11 @@
 
 import { parseInspectionDate } from "./inspection-dates"
 
+export function shortMonth(date: Date | null | undefined): string | null {
+  if (!date) return null
+  return new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(date)
+}
+
 export function formatInspectionMonth(raw: string | null | undefined): string | null {
   const date = parseInspectionDate(raw ?? null)
   if (!date) return null
@@ -20,7 +25,50 @@ export function formatInspectionMonth(raw: string | null | undefined): string | 
 export const BRAND_NAME = "Eat Real Food NYC"
 export const TITLE_TEMPLATE_SUFFIX = ` | ${BRAND_NAME}`
 export const TITLE_MAX = 60
+export const TITLE_CAP = 65
 export const DESCRIPTION_MAX = 160
+
+export function fitTitle(
+  rungs: Array<string | null | undefined>,
+  options?: { allowBrand?: boolean; max?: number; cap?: number }
+): string {
+  const max = options?.max ?? TITLE_MAX
+  const cap = options?.cap ?? TITLE_CAP
+  const allowBrand = options?.allowBrand ?? false
+  const cleaned = rungs
+    .map((rung) => rung?.replace(/\s+/g, " ").trim())
+    .filter((rung): rung is string => Boolean(rung))
+  const branded = (rung: string) => {
+    if (!allowBrand || rung.endsWith(BRAND_NAME)) return rung
+    const withBrand = `${rung}${TITLE_TEMPLATE_SUFFIX}`
+    return withBrand.length <= max ? withBrand : rung
+  }
+  for (const rung of cleaned) {
+    const title = branded(rung)
+    if (title.length <= max) return title
+  }
+  for (const rung of cleaned) {
+    const title = branded(rung)
+    if (title.length <= cap) {
+      console.warn(`title ${title.length} chars (over ${max}): ${title}`)
+      return title
+    }
+  }
+  const bare = cleaned[cleaned.length - 1] ?? ""
+  if (bare.length > cap) console.warn(`title exceeds ${cap}: ${bare}`)
+  return bare
+}
+
+export function fitDescription(head: string[], tails: string[], max = DESCRIPTION_MAX): string {
+  const sentences = head.map((part) => part.replace(/\s+/g, " ").trim()).filter(Boolean)
+  while (sentences.length > 1 && sentences.join(" ").length > max) sentences.pop()
+  let text = sentences.join(" ")
+  for (const tail of tails) {
+    const next = `${text} ${tail}`.replace(/\s+/g, " ").trim()
+    if (next.length <= max) return next
+  }
+  return text
+}
 
 const INNER_MAX = TITLE_MAX - TITLE_TEMPLATE_SUFFIX.length
 
@@ -203,8 +251,168 @@ export const GUIDE_TITLE_PARTS: Record<string, { keyword: string; benefit: strin
 
 export function guideTitle(slug: string, fallback: string): string {
   const parts = GUIDE_TITLE_PARTS[slug]
-  if (!parts) return buildPipeTitle(fallback, null)
-  return buildPipeTitle(parts.keyword, parts.benefit)
+  if (!parts) return fitTitle([fallback], { allowBrand: true })
+  return fitTitle([`${parts.keyword} | ${parts.benefit}`, parts.keyword], { allowBrand: false })
+}
+
+const LETTERS = new Set(["A", "B", "C"])
+
+export function letterGrade(grade: string | null | undefined): "A" | "B" | "C" | null {
+  const code = grade?.trim().toUpperCase()
+  return code && LETTERS.has(code) ? (code as "A" | "B" | "C") : null
+}
+
+export function monthsBefore(later: Date, earlier: Date): number {
+  return (later.getUTCFullYear() - earlier.getUTCFullYear()) * 12 + (later.getUTCMonth() - earlier.getUTCMonth())
+}
+
+export function inspectionIsRecent(raw: string | null | undefined, snapshot: Date): boolean {
+  const date = parseInspectionDate(raw ?? null)
+  if (!date) return false
+  return monthsBefore(snapshot, date) <= 18
+}
+
+export function restaurantListingTitle(input: {
+  name: string
+  neighborhood: string | null
+  borough: string | null
+  grade: string | null
+  inspectionDate: string | null
+  type: string | null
+  snapshot: Date
+}): string {
+  const grade = letterGrade(input.grade)
+  const month = formatInspectionMonth(input.inspectionDate)
+  const recent = inspectionIsRecent(input.inspectionDate, input.snapshot)
+  const hood = input.neighborhood
+  const borough = input.borough
+  if (grade) {
+    return fitTitle(
+      [
+        recent && month && hood ? `${input.name}, ${hood} | Grade ${grade}, ${month}` : null,
+        hood ? `${input.name}, ${hood} | NYC Grade ${grade}` : null,
+        hood ? `${input.name}, ${hood} | Grade ${grade}` : null,
+        borough ? `${input.name} | NYC Grade ${grade}, ${borough}` : null,
+        `${input.name} | Grade ${grade}`,
+        input.name,
+      ],
+      { allowBrand: false }
+    )
+  }
+  const cuisine = cuisineLabel(input.type, input.name)
+  return fitTitle(
+    [
+      cuisine && hood && borough ? `${input.name} | ${cuisine} in ${hood}, ${borough}` : null,
+      cuisine && hood ? `${input.name} | ${cuisine} in ${hood}` : null,
+      hood ? `${input.name}, ${hood}` : null,
+      input.name,
+    ],
+    { allowBrand: false }
+  )
+}
+
+function cuisineLabel(type: string | null, name: string): string | null {
+  if (!type) return null
+  const cuisine = type.replace(/\s+restaurant$/i, "").trim()
+  if (!cuisine || name.toLowerCase().includes(cuisine.toLowerCase())) return null
+  return cuisine
+}
+
+export function restaurantListingDescription(input: {
+  name: string
+  type: string | null
+  address: string | null
+  neighborhood: string | null
+  borough: string | null
+  grade: string | null
+  score: number | null
+  inspectionDate: string | null
+  snapshot?: Date
+  rating: number | null
+  reviews: number | null
+  tags: string[]
+}): string {
+  const grade = letterGrade(input.grade)
+  const month = input.snapshot && !inspectionIsRecent(input.inspectionDate, input.snapshot)
+    ? null
+    : formatInspectionMonth(input.inspectionDate)
+  const type = input.type?.trim()
+  const place = [input.neighborhood, input.borough].filter(Boolean).join(", ")
+  const head: string[] = []
+  if (input.address && input.neighborhood && type) {
+    head.push(`${input.name}: ${type.toLowerCase()} at ${input.address}, ${input.neighborhood}.`)
+  } else if (type && place) {
+    head.push(`${input.name}: ${type} in ${place}.`)
+  } else {
+    head.push(`${input.name}${place ? ` in ${place}` : ""}.`)
+  }
+  if (grade) {
+    const bits = [`NYC DOHMH Grade ${grade}`]
+    if (input.score != null) bits.push(`score ${input.score}`)
+    if (month) bits.push(`inspected ${month}`)
+    head.push(`${bits.join(", ")}.`)
+  } else {
+    head.push("No NYC DOHMH letter grade on file yet.")
+  }
+  const rated = input.rating != null && input.rating > 0 && (input.reviews ?? 0) > 0
+  const tails: string[] = []
+  if (!grade && rated) {
+    head.push(`Rated ${input.rating!.toFixed(1)}/5 from ${input.reviews} reviews.`)
+  }
+  if (grade && rated) tails.push(`Rated ${input.rating!.toFixed(1)}/5 (${input.reviews} reviews).`)
+  if (input.tags.length > 0) tails.push(`Tagged ${input.tags.slice(0, 2).join(", ")}.`)
+  if (grade && rated) tails.push(`Rated ${input.rating!.toFixed(1)}/5.`)
+  return fitDescription(head, tails)
+}
+
+export function homeTitle(gradeA: number, year: number): string {
+  return fitTitle(
+    [
+      gradeA > 0 ? `Healthy Restaurants NYC | ${gradeA.toLocaleString("en-US")} Grade A | Eat Real Food NYC` : null,
+      `Healthy Restaurants NYC ${year} | Eat Real Food NYC`,
+    ],
+    { allowBrand: false }
+  )
+}
+
+export function neighborhoodHubTitle(hood: string, borough: string, gradeA: number, year: number): string {
+  const count = gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null
+  return fitTitle(
+    [
+      count ? `Healthy Restaurants in ${hood}, ${borough} | ${count}` : null,
+      count ? `Healthy Restaurants in ${hood} ${year} | ${count}` : null,
+      count ? `Healthy Restaurants in ${hood} | ${count}` : null,
+      count ? `Healthy Restaurants, ${hood} | ${count}` : null,
+      `Healthy Restaurants in ${hood}`,
+    ],
+    { allowBrand: false }
+  )
+}
+
+export function dietHubTitle(label: string, count: number, gradeA: number, year: number): string {
+  return fitTitle(
+    [
+      ` ${label} Restaurants NYC ${year} | ${count.toLocaleString("en-US")} Listed, ${gradeA.toLocaleString("en-US")} Grade A`.trim(),
+      gradeA > 0 ? `${label} Restaurants NYC ${year} | ${gradeA.toLocaleString("en-US")} Grade A` : null,
+      gradeA > 0 ? `${label} Restaurants NYC | ${gradeA.toLocaleString("en-US")} Grade A` : null,
+      `${label} Restaurants NYC`,
+    ],
+    { allowBrand: false }
+  )
+}
+
+export function dietBoroughHubTitle(label: string, borough: string, count: number, gradeA: number, year: number): string {
+  const listed = `${count.toLocaleString("en-US")} Listed, ${gradeA.toLocaleString("en-US")} Grade A`
+  return fitTitle(
+    [
+      `${label} Restaurants in ${borough} ${year} | ${listed}`,
+      `${label} Restaurants in ${borough} | ${listed}`,
+      `${label} in ${borough} | ${listed}`,
+      gradeA > 0 ? `${label} Restaurants in ${borough} | ${gradeA.toLocaleString("en-US")} Grade A` : null,
+      `${label} Restaurants in ${borough}`,
+    ],
+    { allowBrand: false }
+  )
 }
 
 export const GUIDE_DESCRIPTIONS: Record<string, string> = {

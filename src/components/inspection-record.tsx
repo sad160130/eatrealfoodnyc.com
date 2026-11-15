@@ -143,7 +143,7 @@ export default async function InspectionRecord({ restaurant }: { restaurant: Ins
       <p className="eyebrow">NYC DOHMH</p>
       <h2 className="h2-serif mt-2">Inspection record</h2>
       <div className="mt-4 space-y-3 text-base leading-relaxed" style={{ color: "var(--color-text)", maxWidth: "65ch" }}>
-        <p>{openings[variant]}</p>
+        <p>{openings[variant]} This is the most recent inspection we hold. We do not store earlier visits, so we cannot show a trend.</p>
         {comparisons.map((sentence) => (
           <p key={sentence}>{sentence}</p>
         ))}

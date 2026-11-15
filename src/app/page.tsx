@@ -13,23 +13,41 @@ import { isDirectoryEligible } from "@/config/publishable-types"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import NewsletterSignup from "@/components/newsletter-signup"
+import { fitDescription, homeTitle } from "@/lib/seo-titles"
 import { skipImageOptimizer } from "@/lib/photo-src"
 
-const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026"
-
 export async function generateMetadata(): Promise<Metadata> {
-  const { restaurants } = await getPublishedDirectoryCounts()
-  const listed = restaurants.toLocaleString()
-  const description = `${listed} healthy restaurants across all 5 NYC boroughs. Every listing verified with health inspection grades. Filter by vegan, halal, gluten-free, and more.`
+  const [counts, snapshot] = await Promise.all([
+    getPublishedDirectoryCounts(),
+    getDirectorySnapshot(),
+  ])
+  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
+  const title = homeTitle(counts.gradeA, year)
+  const dataMonth = snapshot.lastPublishLabel
+    ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(snapshot.lastPublishAt ?? new Date())
+    : null
+  const extraTags = Math.max(0, snapshot.dietaryTagCount - 3)
+  const description = fitDescription(
+    [
+      `${counts.restaurants.toLocaleString("en-US")} healthy NYC restaurants in ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods, ${counts.gradeA.toLocaleString("en-US")} with a NYC DOHMH Grade A.`,
+    ],
+    [
+      extraTags > 0
+        ? `Filter by vegan, halal, gluten-free + ${extraTags} more tags.${dataMonth ? ` Data as of ${dataMonth}.` : ""}`
+        : "",
+      `Filter by vegan, halal, gluten-free, and more.${dataMonth ? ` Data as of ${dataMonth}.` : ""}`,
+      dataMonth ? `Data as of ${dataMonth}.` : "",
+    ].filter(Boolean)
+  )
   return {
-  title: HOME_TITLE,
+  title: { absolute: title },
   description,
   alternates: {
     canonical: "https://www.eatrealfoodnyc.com",
   },
   openGraph: {
-    title: HOME_TITLE,
-    description: `NYC's most trusted healthy restaurant directory. ${listed} published restaurants across all 5 boroughs with verified NYC health inspection grades.`,
+    title,
+    description,
     type: "website",
     url: "https://www.eatrealfoodnyc.com",
     siteName: "Eat Real Food NYC",

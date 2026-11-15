@@ -18,7 +18,8 @@ import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titles"
+import { fitDescription, neighborhoodHubTitle, shortMonth } from "@/lib/seo-titles"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { neighborhoodCapsule } from "@/lib/answer-capsule"
 import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
 import { buildHubItemList } from "@/lib/schema"
@@ -81,18 +82,24 @@ export async function generateMetadata({
     borough: resolved.boroughName,
     neighborhood: resolved.neighborhoodName,
   })
-  const title = neighborhoodTitle(resolved.neighborhoodName, stats.gradeA)
-  const description = hubMetaDescription({
-    count: stats.count,
-    place: `${resolved.neighborhoodName}, ${resolved.boroughName}`,
-    gradeA: stats.gradeA,
-    latestMonth: stats.latestMonth,
-  })
+  const snapshot = await getDirectorySnapshot()
+  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
+  const title = neighborhoodHubTitle(resolved.neighborhoodName, resolved.boroughName, stats.gradeA, year)
+  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const description = fitDescription(
+    [
+      `${stats.count.toLocaleString("en-US")} healthy restaurants in ${resolved.neighborhoodName}, ${resolved.boroughName}: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`,
+    ],
+    [
+      dataMonth ? `Compare grades, ratings and hours. Data as of ${dataMonth}.` : "Compare grades, ratings and hours.",
+      dataMonth ? `Data as of ${dataMonth}.` : "",
+    ].filter(Boolean)
+  )
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title: withBrand(title), description, url: canonicalUrl, type: "website" },
+    openGraph: { title, description, url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
   }
 }
@@ -432,26 +439,34 @@ export default async function NeighborhoodPage({
       <FAQSection
         faqs={[
           {
-            question: `What are the best healthy restaurants in ${neighborhoodName}?`,
-            answer: `${neighborhoodName} has ${restaurants.length} healthy restaurants in our directory. The top-rated options include ${restaurants.slice(0, 3).map((r) => r.name).join(", ")}. Use the filters above to narrow by dietary need or health inspection grade.`,
+            question: `Which published restaurants in ${neighborhoodName} have the highest stored rating?`,
+            answer: (() => {
+              const rated = restaurants
+                .filter((row) => (row.rating ?? 0) > 0 && (row.reviews ?? 0) > 0)
+                .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || (b.reviews ?? 0) - (a.reviews ?? 0))
+                .slice(0, 3)
+              if (rated.length === 0) return ""
+              return `The highest stored ratings are ${rated.map((row) => `${row.name} (${row.rating?.toFixed(1)}/5 from ${row.reviews} reviews)`).join("; ")}. Our picks elsewhere on the page are ordered editorially, not by rating.`
+            })(),
           },
           {
-            question: `Are there vegan restaurants in ${neighborhoodName}?`,
-            answer: `Yes — ${neighborhoodName} has several vegan and plant-based dining options. Filter by the vegan dietary tag above to see all vegan restaurants in this neighborhood.`,
+            question: `How many listings in ${neighborhoodName} carry the vegan tag?`,
+            answer: (() => {
+              const vegan = restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("vegan"))
+              if (vegan.length === 0) return ""
+              const names = vegan.slice(0, 3).map((row) => row.name).join(", ")
+              return `${vegan.length} of ${restaurants.length} listings in ${neighborhoodName} carry the vegan tag${names ? `: ${names}` : ""}.`
+            })(),
           },
           {
-            question: `Which restaurants in ${neighborhoodName} have a Grade A health inspection?`,
-            answer: `${gradeACount} restaurants in ${neighborhoodName} currently hold a Grade A from the NYC Department of Health. Use the Grade A filter to see only top-graded establishments.`,
+            question: `How many restaurants in ${neighborhoodName} hold Grade A?`,
+            answer: gradeACount === 0 ? "" : `${gradeACount} of ${restaurants.length} published restaurants in ${neighborhoodName} hold a NYC DOHMH Grade A.`,
           },
           {
             question: `How many healthy restaurants are in ${neighborhoodName}?`,
-            answer: `There are currently ${restaurants.length} healthy restaurants listed in ${neighborhoodName}, ${boroughName}. This includes ${Array.from(new Set(restaurants.map((r) => r.type).filter(Boolean))).slice(0, 3).join(", ")} and more.`,
+            answer: `${restaurants.length} published restaurants are listed in ${neighborhoodName}, ${boroughName}.`,
           },
-          {
-            question: `What neighborhoods are near ${neighborhoodName} for healthy eating?`,
-            answer: `${neighborhoodName} is located in ${boroughName}. Nearby neighborhoods also have strong healthy dining options — use the neighborhood comparison tool to see how they rank.`,
-          },
-        ]}
+        ].filter((faq) => faq.answer)}
         heading={`Healthy Restaurants in ${neighborhoodName} — FAQ`}
         subheading={`Common questions about dining in ${neighborhoodName}, ${boroughName}.`}
       />
