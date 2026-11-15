@@ -18,14 +18,17 @@ export interface PublishedDirectoryCounts {
   /** Distinct borough + neighbourhood pairs with at least one published listing. */
   neighborhoods: number
   gradeA: number
+  /** Published listings whose stored grade is A, B, or C. */
+  letterGraded: number
   hiddenGems: number
 }
 
 export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDirectoryCounts> => {
   const where = PUBLISHED_LISTING_WHERE
-  const [restaurants, gradeA, hiddenGems, neighborhoodGroups] = await Promise.all([
+  const [restaurants, gradeA, letterGraded, hiddenGems, neighborhoodGroups] = await Promise.all([
     prisma.restaurant.count({ where }),
     prisma.restaurant.count({ where: { ...where, inspection_grade: "A" } }),
+    prisma.restaurant.count({ where: { ...where, inspection_grade: { in: ["A", "B", "C"] } } }),
     prisma.restaurant.count({ where: { ...where, is_hidden_gem: true } }),
     prisma.restaurant.groupBy({
       by: ["borough", "neighborhood"],
@@ -41,6 +44,7 @@ export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDire
     restaurants,
     neighborhoods: neighborhoodGroups.length,
     gradeA,
+    letterGraded,
     hiddenGems,
   }
 })
