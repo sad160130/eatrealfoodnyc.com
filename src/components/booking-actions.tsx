@@ -30,7 +30,7 @@ export default function BookingActions({
             key={link.provider}
             href={link.href}
             target="_blank"
-            rel="sponsored nofollow noopener noreferrer"
+            rel="nofollow noopener"
             onClick={() => open("reserve_click", link)}
             className="inline-flex h-10 items-center rounded-md border px-3 text-sm font-semibold transition-colors hover:border-jade"
             style={{ borderColor: "var(--hairline-strong)", color: "var(--color-forest)" }}
@@ -43,7 +43,7 @@ export default function BookingActions({
             key={link.provider}
             href={link.href}
             target="_blank"
-            rel="sponsored nofollow noopener noreferrer"
+            rel="nofollow noopener"
             onClick={() => open("delivery_click", link)}
             className="inline-flex h-10 items-center rounded-md border px-3 text-sm font-semibold transition-colors hover:border-jade"
             style={{ borderColor: "var(--hairline-strong)", color: "var(--color-forest)" }}
@@ -52,9 +52,6 @@ export default function BookingActions({
           </a>
         ))}
       </div>
-      <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
-        We may earn a commission.
-      </p>
     </div>
   )
 }
