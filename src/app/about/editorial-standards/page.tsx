@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import EditorialPartnershipPolicy from "@/components/editorial-partnership-policy"
 import { pageMeta } from "@/lib/page-meta"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
   path: "/about/editorial-standards",
@@ -13,6 +14,7 @@ export const metadata: Metadata = pageMeta({
 export default function EditorialStandardsPage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "About", path: "/about" }, { name: "Editorial standards", path: "/about/editorial-standards" }]} />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

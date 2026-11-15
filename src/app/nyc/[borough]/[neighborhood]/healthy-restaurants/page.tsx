@@ -4,7 +4,6 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { boroughToSlug, neighborhoodToSlug, formatDietaryTag } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
-import { buildNeighborhoodKeywords } from "@/config/keywords"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -16,6 +15,11 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { hubMetaDescription, neighborhoodTitle, withBrand } from "@/lib/seo-titles"
+import { neighborhoodCapsule } from "@/lib/answer-capsule"
+import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -70,12 +74,22 @@ export async function generateMetadata({
   if (!resolved) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/${neighborhood}/healthy-restaurants`)
-  const kwds = buildNeighborhoodKeywords(resolved.neighborhoodName, resolved.boroughName)
+  const stats = await gradeStatsFor({
+    borough: resolved.boroughName,
+    neighborhood: resolved.neighborhoodName,
+  })
+  const title = neighborhoodTitle(resolved.neighborhoodName, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: `${resolved.neighborhoodName}, ${resolved.boroughName}`,
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+  })
   return {
-    title: kwds.metaTitle,
-    description: kwds.metaDescription(0),
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
-    openGraph: { url: canonicalUrl, type: "website" },
+    openGraph: { title: withBrand(title), description, url: canonicalUrl, type: "website" },
     robots: { index: true, follow: true },
   }
 }
@@ -119,6 +133,18 @@ export default async function NeighborhoodPage({
 
   if (restaurants.length < NEIGHBORHOOD_HUB_MIN_RESTAURANTS) notFound()
 
+  const gradedCount = restaurants.filter((row) => row.inspection_grade === "A" || row.inspection_grade === "B" || row.inspection_grade === "C").length
+  const taggedCount = restaurants.filter((row) => row.dietary_tags?.trim()).length
+  const latestInspection = latestInspectionDate(restaurants.map((row) => row.inspection_date))
+  const capsule = neighborhoodCapsule({
+    neighborhood: neighborhoodName,
+    count: restaurants.length,
+    graded: gradedCount,
+    gradeA: restaurants.filter((row) => row.inspection_grade === "A").length,
+    latestMonth: latestInspection ? formatMonthYear(latestInspection) : null,
+    tagged: taggedCount,
+  })
+
   // Gate for the contextual-links block below. Memoised — see neighborhood-hubs.ts.
   const validHubs = await getBuiltNeighborhoodHubs()
 
@@ -143,23 +169,12 @@ export default async function NeighborhoodPage({
   // array keeps the entries and any derived count from drifting apart.
   const schemaItems = restaurants.slice(0, 10)
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
+  const itemListJsonLd = buildHubItemList({
     name: `Healthy Restaurants in ${neighborhoodName}, ${boroughName}`,
     description: `${restaurants.length} healthy restaurants in ${neighborhoodName}, ${boroughName}, NYC`,
-    numberOfItems: restaurants.length,
-    itemListElement: schemaItems.map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
-  }
+    siteUrl,
+    restaurants: schemaItems,
+  })
 
   return (
     <>
@@ -190,7 +205,19 @@ export default async function NeighborhoodPage({
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{stats._count.id.toLocaleString()}</span> curated spots in {neighborhoodName} — every listing tied to a real NYC Department of Health inspection grade.
+            {capsule}
+          </p>
+          <h2 className="h2-serif mt-8">How many Grade A restaurants are in {neighborhoodName}?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {gradedCount === 0
+              ? `None of the ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} has a matched NYC DOHMH letter grade.`
+              : `${restaurants.filter((row) => row.inspection_grade === "A").length.toLocaleString("en-US")} of ${gradedCount.toLocaleString("en-US")} graded restaurants in ${neighborhoodName} hold Grade A. The share is among graded listings, not every published row.`}
+          </p>
+          <h2 className="h2-serif mt-8">Which diets are tagged in {neighborhoodName}?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {taggedCount === 0
+              ? `None of the published restaurants in ${neighborhoodName} carries a dietary tag. Tags are applied only when a kitchen identifies with that diet.`
+              : `${taggedCount.toLocaleString("en-US")} of ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} carry at least one dietary tag.`}
           </p>
 
           {/* Inline stats */}
@@ -216,7 +243,7 @@ export default async function NeighborhoodPage({
               className="eyebrow inline-flex items-center gap-1"
               style={{ color: "var(--color-muted)" }}
             >
-              <span>Updated</span>
+              <span>Data as of</span>
               <span style={{ textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-body)", fontWeight: 500 }}>
                 <DirectoryAsOf variant="month" />
               </span>
@@ -276,7 +303,11 @@ export default async function NeighborhoodPage({
             </h2>
             <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
               Every published listing in {neighborhoodName}, including the{" "}
-              {Math.min(restaurants.length, CARD_LIMIT)} featured above.
+              {Math.min(restaurants.length, CARD_LIMIT)} featured above.{" "}
+              <Link href={`/nyc/${boroughSlug}/${neighborhoodSlug}/restaurants`} style={{ color: "var(--color-jade)" }}>
+                All restaurants in {neighborhoodName}
+              </Link>
+              .
             </p>
             <ul
               className="mt-6"

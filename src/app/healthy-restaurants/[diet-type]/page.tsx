@@ -5,7 +5,6 @@ import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
-import { DIET_KEYWORDS } from "@/config/keywords"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
@@ -15,6 +14,10 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
+import { gradeStatsFor } from "@/lib/hub-grade-stats"
+import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { dietCapsule } from "@/lib/answer-capsule"
+import { buildHubItemList } from "@/lib/schema"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -32,15 +35,22 @@ export async function generateMetadata({
   if (!config) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/healthy-restaurants/${tag}`)
-  const kwds = DIET_KEYWORDS[tag]
-  const count = await prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true, dietary_tags: { contains: tag } } })
+  const stats = await gradeStatsFor({ dietary_tags: { contains: tag } })
+  const title = dietTitle(config.label, stats.gradeA)
+  const description = hubMetaDescription({
+    count: stats.count,
+    place: "NYC",
+    gradeA: stats.gradeA,
+    latestMonth: stats.latestMonth,
+    dietLabel: config.label,
+  })
   return {
-    title: kwds?.metaTitle || `Best ${config.label} Restaurants in NYC (2026)`,
-    description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
+    title,
+    description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: kwds?.h1,
-      description: kwds?.metaDescription(count) || `Find ${config.label.toLowerCase()} restaurants in NYC with health inspection grades.`,
+      title: withBrand(title),
+      description,
       url: canonicalUrl,
       type: "website",
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${config.label} Restaurants in NYC` }],
@@ -86,6 +96,15 @@ export default async function DietTypePage({
     }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
+  const gradeSplit = await gradeStatsFor({ dietary_tags: { contains: tag } })
+  const capsule = dietCapsule({
+    label: config.label,
+    count: totalCount,
+    gradeA: gradeSplit.gradeA,
+    gradeB: gradeSplit.gradeB,
+    gradeC: gradeSplit.gradeC,
+    latestMonth: gradeSplit.latestMonth,
+  })
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
@@ -101,33 +120,12 @@ export default async function DietTypePage({
 
   const roundedAvg = roundAverage(ratingAgg._avg.rating)
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: `Best ${config.label} Restaurants in NYC`,
+  const itemListJsonLd = buildHubItemList({
+    name: `${config.label} Restaurants in NYC`,
     description: `${totalCount} ${config.label.toLowerCase()} restaurants in New York City`,
-    numberOfItems: totalCount,
-    ...(roundedAvg
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: roundedAvg,
-            bestRating: 5,
-            worstRating: 1,
-          },
-        }
-      : {}),
-    itemListElement: restaurants.slice(0, 10).map((r, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Restaurant",
-        name: r.name,
-        url: `${siteUrl}/restaurants/${r.slug}`,
-        ...(r.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: r.rating, reviewCount: r.reviews || 1, bestRating: 5, worstRating: 1 } } : {}),
-      },
-    })),
-  }
+    siteUrl,
+    restaurants: restaurants.slice(0, 10),
+  })
 
   const datasetJsonLd = {
     "@context": "https://schema.org",
@@ -157,7 +155,7 @@ export default async function DietTypePage({
       "NYC health inspection grades",
       "healthy restaurants NYC",
     ],
-    dateModified: new Date().toISOString().split("T")[0],
+    ...(gradeSplit.latestIso && { dateModified: gradeSplit.latestIso }),
   }
 
   return (
@@ -190,7 +188,13 @@ export default async function DietTypePage({
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {config.label.toLowerCase()} restaurants in NYC — each tied to a real NYC Department of Health inspection grade.
+            {capsule}
+          </p>
+          <h2 className="h2-serif mt-8">How many {config.label.toLowerCase()} restaurants hold a Grade A?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            {gradeSplit.graded === 0
+              ? `None of the ${totalCount.toLocaleString("en-US")} published ${config.label.toLowerCase()} restaurants has a matched NYC DOHMH letter grade.`
+              : `${gradeSplit.gradeA.toLocaleString("en-US")} of ${gradeSplit.graded.toLocaleString("en-US")} graded ${config.label.toLowerCase()} restaurants hold Grade A. ${gradeSplit.gradeB.toLocaleString("en-US")} hold Grade B and ${gradeSplit.gradeC.toLocaleString("en-US")} hold Grade C.`}
           </p>
 
           {/* What it is — quiet editorial pull, no green box */}

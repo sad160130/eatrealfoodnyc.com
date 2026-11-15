@@ -41,7 +41,6 @@ export const ORGANIZATION_SCHEMA = {
 }
 
 export const WEBSITE_SCHEMA = {
-  "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   name: "Eat Real Food NYC",
@@ -61,25 +60,107 @@ export const PUBLISHER_REF = {
   url: SITE_URL,
 }
 
+export function aggregateRatingFields(
+  rating: number | null | undefined,
+  reviewCount: number | null | undefined
+) {
+  if (rating == null || reviewCount == null || reviewCount < 1) return undefined
+  return {
+    "@type": "AggregateRating",
+    ratingValue: rating,
+    reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  }
+}
+
 export function buildRestaurantSchema(restaurant: {
-  name: string; slug: string; address: string; latitude: number | null; longitude: number | null;
+  name: string; slug: string; address: string; city?: string | null; state?: string | null;
+  latitude: number | null; longitude: number | null;
   phone: string | null; website: string | null; type: string | null; rating: number | null;
-  reviews: number | null; inspection_grade: string | null; updated_at: string | Date;
+  reviews: number | null; inspection_grade: string | null; inspection_score?: number | null;
+  inspection_date?: string | null;
+  updated_at: string | Date;
 }) {
+  const gradeView = presentGrade(restaurant.inspection_grade)
+  const aggregateRating = aggregateRatingFields(restaurant.rating, restaurant.reviews)
+  const additionalProperty = [
+    { "@type": "PropertyValue" as const, name: "NYC Health Inspection Grade", value: gradeView.title },
+    ...(restaurant.inspection_score != null
+      ? [{ "@type": "PropertyValue" as const, name: "NYC Health Inspection Score", value: restaurant.inspection_score }]
+      : []),
+  ]
   return {
     "@type": "Restaurant",
     "@id": `${SITE_URL}/restaurants/${restaurant.slug}#restaurant`,
     name: restaurant.name,
     url: `${SITE_URL}/restaurants/${restaurant.slug}`,
-    address: { "@type": "PostalAddress", streetAddress: restaurant.address, addressLocality: "New York", addressRegion: "NY", addressCountry: "US" },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: restaurant.address,
+      addressLocality: restaurant.city || "New York",
+      addressRegion: restaurant.state || "NY",
+      addressCountry: "US",
+    },
     ...(restaurant.latitude && restaurant.longitude && { geo: { "@type": "GeoCoordinates", latitude: restaurant.latitude, longitude: restaurant.longitude } }),
     ...(restaurant.phone && { telephone: restaurant.phone }),
     ...(restaurant.website && { sameAs: restaurant.website }),
     servesCuisine: restaurant.type ? [restaurant.type] : ["Healthy food"],
-    ...(restaurant.rating && restaurant.reviews && { aggregateRating: { "@type": "AggregateRating", ratingValue: restaurant.rating, reviewCount: restaurant.reviews, bestRating: 5, worstRating: 1 } }),
-    additionalProperty: [{ "@type": "PropertyValue", name: "NYC Health Inspection Grade", value: presentGrade(restaurant.inspection_grade).title }],
+    ...(aggregateRating && { aggregateRating }),
+    additionalProperty,
     publisher: PUBLISHER_REF,
     dateModified: new Date(restaurant.updated_at).toISOString(),
+  }
+}
+
+export function buildHubItemList(input: {
+  name: string
+  description: string
+  siteUrl: string
+  restaurants: Array<{ name: string; slug: string; rating: number | null; reviews: number | null }>
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: input.name,
+    description: input.description,
+    numberOfItems: input.restaurants.length,
+    itemListElement: input.restaurants.map((restaurant, index) => {
+      const aggregateRating = aggregateRatingFields(restaurant.rating, restaurant.reviews)
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Restaurant",
+          name: restaurant.name,
+          url: `${input.siteUrl}/restaurants/${restaurant.slug}`,
+          ...(aggregateRating && { aggregateRating }),
+        },
+      }
+    }),
+  }
+}
+
+export function buildBreadcrumbList(
+  items: Array<{ name: string; path?: string }>,
+  siteUrl: string = SITE_URL
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      ...(item.path && { item: `${siteUrl}${item.path}` }),
+    })),
+  }
+}
+
+export function siteGraph() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [ORGANIZATION_SCHEMA, WEBSITE_SCHEMA],
   }
 }
 
@@ -91,7 +172,7 @@ export function buildArticleSchema(guide: { title: string; slug: string; descrip
     description: guide.description,
     url: `${SITE_URL}/guides/${guide.slug}`,
     datePublished: guide.publishedDate,
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: guide.publishedDate,
     author: PUBLISHER_REF,
     publisher: PUBLISHER_REF,
     isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Eat Real Food NYC" },

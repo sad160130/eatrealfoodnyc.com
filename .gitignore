@@ -25,6 +25,7 @@ data/*.csv
 data/*.json
 !data/unpublished-2026-11-15.json
 !data/grade-backup-2026-11-15.json
+!data/noindex-2026-11-15.json
 data/*.xlsx
 
 # Logs

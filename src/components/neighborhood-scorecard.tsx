@@ -249,7 +249,7 @@ export default function NeighborhoodScorecard({
         {/* Table footer */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 bg-gray-50/50 px-5 py-4">
           <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-            Data: Eat Real Food NYC + NYC DOHMH Open Data. Updated quarterly. Grade A % shown only
+            Data: Eat Real Food NYC + NYC DOHMH Open Data. Each grade is the latest matched DOHMH record. Grade A % shown only
             for restaurants with verified inspection records.
           </p>
           <Link

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { GuideArticle, getRelatedGuides } from "@/config/guides"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 interface GuideLayoutProps {
   guide: GuideArticle
@@ -11,6 +12,12 @@ export default function GuideLayout({ guide, children }: GuideLayoutProps) {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Guides", path: "/guides" },
+          { name: guide.shortTitle, path: `/guides/${guide.slug}` },
+        ]}
+      />
       {children}
 
       <div className="mx-auto max-w-4xl px-6 pb-12">

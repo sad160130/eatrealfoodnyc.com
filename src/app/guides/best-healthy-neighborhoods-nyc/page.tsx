@@ -70,7 +70,7 @@ export default async function HealthyNeighborhoodsGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: guide.publishedDate,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}
@@ -128,7 +128,7 @@ export default async function HealthyNeighborhoodsGuide() {
               source: "Across all 5 boroughs",
             },
           ]}
-          sourceNote="Full neighborhood comparison available at eatrealfoodnyc.com/nyc/compare — ranks all tracked neighborhoods by health score, Grade A rate, dietary diversity, and hidden gem count. Data updated quarterly from NYC DOHMH."
+          sourceNote="Full neighborhood comparison available at eatrealfoodnyc.com/nyc/compare — ranks all tracked neighborhoods by health score, Grade A rate, dietary diversity, and hidden gem count. Each grade is the latest matched NYC DOHMH record."
           variant="forest"
         />
 
@@ -138,7 +138,7 @@ export default async function HealthyNeighborhoodsGuide() {
               Top 10 NYC Neighborhoods by Grade A Rate
             </p>
             <p className="mt-0.5 text-xs text-white/50">
-              Eat Real Food NYC data — minimum 10 restaurants — updated quarterly
+              Eat Real Food NYC data — minimum 10 restaurants — latest matched NYC DOHMH grade
             </p>
           </div>
           <ol className="divide-y divide-gray-50">

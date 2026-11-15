@@ -13,6 +13,7 @@ import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants
 import { formatLongDate } from "@/lib/inspection-dates"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { presentGrade } from "@/lib/grade-display"
+import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
 const snapshotDate = formatLongDate(new Date(bestRatedData.generatedAt))
@@ -172,7 +173,7 @@ function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
 
 export default async function BestRatedRestaurantsPage() {
   const live = await getDirectorySnapshot()
-  const dateModified = new Date().toISOString().split("T")[0]
+  const dateModified = live.lastPublishLabel ?? bestRatedData.reportDate
   const boroughOrder = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
   const reportJsonLd = {
@@ -247,6 +248,7 @@ export default async function BestRatedRestaurantsPage() {
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
+      <BreadcrumbJsonLd items={[{ name: "Best-rated restaurants", path: "/data/best-rated-restaurants" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reportJsonLd) }}
