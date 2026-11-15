@@ -9,6 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import GuideLinkIndex from "@/components/guide-link-index"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("healthy-breakfast-nyc")!
@@ -22,6 +23,10 @@ export const metadata: Metadata = {
 }
 
 const GUIDE_FAQS = [
+  {
+    question: "Where can I find a healthy breakfast near me in NYC?",
+    answer: "This site does not detect your location. Choose a borough hub — Manhattan, Brooklyn, Queens, the Bronx, or Staten Island — then open a cafe, juice shop, bakery, or breakfast restaurant for its address and NYC health inspection grade. Whole-foods, vegan, and dairy-free hubs list restaurants that carry those tags.",
+  },
   {
     question: "What makes a breakfast restaurant healthy in NYC?",
     answer: "Three factors define a genuinely healthy breakfast restaurant: whole ingredient sourcing (oats, nuts, fresh fruit, eggs from known suppliers), minimal processed ingredients (no pre-made mixes, artificial sweeteners, or packaged pastries), and an NYC health inspection grade of A. Restaurants that make their granola, nut milks, and grain bowls in-house from whole ingredients consistently outperform chain alternatives on both taste and nutritional value.",
@@ -49,7 +54,7 @@ const GUIDE_FAQS = [
 ]
 
 export default async function HealthyBreakfastGuide() {
-  const { restaurants } = await getPublishedDirectoryCounts()
+  const { restaurants, hiddenGems, neighborhoods } = await getPublishedDirectoryCounts()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -64,7 +69,7 @@ export default async function HealthyBreakfastGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: "2026-11-15",
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}
@@ -72,17 +77,18 @@ export default async function HealthyBreakfastGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="New York City starts early and moves fast. The restaurants and cafes that understand healthy mornings are the ones worth knowing — before the city catches up with them."
+        subtitle="Healthy breakfast in NYC is listed by borough, not by GPS. Cafes, juice shops, and whole-food spots below include the health inspection grade on each listing."
         stats={[
           { stat: restaurants.toLocaleString(), label: "Published restaurant listings" },
-          { stat: "984", label: "Hidden gem restaurants identified" },
+          { stat: hiddenGems.toLocaleString(), label: "Hidden gems, published" },
           { stat: "12", label: "Dietary categories tracked" },
-          { stat: "116", label: "NYC neighborhoods covered" },
+          { stat: neighborhoods.toLocaleString(), label: "Neighborhoods with a listing" },
         ]}
       />
 
       <div className="mx-auto max-w-4xl px-6 py-16">
         <GuideTOC items={[
+          { href: "#near-me", label: "Healthy breakfast near me in NYC" },
           { href: "#why-breakfast", label: "Why healthy breakfast matters in NYC" },
           { href: "#what-to-look-for", label: "What separates a healthy breakfast spot from the rest" },
           { href: "#key-foods", label: "Key whole food breakfast items to look for" },
@@ -91,6 +97,24 @@ export default async function HealthyBreakfastGuide() {
           { href: "#budget", label: "Eating a healthy breakfast in NYC on a budget" },
           { href: "#faq", label: "Frequently asked questions" },
         ]} />
+
+        <section id="near-me" className="mb-16 scroll-mt-24">
+          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            Healthy breakfast near me in NYC
+          </h2>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            This directory does not use your location. “Near me” here means the borough and neighborhood on the listing. Open a borough hub, then a restaurant page, for the address and the NYC health inspection grade.
+          </p>
+          <p className="text-lg leading-relaxed text-gray-700">
+            Listings tagged{" "}
+            <Link href="/healthy-restaurants/whole-foods" className="font-medium text-jade underline underline-offset-2 hover:text-forest">whole foods</Link>
+            ,{" "}
+            <Link href="/healthy-restaurants/vegan" className="font-medium text-jade underline underline-offset-2 hover:text-forest">vegan</Link>
+            , or{" "}
+            <Link href="/healthy-restaurants/dairy-free" className="font-medium text-jade underline underline-offset-2 hover:text-forest">dairy-free</Link>
+            {" "}are tagged only when the restaurant identifies that way or has substantial menu coverage. A cafe or bagel shop without those tags is still a breakfast listing. It is not labeled healthy by inference.
+          </p>
+        </section>
 
         {/* Section 1 */}
         <section id="why-breakfast" className="mb-16 scroll-mt-24">
@@ -418,12 +442,46 @@ export default async function HealthyBreakfastGuide() {
           </div>
         </section>
 
+        <GuideLinkIndex
+          heading="Breakfast listings by borough"
+          intro="Each link is a published page. Grade and dietary tags are stated only when that listing has them."
+          groups={[
+            {
+              title: "Borough and diet hubs",
+              links: [
+                { href: "/nyc/manhattan/healthy-restaurants", label: "Healthy restaurants in Manhattan" },
+                { href: "/nyc/brooklyn/healthy-restaurants", label: "Healthy restaurants in Brooklyn" },
+                { href: "/nyc/queens/healthy-restaurants", label: "Healthy restaurants in Queens" },
+                { href: "/nyc/bronx/healthy-restaurants", label: "Healthy restaurants in the Bronx" },
+                { href: "/nyc/staten-island/healthy-restaurants", label: "Healthy restaurants in Staten Island" },
+                { href: "/healthy-restaurants/whole-foods", label: "Whole-foods restaurants in NYC" },
+                { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },
+                { href: "/healthy-restaurants/vegetarian", label: "Vegetarian restaurants in NYC" },
+                { href: "/healthy-restaurants/dairy-free", label: "Dairy-free restaurants in NYC" },
+                { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
+              ],
+            },
+            {
+              title: "Restaurant pages",
+              links: [
+                { href: "/restaurants/787-coffee-mott", label: "787 Coffee in Mott Haven — Grade A coffee shop" },
+                { href: "/restaurants/juices-for-life-parkchester", label: "Juices For Life in Parkchester — tagged whole foods and low calorie" },
+                { href: "/restaurants/the-common", label: "The Common in Bay Ridge — Grade A breakfast restaurant" },
+                { href: "/restaurants/marthas-country-bakery-astoria", label: "Martha's Country Bakery in Astoria — Grade A bakery" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A, tagged whole foods" },
+                { href: "/restaurants/juke-box-juice-salads", label: "Juke Box Juice & Salads in Harlem" },
+                { href: "/restaurants/familiars-bagels-coffee", label: "Familiars Bagels & Coffee in Bushwick" },
+              ],
+            },
+          ]}
+        />
+
         <GuideCTA
           heading="Find healthy breakfast and brunch in NYC"
-          body="Browse Grade A-certified whole foods and vegan restaurants across all 5 boroughs — with dietary filters, open-now detection, and hidden gem picks."
-          primaryLabel="Search healthy breakfast spots →"
-          primaryHref="/search?diet=whole-foods"
-          secondaryLabel="Vegan breakfast NYC"
+          body="Start with whole-foods and vegan hubs. Every listing shows the NYC health inspection grade we have on file."
+          primaryLabel="Whole-foods restaurants in NYC"
+          primaryHref="/healthy-restaurants/whole-foods"
+          secondaryLabel="Vegan restaurants in NYC"
           secondaryHref="/healthy-restaurants/vegan"
         />
       </div>

@@ -49,7 +49,7 @@ const GUIDE_FAQS = [
 ]
 
 export default async function SeafoodGuide() {
-  const { restaurants } = await getPublishedDirectoryCounts()
+  const { restaurants, gradeA, neighborhoods } = await getPublishedDirectoryCounts()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -74,10 +74,10 @@ export default async function SeafoodGuide() {
         guide={guide}
         subtitle="New York City's coastline and port history have made seafood central to the city's food culture for centuries. This is where to find the best of it — safely, transparently, and without guesswork."
         stats={[
-          { stat: "3,254", label: "Grade A restaurants in our directory" },
+          { stat: gradeA.toLocaleString(), label: "Published listings with Grade A" },
           { stat: restaurants.toLocaleString(), label: "Published restaurant listings" },
           { stat: "5", label: "Boroughs with verified listings" },
-          { stat: "36.8%", label: "Health inspection grade coverage" },
+          { stat: neighborhoods.toLocaleString(), label: "Neighborhoods with a listing" },
         ]}
       />
 
