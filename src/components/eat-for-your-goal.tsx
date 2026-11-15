@@ -28,7 +28,7 @@ export default function EatForYourGoal() {
           {HEALTH_GOALS.map((goal) => (
             <Link
               key={goal.id}
-              href={`/search?${goal.searchParams}`}
+              href={goal.tags.length === 1 ? `/healthy-restaurants/${goal.tags[0]}` : "/healthy-restaurants"}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-gray-100 p-6 transition-all duration-300 hover:border-sage hover:shadow-lg"
               style={{ backgroundColor: "var(--color-cream)" }}
             >

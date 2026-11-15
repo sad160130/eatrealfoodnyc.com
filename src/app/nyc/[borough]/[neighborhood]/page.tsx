@@ -274,7 +274,7 @@ export default async function DietBoroughPage({
               <span className="callout-initial">A<span style={{ color: "var(--color-muted)" }}>.</span></span>
               <span className="callout-label">Grade A only</span>
             </Link>
-            <Link href={`/search?borough=${boroughName}&diet=${tag}&hidden_gem=true`} className="callout">
+            <Link href="/guides/hidden-gem-restaurants-nyc" className="callout">
               <span className="callout-initial" style={{ color: "var(--color-amber)" }}>✦</span>
               <span className="callout-label">Hidden gems</span>
             </Link>

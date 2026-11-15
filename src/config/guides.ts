@@ -133,8 +133,8 @@ export const GUIDES: GuideArticle[] = [
     keywords: ["healthy food nyc cheap", "cheap healthy restaurants nyc", "eat healthy nyc budget"],
     relatedGuides: ["best-healthy-neighborhoods-nyc", "vegan-nyc-borough-guide", "hidden-gem-restaurants-nyc"],
     relatedHubPages: [
-      { label: "Search by price range", href: "/search" },
-      { label: "Hidden gems near you", href: "/search?hidden_gem=true" },
+      { label: "Browse by diet", href: "/healthy-restaurants" },
+      { label: "Hidden gems near you", href: "/guides/hidden-gem-restaurants-nyc" },
       { label: "Browse Queens", href: "/nyc/queens/healthy-restaurants" },
     ],
   },
@@ -171,7 +171,7 @@ export const GUIDES: GuideArticle[] = [
     keywords: ["hidden gem restaurants nyc", "underrated restaurants new york", "best unknown restaurants nyc"],
     relatedGuides: ["nyc-health-grades-explained", "best-healthy-neighborhoods-nyc", "how-eat-healthy-nyc-15-dollars"],
     relatedHubPages: [
-      { label: "Browse all hidden gems", href: "/search?hidden_gem=true" },
+      { label: "Browse all hidden gems", href: "/guides/hidden-gem-restaurants-nyc" },
       { label: "Hidden gems near me", href: "/near-me" },
       { label: "Neighborhood comparison", href: "/nyc/compare" },
     ],

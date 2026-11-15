@@ -107,7 +107,7 @@ export default function SavedPageClient({ sharedRestaurants }: SavedPageClientPr
             {[
               { label: "🌱 Top Vegan Restaurants", href: "/healthy-restaurants/vegan" },
               { label: "🏆 Grade A Only", href: "/healthy-restaurants/grade-a" },
-              { label: "💎 Hidden Gems", href: "/search?hidden_gem=true" },
+              { label: "💎 Hidden Gems", href: "/guides/hidden-gem-restaurants-nyc" },
               { label: "🗺️ Near Me", href: "/map" },
             ].map((item) => (
               <Link
