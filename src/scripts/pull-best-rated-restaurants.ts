@@ -210,7 +210,11 @@ async function pullBestRatedRestaurants() {
   // ── COMPILE ───────────────────────────────────────────────────
   const output = {
     generatedAt: new Date().toISOString(),
-    reportDate: "May 2026",
+    reportDate: new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date()),
     algorithm: {
       qualifyingRating: QUALIFYING_RATING,
       eliteRating: ELITE_RATING,

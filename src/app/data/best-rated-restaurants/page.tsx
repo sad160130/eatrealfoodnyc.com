@@ -10,10 +10,13 @@ import {
   boroughToSlug,
 } from "@/lib/utils"
 import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants"
+import { formatLongDate } from "@/lib/inspection-dates"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
+const snapshotDate = formatLongDate(new Date(bestRatedData.generatedAt))
 
-const PAGE_DESCRIPTION = `${bestRatedData.summary.total} NYC restaurants rated ${bestRatedData.algorithm.qualifyingRating}+ stars across all 5 boroughs. ${bestRatedData.summary.eliteCount} reach our elite ${bestRatedData.algorithm.eliteRating}+ tier. Data-driven ranking of NYC's highest-rated healthy restaurants. Updated ${bestRatedData.reportDate}.`
+const PAGE_DESCRIPTION = `${bestRatedData.summary.total} NYC restaurants rated ${bestRatedData.algorithm.qualifyingRating}+ stars across all 5 boroughs. ${bestRatedData.summary.eliteCount} reach our elite ${bestRatedData.algorithm.eliteRating}+ tier. Snapshot generated ${snapshotDate}.`
 
 export const metadata: Metadata = {
   title: `NYC's Best-Rated Healthy Restaurants 2026 — ${bestRatedData.summary.total} Top-Rated Spots`,
@@ -44,7 +47,6 @@ const {
   featuredByBorough,
   perfectScore,
   eliteList,
-  reportDate,
   algorithm,
 } = bestRatedData
 
@@ -166,7 +168,8 @@ function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
   )
 }
 
-export default function BestRatedRestaurantsPage() {
+export default async function BestRatedRestaurantsPage() {
+  const live = await getDirectorySnapshot()
   const dateModified = new Date().toISOString().split("T")[0]
   const boroughOrder = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -263,7 +266,7 @@ export default function BestRatedRestaurantsPage() {
             <span className="text-white/70">Best-Rated Restaurants</span>
           </nav>
           <span className="mb-4 inline-block rounded-full bg-amber/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
-            <span aria-hidden="true">⭐</span> Original Research — {reportDate}
+            <span aria-hidden="true">⭐</span> Original Research — snapshot {snapshotDate}
           </span>
           <h1
             className="text-4xl font-bold leading-tight text-white md:text-5xl"
@@ -276,7 +279,11 @@ export default function BestRatedRestaurantsPage() {
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
             {summary.total} NYC restaurants rated {algorithm.qualifyingRating}+ stars across all 5
             boroughs and {byNeighborhood.length}+ neighborhoods. Ranked by community rating with
-            review-count tiebreakers. Sourced from our directory of active NYC healthy restaurants.
+            review-count tiebreakers. This is the {snapshotDate} snapshot.
+          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
+            Live directory today: {live.publishedCount.toLocaleString()} published,{" "}
+            {live.gradeAPublished.toLocaleString()} of them Grade A.
           </p>
         </div>
       </header>
@@ -363,8 +370,8 @@ export default function BestRatedRestaurantsPage() {
               style={{ color: "var(--color-muted)" }}
             >
               Ratings are sourced from Google Maps community reviews. Grades and operational status
-              are sourced from the NYC DOHMH Open Data portal. The index regenerates whenever our
-              data is refreshed; current figures are as of {reportDate}.
+              are sourced from the NYC DOHMH Open Data portal. Figures in this report are from the
+              snapshot generated {snapshotDate}, not a live recount of the directory.
             </p>
           </div>
         </section>
@@ -767,7 +774,7 @@ export default function BestRatedRestaurantsPage() {
         </section>
 
         {/* About this data */}
-        <AboutThisData variant="guide" lastRefreshed={reportDate} />
+        <AboutThisData variant="guide" lastRefreshed={snapshotDate} />
       </main>
     </div>
   )

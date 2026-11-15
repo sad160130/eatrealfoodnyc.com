@@ -664,7 +664,7 @@ export default function NYCHealthGradesGuide() {
           secondaryHref="/map"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

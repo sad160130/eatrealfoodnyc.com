@@ -196,7 +196,7 @@ export default function VeganNYCGuide() {
 
         <GuideCTA heading="Browse every vegan restaurant in NYC" body="Our directory shows all verified vegan restaurants with health grades, dietary tags, and neighborhood filters." primaryLabel="Browse vegan restaurants →" primaryHref="/healthy-restaurants/vegan" secondaryLabel="Find vegan near me" secondaryHref="/near-me" />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

@@ -290,7 +290,7 @@ export default function GlutenFreeGuide() {
           secondaryHref="/near-me"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

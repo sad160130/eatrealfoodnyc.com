@@ -15,6 +15,7 @@ import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/li
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
+import DirectoryAsOf from "@/components/directory-as-of"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -217,7 +218,7 @@ export default async function NeighborhoodPage({
             >
               <span>Updated</span>
               <span style={{ textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                <DirectoryAsOf variant="month" />
               </span>
             </span>
           </div>
@@ -386,7 +387,7 @@ export default async function NeighborhoodPage({
           variant="hub"
           restaurantCount={restaurants.length}
           gradeACount={gradeACount}
-          lastRefreshed="April 2026"
+         
           borough={boroughName}
         />
       </div>

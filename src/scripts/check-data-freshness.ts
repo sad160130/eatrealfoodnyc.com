@@ -1,5 +1,6 @@
 import * as path from "path"
 import dotenv from "dotenv"
+import { formatLongDate, latestInspectionDate } from "../lib/inspection-dates"
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") })
 dotenv.config({ path: path.join(process.cwd(), ".env") })
@@ -8,7 +9,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env") })
 const { prisma } = require("../lib/db") as { prisma: import("@prisma/client").PrismaClient }
 
 async function main() {
-  const [total, graded, gems, latestInspection, taggedCount, lastUpdated] = await Promise.all([
+  const [total, graded, gems, inspectionDates, taggedCount, lastUpdated] = await Promise.all([
     prisma.restaurant.count({
       where: { is_published: true, business_status: "OPERATIONAL" },
     }),
@@ -18,9 +19,9 @@ async function main() {
     prisma.restaurant.count({
       where: { is_published: true, is_hidden_gem: true },
     }),
-    prisma.restaurant.findFirst({
-      where: { inspection_date: { not: null } },
-      orderBy: { inspection_date: "desc" },
+    prisma.restaurant.findMany({
+      where: { is_published: true, inspection_date: { not: null } },
+      distinct: ["inspection_date"],
       select: { inspection_date: true },
     }),
     prisma.restaurant.count({
@@ -44,8 +45,12 @@ async function main() {
     taggedCount,
     "(" + Math.round((taggedCount / total) * 100) + "%)"
   )
-  console.log("Latest inspection date in DB:", latestInspection?.inspection_date)
-  console.log("Last DB update:", lastUpdated?.updated_at)
+  const latest = latestInspectionDate(inspectionDates.map((row) => row.inspection_date))
+  console.log(
+    "Newest parsed inspection date among published rows:",
+    latest ? `${formatLongDate(latest)} (stored dates are M/D/YYYY; string sort is not chronological)` : "none"
+  )
+  console.log("Newest updated_at:", lastUpdated?.updated_at)
 
   await prisma.$disconnect()
 }

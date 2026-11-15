@@ -363,7 +363,7 @@ export default function HalalFoodGuide() {
           secondaryHref="/nyc/queens/healthy-restaurants"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

@@ -298,7 +298,7 @@ export default async function BudgetHealthyGuide() {
           secondaryHref="/search?hidden_gem=true"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

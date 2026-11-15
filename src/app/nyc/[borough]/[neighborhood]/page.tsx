@@ -364,7 +364,7 @@ export default async function DietBoroughPage({
           variant="hub"
           restaurantCount={totalCount}
           gradeACount={gradeACount}
-          lastRefreshed="April 2026"
+         
           borough={boroughName}
           dietaryTag={config.label}
           dietaryCount={totalCount}

@@ -14,6 +14,7 @@ import { ANCHOR_TEXT, DIET_HUB_CROSSLINKS } from "@/lib/internal-links"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
+import DirectoryAsOf from "@/components/directory-as-of"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -180,7 +181,7 @@ export default async function DietTypePage({
             Dietary tag
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              <DirectoryAsOf />
             </span>
           </p>
 
@@ -427,7 +428,7 @@ export default async function DietTypePage({
         <AboutThisData
           variant="hub"
           restaurantCount={totalCount}
-          lastRefreshed="April 2026"
+         
           dietaryTag={config.label}
           dietaryCount={totalCount}
         />

@@ -5,11 +5,14 @@ import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import AboutThisData from "@/components/about-this-data"
 import reportData from "@/data/health-grade-report"
 import bestRatedData from "@/data/best-rated-restaurants"
+import { formatLongDate } from "@/lib/inspection-dates"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 
-const { summary, byBorough, neighborhoods, byType, keyFindings, reportDate } = reportData
+const { summary, byBorough, neighborhoods, byType, keyFindings, generatedAt } = reportData
+const snapshotDate = formatLongDate(new Date(generatedAt))
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-grade-report"
-const PAGE_DESCRIPTION = `Analysis of NYC restaurant health inspection grades across all 5 boroughs and ${neighborhoods.totalAnalyzed} neighborhoods. Data sourced from NYC DOHMH Open Data. ${summary.totalGradeA.toLocaleString()} Grade A restaurants tracked across ${summary.totalRestaurants.toLocaleString()} active NYC restaurants.`
+const PAGE_DESCRIPTION = `NYC DOHMH health-grade snapshot from ${snapshotDate}: ${summary.totalGradeA.toLocaleString()} Grade A restaurants among ${summary.totalRestaurants.toLocaleString()} published then, across ${neighborhoods.totalAnalyzed} neighborhoods. Live directory counts are on the page.`
 
 export const metadata: Metadata = {
   title: "NYC Restaurant Health Grade Report 2026",
@@ -68,7 +71,8 @@ function GradeBar({
   )
 }
 
-export default function HealthGradeReportPage() {
+export default async function HealthGradeReportPage() {
+  const live = await getDirectorySnapshot()
   const dateModified = new Date().toISOString().split("T")[0]
 
   const reportJsonLd = {
@@ -206,7 +210,7 @@ export default function HealthGradeReportPage() {
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div>
               <span className="mb-4 inline-block rounded-full bg-sage/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sage">
-                <span aria-hidden="true">📊</span> Original Research — {reportDate}
+                <span aria-hidden="true">📊</span> Original Research — snapshot {snapshotDate}
               </span>
               <h1
                 className="text-4xl font-bold leading-tight text-white md:text-5xl"
@@ -217,10 +221,15 @@ export default function HealthGradeReportPage() {
                 <span className="text-sage">Health Grade Report</span>
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
-                An analysis of NYC Department of Health inspection grades across{" "}
-                {summary.totalRestaurants.toLocaleString()} active restaurants in all 5 boroughs and{" "}
-                {neighborhoods.totalAnalyzed} neighborhoods. Data sourced directly from NYC DOHMH
-                Open Data.
+                Tables below are the {snapshotDate} snapshot:{" "}
+                {summary.totalGradeA.toLocaleString()} Grade A restaurants among{" "}
+                {summary.totalRestaurants.toLocaleString()} published then, across{" "}
+                {neighborhoods.totalAnalyzed} neighborhoods. Data sourced from NYC DOHMH Open Data.
+              </p>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
+                Live directory today: {live.publishedCount.toLocaleString()} published,{" "}
+                {live.gradeAPublished.toLocaleString()} of them Grade A. The full dataset has{" "}
+                {live.gradeAAll.toLocaleString()} Grade A records, including unpublished rows.
               </p>
             </div>
             <aside aria-label="Citation" className="flex flex-col gap-2 text-right">
@@ -779,7 +788,7 @@ export default function HealthGradeReportPage() {
         </section>
 
         {/* About this data */}
-        <AboutThisData variant="guide" lastRefreshed={reportDate} />
+        <AboutThisData variant="guide" lastRefreshed={snapshotDate} />
       </main>
     </div>
   )

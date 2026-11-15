@@ -19,6 +19,7 @@ import scorecardsData from "@/data/neighborhood-scorecards"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
+import DirectoryAsOf from "@/components/directory-as-of"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -202,7 +203,7 @@ export default async function BoroughPage({
             Borough hub
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              <DirectoryAsOf />
             </span>
           </p>
 
@@ -592,7 +593,7 @@ export default async function BoroughPage({
           variant="hub"
           restaurantCount={restaurants.length}
           gradeACount={gradeACount}
-          lastRefreshed="April 2026"
+         
           borough={boroughName}
         />
       </div>

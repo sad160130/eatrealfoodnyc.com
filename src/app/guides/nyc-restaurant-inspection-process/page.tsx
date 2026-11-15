@@ -265,7 +265,7 @@ export default function InspectionProcessGuide() {
           secondaryHref="/map"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

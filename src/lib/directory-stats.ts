@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { prisma } from "@/lib/db"
 
 /**
@@ -20,7 +21,7 @@ export interface PublishedDirectoryCounts {
   hiddenGems: number
 }
 
-export async function getPublishedDirectoryCounts(): Promise<PublishedDirectoryCounts> {
+export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDirectoryCounts> => {
   const where = PUBLISHED_LISTING_WHERE
   const [restaurants, gradeA, hiddenGems, neighborhoodGroups] = await Promise.all([
     prisma.restaurant.count({ where }),
@@ -42,4 +43,4 @@ export async function getPublishedDirectoryCounts(): Promise<PublishedDirectoryC
     gradeA,
     hiddenGems,
   }
-}
+})

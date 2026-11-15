@@ -467,7 +467,7 @@ export default async function SeafoodGuide() {
           secondaryHref="/guides/nyc-health-grades-explained"
         />
       </div>
-        <AboutThisData variant="guide" lastRefreshed="April 2026" />
+        <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

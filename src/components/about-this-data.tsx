@@ -1,5 +1,6 @@
 import Link from "next/link"
 import stats from "@/data/guide-stats"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 
 type Variant = "hub" | "guide" | "full"
 
@@ -17,16 +18,20 @@ interface AboutThisDataProps {
 const DOHMH_URL =
   "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j"
 
-export default function AboutThisData({
+export default async function AboutThisData({
   variant = "hub",
   restaurantCount,
   gradeACount,
-  lastRefreshed = "April 2026",
+  lastRefreshed,
   dietaryTag,
   dietaryCount,
   borough,
   className = "",
 }: AboutThisDataProps) {
+  const snapshot = lastRefreshed ? null : await getDirectorySnapshot()
+  const inspectionNote = lastRefreshed
+    ? `Snapshot date: ${lastRefreshed}`
+    : `Newest inspection date on file: ${snapshot?.latestInspectionLabel ?? "not recorded"}`
   // ── HUB VARIANT ───────────────────────────────────────────────
   if (variant === "hub") {
     return (
@@ -87,8 +92,7 @@ export default function AboutThisData({
               >
                 NYC DOHMH Open Data portal
               </a>
-              , updated quarterly. Last refresh:{" "}
-              <strong className="text-gray-700">{lastRefreshed}</strong>.{" "}
+              . {inspectionNote}.{" "}
               <Link
                 href="/about/our-data"
                 className="text-jade underline underline-offset-2 hover:text-forest"
@@ -174,7 +178,7 @@ export default function AboutThisData({
                 across NYC.
               </p>
               <p className="border-t border-gray-200 pt-2">
-                Last data refresh: <strong className="text-gray-700">{lastRefreshed}</strong>. Found
+                {inspectionNote}. Found
                 an error?{" "}
                 <Link
                   href="/contact"
@@ -308,10 +312,9 @@ export default function AboutThisData({
           DATA REFRESH SCHEDULE
         </p>
         <p className="text-sm leading-relaxed text-gray-700">
-          Health inspection grades are refreshed quarterly from the NYC DOHMH Open Data portal.
-          Restaurant operational status is verified during each refresh. User-submitted corrections
-          are reviewed and applied within 7 days. Last full data refresh:{" "}
-          <strong>{lastRefreshed}</strong>.
+          Health inspection grades are updated by the DOHMH refresh script. Each listing keeps
+          the inspection date on the matched city record. User-submitted corrections are reviewed
+          and applied within 7 days. {inspectionNote}.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-gray-700">
           Found incorrect information?{" "}

@@ -580,7 +580,7 @@ export default async function RestaurantPage({
               {restaurant.inspection_date && (
                 <> Inspection record dated {new Date(restaurant.inspection_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}.</>
               )}{" "}
-              Directory updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}.
+              The directory publish date is on the homepage.
             </p>
 
             {/* Location & contact card — hairline, 4px, no emoji */}
