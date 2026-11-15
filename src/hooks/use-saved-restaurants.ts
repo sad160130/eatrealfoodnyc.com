@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 
 const STORAGE_KEY = "nyc-healthy-saved-restaurants"
 
@@ -21,24 +21,32 @@ export function useSavedRestaurants() {
   const [saved, setSaved] = useState<SavedRestaurant[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
 
+  const snapshot = useRef<string | null>(null)
+  const canPersist = useRef(true)
+
   useEffect(() => {
+    // iOS private mode throws QuotaExceededError on localStorage access.
+    // Writing the empty list on every mount used to hit that on each card.
+    // Read once. Write only after the list actually changes, and stop
+    // writing if storage is unavailable.
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        setSaved(JSON.parse(stored))
-      }
-    } catch (e) {
-      console.error("Failed to load saved restaurants", e)
+      snapshot.current = localStorage.getItem(STORAGE_KEY)
+      if (snapshot.current) setSaved(JSON.parse(snapshot.current))
+    } catch {
+      canPersist.current = false
     }
     setIsLoaded(true)
   }, [])
 
   useEffect(() => {
-    if (!isLoaded) return
+    if (!isLoaded || !canPersist.current) return
+    const next = JSON.stringify(saved)
+    if (next === (snapshot.current ?? "[]")) return
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved))
-    } catch (e) {
-      console.error("Failed to save restaurants", e)
+      localStorage.setItem(STORAGE_KEY, next)
+      snapshot.current = next
+    } catch {
+      canPersist.current = false
     }
   }, [saved, isLoaded])
 
