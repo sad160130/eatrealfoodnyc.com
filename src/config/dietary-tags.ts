@@ -125,7 +125,7 @@ export const DIET_CONFIG: Record<string, {
   'low-calorie': {
     label: 'Low Calorie',
     emoji: '⚖️',
-    intro: 'For diners counting calories or following a calorie-conscious eating plan, NYC offers a growing number of restaurants that explicitly display calorie counts, offer portion-controlled meals, or specialize in light, nutritious dishes designed to support weight management goals.',
+    intro: 'Low-calorie restaurants in this directory are places that post calorie information, market calorie-counted dishes, or specialize in lighter portions. NYC requires chain restaurants with 15 or more US locations to display calorie counts. Independent restaurants are tagged only when they present that information themselves.',
     whatIs: 'Restaurants tagged low-calorie in this directory explicitly market calorie-counted menu options, display calorie information, or specialize in lighter, portion-controlled dishes. NYC requires chain restaurants with 15+ locations to display calorie counts by law.',
     faqs: [
       { question: 'Are calorie counts required on menus in NYC?', answer: 'Yes — NYC requires chain restaurants with 15 or more US locations to display calorie counts on menus. This makes it easier to make informed choices at chain health food and fast-casual restaurants.' },

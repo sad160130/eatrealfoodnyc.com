@@ -9,6 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
+import GuideLinkIndex from "@/components/guide-link-index"
 import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -68,7 +69,7 @@ export default function LateNightGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="The best healthy restaurants open late in NYC. Because eating well should not stop when the sun goes down."
+        subtitle="Late-night here means after 10pm. Hours are on each listing. Start with a borough hub rather than a location guess."
         stats={[
           { label: "With hours data", stat: "8,710" },
           { label: "Open now filter", stat: "Live" },
@@ -157,10 +158,10 @@ export default function LateNightGuide() {
             Late-night options by borough
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            <Link href="/search?open=true&borough=Manhattan" className="font-semibold text-jade hover:text-forest">
-              Manhattan
+            <Link href="/nyc/manhattan/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
+              Healthy restaurants in Manhattan
             </Link>{" "}
-            has the most late-night options, concentrated in several key corridors. Koreatown (K-Town) on 32nd Street between Fifth and Broadway is the undisputed king of late-night healthy eating — a half-dozen Korean restaurants serving until 2 AM or later, with bibimbap, grilled meats, and tofu stews available at any hour. The East Village has a strong late-night scene spanning Thai, Japanese, and Middle Eastern restaurants. Chinatown&apos;s restaurants along Mott and Bayard Streets serve late, and several Midtown restaurants near Times Square keep extended hours.
+            are the largest set of listings, concentrated in several corridors. Koreatown (K-Town) on 32nd Street between Fifth and Broadway is the undisputed king of late-night healthy eating — a half-dozen Korean restaurants serving until 2 AM or later, with bibimbap, grilled meats, and tofu stews available at any hour. The East Village has a strong late-night scene spanning Thai, Japanese, and Middle Eastern restaurants. Chinatown&apos;s restaurants along Mott and Bayard Streets serve late, and several Midtown restaurants near Times Square keep extended hours.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Brooklyn&apos;s late-night healthy options are concentrated in Williamsburg, where several restaurants serve past midnight, and in downtown Brooklyn along Fulton and Atlantic. Bay Ridge&apos;s Middle Eastern restaurants keep late hours, as do several spots along Fifth Avenue in Park Slope. Bedford-Stuyvesant and Crown Heights have a growing number of restaurants with extended hours, though the healthy options thin out after 11 PM.
@@ -197,10 +198,23 @@ export default function LateNightGuide() {
             How to find late-night healthy restaurants
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Our directory&apos;s most powerful tool for late-night diners is the{" "}
-            <Link href="/search?open=true" className="font-semibold text-jade hover:text-forest">
-              &quot;open now&quot; filter
-            </Link>. This feature uses each restaurant&apos;s listed working hours to show you only places that are currently serving food. Combined with dietary filters, borough selection, and rating thresholds, you can find exactly what you need in seconds — whether it&apos;s a vegan spot open in Brooklyn right now or a halal restaurant serving in Queens at midnight.
+            Check the hours on the restaurant page before you go. Borough hubs are the indexable lists:{" "}
+            <Link href="/nyc/brooklyn/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
+              healthy restaurants in Brooklyn
+            </Link>
+            ,{" "}
+            <Link href="/nyc/queens/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
+              healthy restaurants in Queens
+            </Link>
+            , and the{" "}
+            <Link href="/healthy-restaurants/vegan" className="font-semibold text-jade hover:text-forest">
+              vegan
+            </Link>{" "}
+            and{" "}
+            <Link href="/healthy-restaurants/halal" className="font-semibold text-jade hover:text-forest">
+              halal
+            </Link>{" "}
+            hubs.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             The{" "}
@@ -251,6 +265,35 @@ export default function LateNightGuide() {
           </p>
         </section>
 
+        <GuideLinkIndex
+          heading="Listings to open next"
+          intro="These pages are in the sitemap. Hours on a restaurant page are the listed working hours, not a live promise that the kitchen is open."
+          groups={[
+            {
+              title: "Borough and diet hubs",
+              links: [
+                { href: "/nyc/manhattan/healthy-restaurants", label: "Healthy restaurants in Manhattan" },
+                { href: "/nyc/brooklyn/healthy-restaurants", label: "Healthy restaurants in Brooklyn" },
+                { href: "/nyc/queens/healthy-restaurants", label: "Healthy restaurants in Queens" },
+                { href: "/nyc/bronx/healthy-restaurants", label: "Healthy restaurants in the Bronx" },
+                { href: "/nyc/staten-island/healthy-restaurants", label: "Healthy restaurants in Staten Island" },
+                { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },
+                { href: "/healthy-restaurants/halal", label: "Halal restaurants in NYC" },
+                { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
+              ],
+            },
+            {
+              title: "Restaurant pages",
+              links: [
+                { href: "/restaurants/power-bowls", label: "Power Bowls in the Financial District — Grade A" },
+                { href: "/restaurants/gan-hoo-bbq", label: "GAN-HOO BBQ in Flushing — Grade A" },
+                { href: "/restaurants/la-sova", label: "La Sova in Kensington — Grade A" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A" },
+              ],
+            },
+          ]}
+        />
+
         <section id="faq" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Frequently asked questions
@@ -277,12 +320,12 @@ export default function LateNightGuide() {
         </section>
 
         <GuideCTA
-          heading="Find what's open right now"
-          body="Use our real-time open-now filter to see which healthy restaurants are currently serving across all five NYC boroughs. Filter by cuisine, diet, and neighborhood."
-          primaryLabel="Open right now →"
-          primaryHref="/search?open=true"
-          secondaryLabel="Near me"
-          secondaryHref="/near-me"
+          heading="Browse listings by borough"
+          body="Open a borough hub and check the hours on the restaurant page. The grade on the listing is the NYC inspection record we have stored."
+          primaryLabel="Healthy restaurants in Manhattan"
+          primaryHref="/nyc/manhattan/healthy-restaurants"
+          secondaryLabel="Healthy restaurants in Queens"
+          secondaryHref="/nyc/queens/healthy-restaurants"
         />
       </div>
         <AboutThisData variant="guide" lastRefreshed="April 2026" />

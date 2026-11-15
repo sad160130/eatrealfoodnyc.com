@@ -9,6 +9,7 @@ import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
+import GuideLinkIndex from "@/components/guide-link-index"
 import stats from "@/data/guide-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -16,8 +17,7 @@ const guide = getGuideBySlug("nyc-health-grades-explained")!
 
 export const metadata: Metadata = {
   title: guide.metaTitle,
-  description:
-    "What NYC restaurant Grade A, B, and C really mean. How the health inspection process works and what diners should know before eating out.",
+  description: guide.description,
   alternates: { canonical: `${siteUrl}/guides/nyc-health-grades-explained` },
   robots: {
     index: true,
@@ -25,40 +25,54 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" as const },
   },
   openGraph: {
-    title: "NYC Restaurant Health Grades Explained — The Complete Guide",
-    description:
-      "Everything NYC diners need to know about restaurant health inspection grades — what A, B, and C really mean.",
+    title: guide.metaTitle,
+    description: guide.description,
     type: "article",
     url: `${siteUrl}/guides/nyc-health-grades-explained`,
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "NYC Restaurant Health Grades Explained" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "NYC Restaurant Grades: A, B, and C" }],
   },
 }
 
 const GUIDE_FAQS = [
   {
+    question: "What do NYC restaurant grades mean?",
+    answer:
+      "New York City converts a sanitary inspection score into a letter grade. Fewer points is better. Fewer than 14 points is a Grade A. A B is 14 to 27 points on a reinspection, and a C is 28 or more points on a reinspection. The cutoffs are in Health Code Chapter 23.",
+  },
+  {
     question: "What does a Grade A mean for a NYC restaurant?",
     answer:
-      "A Grade A means the restaurant scored 0 to 13 points during its NYC Health Department inspection. Lower scores are better. Grade A restaurants have very good food safety practices and are the safest choice for diners. Approximately 90% of inspected NYC restaurants earn a Grade A.",
+      "A Grade A means the restaurant scored fewer than 14 points (0 to 13) on the initial inspection or the reinspection in that cycle. The Department issues an A card, and the restaurant posts it immediately.",
   },
   {
-    question: "What does a Grade B mean for a NYC restaurant?",
+    question: "What does a B rating mean for a restaurant?",
     answer:
-      "A Grade B means the restaurant scored 14 to 27 points during its inspection. This indicates some food safety violations were found but the restaurant is still permitted to operate. Grade B restaurants must post their grade card prominently. They are re-inspected within 30 to 45 days.",
+      "A B rating means the reinspection score was 14 to 27 points. The Department does not issue a B on the first inspection of a cycle. A first-visit score of 14 or more is ungraded, and a reinspection is scheduled no sooner than 7 days later.",
   },
   {
-    question: "What does a Grade C mean for a NYC restaurant?",
+    question: "What does a C rating mean for a restaurant?",
     answer:
-      "A Grade C means the restaurant scored 28 or more points. This indicates serious food safety violations. The restaurant may be closed immediately if violations pose an imminent health hazard. Otherwise it is re-inspected quickly. Grade C restaurants represent a small minority of NYC establishments.",
+      "A C rating means the reinspection score was 28 or more points. The Department may also run a compliance inspection after a score of 28 or more. That compliance score does not change the letter grade for the cycle.",
+  },
+  {
+    question: "What does Grade Pending mean at a NYC restaurant?",
+    answer:
+      "Grade Pending means the letter grade for the current inspection cycle is still being determined. When a reinspection scores 14 or more and the restaurant is not closed, it receives both the letter-grade card and a Grade Pending card and posts one of them until it has a chance to be heard at the OATH Health Tribunal.",
+  },
+  {
+    question: "What does Z mean on a NYC restaurant inspection?",
+    answer:
+      "In the NYC DOHMH restaurant inspection dataset, Z means Grade Pending. P means Grade Pending issued on re-opening after an initial inspection that resulted in a closure. N means Not Yet Graded. A, B, and C are the letter grades.",
   },
   {
     question: "How often are NYC restaurants inspected?",
     answer:
-      "NYC restaurants are inspected at least once per year by the Department of Health and Mental Hygiene (DOHMH). Restaurants that score poorly are re-inspected more frequently. New restaurants are inspected within their first year of operation.",
+      "The Department conducts an inspection cycle at least annually at each food service establishment required to post a letter grade. An establishment that scores 14 or more is not put on a one-year wait for the next cycle. The gap depends on the higher of the initial score and the reinspection score.",
   },
   {
-    question: "What happens if a restaurant fails its NYC health inspection?",
+    question: "What happens if a restaurant scores 14 or more on its first inspection?",
     answer:
-      "If a restaurant scores 14 or more points it receives a Grade Pending card instead of a letter grade and is re-inspected within 30 to 45 days. If it scores 28 or more points it may be closed immediately or required to fix violations before re-inspection. The restaurant can appeal its score.",
+      "It does not receive a letter grade on that visit. If it is not closed, it keeps posting its previous grade card, or posts nothing if it has never had one, until the reinspection. The reinspection is scheduled no sooner than 7 days after the initial inspection.",
   },
   {
     question: "Can a restaurant be open with a Grade B or C?",
@@ -88,13 +102,12 @@ export default function NYCHealthGradesGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: "NYC Restaurant Health Grades Explained — A Complete Guide",
-            description:
-              "The complete guide to NYC restaurant health inspection grades. What Grade A, B, and C mean and how the inspection process works.",
+            headline: guide.metaTitle,
+            description: guide.description,
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: "2026-11-15",
             mainEntityOfPage: {
               "@type": "WebPage",
               "@id": `${siteUrl}/guides/nyc-health-grades-explained`,
@@ -105,7 +118,7 @@ export default function NYCHealthGradesGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="What Grade A, B, and C really mean, how the NYC inspection process works, and what every diner should know before eating out in New York City."
+        subtitle="A is 0–13 points, B is 14–27 on a reinspection, and C is 28 or more. Grade Pending and a Z in the city data are not letter grades."
         stats={[
           { stat: "~27,000", label: "Restaurants inspected yearly" },
           { stat: "~90%", label: "Earn a Grade A" },
@@ -118,6 +131,12 @@ export default function NYCHealthGradesGuide() {
       <div className="mx-auto max-w-4xl px-6 py-16">
         <GuideTOC
           items={[
+            { href: "#grades-at-a-glance", label: "NYC restaurant grades at a glance" },
+            { href: "#what-grade-a-means", label: "What a Grade A means" },
+            { href: "#what-a-b-rating-means", label: "What a B rating means" },
+            { href: "#what-a-c-rating-means", label: "What a C rating means" },
+            { href: "#grade-pending", label: "What Grade Pending means" },
+            { href: "#grade-z", label: "What Z means in the inspection data" },
             { href: "#what-is-a-health-grade", label: "What is a NYC restaurant health grade?" },
             { href: "#grade-breakdown", label: "Grade A, B, and C — what each means" },
             { href: "#how-inspection-works", label: "How the inspection process works" },
@@ -127,6 +146,57 @@ export default function NYCHealthGradesGuide() {
             { href: "#faq", label: "Frequently asked questions" },
           ]}
         />
+
+        <section id="grades-at-a-glance" className="mb-16 scroll-mt-24">
+          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            NYC restaurant grades at a glance
+          </h2>
+          <p className="mb-6 text-lg leading-relaxed text-gray-700">
+            A NYC restaurant grade is a letter the Department of Health and Mental Hygiene assigns from a sanitary inspection score. Fewer points is a better grade. Since 2010, restaurants required to post a grade must put the card where people passing by can see it. The cutoffs below are from Health Code Chapter 23.
+          </p>
+          <div className="space-y-6">
+            <div id="what-grade-a-means" className="scroll-mt-24">
+              <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                What a Grade A means
+              </h3>
+              <p className="leading-relaxed text-gray-700">
+                A Grade A is a score of fewer than 14 points, which is 0 to 13, on the initial inspection or the reinspection in that cycle. The restaurant receives an A card and posts it immediately.
+              </p>
+            </div>
+            <div id="what-a-b-rating-means" className="scroll-mt-24">
+              <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                What a B rating means
+              </h3>
+              <p className="leading-relaxed text-gray-700">
+                A B rating is a reinspection score of 14 to 27 points. The Department does not issue a B on the first inspection of a cycle. A first-visit score of 14 or more is ungraded, and the reinspection is scheduled no sooner than 7 days later.
+              </p>
+            </div>
+            <div id="what-a-c-rating-means" className="scroll-mt-24">
+              <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                What a C rating means
+              </h3>
+              <p className="leading-relaxed text-gray-700">
+                A C rating is a reinspection score of 28 or more points. After a score of 28 or more, the Department may also conduct a compliance inspection. The score on that compliance inspection does not change the letter grade for the cycle.
+              </p>
+            </div>
+            <div id="grade-pending" className="scroll-mt-24">
+              <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                What Grade Pending means
+              </h3>
+              <p className="leading-relaxed text-gray-700">
+                Grade Pending means the letter grade for the current cycle is still being determined. When a reinspection scores 14 or more and the restaurant is not closed, it receives both the letter-grade card for that score and a Grade Pending card. It posts one of those cards until it has a chance to be heard at the OATH Health Tribunal. A first inspection of 14 or more does not itself issue a Grade Pending card: the restaurant keeps its previous grade card, or posts nothing if it has never had one, until the reinspection.
+              </p>
+            </div>
+            <div id="grade-z" className="scroll-mt-24">
+              <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                What Z means in the inspection data
+              </h3>
+              <p className="leading-relaxed text-gray-700">
+                Z is not a fourth letter in the window. In the DOHMH open dataset of restaurant inspection results, the grade field uses Z for Grade Pending. P means Grade Pending issued on re-opening following an initial inspection that resulted in a closure. N means Not Yet Graded. A, B, and C are the letter grades.
+              </p>
+            </div>
+          </div>
+        </section>
 
         <DataCallout
           heading="NYC Health Grade Data — Eat Real Food NYC Directory"
@@ -274,10 +344,10 @@ export default function NYCHealthGradesGuide() {
                 </p>
                 <div className="mt-4 border-t border-gray-100 pt-4">
                   <Link
-                    href="/search?grade=A"
+                    href="/nyc/manhattan/healthy-restaurants"
                     className="inline-flex items-center gap-2 text-sm font-semibold text-jade transition-colors hover:text-forest"
                   >
-                    Browse all Grade A restaurants in NYC →
+                    Healthy restaurants in Manhattan
                   </Link>
                 </div>
               </div>
@@ -302,10 +372,10 @@ export default function NYCHealthGradesGuide() {
               </div>
               <div className="px-6 py-5">
                 <p className="leading-relaxed text-gray-700">
-                  A Grade B indicates that the restaurant had some food safety violations during its
-                  inspection that were significant enough to push the score above 13 points. The
-                  restaurant is still permitted to operate but is required to display its Grade B
-                  card prominently and will be re-inspected within 30 to 45 days.
+                  A Grade B is issued on the reinspection, not the first visit of the cycle, when
+                  that reinspection scores 14 to 27 points. The restaurant posts the B card, or the
+                  Grade Pending card it receives at the same time, until it has a chance to be heard
+                  at OATH.
                 </p>
                 <p className="mt-3 leading-relaxed text-gray-700">
                   Many Grade B restaurants go on to earn a Grade A at their next inspection after
@@ -383,7 +453,7 @@ export default function NYCHealthGradesGuide() {
                 step: "3",
                 title: "Score determines the grade",
                 content:
-                  "If the restaurant scores 0 to 13 points, it receives a Grade A immediately. If it scores 14 or more points, it receives a Grade Pending card and is scheduled for a re-inspection. At the re-inspection, the restaurant is scored again and receives its final letter grade based on the better of the two scores.",
+                  "Fewer than 14 points on the initial inspection or the reinspection is a Grade A. A first inspection of 14 or more does not produce a letter grade. The reinspection, scheduled no sooner than 7 days later, is the visit that issues a B for 14 to 27 points or a C for 28 or more.",
               },
               {
                 step: "4",
@@ -498,7 +568,7 @@ export default function NYCHealthGradesGuide() {
           <div className="space-y-4">
             {[
               { method: "Look in the restaurant window", detail: "Every NYC restaurant is legally required to post its grade card in a window visible from the street. The grade card shows the letter grade, inspection score, and date.", cta: null, icon: "🪟" },
-              { method: "Search our directory", detail: "We display the current NYC health inspection grade on every restaurant listing page in our directory — alongside the inspection date and score. We pull this data directly from the NYC DOHMH Open Data database.", cta: { label: "Search our directory →", href: "/search?grade=A" }, icon: "🔍" },
+              { method: "Open a listing in this directory", detail: "Each published restaurant page shows the grade, inspection date, and score we have from the NYC DOHMH open dataset. Borough hubs below link to the listings.", cta: { label: "Healthy restaurants in Brooklyn", href: "/nyc/brooklyn/healthy-restaurants" }, icon: "🔍" },
               { method: "NYC Open Data portal", detail: "The complete inspection history for every NYC restaurant is available at data.cityofnewyork.us. You can search by restaurant name and see every past inspection, including the specific violations found at each visit.", cta: null, icon: "📊" },
             ].map((item) => (
               <div key={item.method} className="flex gap-5 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -518,6 +588,46 @@ export default function NYCHealthGradesGuide() {
             ))}
           </div>
         </section>
+
+        <GuideLinkIndex
+          heading="Grade A listings in the directory"
+          intro="These are published listings that currently show a Grade A. The grade on the listing is the inspection record we have matched, not a promise about the next visit."
+          groups={[
+            {
+              title: "Borough hubs",
+              links: [
+                { href: "/nyc/manhattan/healthy-restaurants", label: "Healthy restaurants in Manhattan" },
+                { href: "/nyc/brooklyn/healthy-restaurants", label: "Healthy restaurants in Brooklyn" },
+                { href: "/nyc/queens/healthy-restaurants", label: "Healthy restaurants in Queens" },
+                { href: "/nyc/bronx/healthy-restaurants", label: "Healthy restaurants in the Bronx" },
+                { href: "/nyc/staten-island/healthy-restaurants", label: "Healthy restaurants in Staten Island" },
+              ],
+            },
+            {
+              title: "Grade A restaurant pages",
+              links: [
+                { href: "/restaurants/power-bowls", label: "Power Bowls in the Financial District — Grade A Korean restaurant" },
+                { href: "/restaurants/little-collins", label: "Little Collins in Midtown East — Grade A" },
+                { href: "/restaurants/cava-gramercy", label: "CAVA in Gramercy Park — Grade A Mediterranean restaurant" },
+                { href: "/restaurants/la-sova", label: "La Sova in Kensington — Grade A kosher restaurant" },
+                { href: "/restaurants/the-common", label: "The Common in Bay Ridge — Grade A breakfast restaurant" },
+                { href: "/restaurants/787-coffee-mott", label: "787 Coffee in Mott Haven — Grade A coffee shop" },
+                { href: "/restaurants/marthas-country-bakery-astoria", label: "Martha's Country Bakery in Astoria — Grade A bakery" },
+                { href: "/restaurants/gan-hoo-bbq", label: "GAN-HOO BBQ in Flushing — Grade A barbecue restaurant" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A cafe" },
+              ],
+            },
+            {
+              title: "Related pages",
+              links: [
+                { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
+                { href: "/data/nyc-restaurant-health-grade-report", label: "NYC restaurant health grade report" },
+                { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
+                { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },
+              ],
+            },
+          ]}
+        />
 
         {/* Section 7 — FAQ */}
         <section id="faq" className="mb-16 scroll-mt-24">
@@ -546,11 +656,11 @@ export default function NYCHealthGradesGuide() {
         </section>
 
         <GuideCTA
-          heading="Browse only Grade A restaurants in NYC"
-          body="Our directory shows the NYC health inspection grade on every listing. Filter to Grade A only across all 5 boroughs and every dietary need."
-          primaryLabel="Browse Grade A restaurants →"
-          primaryHref="/search?grade=A"
-          secondaryLabel="View health grade map"
+          heading="See grades on restaurant listings"
+          body="Every published listing shows the NYC health inspection grade, score, and date we have on file. Start with a borough hub."
+          primaryLabel="Healthy restaurants in Manhattan"
+          primaryHref="/nyc/manhattan/healthy-restaurants"
+          secondaryLabel="NYC health grade map"
           secondaryHref="/map"
         />
       </div>
