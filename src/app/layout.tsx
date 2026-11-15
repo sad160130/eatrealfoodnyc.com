@@ -13,6 +13,11 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   display: "swap",
+  fallback: ["system-ui", "sans-serif"],
+  // The automatic fallback is local("Arial") plus size-adjust. iOS has no
+  // Arial, and WebKit can then paint the whole page with zero-size glyphs:
+  // the cream canvas looks blank. system-ui is San Francisco on iPhone.
+  adjustFontFallback: false,
   variable: "--font-dm-sans",
 })
 
@@ -81,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={dmSans.variable}>
       <head>
+        <meta name="color-scheme" content="light" />
         <meta name="msapplication-TileColor" content="#1B3A2D" />
         {/* Restaurant photos all load from googleusercontent.com. Preconnect
             saves ~150-300ms of TCP+TLS handshake before the first image
@@ -98,7 +104,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body
         className={`${dmSans.className} antialiased`}
-        style={{ fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif" }}
+        style={{
+          fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif",
+          backgroundColor: "#F8F6F1",
+          color: "#1A1A1A",
+        }}
       >
         <a
           href="#main-content"

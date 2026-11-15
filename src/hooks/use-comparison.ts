@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 
 const STORAGE_KEY = "nyc-healthy-comparison"
 const MAX_COMPARE = 3
@@ -29,19 +29,29 @@ export function useComparison() {
   const [compared, setCompared] = useState<CompareRestaurant[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
 
+  const snapshot = useRef<string | null>(null)
+  const canPersist = useRef(true)
+
   useEffect(() => {
     try {
-      const stored = sessionStorage.getItem(STORAGE_KEY)
-      if (stored) setCompared(JSON.parse(stored))
-    } catch {}
+      snapshot.current = sessionStorage.getItem(STORAGE_KEY)
+      if (snapshot.current) setCompared(JSON.parse(snapshot.current))
+    } catch {
+      canPersist.current = false
+    }
     setIsLoaded(true)
   }, [])
 
   useEffect(() => {
-    if (!isLoaded) return
+    if (!isLoaded || !canPersist.current) return
+    const next = JSON.stringify(compared)
+    if (next === (snapshot.current ?? "[]")) return
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(compared))
-    } catch {}
+      sessionStorage.setItem(STORAGE_KEY, next)
+      snapshot.current = next
+    } catch {
+      canPersist.current = false
+    }
   }, [compared, isLoaded])
 
   const isCompared = useCallback(

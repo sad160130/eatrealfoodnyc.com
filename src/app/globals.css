@@ -22,6 +22,7 @@
    Root custom properties for inline styles and arbitrary values
    ───────────────────────────────────────────────────────────────────────── */
 :root {
+  color-scheme: light;
   --color-forest: #1B3A2D;
   --color-jade: #2D6A4F;
   --color-sage: #52B788;
@@ -30,24 +31,32 @@
   --color-text: #1A1A1A;
   --color-muted: #6B7280;
 
-  /* Hairline — forest at 14% mixed with transparent. */
-  --hairline: color-mix(in srgb, #1B3A2D 14%, transparent);
-  --hairline-strong: color-mix(in srgb, #1B3A2D 28%, transparent);
+  /* Literal rgba, not color-mix. Older iOS WebKit drops a color-mix()
+     declaration, and these tokens paint borders across the page. */
+  --hairline: rgba(27, 58, 45, 0.14);
+  --hairline-strong: rgba(27, 58, 45, 0.28);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
    Page baseline
    ───────────────────────────────────────────────────────────────────────── */
+html {
+  color-scheme: light;
+  background-color: #F8F6F1;
+}
+
 body {
-  background-color: var(--color-cream);
-  color: var(--color-text);
+  background-color: #F8F6F1;
+  color: #1A1A1A;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  /* overflow-x: hidden on html and body, with the fixed header, makes iOS
+     WebKit clip the viewport to an empty paint. clip contains the horizontal
+     rails without creating that scroll container. */
+  overflow-x: clip;
+  max-width: 100%;
 }
-
-html, body { overflow-x: hidden; }
 
 /* ─────────────────────────────────────────────────────────────────────────
    Type system — design language for the rest of the site to opt into.
