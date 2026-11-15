@@ -53,6 +53,14 @@ export async function generateMetadata(): Promise<Metadata> {
     siteName: "Eat Real Food NYC",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Eat Real Food NYC — Healthy Restaurant Directory" }],
   },
+  // The root layout's Twitter description still says every listing is
+  // verified. Override it here so the homepage card matches the Grade A count.
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/opengraph-image"],
+  },
   robots: {
     index: true,
     follow: true,
@@ -144,9 +152,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl">
           {/* Eyebrow — live moat proof, pulled from real DB counts */}
           <p className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span>NYC DOHMH-graded</span>
+            <span className="tabular">{totalCount.toLocaleString()} published listings</span>
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
-            <span className="tabular">{totalCount.toLocaleString()} verified spots</span>
+            <span className="tabular">{counts.letterGraded.toLocaleString()} with an A, B, or C</span>
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
             <DirectoryAsOf />
           </p>
@@ -158,19 +166,18 @@ export default async function HomePage() {
             graded by the city.
           </h1>
 
-          {/* Dek — single paragraph, no second sentence */}
+          {/* Dek — diet filters, then the live letter-grade split. */}
           <p className="dek mt-6 max-w-[58ch]">
-            Vegan, halal, gluten-free, kosher and more — filtered by neighborhood
-            and verified against the city&apos;s own NYC Department of Health
-            inspection grade.{" "}
+            Vegan, halal, gluten-free, kosher and more — filtered by neighborhood.{" "}
+            {counts.letterGraded.toLocaleString()} of {totalCount.toLocaleString()} published
+            listings have a matched NYC Department of Health grade of A, B, or C.{" "}
+            {(totalCount - counts.letterGraded).toLocaleString()} do not.{" "}
             <Link
               href="/guides/nyc-health-grades-explained"
               className="font-medium underline underline-offset-4 hover:text-jade"
               style={{ color: "var(--color-jade)", textDecorationThickness: "1px" }}
             >
-              How grades work
-            </Link>
-            .
+              How grades work</Link>.
           </p>
 
           {/* Search form — single row, hairline borders, no rounded-full pill */}
@@ -562,8 +569,11 @@ export default async function HomePage() {
               </h2>
               <p className="dek mt-5" style={{ maxWidth: "58ch" }}>
                 We don&apos;t pay critics, and we don&apos;t sell grades or rankings.
-                Every restaurant here is cross-referenced with NYC Department of
-                Health inspection records — public, sourced, verifiable.
+                A listing shows a NYC Department of Health grade only when it
+                matches an inspection record.{" "}
+                {counts.letterGraded.toLocaleString()} of{" "}
+                {totalCount.toLocaleString()} published listings have an A, B, or C.{" "}
+                {(totalCount - counts.letterGraded).toLocaleString()} do not.
               </p>
 
               <dl className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
