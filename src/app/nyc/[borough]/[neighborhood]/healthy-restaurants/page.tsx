@@ -13,6 +13,7 @@ import ContextualLinks from "@/components/contextual-links"
 import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
 import AboutThisData from "@/components/about-this-data"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -88,7 +89,7 @@ export default async function NeighborhoodPage({
 
   const { boroughName, neighborhoodName } = resolved
 
-  const [restaurants, stats, gradeACount] = await Promise.all([
+  const [restaurantRows, stats, gradeACount] = await Promise.all([
     prisma.restaurant.findMany({
       where: {
         borough: boroughName,
@@ -114,6 +115,7 @@ export default async function NeighborhoodPage({
       },
     }),
   ])
+  const restaurants = await withPartnerStatus(restaurantRows)
 
   if (restaurants.length < NEIGHBORHOOD_HUB_MIN_RESTAURANTS) notFound()
 

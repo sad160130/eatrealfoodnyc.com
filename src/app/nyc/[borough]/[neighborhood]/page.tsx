@@ -13,6 +13,7 @@ import FAQSection from "@/components/faq-section"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import AboutThisData from "@/components/about-this-data"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 // This route serves the diet+borough combo pages, e.g. /nyc/brooklyn/vegan-restaurants.
 // It lives under the [neighborhood] dynamic segment because Next.js requires a single
@@ -101,7 +102,7 @@ export default async function DietBoroughPage({
     dietary_tags: { contains: tag },
   }
 
-  const [restaurants, totalCount, gradeACount, agg] = await Promise.all([
+  const [restaurantRows, totalCount, gradeACount, agg] = await Promise.all([
     prisma.restaurant.findMany({
       where: baseWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
@@ -111,6 +112,7 @@ export default async function DietBoroughPage({
     prisma.restaurant.count({ where: { ...baseWhere, inspection_grade: "A" } }),
     prisma.restaurant.aggregate({ where: baseWhere, _avg: { rating: true } }),
   ])
+  const restaurants = await withPartnerStatus(restaurantRows)
 
   // Gate thin pages — never index a doorway page with too few listings.
   if (totalCount < COMBO_MIN_RESTAURANTS) notFound()

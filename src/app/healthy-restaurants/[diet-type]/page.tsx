@@ -12,6 +12,7 @@ import ContextualLinks from "@/components/contextual-links"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import { ANCHOR_TEXT, DIET_HUB_CROSSLINKS } from "@/lib/internal-links"
 import AboutThisData from "@/components/about-this-data"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
@@ -57,7 +58,7 @@ export default async function DietTypePage({
 
   const crossLinks = DIET_HUB_CROSSLINKS[tag]
 
-  const [restaurants, totalCount, boroughBreakdown] = await Promise.all([
+  const [restaurantRows, totalCount, boroughBreakdown] = await Promise.all([
     prisma.restaurant.findMany({
       where: {
         business_status: "OPERATIONAL", is_published: true,
@@ -83,6 +84,7 @@ export default async function DietTypePage({
       orderBy: { _count: { id: "desc" } },
     }),
   ])
+  const restaurants = await withPartnerStatus(restaurantRows)
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 

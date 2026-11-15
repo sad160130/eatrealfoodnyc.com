@@ -17,6 +17,7 @@ import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
 import scorecardsData from "@/data/neighborhood-scorecards"
 import AboutThisData from "@/components/about-this-data"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -65,7 +66,7 @@ export default async function BoroughPage({
   const boroughName = BOROUGH_MAP[boroughSlug]
   if (!boroughName) notFound()
 
-  const [restaurants, stats, gradeACount] = await Promise.all([
+  const [restaurantRows, stats, gradeACount] = await Promise.all([
     prisma.restaurant.findMany({
       where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true },
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
@@ -79,6 +80,7 @@ export default async function BoroughPage({
       where: { borough: boroughName, business_status: "OPERATIONAL", is_published: true, inspection_grade: "A" },
     }),
   ])
+  const restaurants = await withPartnerStatus(restaurantRows)
 
   const totalCount = stats._count.id
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"

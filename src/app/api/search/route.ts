@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { isRestaurantOpenNow, getDistanceMiles } from "@/lib/utils";
+import { withPartnerStatus } from "@/lib/partner-status-db";
 
 const EXCLUDED_FIELDS = [
   "email",
@@ -39,8 +40,6 @@ const SELECT_COLUMNS = {
   photo: true,
   business_status: true,
   is_hidden_gem: true,
-  // Advertising label for the card badge. Not a sort or score input.
-  partner_status: true,
   created_at: true,
   updated_at: true,
 };
@@ -209,7 +208,7 @@ async function handleFullTextSearch(params: SearchParams) {
     const filteredTotal = filtered.length;
     const paged = filtered.slice(offset, offset + limit);
     return NextResponse.json({
-      restaurants: paged,
+      restaurants: await withPartnerStatus(paged as Array<{ slug: string }>),
       total: filteredTotal,
       page,
       totalPages: Math.ceil(filteredTotal / limit),
@@ -224,7 +223,7 @@ async function handleFullTextSearch(params: SearchParams) {
   const total = Number(countResult[0].count);
 
   return NextResponse.json({
-    restaurants: serializeRows(restaurants),
+    restaurants: await withPartnerStatus(serializeRows(restaurants) as Array<{ slug: string }>),
     total,
     page,
     totalPages: Math.ceil(total / limit),
@@ -265,7 +264,7 @@ async function handleFilterSearch(params: SearchParams) {
     const filteredTotal = filtered.length;
     const paged = filtered.slice(offset, offset + limit);
     return NextResponse.json({
-      restaurants: paged,
+      restaurants: await withPartnerStatus(paged),
       total: filteredTotal,
       page,
       totalPages: Math.ceil(filteredTotal / limit),
@@ -285,7 +284,7 @@ async function handleFilterSearch(params: SearchParams) {
   ]);
 
   return NextResponse.json({
-    restaurants,
+    restaurants: await withPartnerStatus(restaurants),
     total,
     page,
     totalPages: Math.ceil(total / limit),
@@ -334,10 +333,10 @@ async function handleGeoSearch(params: SearchParams & { lat: number; lng: number
   const results = withDistance.slice(offset, offset + limit);
 
   return NextResponse.json({
-    restaurants: results.map((r) => ({
+    restaurants: await withPartnerStatus(results.map((r) => ({
       ...r,
       distance: Math.round(r.distance * 100) / 100,
-    })),
+    }))),
     total,
     page,
     totalPages: Math.ceil(total / limit),

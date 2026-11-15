@@ -9,6 +9,7 @@ import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import RestaurantCard from "@/components/restaurant-card"
 import reportData from "@/data/health-grade-report"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 export const metadata: Metadata = {
   title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
@@ -61,7 +62,7 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [totalCount, editorsPicks, hiddenGems, gradeACount] = await Promise.all([
+  const [totalCount, editorPickRows, hiddenGemRows, gradeACount] = await Promise.all([
     prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true } }),
     prisma.restaurant.findMany({
       where: {
@@ -80,6 +81,11 @@ export default async function HomePage() {
       take: 4,
     }),
     prisma.restaurant.count({ where: { inspection_grade: "A" } }),
+  ])
+
+  const [editorsPicks, hiddenGems] = await Promise.all([
+    withPartnerStatus(editorPickRows),
+    withPartnerStatus(hiddenGemRows),
   ])
 
   const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null

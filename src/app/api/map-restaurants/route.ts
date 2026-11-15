@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { withPartnerStatus } from "@/lib/partner-status-db"
 
 export async function GET() {
   try {
@@ -23,14 +24,13 @@ export async function GET() {
         dietary_tags: true,
         photo: true,
         is_hidden_gem: true,
-        partner_status: true,
         working_hours: true,
         latitude: true,
         longitude: true,
       },
     })
 
-    return NextResponse.json({ restaurants })
+    return NextResponse.json({ restaurants: await withPartnerStatus(restaurants) })
   } catch (error) {
     console.error("Map API error:", error)
     return NextResponse.json({ error: "Failed to load map data" }, { status: 500 })
