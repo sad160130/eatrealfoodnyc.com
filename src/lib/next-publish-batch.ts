@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client"
-import { isPublishableType, isNameBlocked } from "../config/publishable-types"
+import { isDirectoryEligible } from "../config/publishable-types"
 
 // Single source of truth for "the next 100 to publish."
 //
@@ -10,7 +10,8 @@ import { isPublishableType, isNameBlocked } from "../config/publishable-types"
 //
 // Selection contract:
 //   - Order: priorityRank desc, then rating desc (deterministic tiebreaker)
-//   - Filters: type allowlist + name blocklist from publishable-types.ts
+//   - Filters: isDirectoryEligible() in publishable-types.ts
+//     (type allowlist, name blocklist, catering-only names, known chains, non-food names)
 //   - Over-fetch headroom: limit * 5 to absorb filter losses
 //   - Only operational, only currently unpublished
 //
@@ -45,7 +46,6 @@ export async function getNextPublishBatch(
   })
 
   return candidates
-    .filter((r) => isPublishableType(r.type))
-    .filter((r) => !isNameBlocked(r.name))
+    .filter((r) => isDirectoryEligible(r))
     .slice(0, limit)
 }

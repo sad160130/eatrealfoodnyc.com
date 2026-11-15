@@ -15,6 +15,10 @@
 
 export const RESTAURANT_TYPE_SUFFIX_PATTERN = /\brestaurant$/i
 
+// Types that name a food business without ending in the word "restaurant"
+// ("Japanese steakhouse", "Southern restaurant (US)").
+const PUBLISHABLE_TYPE_PATTERN = /\b(restaurant|steakhouse|gastropub|pizzeria|taqueria|trattoria|osteria|izakaya)\b/i
+
 export const PUBLISHABLE_TYPE_ALLOWLIST = new Set<string>([
   // Generic restaurant-shaped venues
   "Restaurant",
@@ -97,8 +101,9 @@ export const PUBLISHABLE_TYPE_ALLOWLIST = new Set<string>([
 
 export function isPublishableType(type: string | null): boolean {
   if (!type) return false
-  if (PUBLISHABLE_TYPE_ALLOWLIST.has(type)) return true
-  return RESTAURANT_TYPE_SUFFIX_PATTERN.test(type)
+  const trimmed = type.trim()
+  if (PUBLISHABLE_TYPE_ALLOWLIST.has(trimmed)) return true
+  return PUBLISHABLE_TYPE_PATTERN.test(trimmed)
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -130,8 +135,7 @@ export const NAME_BLOCK_PATTERNS: RegExp[] = [
   /\bdietitian/i,
   /\bRDN\b/,              // Registered Dietitian Nutritionist credential
 
-  // Catering / private-chef businesses (parallel guard to the allowlist removal)
-  /\bcatering\b/i,        // "Royalty Catering", "Gotham Catering & Events"
+  // Private-chef and meal-prep services (not sit-down dining)
   /\bchef\s+services\b/i, // "Private Chef Services NYC"
   /\bprivate\s+chef\b/i,
   /\bmeal\s+prep\b/i,     // pre-emptive — meal-prep services aren't sit-down
@@ -142,4 +146,82 @@ export const NAME_BLOCK_PATTERNS: RegExp[] = [
 
 export function isNameBlocked(name: string): boolean {
   return NAME_BLOCK_PATTERNS.some((re) => re.test(name))
+}
+
+// A catering business, not a restaurant that also caters.
+// "Karahi King Restaurant & Catering" and bagel shops stay. "Cedar Star Catering" does not.
+const CATERING_NAME = /\bcater(?:ing|er|ers)\b/i
+const CATERING_KEEP = /\b(bagel|deli|restaurant|cafe|café|bakery|pizza|diner|bistro|grill)\b/i
+
+export function isCateringOnlyName(name: string): boolean {
+  if (!CATERING_NAME.test(name)) return false
+  return !CATERING_KEEP.test(name)
+}
+
+/**
+ * National chains that are not a fit for a healthy-restaurant directory.
+ * Independent businesses that merely share a word show up in the dry-run
+ * report and can be removed from this list before --apply.
+ */
+export const CHAIN_BLOCK_PATTERNS: Array<{ label: string; pattern: RegExp }> = [
+  { label: "Denny's", pattern: /\bdenny'?s\b/i },
+  { label: "Applebee's", pattern: /\bapplebee'?s\b/i },
+  { label: "IHOP", pattern: /\bihop\b/i },
+  { label: "McDonald's", pattern: /\bmcdonald'?s\b/i },
+  { label: "Burger King", pattern: /\bburger\s+king\b/i },
+  { label: "Wendy's", pattern: /\bwendy'?s\b/i },
+  { label: "Taco Bell", pattern: /\btaco\s+bell\b/i },
+  { label: "KFC", pattern: /\bkfc\b/i },
+  { label: "Pizza Hut", pattern: /\bpizza\s+hut\b/i },
+  { label: "Domino's", pattern: /\bdomino'?s\b/i },
+  { label: "Dunkin'", pattern: /\bdunkin'?\b/i },
+  { label: "Popeyes", pattern: /\bpopeyes\b/i },
+  { label: "Subway", pattern: /\bsubway\b/i },
+  { label: "Buffalo Wild Wings", pattern: /\bbuffalo\s+wild\s+wings\b/i },
+  { label: "Chick-fil-A", pattern: /\bchick-fil-a\b/i },
+  { label: "Five Guys", pattern: /\bfive\s+guys\b/i },
+  { label: "Papa John's", pattern: /\bpapa\s+john'?s\b/i },
+  { label: "Little Caesars", pattern: /\blittle\s+caesars\b/i },
+  { label: "White Castle", pattern: /\bwhite\s+castle\b/i },
+  { label: "Checkers", pattern: /\bcheckers\b/i },
+  { label: "Rally's", pattern: /\brally'?s\b/i },
+]
+
+export const NON_FOOD_NAME_PATTERNS: Array<{ label: string; pattern: RegExp }> = [
+  { label: "cinema", pattern: /\b(drafthouse|cinema|cinemas|movie\s+theat(?:er|re)|multiplex)\b/i },
+  { label: "tour", pattern: /\b(sightseeing|tour\s+agency|tour\s+operator|walking\s+tours?|food\s+tours?|tours)\b/i },
+]
+
+export interface ListingIdentity {
+  name: string
+  type: string | null
+}
+
+export interface Ineligibility {
+  code: "missing-type" | "type-not-allowed" | "name-blocked" | "catering" | "chain" | "non-food"
+  detail: string
+}
+
+export function ineligibilityReasons(row: ListingIdentity): Ineligibility[] {
+  const reasons: Ineligibility[] = []
+  if (!row.type || !row.type.trim()) {
+    reasons.push({ code: "missing-type", detail: "no Google Maps type" })
+  } else if (!isPublishableType(row.type)) {
+    reasons.push({ code: "type-not-allowed", detail: row.type.trim() })
+  }
+  if (isNameBlocked(row.name)) {
+    reasons.push({ code: "name-blocked", detail: "name matches the block list" })
+  }
+  if (isCateringOnlyName(row.name)) {
+    reasons.push({ code: "catering", detail: "catering business" })
+  }
+  const chain = CHAIN_BLOCK_PATTERNS.find((entry) => entry.pattern.test(row.name))
+  if (chain) reasons.push({ code: "chain", detail: chain.label })
+  const nonFood = NON_FOOD_NAME_PATTERNS.find((entry) => entry.pattern.test(row.name))
+  if (nonFood) reasons.push({ code: "non-food", detail: nonFood.label })
+  return reasons
+}
+
+export function isDirectoryEligible(row: ListingIdentity): boolean {
+  return ineligibilityReasons(row).length === 0
 }
