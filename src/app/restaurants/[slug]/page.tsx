@@ -44,6 +44,7 @@ import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
 import { presentGrade } from "@/lib/grade-display"
 import { loadPartnerStatuses } from "@/lib/partner-status-db"
 import ClaimListing from "@/components/claim-listing"
+import BookingActions from "@/components/booking-actions"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
@@ -427,6 +428,7 @@ export default async function RestaurantPage({
             />
           </span>
         </div>
+        <BookingActions slug={restaurant.slug} name={restaurant.name} address={restaurant.address} />
         <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} />
       </header>
 
