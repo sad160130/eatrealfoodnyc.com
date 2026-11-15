@@ -109,16 +109,6 @@ export default async function DietTypePage({
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Healthy Restaurants", item: `${siteUrl}/healthy-restaurants` },
-      { "@type": "ListItem", position: 3, name: config.label },
-    ],
-  }
-
   const roundedAvg = roundAverage(ratingAgg._avg.rating)
 
   const itemListJsonLd = buildHubItemList({
@@ -164,7 +154,7 @@ export default async function DietTypePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, datasetJsonLd]),
+          __html: JSON.stringify([itemListJsonLd, datasetJsonLd]),
         }}
       />
 
@@ -172,7 +162,7 @@ export default async function DietTypePage({
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6">
           <TopicalBreadcrumb items={[
-            { label: "Healthy Restaurants", href: "/" },
+            { label: "Healthy Restaurants", href: "/healthy-restaurants" },
             { label: config.label },
           ]} />
 
@@ -184,8 +174,8 @@ export default async function DietTypePage({
             </span>
           </p>
 
-          <h1 className="display-1 mt-3" style={{ textTransform: "lowercase" }}>
-            {config.label}.
+          <h1 className="display-1 mt-3">
+            {config.label} restaurants in NYC
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>

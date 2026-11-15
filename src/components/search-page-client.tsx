@@ -307,11 +307,13 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
           {/* Header */}
           <div className="mb-6">
             {(() => {
-              const matchedGoal = HEALTH_GOALS.find(
-                (goal) =>
-                  goal.tags.every((tag) => diets.includes(tag)) ||
-                  diets.every((tag) => goal.tags.includes(tag))
-              )
+              const matchedGoal = diets.length
+                ? HEALTH_GOALS.find(
+                    (goal) =>
+                      goal.tags.length === diets.length &&
+                      goal.tags.every((tag) => diets.includes(tag))
+                  )
+                : undefined
               if (matchedGoal) {
                 return (
                   <>
@@ -331,6 +333,13 @@ export default function SearchPageClient({ searchParams }: SearchPageClientProps
                 return (
                   <h1 className="text-xl font-bold">
                     Results for &ldquo;{q}&rdquo; &mdash; {total} restaurants found
+                  </h1>
+                )
+              }
+              if (diets.length === 0 && !borough && !grade && !openNow) {
+                return (
+                  <h1 className="text-xl font-bold">
+                    Search healthy restaurants in NYC
                   </h1>
                 )
               }

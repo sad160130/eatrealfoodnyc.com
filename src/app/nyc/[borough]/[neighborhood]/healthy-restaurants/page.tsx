@@ -152,17 +152,6 @@ export default async function NeighborhoodPage({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
   const dietLinks = ["vegan", "halal", "gluten-free"]
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: boroughName, item: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants` },
-      { "@type": "ListItem", position: 3, name: neighborhoodName, item: `${siteUrl}/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants` },
-      { "@type": "ListItem", position: 4, name: "Healthy Restaurants" },
-    ],
-  }
-
   // Card grid renders the top N; the full link list below renders all.
   const CARD_LIMIT = 24
 
@@ -181,14 +170,14 @@ export default async function NeighborhoodPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
 
       {/* ─── HERO ─── */}
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6">
           <TopicalBreadcrumb items={[
-            { label: "NYC", href: "/search" },
+            { label: "Healthy Restaurants", href: "/healthy-restaurants" },
             { label: boroughName, href: `/nyc/${boroughSlug}/healthy-restaurants` },
             { label: neighborhoodName },
           ]} />
@@ -202,7 +191,7 @@ export default async function NeighborhoodPage({
           </p>
 
           <h1 className="display-1 mt-3">
-            Healthy restaurants in {neighborhoodName}.
+            Healthy restaurants in {neighborhoodName}
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
