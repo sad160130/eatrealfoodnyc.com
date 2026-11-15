@@ -189,7 +189,6 @@ export default async function DietBoroughPage({
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: `${boroughName}, New York City` },
     variableMeasured: [`${config.label} classification`, "Health inspection grade", "Community rating", "Neighborhood"],
-    dateModified: new Date().toISOString().split("T")[0],
   }
 
   const faqJsonLd = {

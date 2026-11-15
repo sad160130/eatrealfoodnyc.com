@@ -64,7 +64,7 @@ export default function KosherGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: guide.publishedDate,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}
@@ -120,7 +120,7 @@ export default function KosherGuide() {
               source: `${stats.dietary.topNeighborhoodsByTag["kosher"]?.[0]?.count ?? 0} kosher restaurants`,
             },
           ]}
-          sourceNote="Kosher certification standard: we tag restaurants only when they hold active kosher certification from a recognised authority such as OU, OK, Star-K, or equivalent. Data updated quarterly."
+          sourceNote="Kosher certification standard: we tag restaurants only when they hold active kosher certification from a recognised authority such as OU, OK, Star-K, or equivalent. Tags are reviewed editorially before they are applied."
           variant="green"
         />
 

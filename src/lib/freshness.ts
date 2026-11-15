@@ -60,6 +60,20 @@ export function formatInspectionMonth(raw: string | Date | null | undefined): st
   return parseStoredDate(raw)?.monthYear ?? null
 }
 
+/** Prefer the inspection day. Fall back to the row's updated_at. Never the request clock. */
+export function recordStamp(
+  inspectionDate: string | Date | null | undefined,
+  updatedAt: string | Date | null | undefined
+): Date | null {
+  return parseStoredDate(inspectionDate)?.date ?? parseStoredDate(updatedAt)?.date ?? null
+}
+
+export function laterDate(current: Date | null, next: Date | null): Date | null {
+  if (!next) return current
+  if (!current || next.getTime() > current.getTime()) return next
+  return current
+}
+
 /** Later of two stored dates, ignoring anything that does not parse. */
 export function latestStoredDate(
   values: Array<string | Date | null | undefined>

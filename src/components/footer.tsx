@@ -212,7 +212,7 @@ export default function Footer() {
               letterSpacing: "-0.005em",
             }}
           >
-            Updated weekly. Sundays.
+            New listings each week, on Sundays.
           </p>
         </div>
       </div>

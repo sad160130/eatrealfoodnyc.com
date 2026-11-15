@@ -138,9 +138,9 @@ export default function OurDataPage() {
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="space-y-4">
               {[
-                { frequency: "Weekly", item: "NYC DOHMH inspection grades and scores are refreshed weekly from the NYC Open Data portal to reflect the latest inspection results." },
+                { frequency: "Weekly", item: "New restaurant listings are published weekly. The grade on a listing is the latest NYC DOHMH record we have matched, not a separate weekly rewrite of every score." },
                 { frequency: "Monthly", item: "Google Maps ratings, review counts, and business status (open/closed) are updated monthly to keep our listings current." },
-                { frequency: "Quarterly", item: "Dietary tags are re-evaluated quarterly. New restaurants added to the DOHMH database are processed through our full pipeline within 30 days of appearing in the city data." },
+                { frequency: "Editorial", item: "Dietary tags are reviewed editorially before they are applied. A tag is added only when the restaurant identifies with that diet." },
                 { frequency: "Ongoing", item: "User-submitted corrections are reviewed within 48 hours and applied to the database if verified." },
               ].map((item) => (
                 <div key={item.frequency} className="flex gap-4">

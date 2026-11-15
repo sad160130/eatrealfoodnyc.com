@@ -245,9 +245,9 @@ export default async function NeighborhoodPage({
               className="eyebrow inline-flex items-center gap-1"
               style={{ color: "var(--color-muted)" }}
             >
-              <span>Updated</span>
+              <span>Data as of</span>
               <span style={{ textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-body)", fontWeight: 500 }}>
-                {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                {latestInspection?.iso ?? "the latest matched record"}
               </span>
             </span>
           </div>

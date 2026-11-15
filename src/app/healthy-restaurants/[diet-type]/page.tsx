@@ -157,7 +157,7 @@ export default async function DietTypePage({
       "NYC health inspection grades",
       "healthy restaurants NYC",
     ],
-    dateModified: new Date().toISOString().split("T")[0],
+    ...(gradeSplit.latestIso && { dateModified: gradeSplit.latestIso }),
   }
 
   return (
@@ -181,7 +181,7 @@ export default async function DietTypePage({
             Dietary tag
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              Data as of {gradeSplit.latestIso ?? "the latest matched record"}
             </span>
           </p>
 

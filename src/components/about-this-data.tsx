@@ -1,5 +1,6 @@
 import Link from "next/link"
 import stats from "@/data/guide-stats"
+import { CADENCE_LINE } from "@/lib/cadence"
 
 type Variant = "hub" | "guide" | "full"
 
@@ -87,7 +88,7 @@ export default function AboutThisData({
               >
                 NYC DOHMH Open Data portal
               </a>
-              , updated quarterly. Last refresh:{" "}
+              . {CADENCE_LINE} Last refresh:{" "}
               <strong className="text-gray-700">{lastRefreshed}</strong>.{" "}
               <Link
                 href="/about/our-data"
@@ -154,8 +155,7 @@ export default function AboutThisData({
                 . We match inspection records to restaurant listings using name and address. Grade
                 coverage:{" "}
                 <strong className="text-gray-700">{gradeCoverage}%</strong> of our directory has a
-                verified inspection grade — the remainder are unmatched or uninspected. Updated
-                quarterly.
+                verified inspection grade — the remainder are unmatched or uninspected. {CADENCE_LINE}
               </p>
               <p>
                 <strong className="text-gray-700">Dietary tags:</strong> Applied conservatively
@@ -308,8 +308,7 @@ export default function AboutThisData({
           DATA REFRESH SCHEDULE
         </p>
         <p className="text-sm leading-relaxed text-gray-700">
-          Health inspection grades are refreshed quarterly from the NYC DOHMH Open Data portal.
-          Restaurant operational status is verified during each refresh. User-submitted corrections
+          {CADENCE_LINE} User-submitted corrections
           are reviewed and applied within 7 days. Last full data refresh:{" "}
           <strong>{lastRefreshed}</strong>.
         </p>

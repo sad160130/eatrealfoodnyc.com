@@ -148,7 +148,6 @@ export default async function BoroughPage({
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: `${boroughName}, New York City` },
     variableMeasured: ["Health inspection grade", "Dietary certifications", "Community rating", "Hidden gem status"],
-    dateModified: new Date().toISOString().split("T")[0],
   }
 
   const intro = BOROUGH_INTROS[boroughSlug] || ""
@@ -175,7 +174,7 @@ export default async function BoroughPage({
             Borough hub
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              Latest matched NYC DOHMH grade
             </span>
           </p>
 

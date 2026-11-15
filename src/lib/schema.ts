@@ -1,4 +1,5 @@
 import type { RestaurantReview, ReviewsSummary } from "./reviews"
+import { recordStamp } from "./freshness"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
@@ -78,6 +79,7 @@ export function buildRestaurantSchema(restaurant: {
   latitude: number | null; longitude: number | null;
   phone: string | null; website: string | null; type: string | null; rating: number | null;
   reviews: number | null; inspection_grade: string | null; inspection_score?: number | null;
+  inspection_date?: string | null;
   updated_at: string | Date;
 }) {
   const additionalProperty = [
@@ -108,7 +110,7 @@ export function buildRestaurantSchema(restaurant: {
     ...(aggregateRating && { aggregateRating }),
     ...(additionalProperty.length > 0 && { additionalProperty }),
     publisher: PUBLISHER_REF,
-    dateModified: new Date(restaurant.updated_at).toISOString(),
+    dateModified: (recordStamp(restaurant.inspection_date, restaurant.updated_at) ?? new Date(restaurant.updated_at)).toISOString().slice(0, 10),
   }
 }
 
@@ -171,7 +173,7 @@ export function buildArticleSchema(guide: { title: string; slug: string; descrip
     description: guide.description,
     url: `${SITE_URL}/guides/${guide.slug}`,
     datePublished: guide.publishedDate,
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: guide.publishedDate,
     author: PUBLISHER_REF,
     publisher: PUBLISHER_REF,
     isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Eat Real Food NYC" },

@@ -93,7 +93,7 @@ export default function NYCHealthGradesGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: guide.publishedDate,
             mainEntityOfPage: {
               "@type": "WebPage",
               "@id": `${siteUrl}/guides/nyc-health-grades-explained`,
@@ -152,7 +152,7 @@ export default function NYCHealthGradesGuide() {
               source: `${stats.global.boroughs["Bronx"]?.gradeA.toLocaleString()} of ${stats.global.boroughs["Bronx"]?.total.toLocaleString()} restaurants`,
             },
           ]}
-          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Updated quarterly."
+          sourceNote="Data source: NYC Department of Health and Mental Hygiene Open Data, joined to Eat Real Food NYC restaurant database. Each grade is the latest matched DOHMH record. New listings are published weekly."
           variant="green"
         />
 

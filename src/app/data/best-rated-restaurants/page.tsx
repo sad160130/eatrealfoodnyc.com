@@ -168,7 +168,7 @@ function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
 }
 
 export default function BestRatedRestaurantsPage() {
-  const dateModified = new Date().toISOString().split("T")[0]
+  const dateModified = bestRatedData.reportDate
   const boroughOrder = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
   const reportJsonLd = {

@@ -68,7 +68,7 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [counts, editorPickRows, hiddenGemRows, gradeACount] = await Promise.all([
+  const [counts, editorPickRows, hiddenGemRows, gradeACount, newestRow] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.findMany({
       where: {
@@ -87,6 +87,11 @@ export default async function HomePage() {
       take: 4,
     }),
     prisma.restaurant.count({ where: { inspection_grade: "A" } }),
+    prisma.restaurant.findFirst({
+      where: { is_published: true },
+      orderBy: { updated_at: "desc" },
+      select: { updated_at: true, inspection_date: true },
+    }),
   ])
 
   const [editorsPicks, hiddenGems] = await Promise.all([
@@ -112,7 +117,7 @@ export default async function HomePage() {
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
             <span className="tabular">{totalCount.toLocaleString()} verified spots</span>
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
-            <span>Updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+            <span>Data as of {newestRow ? newestRow.updated_at.toISOString().slice(0, 10) : "the latest stored record"}</span>
           </p>
 
           {/* Display headline — the thesis. The phrasing foregrounds the

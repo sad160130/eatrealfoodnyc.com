@@ -32,6 +32,8 @@ import {
 } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
+import { recordStamp } from "@/lib/freshness"
+import { CADENCE_LINE } from "@/lib/cadence"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
@@ -611,11 +613,7 @@ export default async function RestaurantPage({
 
             {/* Data freshness */}
             <p className="mt-3 px-1 text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.55 }}>
-              Data sourced from NYC DOHMH Open Data.
-              {restaurant.inspection_date && (
-                <> Inspection record dated {new Date(restaurant.inspection_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}.</>
-              )}{" "}
-              Directory updated {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}.
+              Data as of {recordStamp(restaurant.inspection_date, restaurant.updated_at)?.toISOString().slice(0, 10) ?? "the stored record"}. {CADENCE_LINE}
             </p>
 
             {/* Location & contact card — hairline, 4px, no emoji */}

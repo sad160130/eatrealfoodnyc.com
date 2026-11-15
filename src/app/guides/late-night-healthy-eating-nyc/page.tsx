@@ -60,7 +60,7 @@ export default function LateNightGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: new Date().toISOString().split("T")[0],
+            dateModified: guide.publishedDate,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}

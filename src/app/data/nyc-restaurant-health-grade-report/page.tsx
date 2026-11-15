@@ -70,7 +70,7 @@ function GradeBar({
 }
 
 export default function HealthGradeReportPage() {
-  const dateModified = new Date().toISOString().split("T")[0]
+  const dateModified = reportDate
 
   const reportJsonLd = {
     "@context": "https://schema.org",
