@@ -48,7 +48,7 @@ export function getDietContextualLinks(dietTag: string, dietLabel: string): Arra
   return [
     [ANCHOR_TEXT.dietHub(dietLabel), `/healthy-restaurants/${dietTag}`],
     [ANCHOR_TEXT.hiddenGems, `/search?diet=${dietTag}&hidden_gem=true`],
-    [ANCHOR_TEXT.gradeAFilter, `/search?diet=${dietTag}&grade=A`],
+    [ANCHOR_TEXT.gradeAFilter, "/healthy-restaurants/grade-a"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
   ]
 }
@@ -170,7 +170,7 @@ export function getListingHubLinks(restaurant: {
   const FALLBACKS: Array<[string, string]> = [
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
-    [ANCHOR_TEXT.gradeAFilter, "/search?grade=A"],
+    [ANCHOR_TEXT.gradeAFilter, borough ? `/nyc/${boroughToSlug(borough)}/grade-a-restaurants` : "/healthy-restaurants/grade-a"],
     [ANCHOR_TEXT.hiddenGems, "/search?hidden_gem=true"],
   ]
   for (const [anchor, href] of FALLBACKS) {

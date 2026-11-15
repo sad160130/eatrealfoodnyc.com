@@ -40,7 +40,7 @@ export const GUIDES: GuideArticle[] = [
     keywords: ["nyc restaurant health grade", "nyc health inspection grade", "restaurant grade nyc"],
     relatedGuides: ["nyc-restaurant-inspection-process", "hidden-gem-restaurants-nyc", "best-healthy-neighborhoods-nyc"],
     relatedHubPages: [
-      { label: "Browse Grade A restaurants", href: "/search?grade=A" },
+      { label: "Browse Grade A restaurants", href: "/healthy-restaurants/grade-a" },
       { label: "View health grade map", href: "/map" },
       { label: "Manhattan Grade A restaurants", href: "/nyc/manhattan/healthy-restaurants" },
     ],
@@ -59,7 +59,7 @@ export const GUIDES: GuideArticle[] = [
     keywords: ["nyc restaurant inspection", "how restaurant inspections work nyc", "nyc dohmh inspection"],
     relatedGuides: ["nyc-health-grades-explained", "hidden-gem-restaurants-nyc"],
     relatedHubPages: [
-      { label: "Search Grade A restaurants", href: "/search?grade=A" },
+      { label: "Search Grade A restaurants", href: "/healthy-restaurants/grade-a" },
       { label: "Neighborhood health comparison", href: "/nyc/compare" },
     ],
   },

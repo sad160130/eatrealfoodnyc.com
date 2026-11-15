@@ -635,7 +635,7 @@ export default async function HealthGradeReportPage() {
             higher proportion of ungraded or recently inspected restaurants. Always check individual
             restaurant grades at{" "}
             <Link
-              href="/search?grade=A"
+              href="/healthy-restaurants/grade-a"
               className="text-jade underline underline-offset-2 hover:text-forest"
             >
               eatrealfoodnyc.com/search
@@ -749,7 +749,7 @@ export default async function HealthGradeReportPage() {
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href="/search?grade=A"
+              href="/healthy-restaurants/grade-a"
               className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest"
             >
               Browse Grade A restaurants →

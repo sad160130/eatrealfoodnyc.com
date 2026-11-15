@@ -5,6 +5,15 @@ import { COMBO_MIN_RESTAURANTS, DIET_CONFIG } from "@/config/dietary-tags"
 import { GUIDES } from "@/config/guides"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 import { neighborhoodIndexPath, pageCount } from "@/lib/restaurant-index"
+import {
+  countGradeA,
+  gradeABoroughCounts,
+  gradeABoroughPath,
+  gradeACityPath,
+  gradeANeighborhoodCounts,
+  gradeANeighborhoodPath,
+  gradeAPageCount,
+} from "@/lib/grade-a"
 import healthGradeReport from "@/data/health-grade-report"
 import bestRatedReport from "@/data/best-rated-restaurants"
 
@@ -206,6 +215,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   })
 
+  const gradeATotal = await countGradeA({})
+  const gradeABoroughs = await gradeABoroughCounts()
+  const gradeANeighborhoods = await gradeANeighborhoodCounts()
+  const gradeAPages = [
+    ...Array.from({ length: gradeAPageCount(gradeATotal) }, (_, index) =>
+      entry(siteUrl, gradeACityPath(index + 1), index === 0 ? 0.95 : 0.5, "weekly", directoryUpdated)
+    ),
+    ...gradeABoroughs.flatMap((row) =>
+      Array.from({ length: gradeAPageCount(row.count) }, (_, index) =>
+        entry(siteUrl, gradeABoroughPath(row.borough, index + 1), index === 0 ? 0.9 : 0.5, "weekly", directoryUpdated)
+      )
+    ),
+    ...gradeANeighborhoods.flatMap((row) =>
+      Array.from({ length: gradeAPageCount(row.count) }, (_, index) =>
+        entry(
+          siteUrl,
+          gradeANeighborhoodPath(row.borough, row.neighborhood, index + 1),
+          index === 0 ? 0.85 : 0.5,
+          "weekly",
+          directoryUpdated
+        )
+      )
+    ),
+  ]
+
   return [
     ...staticPages,
     ...guidePages,
@@ -214,6 +248,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...boroughPages,
     ...neighborhoodPages,
     ...comboPages,
+    ...gradeAPages,
     entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
     ...indexPages,
     ...restaurantPages,

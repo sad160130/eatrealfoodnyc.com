@@ -242,7 +242,7 @@ export default async function BoroughPage({
               <span className="callout-label">Open right now</span>
               <span className="callout-pulse" aria-hidden="true" />
             </Link>
-            <Link href={`/search?borough=${boroughName}&grade=A`} className="callout">
+            <Link href={`/nyc/${boroughSlug}/grade-a-restaurants`} className="callout">
               <span className="callout-initial">A<span style={{ color: "var(--color-muted)" }}>.</span></span>
               <span className="callout-label">Grade A only</span>
             </Link>

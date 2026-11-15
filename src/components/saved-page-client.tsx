@@ -106,7 +106,7 @@ export default function SavedPageClient({ sharedRestaurants }: SavedPageClientPr
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {[
               { label: "🌱 Top Vegan Restaurants", href: "/healthy-restaurants/vegan" },
-              { label: "🏆 Grade A Only", href: "/search?grade=A" },
+              { label: "🏆 Grade A Only", href: "/healthy-restaurants/grade-a" },
               { label: "💎 Hidden Gems", href: "/search?hidden_gem=true" },
               { label: "🗺️ Near Me", href: "/map" },
             ].map((item) => (

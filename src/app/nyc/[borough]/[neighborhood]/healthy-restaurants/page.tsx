@@ -251,7 +251,11 @@ export default async function NeighborhoodPage({
               <span className="callout-pulse" aria-hidden="true" />
             </Link>
             <Link
-              href={`/search?borough=${boroughName}&neighborhood=${neighborhoodName}&grade=A`}
+              href={
+                gradeACount >= 5
+                  ? `/nyc/${boroughSlug}/${neighborhoodSlug}/grade-a-restaurants`
+                  : `/nyc/${boroughSlug}/grade-a-restaurants`
+              }
               className="callout"
             >
               <span className="callout-initial">A<span style={{ color: "var(--color-muted)" }}>.</span></span>
