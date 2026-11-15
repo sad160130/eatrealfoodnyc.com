@@ -34,6 +34,7 @@ import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
 import { recordStamp } from "@/lib/freshness"
 import { CADENCE_LINE } from "@/lib/cadence"
+import OfficialGradeLink from "@/components/official-grade-link"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
@@ -260,7 +261,15 @@ export default async function RestaurantPage({
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2" style={{ maxWidth: "62ch" }}>
               <div>
                 <dt className="eyebrow">Grade</dt>
-                <dd>{restaurant.inspection_grade || "Not matched"}</dd>
+                <dd>
+                  {restaurant.inspection_grade || "Not matched"}
+                  {restaurant.inspection_grade && (
+                    <>
+                      {" "}
+                      <OfficialGradeLink name={restaurant.name} />
+                    </>
+                  )}
+                </dd>
               </div>
               <div>
                 <dt className="eyebrow">Score</dt>
@@ -309,6 +318,7 @@ export default async function RestaurantPage({
             <span className="eyebrow" style={{ color: "var(--color-muted)" }}>
               NYC Health Grade
             </span>
+            {grade && <OfficialGradeLink name={restaurant.name} />}
           </div>
         </div>
 
@@ -503,6 +513,9 @@ export default async function RestaurantPage({
               <section>
                 <p className="eyebrow">Health inspection</p>
                 <h2 className="h2-serif mt-2">NYC DOHMH Grade {restaurant.inspection_grade}</h2>
+                <p className="mt-2 text-sm">
+                  <OfficialGradeLink name={restaurant.name} />
+                </p>
                 <div className="mt-5 flex items-start gap-5">
                   <span
                     className="plaque flex-shrink-0"

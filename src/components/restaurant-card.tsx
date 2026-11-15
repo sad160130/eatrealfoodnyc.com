@@ -16,6 +16,7 @@ import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import PartnerLabel from "@/components/partner-label"
 import { isPartnerStatus } from "@/lib/partner-status"
+import OfficialGradeLink from "@/components/official-grade-link"
 
 interface RestaurantCardProps {
   restaurant: Restaurant
@@ -188,6 +189,11 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
             </span>
           )}
         </div>
+        {grade && (
+          <p className="mt-1 text-xs">
+            <OfficialGradeLink name={restaurant.name} />
+          </p>
+        )}
 
         {/* Location */}
         {locationLabel && (
