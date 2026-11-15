@@ -46,6 +46,9 @@ export async function subscribeNewsletter(formData: FormData): Promise<Newslette
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return { ok: true }
     }
+    // Vercel runs `prisma generate && next build` and does not apply migrations.
+    // A missing newsletter_subscribers table, or any other write failure, returns
+    // this message instead of throwing out of the server action.
     console.error("newsletter signup failed")
     return { ok: false, error: "We couldn't save that signup. Please try again." }
   }
