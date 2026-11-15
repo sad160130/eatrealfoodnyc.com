@@ -1,119 +1,77 @@
 # NYC Restaurant Compliance Weekly: Monday CSV fulfillment
 
-This is a spec. It does not send email, charge anyone, or turn on the Stripe Payment Links. Those links stay in the unmerged checkout pull request until a Monday send has succeeded once.
+The webhook and the Monday cron are implemented. Checkout buttons stay in the unmerged payment-link pull request. This code does not create a Stripe charge.
 
-## What is missing
+`STRIPE_SECRET_KEY` is a restricted live key with read access to Customers, Subscriptions, Checkout Sessions, Prices, Products, and Invoices. `src/lib/stripe-read.ts` only issues GET requests. It does not create, update, or cancel Stripe objects. Subscriber rows are written in our database.
 
-`/data` describes a Monday email with two CSVs. Nothing in the repo sends it.
+## Env vars
 
-- There is no `vercel.json` cron.
-- There is no Stripe webhook. A return to `/data?subscribed=1` does not include the buyer’s email.
-- There is no Resend (or any other) mailer. Vercel has no `RESEND_API_KEY`.
-- The early-access form writes a `data_waitlist` row. That is not a paid subscriber list.
-- The directory has no pre-permit column. The openings file can name that column and leave it empty.
+Set on the Vercel project for Production and Preview. Do not commit the values.
 
-## Smallest reliable design
+| Name | Value in use |
+| --- | --- |
+| `STRIPE_SECRET_KEY` | Restricted read-only key. |
+| `STRIPE_WEBHOOK_SECRET` | Signing secret for endpoint `we_1UcDBqHcL01LkckafoJfD6Lk`, URL `https://www.eatrealfoodnyc.com/api/stripe/compliance-weekly`. |
+| `STRIPE_PRICE_MONTHLY` | `price_1UcCAkHcL01LkckajruZhxpO` |
+| `STRIPE_PRICE_YEARLY` | `price_1UcCAlHcL01Lkckav1bckNHc` |
+| `RESEND_API_KEY` | Sends the Monday email. |
+| `CRON_SECRET` | Required `Authorization: Bearer` value. Vercel Cron sends this when the env var is set. |
 
-Two pieces, in this order.
+`DATABASE_URL` is already set. `eatrealfoodnyc.com` must be verified in Resend so `compliance@eatrealfoodnyc.com` can send.
 
-### 1. Stripe webhook records who paid
+The code reads the price ids from the env vars. It does not hardcode them.
 
-`POST /api/stripe/compliance-weekly` verifies the Stripe signature and upserts one row per subscription.
+## Webhook
 
-Listen for:
+`POST /api/stripe/compliance-weekly` reads the raw body and checks `Stripe-Signature` with `STRIPE_WEBHOOK_SECRET`. A bad or stale signature returns 400 and writes nothing.
 
-- `checkout.session.completed` when the session mode is `subscription`
+Handled events:
+
+- `checkout.session.completed` when `mode` is `subscription`
+- `customer.subscription.created`
 - `customer.subscription.updated`
 - `customer.subscription.deleted`
+- `invoice.paid`
+- `invoice.payment_failed`
 
-Store only these fields:
+Any other event, a one-time checkout, an invoice with no subscription, or a price other than `STRIPE_PRICE_MONTHLY` or `STRIPE_PRICE_YEARLY` returns 200 and writes nothing.
 
-| Column | Source |
-| --- | --- |
-| `stripe_customer_id` | subscription customer |
-| `stripe_subscription_id` | unique |
-| `email` | customer email |
-| `plan` | `monthly` or `yearly`, matched to the price ids below |
-| `status` | Stripe status (`active`, `past_due`, `canceled`, and the other Stripe statuses as stored) |
-| `current_period_end` | Stripe timestamp |
+A matching subscription is upserted on `stripe_subscription_id` with `stripe_customer_id`, `email`, `plan` (`monthly` or `yearly`), the Stripe `status`, and `current_period_end`. The status is stored as Stripe reports it after a read. A failed invoice does not cancel the subscription in Stripe.
 
-Ignore any other product. A signature failure returns 400 and writes nothing.
+## Monday cron
 
-The table is applied on Supabase by hand, the same way `catering_leads` was. The Vercel build does not run migrations.
+`vercel.json` schedules `GET /api/cron/compliance-weekly` at `0 13 * * 1` (08:00 America/New_York standard time, 09:00 daylight time). The route returns 401 unless `Authorization` is `Bearer ${CRON_SECRET}`.
 
-### 2. Monday cron builds the files once and emails active subscribers
+For subscribers whose `status` is `active`, it builds both CSVs once and sends one plain-text email per subscriber through Resend. Subject: `NYC Restaurant Compliance Weekly, {Mon D, YYYY}`. The body names the extract time, `inspection-leads.csv`, `new-openings.csv`, and NYC Open Data dataset `43nn-pn8j`.
 
-`vercel.json`:
-
-```json
-{ "crons": [{ "path": "/api/cron/compliance-weekly", "schedule": "0 13 * * 1" }] }
-```
-
-`0 13 * * 1` is 08:00 America/New_York in standard time and 09:00 in daylight time. One UTC hour is simpler than a second job for the clock change.
-
-The route rejects any request whose `Authorization` header is not `Bearer ${CRON_SECRET}`.
-
-On each run:
-
-1. Build both CSVs once. Do not rebuild them per recipient.
-2. Select subscribers whose `status` is `active`.
-3. Send one email per subscriber through Resend, with both CSVs attached.
-4. Record `stripe_subscription_id` plus the Monday date in `compliance_weekly_sends`, unique on that pair. A retry the same Monday skips anyone already recorded.
-5. If Resend fails for one address, leave that send unrecorded and continue with the rest. The next Monday retries only the people who were not recorded.
-
-The email is plain text. Subject: `NYC Restaurant Compliance Weekly, {Mon D, YYYY}`. Body names the extract date, the two filenames, and the NYC Open Data dataset `43nn-pn8j`. It does not quote traffic or promise a grade change.
-
-From address, after the domain is verified: `compliance@eatrealfoodnyc.com`.
+`compliance_weekly_sends` is unique on `stripe_subscription_id` plus the Monday date in America/New_York. The row is inserted only after Resend accepts the email. A retry the same Monday skips recorded subscriptions. A Resend failure leaves that subscription unrecorded and continues with the rest.
 
 ## The two files
 
-Both files use the live `restaurants` table. They do not invent rows. Street addresses are included here because this is the paid file, not the public redacted sample.
+Both files are built from the live `restaurants` table. They do not invent rows. Street addresses are included because this is the paid file.
 
-`inspection-leads.csv`
+`inspection-leads.csv` includes a row when any of these is true:
 
-A row is included when any of these is true:
-
-- `inspection_grade` is `Z` or `P` (grade pending)
-- `inspection_score` is 28 or more (the city’s Grade C threshold)
+- `inspection_grade` is `Z` or `P`
+- `inspection_score` is 28 or more
 - `business_status` is present and is not `OPERATIONAL`
+
+`lead_type` joins the matching reasons with `|`: `grade-pending`, `high-score`, `not-operational`.
 
 Columns: `lead_type`, `name`, `address`, `borough`, `neighborhood`, `phone`, `inspection_grade`, `inspection_score`, `inspection_date`, `business_status`.
 
-`lead_type` may list more than one reason, separated by `|`.
-
-`new-openings.csv`
-
-A row is a published operational restaurant with no inspection date and no A, B, or C grade.
+`new-openings.csv` includes a published operational restaurant with no inspection date and no A, B, or C.
 
 Columns: `name`, `address`, `borough`, `neighborhood`, `phone`, `pre_permit`, `inspection_grade`, `inspection_date`.
 
-`pre_permit` is an empty column until the database has a real pre-permit flag. Do not guess it from the name or the grade.
+`pre_permit` is empty. There is no pre-permit column to copy.
 
-## Keys we need before implementation
+## Checkout pull request
 
-Set these on the Vercel project for Production (and Preview only if a test webhook is wanted). Do not commit them.
+The payment links stay in the checkout pull request:
 
-| Name | Who creates it | Why |
-| --- | --- | --- |
-| `STRIPE_SECRET_KEY` | Stripe Dashboard → Developers → API keys. A restricted key is enough: Customers read, Subscriptions read, Checkout Sessions read. | The cron and webhook look up the customer email and subscription status. |
-| `STRIPE_WEBHOOK_SECRET` | Stripe Dashboard → Developers → Webhooks, after the route is deployed. Endpoint: `https://www.eatrealfoodnyc.com/api/stripe/compliance-weekly`. Events listed above. | Verifies that the event came from Stripe. |
-| `STRIPE_PRICE_MONTHLY` | The `price_...` id on Payment Link `14A6oHbt93sc7sqgu1cV203`. | Marks a subscription as the $79 monthly plan. |
-| `STRIPE_PRICE_YEARLY` | The `price_...` id on Payment Link `5kQ9AT7cT5Ak4ge3HfcV204`. | Marks a subscription as the $790 yearly plan. |
-| `RESEND_API_KEY` | Resend → API keys. | Sends the Monday email. |
-| `CRON_SECRET` | A long random string you choose. | Stops anyone else from calling the cron route. |
+- Monthly `https://buy.stripe.com/14A6oHbt93sc7sqgu1cV203` uses `STRIPE_PRICE_MONTHLY`
+- Yearly `https://buy.stripe.com/5kQ9AT7cT5Ak4ge3HfcV204` uses `STRIPE_PRICE_YEARLY`
+- Stripe returns the buyer to `/data?subscribed=1`
 
-Also required, and not a Vercel secret: verify `eatrealfoodnyc.com` in Resend and add the DNS records Resend shows. Without that, `compliance@eatrealfoodnyc.com` cannot send.
-
-Already present, do not rotate it for this: `DATABASE_URL`.
-
-Not required: a Stripe publishable key, the Payment Link URLs themselves, or a second mail provider.
-
-## What stays off until the first real send
-
-Leave the Stripe buttons on `/data` disconnected until:
-
-1. The webhook has stored one test subscription.
-2. A manual cron call, with `CRON_SECRET`, has emailed that test address both CSVs.
-3. The test send row is visible in `compliance_weekly_sends`.
-
-Until then, `/data` should not tell a buyer that the Monday files are already going out.
+This pull request does not change those links. The two branches edit different files, so they can merge in either order. Merge this one first if the buttons should not go live before the webhook is deployed.
