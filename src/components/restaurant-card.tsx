@@ -18,6 +18,7 @@ import PartnerLabel from "@/components/partner-label"
 import { isPartnerStatus } from "@/lib/partner-status"
 import { presentGrade } from "@/lib/grade-display"
 import OfficialGradeLink from "@/components/official-grade-link"
+import { skipImageOptimizer } from "@/lib/photo-src"
 
 interface RestaurantCardProps {
   restaurant: Restaurant
@@ -76,6 +77,7 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={priority}
+              unoptimized={skipImageOptimizer(restaurant.photo)}
               onError={() => setImageError(true)}
             />
           ) : (
