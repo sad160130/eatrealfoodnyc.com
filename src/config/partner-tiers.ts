@@ -1,9 +1,9 @@
 import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
 
 /**
- * Paid advertising tiers. stripePaymentLink stays null until a Stripe
- * Payment Link exists. While it is null, the button is a mailto to the
- * partnerships inbox with the tier name in the subject.
+ * Paid advertising tiers. A Stripe Payment Link replaces the mailto.
+ * After checkout, Stripe returns the buyer to
+ * /partner-with-us?status=success&tier=<featured|spotlight|neighborhood_sponsor>.
  * Payment never changes a grade, a Health Score, a dietary tag, or organic rank.
  */
 export interface PartnerTier {
@@ -20,7 +20,7 @@ export const PARTNER_TIERS: PartnerTier[] = [
     id: "featured",
     name: "Featured",
     priceMonthlyUsd: 49,
-    stripePaymentLink: null,
+    stripePaymentLink: "https://buy.stripe.com/4gM4gzgNt7Is3cab9HcV200",
     summary: "A labeled Partner listing for one restaurant.",
     includes: [
       "A Partner label on the listing page",
@@ -32,7 +32,7 @@ export const PARTNER_TIERS: PartnerTier[] = [
     id: "spotlight",
     name: "Spotlight",
     priceMonthlyUsd: 149,
-    stripePaymentLink: null,
+    stripePaymentLink: "https://buy.stripe.com/14A28r40H8Mw7sqelTcV201",
     summary: "The Featured listing, plus a larger labeled module.",
     includes: [
       "Everything in Featured",
@@ -44,7 +44,7 @@ export const PARTNER_TIERS: PartnerTier[] = [
     id: "neighborhood-sponsor",
     name: "Neighborhood Sponsor",
     priceMonthlyUsd: 299,
-    stripePaymentLink: null,
+    stripePaymentLink: "https://buy.stripe.com/dRmdR9gNtfaUcMKfpXcV202",
     summary: "One labeled sponsor unit on a chosen neighborhood page.",
     includes: [
       "A Sponsored or Presented by unit on that neighborhood page",
