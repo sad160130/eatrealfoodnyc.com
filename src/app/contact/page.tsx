@@ -148,9 +148,14 @@ export default function ContactPage() {
               with the subject line &quot;Restaurant Owner — [Your Restaurant Name].&quot;
             </p>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-              Please note: we do not offer paid listing upgrades, promoted placements, or score modifications.
-              All listings are determined by our data pipeline and editorial standards. We are happy to correct
-              factual errors but cannot modify our Health Score methodology for individual restaurants.
+              Listing in the directory is free. We do not sell health grades, Health Scores, dietary tags,
+              or a higher place in organic rankings. An optional Partner placement is labeled and described
+              on our{" "}
+              <Link href="/partner-with-us" className="font-semibold text-jade hover:text-forest">
+                Partner with us
+              </Link>{" "}
+              page. We are happy to correct factual errors but cannot modify our Health Score methodology
+              for individual restaurants.
             </p>
           </div>
         </section>

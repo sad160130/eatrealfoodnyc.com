@@ -15,6 +15,7 @@ const COMPANY = [
   { label: "Dining Guides", href: "/guides" },
   { label: "Contact", href: "/contact" },
   { label: "Press", href: "/press" },
+  { label: "Partner with us", href: "/partner-with-us" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
 ]
@@ -102,7 +103,7 @@ export default function Footer() {
                 fontStyle: "italic",
               }}
             >
-              An independent NYC dining directory, ranked by real city inspection data — not paid placements.
+              An independent NYC dining directory, ranked by real city inspection data. Labeled Partner placements never change a grade or a ranking.
             </p>
 
             {/* Social — single-line, restrained */}

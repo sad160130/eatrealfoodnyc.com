@@ -65,6 +65,9 @@ module.exports = {
     if (path.startsWith('/data/')) {
       return { loc: path, priority: 0.9, changefreq: 'monthly' }
     }
+    if (path === '/partner-with-us') {
+      return { loc: path, priority: 0.6, changefreq: 'monthly' }
+    }
     return { loc: path, priority: 0.6, changefreq: 'monthly' }
   },
 }

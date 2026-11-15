@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { GUIDES, GUIDE_CATEGORIES, getFeaturedGuides, getGuidesByCategory } from "@/config/guides"
 import { getCanonicalUrl } from "@/config/seo"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 export const metadata: Metadata = {
   title: "NYC Healthy Dining Guides — Expert Advice on Eating Well in New York City",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function GuidesPage() {
+export default async function GuidesPage() {
+  const { restaurants } = await getPublishedDirectoryCounts()
   const featured = getFeaturedGuides()
 
   return (
@@ -60,7 +62,7 @@ export default function GuidesPage() {
             <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-text)" }}>
               <span className="eyebrow mr-1.5" style={{ color: "var(--color-muted)" }}>Restaurants covered</span>
-              <span className="tabular font-semibold">8,835</span>
+              <span className="tabular font-semibold">{restaurants.toLocaleString()}</span>
             </span>
           </div>
         </div>

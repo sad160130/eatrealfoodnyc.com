@@ -115,6 +115,9 @@ export function computeHealthScore(restaurant: Restaurant): {
   color: string
   breakdown: { label: string; points: number; max: number; earned: number }[]
 } {
+  // partner_status is intentionally unread. A Partner or Sponsored placement
+  // must not change this score, the inspection grade, or the rating.
+  // See src/lib/partner-status.ts and src/scripts/test-partner-status.ts.
   const breakdown: { label: string; points: number; max: number; earned: number }[] = []
   let total = 0
 

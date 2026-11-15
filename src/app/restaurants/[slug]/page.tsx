@@ -35,6 +35,9 @@ import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
+import PartnerLabel, { PartnerDisclosure } from "@/components/partner-label"
+import { isPartnerStatus, partnerLinkRel } from "@/lib/partner-status"
+import { loadPartnerStatuses } from "@/lib/partner-status-db"
 
 export const revalidate = 86400
 
@@ -98,6 +101,10 @@ export default async function RestaurantPage({
     getReviewsForRestaurant(slug, 15),
   ])
   if (!restaurant || !restaurant.is_published) notFound()
+
+  // Loaded separately so a build can prerender before the partner_status
+  // column exists. Null means this listing is not a partner.
+  const partnerStatus = (await loadPartnerStatuses([restaurant.slug])).get(restaurant.slug) ?? null
 
   // Memoised — see neighborhood-hubs.ts. Gates the breadcrumb, the Explore
   // card, and getListingHubLinks below so none of them can link to a
@@ -220,6 +227,11 @@ export default async function RestaurantPage({
                   <VerifiedBadge />
                 </span>
               )}
+              {isPartnerStatus(partnerStatus) && (
+                <span className="ml-3 inline-flex align-middle" style={{ verticalAlign: "0.2em" }}>
+                  <PartnerLabel kind={partnerStatus} />
+                </span>
+              )}
             </h1>
 
             {/* Subtitle: neighborhood · borough · price */}
@@ -239,6 +251,7 @@ export default async function RestaurantPage({
                   </span>
                 ))}
             </p>
+            <PartnerDisclosure kind={partnerStatus} />
           </div>
 
           {/* The subject anchor — monumental plaque echoing the DOHMH inspection placard */}
@@ -298,7 +311,7 @@ export default async function RestaurantPage({
             <a
               href={restaurant.website}
               target="_blank"
-              rel="noopener noreferrer"
+              rel={partnerLinkRel(partnerStatus)}
               className="eyebrow inline-flex items-center gap-1.5 transition-colors"
               style={{ color: "var(--color-forest)" }}
             >
@@ -620,7 +633,7 @@ export default async function RestaurantPage({
                     <a
                       href={restaurant.website}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel={partnerLinkRel(partnerStatus)}
                       className="truncate transition-colors hover:underline"
                       style={{ color: "var(--color-forest)", textUnderlineOffset: "2px" }}
                     >

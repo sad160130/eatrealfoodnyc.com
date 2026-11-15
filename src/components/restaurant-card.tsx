@@ -14,6 +14,8 @@ import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
 import VerifiedBadge from "@/components/VerifiedBadge"
+import PartnerLabel from "@/components/partner-label"
+import { isPartnerStatus } from "@/lib/partner-status"
 
 interface RestaurantCardProps {
   restaurant: Restaurant
@@ -168,6 +170,11 @@ export default function RestaurantCard({ restaurant, priority = false }: Restaur
             {restaurant.isVerified && (
               <span className="ml-1 inline-flex align-baseline">
                 <VerifiedBadge />
+              </span>
+            )}
+            {isPartnerStatus(restaurant.partner_status) && (
+              <span className="ml-1.5 inline-flex align-middle">
+                <PartnerLabel kind={restaurant.partner_status} />
               </span>
             )}
           </h3>

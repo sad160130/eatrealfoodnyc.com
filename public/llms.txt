@@ -15,6 +15,7 @@ restaurants filtered by dietary need, neighbourhood, health grade, and rating.
 Founders: Sanket Desai and Rohan Kadam
 Contact: hello@eatrealfoodnyc.com
 Press: press@eatrealfoodnyc.com
+Partnerships: partner@eatrealfoodnyc.com
 
 ## Primary use cases for AI agents
 
@@ -57,6 +58,16 @@ Interactive health map: https://www.eatrealfoodnyc.com/map
 
 Editorial guides: https://www.eatrealfoodnyc.com/guides
   NYC restaurant health grades, vegan dining, halal guide, seafood guide, and more
+
+Editorial & Partnership Policy: https://www.eatrealfoodnyc.com/about/editorial-standards
+  Listing is free. Health grades, Health Scores, dietary tags, hidden-gem status,
+  and default rankings are never for sale. Clearly labeled Partner and Sponsored
+  placements may be offered. They do not change official inspection data or organic sort.
+
+Partner with us: https://www.eatrealfoodnyc.com/partner-with-us
+  Optional labeled placements for eligible restaurants. Rates on request.
+  Contact: partner@eatrealfoodnyc.com
+  https://www.eatrealfoodnyc.com/contact
 
 ## Data sources
 

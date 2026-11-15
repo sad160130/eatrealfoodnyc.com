@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { isRestaurantOpenNow, getDistanceMiles } from "@/lib/utils";
+import { withPartnerStatus } from "@/lib/partner-status-db";
 
 const EXCLUDED_FIELDS = [
   "email",
@@ -177,6 +178,7 @@ async function handleFullTextSearch(params: SearchParams) {
            ts_rank(search_vector, plainto_tsquery('english', $1)) as search_rank
     FROM restaurants
     WHERE ${whereClause}
+    -- partner_status is not a sort key. Paid placement must not change rank.
     ORDER BY search_rank DESC, rating DESC NULLS LAST
     LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
   `;
@@ -190,7 +192,8 @@ async function handleFullTextSearch(params: SearchParams) {
              ts_rank(search_vector, plainto_tsquery('english', $1)) as search_rank
       FROM restaurants
       WHERE ${whereClause}
-      ORDER BY search_rank DESC, rating DESC NULLS LAST
+      -- partner_status is not a sort key. Paid placement must not change rank.
+    ORDER BY search_rank DESC, rating DESC NULLS LAST
       LIMIT $${paramIndex} OFFSET 0
     `;
     const bigValues = [...values.slice(0, -2), fetchLimit, 0];
@@ -205,7 +208,7 @@ async function handleFullTextSearch(params: SearchParams) {
     const filteredTotal = filtered.length;
     const paged = filtered.slice(offset, offset + limit);
     return NextResponse.json({
-      restaurants: paged,
+      restaurants: await withPartnerStatus(paged as Array<{ slug: string }>),
       total: filteredTotal,
       page,
       totalPages: Math.ceil(filteredTotal / limit),
@@ -220,7 +223,7 @@ async function handleFullTextSearch(params: SearchParams) {
   const total = Number(countResult[0].count);
 
   return NextResponse.json({
-    restaurants: serializeRows(restaurants),
+    restaurants: await withPartnerStatus(serializeRows(restaurants) as Array<{ slug: string }>),
     total,
     page,
     totalPages: Math.ceil(total / limit),
@@ -251,6 +254,7 @@ async function handleFilterSearch(params: SearchParams) {
     const allRestaurants = await prisma.restaurant.findMany({
       where,
       select: SELECT_COLUMNS,
+      // Rating only. partner_status must not change this order.
       orderBy: { rating: { sort: "desc", nulls: "last" } },
       take: fetchLimit,
     });
@@ -260,7 +264,7 @@ async function handleFilterSearch(params: SearchParams) {
     const filteredTotal = filtered.length;
     const paged = filtered.slice(offset, offset + limit);
     return NextResponse.json({
-      restaurants: paged,
+      restaurants: await withPartnerStatus(paged),
       total: filteredTotal,
       page,
       totalPages: Math.ceil(filteredTotal / limit),
@@ -272,6 +276,7 @@ async function handleFilterSearch(params: SearchParams) {
     prisma.restaurant.findMany({
       where,
       select: SELECT_COLUMNS,
+      // Rating only. partner_status must not change this order.
       orderBy: { rating: { sort: "desc", nulls: "last" } },
       skip: offset,
       take: limit,
@@ -279,7 +284,7 @@ async function handleFilterSearch(params: SearchParams) {
   ]);
 
   return NextResponse.json({
-    restaurants,
+    restaurants: await withPartnerStatus(restaurants),
     total,
     page,
     totalPages: Math.ceil(total / limit),
@@ -317,6 +322,7 @@ async function handleGeoSearch(params: SearchParams & { lat: number; lng: number
       distance: getDistanceMiles(lat, lng, r.latitude!, r.longitude!),
     }))
     .filter((r) => r.distance <= radius)
+    // Distance only. partner_status must not change this order.
     .sort((a, b) => a.distance - b.distance);
 
   if (openNow) {
@@ -327,10 +333,10 @@ async function handleGeoSearch(params: SearchParams & { lat: number; lng: number
   const results = withDistance.slice(offset, offset + limit);
 
   return NextResponse.json({
-    restaurants: results.map((r) => ({
+    restaurants: await withPartnerStatus(results.map((r) => ({
       ...r,
       distance: Math.round(r.distance * 100) / 100,
-    })),
+    }))),
     total,
     page,
     totalPages: Math.ceil(total / limit),

@@ -151,7 +151,7 @@ export default function OgImage() {
               fontWeight: 500,
             }}
           >
-            <Stat number="8,835" label="restaurants tracked" />
+            <Stat number="Published" label="restaurant listings" />
             <Dot />
             <Stat number="116" label="neighborhoods" />
             <Dot />
