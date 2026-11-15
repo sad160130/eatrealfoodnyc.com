@@ -15,7 +15,6 @@ import {
   gradeAPageCount,
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
-import healthGradeReport from "@/data/health-grade-report"
 import bestRatedReport from "@/data/best-rated-restaurants"
 
 const DIET_TYPES = Object.keys(DIET_CONFIG)
@@ -190,7 +189,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "/data/nyc-restaurant-health-grade-report",
       0.9,
       "monthly",
-      asDate(healthGradeReport.generatedAt)
+      asDate("2026-11-15")
     ),
     entry(
       siteUrl,

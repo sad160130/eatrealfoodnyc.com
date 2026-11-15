@@ -1,0 +1,119 @@
+table,geography,metric,count,denominator,share,notes
+letter_grade,New York City,Grade A,21646,23992,90.2%,Latest A/B/C per CAMIS. Extract 2026-11-13. Inspections through 2026-11-10.
+letter_grade,New York City,Grade B,1810,23992,,Latest A/B/C per CAMIS.
+letter_grade,New York City,Grade C,536,23992,,Latest A/B/C per CAMIS.
+letter_grade,Manhattan,Grade A,8622,9418,91.5%,
+letter_grade,Manhattan,Grade B,617,9418,,
+letter_grade,Manhattan,Grade C,179,9418,,
+letter_grade,Brooklyn,Grade A,5560,6111,91.0%,
+letter_grade,Brooklyn,Grade B,421,6111,,
+letter_grade,Brooklyn,Grade C,130,6111,,
+letter_grade,Queens,Grade A,4741,5431,87.3%,
+letter_grade,Queens,Grade B,525,5431,,
+letter_grade,Queens,Grade C,165,5431,,
+letter_grade,Bronx,Grade A,1925,2151,89.5%,
+letter_grade,Bronx,Grade B,177,2151,,
+letter_grade,Bronx,Grade C,49,2151,,
+letter_grade,Staten Island,Grade A,776,858,90.4%,
+letter_grade,Staten Island,Grade B,69,858,,
+letter_grade,Staten Island,Grade C,13,858,,
+letter_grade,Missing borough code,Grade A,22,23,,
+letter_grade,Missing borough code,Grade B,1,23,,
+letter_grade,Missing borough code,Grade C,0,23,,
+status_grade,New York City,Not yet graded (N),2204,3451,,
+status_grade,New York City,Grade pending (Z),1247,3451,,
+uninspected,New York City,Inspection date 1900-01-01,4059,31502,12.9%,City definition of not yet inspected.
+uninspected,Manhattan,Inspection date 1900-01-01,1811,31502,,
+uninspected,Brooklyn,Inspection date 1900-01-01,1009,31502,,
+uninspected,Queens,Inspection date 1900-01-01,798,31502,,
+uninspected,Bronx,Inspection date 1900-01-01,235,31502,,
+uninspected,Staten Island,Inspection date 1900-01-01,127,31502,,
+uninspected,Missing borough code,Inspection date 1900-01-01,79,31502,,
+closures,New York City,Unique restaurants Sep 1–Nov 10 2026,118,,,"Still in the active file. 158 closure or re-closure events."
+closures,New York City,Unique restaurants Sep 1–Nov 10 2025,99,,,"Same dates in the current active file. 128 events. Not a complete historical census."
+closures,Brooklyn,Unique restaurants Sep 1–Nov 10 2026,40,,,
+closures,Queens,Unique restaurants Sep 1–Nov 10 2026,34,,,
+closures,Manhattan,Unique restaurants Sep 1–Nov 10 2026,32,,,
+closures,Bronx,Unique restaurants Sep 1–Nov 10 2026,12,,,
+closures,Staten Island,Unique restaurants Sep 1–Nov 10 2026,0,,,
+cuisine,Seven health-positioned city labels,Grade A,867,919,94.3%,"Juice/smoothies/fruit salads; Salads; Sandwiches/Salads/Mixed Buffet; Soups/Salads/Sandwiches; Vegan; Vegetarian; Fruits/Vegetables. City cuisine field, not a nutrition grade."
+neighborhood,"Flushing (QN22)",Grade A,332,416,79.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Murray Hill (QN51)",Grade A,127,159,79.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Richmond Hill (QN54)",Grade A,93,114,81.6,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Borough Park (BK88)",Grade A,69,83,83.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Mott Haven-Port Morris (BX39)",Grade A,85,102,83.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Jackson Heights (QN28)",Grade A,236,283,83.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"North Corona (QN26)",Grade A,126,151,83.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Elmhurst (QN29)",Grade A,195,233,83.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Central Harlem South (MN11)",Grade A,74,88,84.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Hamilton Heights (MN04)",Grade A,75,89,84.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Woodside (QN63)",Grade A,102,120,85.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Morningside Heights (MN09)",Grade A,131,154,85.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"East Harlem South (MN33)",Grade A,99,116,85.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Woodhaven (QN53)",Grade A,81,95,85.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Washington Heights North (MN35)",Grade A,89,104,85.6,NTA with at least 80 letter-graded restaurants.
+neighborhood,"South Ozone Park (QN55)",Grade A,126,147,85.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Sunset Park East (BK34)",Grade A,235,273,86.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Astoria (QN70)",Grade A,317,364,87.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Queensbridge-Ravenswood-Long Island City (QN68)",Grade A,74,85,87.1,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Washington Heights South (MN36)",Grade A,130,149,87.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Ridgewood (QN20)",Grade A,208,238,87.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Flatlands (BK58)",Grade A,70,80,87.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Homecrest (BK25)",Grade A,93,106,87.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Fort Greene (BK68)",Grade A,102,116,87.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Marble Hill-Inwood (MN01)",Grade A,88,100,88.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bensonhurst West (BK28)",Grade A,177,200,88.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Prospect Lefferts Gardens-Wingate (BK60)",Grade A,131,148,88.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Spuyten Duyvil-Kingsbridge (BX29)",Grade A,89,100,89.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"East Village (MN22)",Grade A,469,526,89.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bushwick North (BK77)",Grade A,225,252,89.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bayside-Bayside Hills (QN46)",Grade A,133,149,89.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Chinatown (MN27)",Grade A,439,490,89.6,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Greenpoint (BK76)",Grade A,208,232,89.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Stuyvesant Heights (BK35)",Grade A,104,116,89.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Forest Hills (QN17)",Grade A,167,186,89.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"East Williamsburg (BK90)",Grade A,158,176,89.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Jamaica (QN61)",Grade A,152,169,89.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Steinway (QN72)",Grade A,125,139,89.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Clinton (MN15)",Grade A,398,441,90.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Hunters Point-Sunnyside-West Maspeth (QN31)",Grade A,359,398,90.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Crown Heights North (BK61)",Grade A,195,215,90.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Schuylerville-Throgs Neck-Edgewater Park (BX52)",Grade A,79,87,90.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Flatbush (BK42)",Grade A,152,167,91.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"West Concourse (BX63)",Grade A,125,137,91.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bedford (BK75)",Grade A,136,149,91.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Canarsie (BK50)",Grade A,73,80,91.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Murray Hill-Kips Bay (MN20)",Grade A,265,290,91.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Lenox Hill-Roosevelt Island (MN31)",Grade A,234,256,91.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Yorkville (MN32)",Grade A,181,198,91.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"East New York (BK82)",Grade A,106,116,91.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Turtle Bay-East Midtown (MN19)",Grade A,440,481,91.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Gramercy (MN21)",Grade A,187,204,91.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Upper East Side-Carnegie Hill (MN40)",Grade A,260,283,91.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Prospect Heights (BK64)",Grade A,103,112,92.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Lower East Side (MN28)",Grade A,121,131,92.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"SoHo-TriBeCa-Civic Center-Little Italy (MN24)",Grade A,577,624,92.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bensonhurst East (BK29)",Grade A,98,106,92.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bedford Park-Fordham North (BX05)",Grade A,74,80,92.5,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Upper West Side (MN12)",Grade A,307,331,92.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bay Ridge (BK31)",Grade A,240,259,92.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"West Village (MN23)",Grade A,699,753,92.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Midtown-Midtown South (MN17)",Grade A,1576,1696,92.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Hudson Yards-Chelsea-Flat Iron-Union Square (MN13)",Grade A,764,822,92.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Belmont (BX06)",Grade A,105,113,92.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Park Slope-Gowanus (BK37)",Grade A,399,429,93.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Clinton Hill (BK69)",Grade A,106,114,93.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"North Side-South Side (BK73)",Grade A,397,426,93.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"East Harlem North (MN34)",Grade A,127,136,93.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Sunset Park West (BK32)",Grade A,165,176,93.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"New Dorp-Midland Beach (SI45)",Grade A,77,82,93.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"DUMBO-Vinegar Hill-Downtown Brooklyn-Boerum Hill (BK38)",Grade A,306,325,94.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Missing (Missing)",Grade A,509,540,94.3,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Brooklyn Heights-Cobble Hill (BK09)",Grade A,102,108,94.4,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Bushwick South (BK78)",Grade A,144,152,94.7,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Lincoln Square (MN14)",Grade A,168,177,94.9,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Melrose South-Mott Haven North (BX34)",Grade A,76,80,95.0,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Sheepshead Bay-Gerritsen Beach-Manhattan Beach (BK17)",Grade A,120,126,95.2,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Battery Park City-Lower Manhattan (MN25)",Grade A,435,454,95.8,NTA with at least 80 letter-graded restaurants.
+neighborhood,"Carroll Gardens-Columbia Street-Red Hook (BK33)",Grade A,159,165,96.4,NTA with at least 80 letter-graded restaurants.
+license,Derived tables,CC BY 4.0,,,,"Attribute NYC Department of Health and Mental Hygiene via NYC Open Data dataset 43nn-pn8j, and Eat Real Food NYC for this aggregation."
