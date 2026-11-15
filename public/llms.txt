@@ -15,6 +15,7 @@ restaurants filtered by dietary need, neighbourhood, health grade, and rating.
 Founders: Sanket Desai and Rohan Kadam
 Contact: hello@eatrealfoodnyc.com
 Press: press@eatrealfoodnyc.com
+Partnerships: partner@eatrealfoodnyc.com
 
 ## Primary use cases for AI agents
 
@@ -65,7 +66,8 @@ Editorial & Partnership Policy: https://www.eatrealfoodnyc.com/about/editorial-s
 
 Partner with us: https://www.eatrealfoodnyc.com/partner-with-us
   Optional labeled placements for eligible restaurants. Rates on request.
-  Contact: https://www.eatrealfoodnyc.com/contact
+  Contact: partner@eatrealfoodnyc.com
+  https://www.eatrealfoodnyc.com/contact
 
 ## Data sources
 

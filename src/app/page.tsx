@@ -10,17 +10,23 @@ import SavedPreview from "@/components/saved-preview"
 import RestaurantCard from "@/components/restaurant-card"
 import reportData from "@/data/health-grade-report"
 import { withPartnerStatus } from "@/lib/partner-status-db"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
-export const metadata: Metadata = {
-  title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
-  description:
-    "8,835 healthy restaurants across all 5 NYC boroughs. Every listing verified with health inspection grades. Filter by vegan, halal, gluten-free, and more.",
+const HOME_TITLE = "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { restaurants } = await getPublishedDirectoryCounts()
+  const listed = restaurants.toLocaleString()
+  const description = `${listed} healthy restaurants across all 5 NYC boroughs. Every listing verified with health inspection grades. Filter by vegan, halal, gluten-free, and more.`
+  return {
+  title: HOME_TITLE,
+  description,
   alternates: {
     canonical: "https://www.eatrealfoodnyc.com",
   },
   openGraph: {
-    title: "Healthy Restaurants NYC — Find & Filter 2026 | Eat Real Food NYC",
-    description: "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs with verified NYC health inspection grades.",
+    title: HOME_TITLE,
+    description: `NYC's most trusted healthy restaurant directory. ${listed} published restaurants across all 5 boroughs with verified NYC health inspection grades.`,
     type: "website",
     url: "https://www.eatrealfoodnyc.com",
     siteName: "Eat Real Food NYC",
@@ -36,6 +42,7 @@ export const metadata: Metadata = {
       "max-image-preview": "large" as const,
     },
   },
+  }
 }
 
 // ISR — re-validate the homepage at most once per hour. Featured restaurants,
@@ -62,8 +69,8 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [totalCount, editorPickRows, hiddenGemRows, gradeACount] = await Promise.all([
-    prisma.restaurant.count({ where: { business_status: "OPERATIONAL", is_published: true } }),
+  const [counts, editorPickRows, hiddenGemRows, gradeACount] = await Promise.all([
+    getPublishedDirectoryCounts(),
     prisma.restaurant.findMany({
       where: {
         business_status: "OPERATIONAL", is_published: true,
@@ -87,6 +94,7 @@ export default async function HomePage() {
     withPartnerStatus(editorPickRows),
     withPartnerStatus(hiddenGemRows),
   ])
+  const totalCount = counts.restaurants
 
   const featuredGem = hiddenGems[0] ?? editorsPicks[1] ?? null
 
@@ -492,8 +500,7 @@ export default async function HomePage() {
               </p>
 
               <dl className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
-                <Stat number="8,835" label="NYC restaurants tracked" />
-                <Stat number={totalCount.toLocaleString()} label="Currently published" />
+                <Stat number={totalCount.toLocaleString()} label="Published listings" />
                 <Stat number={gradeACount.toLocaleString()} label="Grade A inspections" />
                 <Stat number="116" label="Neighborhoods covered" />
                 <Stat number="12" label="Dietary tags, applied conservatively" />

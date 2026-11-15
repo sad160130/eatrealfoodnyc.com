@@ -10,6 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import stats from "@/data/guide-stats"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("best-healthy-neighborhoods-nyc")!
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 const GUIDE_FAQS = [
   {
     question: "How do you rank neighborhoods for healthy dining?",
-    answer: "We use a composite score based on four factors: total number of healthy restaurants, average restaurant rating, average NYC health inspection score, and dietary diversity (how many different dietary categories are represented). Neighborhoods are compared within their borough first, then across the city. Data comes from our directory of 8,835 restaurants and live NYC Department of Health inspection records.",
+    answer: "We use a composite score based on four factors: total number of healthy restaurants, average restaurant rating, average NYC health inspection score, and dietary diversity (how many different dietary categories are represented). Neighborhoods are compared within their borough first, then across the city. Data comes from our published restaurant listings and live NYC Department of Health inspection records.",
   },
   {
     question: "Which borough has the healthiest restaurants overall?",
@@ -45,10 +46,19 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function HealthyNeighborhoodsGuide() {
+export default async function HealthyNeighborhoodsGuide() {
+  const { restaurants } = await getPublishedDirectoryCounts()
+  const faqs = GUIDE_FAQS.map((faq) =>
+    faq.question === "How do you rank neighborhoods for healthy dining?"
+      ? {
+          ...faq,
+          answer: `We use a composite score based on four factors: total number of healthy restaurants, average restaurant rating, average NYC health inspection score, and dietary diversity (how many different dietary categories are represented). Neighborhoods are compared within their borough first, then across the city. Data comes from our directory of ${restaurants.toLocaleString()} published restaurants and live NYC Department of Health inspection records.`,
+        }
+      : faq
+  )
   return (
     <GuideLayout guide={guide}>
-      <FAQSchema faqs={GUIDE_FAQS} />
+      <FAQSchema faqs={faqs} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -309,8 +319,8 @@ export default function HealthyNeighborhoodsGuide() {
             Frequently asked questions
           </h2>
           <div className="space-y-0 overflow-hidden rounded-2xl border border-gray-100 bg-white">
-            {GUIDE_FAQS.map((faq, i) => (
-              <div key={i} className={`border-b border-gray-100 ${i === GUIDE_FAQS.length - 1 ? "border-b-0" : ""}`}>
+            {faqs.map((faq, i) => (
+              <div key={i} className={`border-b border-gray-100 ${i === faqs.length - 1 ? "border-b-0" : ""}`}>
                 <details className="group">
                   <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 hover:bg-gray-50">
                     <span className="pr-4 text-base font-semibold text-forest" style={{ fontFamily: "Georgia, serif" }}>

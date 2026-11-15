@@ -10,6 +10,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import stats from "@/data/guide-stats"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("how-eat-healthy-nyc-15-dollars")!
@@ -45,7 +46,8 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function BudgetHealthyGuide() {
+export default async function BudgetHealthyGuide() {
+  const { restaurants } = await getPublishedDirectoryCounts()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -70,7 +72,7 @@ export default function BudgetHealthyGuide() {
         guide={guide}
         subtitle="Practical strategies for eating nutritious meals in NYC without breaking the bank."
         stats={[
-          { label: "Total restaurants", stat: "8,835" },
+          { label: "Published listings", stat: restaurants.toLocaleString() },
           { label: "Queens avg rating", stat: "4.3" },
           { label: "Hidden gems avg", stat: "4.6" },
           { label: "All boroughs", stat: "5" },

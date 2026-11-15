@@ -85,7 +85,7 @@ export const DIET_KEYWORDS: Record<string, {
 
 export const HOMEPAGE_KEYWORDS = {
   title: "Healthy Restaurants NYC — Find & Filter | Eat Real Food",
-  metaDescription: "NYC's most trusted healthy restaurant directory. 8,835 restaurants across all 5 boroughs — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and 8 more dietary needs.",
+  metaDescription: "NYC's most trusted healthy restaurant directory. Published listings across all 5 boroughs — every listing verified with NYC health inspection grades. Filter by vegan, halal, gluten-free, kosher, and 8 more dietary needs.",
   subtitle: "The only NYC healthy restaurant directory built on verified NYC Department of Health inspection grades. Search by neighbourhood, dietary need, or health grade.",
 }
 

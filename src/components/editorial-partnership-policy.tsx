@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { GENERAL_CONTACT_EMAIL, PRESS_CONTACT_EMAIL } from "@/config/contact"
+import { GENERAL_CONTACT_EMAIL, PARTNER_INQUIRY_EMAIL, PRESS_CONTACT_EMAIL } from "@/config/contact"
 
 const FREE_RULES = [
   {
@@ -214,17 +214,21 @@ export default function EditorialPartnershipPolicy() {
           a policy concern. We will review reports and correct confirmed errors promptly.
         </p>
         <p className="mt-4 text-sm leading-relaxed text-gray-700">
-          For policy questions, partnership inquiries, or to report a concern, use the{" "}
+          For policy questions or to report a concern, use the{" "}
           <Link href="/contact" className="font-semibold text-jade hover:text-forest">contact page</Link>
           {" "}or{" "}
           <a href={`mailto:${GENERAL_CONTACT_EMAIL}`} className="font-semibold text-jade hover:text-forest">
             {GENERAL_CONTACT_EMAIL}
           </a>
+          . Partnership inquiries:{" "}
+          <a href={`mailto:${PARTNER_INQUIRY_EMAIL}`} className="font-semibold text-jade hover:text-forest">
+            {PARTNER_INQUIRY_EMAIL}
+          </a>
           . Media inquiries:{" "}
           <a href={`mailto:${PRESS_CONTACT_EMAIL}`} className="font-semibold text-jade hover:text-forest">
             {PRESS_CONTACT_EMAIL}
           </a>
-          . Partnership inquiries use that same contact until a dedicated inbox is published.
+          .
         </p>
       </div>
 

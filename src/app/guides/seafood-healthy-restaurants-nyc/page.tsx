@@ -8,6 +8,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("seafood-healthy-restaurants-nyc")!
@@ -47,7 +48,8 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function SeafoodGuide() {
+export default async function SeafoodGuide() {
+  const { restaurants } = await getPublishedDirectoryCounts()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -73,7 +75,7 @@ export default function SeafoodGuide() {
         subtitle="New York City's coastline and port history have made seafood central to the city's food culture for centuries. This is where to find the best of it — safely, transparently, and without guesswork."
         stats={[
           { stat: "3,254", label: "Grade A restaurants in our directory" },
-          { stat: "8,835", label: "Total NYC restaurants tracked" },
+          { stat: restaurants.toLocaleString(), label: "Published restaurant listings" },
           { stat: "5", label: "Boroughs with verified listings" },
           { stat: "36.8%", label: "Health inspection grade coverage" },
         ]}

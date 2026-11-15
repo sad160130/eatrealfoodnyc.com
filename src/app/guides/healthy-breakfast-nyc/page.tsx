@@ -8,6 +8,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("healthy-breakfast-nyc")!
@@ -47,7 +48,8 @@ const GUIDE_FAQS = [
   },
 ]
 
-export default function HealthyBreakfastGuide() {
+export default async function HealthyBreakfastGuide() {
+  const { restaurants } = await getPublishedDirectoryCounts()
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -72,7 +74,7 @@ export default function HealthyBreakfastGuide() {
         guide={guide}
         subtitle="New York City starts early and moves fast. The restaurants and cafes that understand healthy mornings are the ones worth knowing — before the city catches up with them."
         stats={[
-          { stat: "8,835", label: "NYC restaurants in our directory" },
+          { stat: restaurants.toLocaleString(), label: "Published restaurant listings" },
           { stat: "984", label: "Hidden gem restaurants identified" },
           { stat: "12", label: "Dietary categories tracked" },
           { stat: "116", label: "NYC neighborhoods covered" },
