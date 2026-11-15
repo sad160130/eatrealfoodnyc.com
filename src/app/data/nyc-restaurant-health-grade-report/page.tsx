@@ -1,797 +1,239 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
-import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
-import AboutThisData from "@/components/about-this-data"
-import reportData from "@/data/health-grade-report"
-import bestRatedData from "@/data/best-rated-restaurants"
-import { formatLongDate } from "@/lib/inspection-dates"
-import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { FALL_2026_REPORT as R } from "@/data/fall-2026-inspection-report"
 
-const { summary, byBorough, neighborhoods, byType, keyFindings, generatedAt } = reportData
-const snapshotDate = formatLongDate(new Date(generatedAt))
-
-const REPORT_URL = "https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-grade-report"
-const PAGE_DESCRIPTION = `NYC DOHMH health-grade snapshot from ${snapshotDate}: ${summary.totalGradeA.toLocaleString()} Grade A restaurants among ${summary.totalRestaurants.toLocaleString()} published then, across ${neighborhoods.totalAnalyzed} neighborhoods. Live directory counts are on the page.`
+const PATH = "/data/nyc-restaurant-health-grade-report"
+const URL = `https://www.eatrealfoodnyc.com${PATH}`
+const TITLE = "NYC Restaurant Inspection Report, Fall 2026"
+const META_TITLE = "NYC Inspection Report, Fall 2026"
+const DESCRIPTION =
+  "Nov 10, 2026: NYC closed 118 still-active restaurants. 4,059 of 31,502 are uninspected. 90.2% of letter grades are A. Open Data 43nn-pn8j, extract Nov 13."
 
 export const metadata: Metadata = {
-  title: "NYC Restaurant Health Grade Report 2026",
-  description: PAGE_DESCRIPTION,
-  alternates: {
-    canonical: getCanonicalUrl("/data/nyc-restaurant-health-grade-report"),
-  },
+  title: META_TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: getCanonicalUrl(PATH) },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "NYC Restaurant Health Grade Report 2026",
-    description: `Data analysis of health inspection grades across ${summary.totalRestaurants.toLocaleString()} NYC restaurants. Which boroughs and neighborhoods have the safest restaurants?`,
+    title: TITLE,
+    description: DESCRIPTION,
     type: "article",
-    url: REPORT_URL,
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "NYC Restaurant Health Grade Report 2026",
-      },
-    ],
+    url: URL,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: TITLE }],
   },
 }
 
-function GradeBar({
-  gradeAPct,
-  gradeBPct,
-  gradeCPct,
-}: {
-  gradeAPct: number
-  gradeBPct: number
-  gradeCPct: number
-}) {
+const article = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: TITLE,
+  datePublished: "2026-11-15",
+  dateModified: "2026-11-15",
+  author: { "@type": "Organization", name: "Eat Real Food NYC", url: "https://www.eatrealfoodnyc.com" },
+  publisher: { "@id": "https://www.eatrealfoodnyc.com/#organization" },
+  mainEntityOfPage: URL,
+  isBasedOn: R.datasetUrl,
+}
+
+const faqs = [
+  {
+    q: "How many NYC restaurants were closed in fall 2026?",
+    a: "From September 1 through November 10, 2026, the Health Department ordered 118 still-active restaurants closed, in 158 closure or re-closure events. The same dates in 2025 still show 99 restaurants and 128 events in the current active file. That file omits restaurants that later left active status, so the 2025 figure is not a complete historical census.",
+  },
+  {
+    q: "How many NYC restaurants have never been inspected?",
+    a: "In the November 13, 2026 extract, 4,059 of 31,502 active establishments have the placeholder inspection date of January 1, 1900. The city uses that date for an establishment that has not yet been inspected. Some of those records may be permitted and not yet open.",
+  },
+  {
+    q: "Does Grade A mean a restaurant is healthy?",
+    a: "No. Grade A means the latest inspection score is 0–13. It is a food-safety grade, not a nutrition rating and not one of Eat Real Food NYC’s dietary tags.",
+  },
+]
+
+const dataset = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  name: TITLE,
+  description: DESCRIPTION,
+  url: URL,
+  dateModified: "2026-11-15",
+  creator: { "@type": "Organization", name: "Eat Real Food NYC", url: "https://www.eatrealfoodnyc.com" },
+  license: "https://creativecommons.org/licenses/by/4.0/",
+  isBasedOn: {
+    "@type": "Dataset",
+    name: "DOHMH New York City Restaurant Inspection Results",
+    identifier: R.datasetId,
+    url: R.datasetUrl,
+    publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
+  },
+  distribution: {
+    "@type": "DataDownload",
+    encodingFormat: "text/csv",
+    contentUrl: "https://www.eatrealfoodnyc.com/data/nyc-inspection-fall-2026.csv",
+  },
+}
+
+export default function InspectionReportPage() {
+  const lowest = R.neighborhoods[0]
+  const highest = R.neighborhoods[R.neighborhoods.length - 1]
   return (
-    <div
-      role="img"
-      aria-label={`Grade distribution: ${gradeAPct}% Grade A, ${gradeBPct}% Grade B, ${gradeCPct}% Grade C`}
-      className="flex h-2 w-full overflow-hidden rounded-full bg-gray-100"
-    >
-      <div
-        className="bg-green-500 transition-all"
-        style={{ width: `${gradeAPct}%` }}
-        title={`Grade A: ${gradeAPct}%`}
-      />
-      <div
-        className="bg-amber-400 transition-all"
-        style={{ width: `${gradeBPct}%` }}
-        title={`Grade B: ${gradeBPct}%`}
-      />
-      <div
-        className="bg-orange-500 transition-all"
-        style={{ width: `${gradeCPct}%` }}
-        title={`Grade C: ${gradeCPct}%`}
-      />
-    </div>
+    <article style={{ backgroundColor: "var(--color-cream)" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, dataset, { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })) }]) }} />
+      <BreadcrumbJsonLd items={[{ name: "Fall 2026 inspection report", path: PATH }]} />
+      <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
+        <div className="mx-auto max-w-3xl px-6 pb-10 pt-10">
+          <p className="eyebrow">Original research · dated extract</p>
+          <h1 className="display-2 mt-3">{TITLE}</h1>
+          <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+            Last updated November 15, 2026, America/New_York. This is a dated extract, not a live ticker. Figures are from NYC Open Data dataset {R.datasetId}, extract {R.extractLabel}, inspections through {R.inspectionCutoff}.
+          </p>
+        </div>
+      </header>
+      <div className="mx-auto max-w-3xl px-6 py-10">
+        <h2 className="h2-serif">What the November 13, 2026 file shows</h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed" style={{ maxWidth: "65ch" }}>
+          <p>
+            From September 1 through {R.inspectionCutoff}, the Health Department ordered {R.closures.restaurants} still-active restaurants closed ({R.closures.events} closure or re-closure events). Brooklyn had the most ({R.closures.byBorough[0].restaurants}), then Queens ({R.closures.byBorough[1].restaurants}), Manhattan ({R.closures.byBorough[2].restaurants}), and the Bronx ({R.closures.byBorough[3].restaurants}). Staten Island had none in this window. In the same dates in 2025, the current active file still shows {R.closures.priorRestaurants} restaurants and {R.closures.priorEvents} events.
+          </p>
+          <p>
+            Of {R.establishments.toLocaleString("en-US")} active establishments in the November 13, 2026 extract, {R.uninspected.toLocaleString("en-US")} ({R.uninspectedShare}) still have the placeholder inspection date of January 1, 1900, which the city defines as not yet inspected. Manhattan accounts for {R.boroughs[0].uninspected.toLocaleString("en-US")} of them.
+          </p>
+          <p>
+            Among {R.letterGraded.toLocaleString("en-US")} restaurants whose latest grade is A, B, or C, {R.gradeA.toLocaleString("en-US")} ({R.gradeAShare}) currently hold an A, {R.gradeB.toLocaleString("en-US")} a B, and {R.gradeC.toLocaleString("en-US")} a C. Queens is the lowest borough, at {R.boroughs[2].share} ({R.boroughs[2].a.toLocaleString("en-US")} of {R.boroughs[2].letterGraded.toLocaleString("en-US")}). Among {R.neighborhoods.length} Neighborhood Tabulation Areas with at least 80 letter-graded restaurants, {lowest.name} ({lowest.code}) is the lowest, at {lowest.share} ({lowest.a} of {lowest.letterGraded}), and {highest.name} ({highest.code}) is the highest, at {highest.share} ({highest.a} of {highest.letterGraded}).
+          </p>
+        </div>
+
+        <h2 className="h2-serif mt-12">Latest letter grade by borough</h2>
+        <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+          One latest A, B, or C per CAMIS. A grade date is used when it exists; otherwise the most recent inspection that carries a letter.
+        </p>
+        <Table
+          caption="Latest letter grade by borough"
+          headers={["Borough", "Letter-graded", "A", "A share", "B", "C"]}
+          rows={R.boroughs.map((row) => [row.name, fmt(row.letterGraded), fmt(row.a), row.share ?? "—", fmt(row.b), fmt(row.c)])}
+        />
+        <p className="mt-3 text-sm">
+          Citywide: {fmt(R.gradeA)} A, {fmt(R.gradeB)} B, and {fmt(R.gradeC)} C, out of {fmt(R.letterGraded)} letter-graded restaurants. Another {fmt(R.statusGrades)} restaurants have a status code rather than a letter: {fmt(R.notYetGraded)} N (not yet graded) and {fmt(R.gradePending)} Z (grade pending).
+        </p>
+
+        <h2 className="h2-serif mt-12">Neighborhoods with at least 80 letter-graded restaurants</h2>
+        <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+          {R.neighborhoods.length} Neighborhood Tabulation Areas have at least 80 letter-graded restaurants. Names are the 2010 NTA names, which do not always match everyday names. North Side-South Side, for example, is the 2010 name for Williamsburg.
+        </p>
+        <Table
+          caption="Neighborhood Tabulation Areas with at least 80 letter-graded restaurants"
+          headers={["NTA", "Code", "Grade A", "Letter-graded", "A share"]}
+          rows={R.neighborhoods.map((row) => [row.name, row.code, fmt(row.a), fmt(row.letterGraded), row.share])}
+        />
+
+        <h2 className="h2-serif mt-12">Closures, September 1–November 10</h2>
+        <p className="mt-3 text-base leading-relaxed">
+          An event is a unique combination of CAMIS, inspection date, and closure action. The actions counted are “Establishment Closed by DOHMH…” and “Establishment re-closed by DOHMH.” A same-day closure and re-closure counts as two events. This fall: {R.closures.restaurants} restaurants and {R.closures.events} events. The same dates in 2025, as they still appear in today’s active file: {R.closures.priorRestaurants} restaurants and {R.closures.priorEvents} events.
+        </p>
+        <p className="mt-3 text-base leading-relaxed">
+          The open-data file includes only restaurants in active status on the extract date. A restaurant closed in 2025 that later left the active file would not appear in today’s 2025 count. Fall 2026 versus fall 2025 is a comparison among restaurants that are still in the active file, not a complete historical census of every shutdown.
+        </p>
+        <Table
+          caption="Unique still-active restaurants closed, September 1 through November 10, 2026"
+          headers={["Borough", "Unique restaurants closed"]}
+          rows={R.closures.byBorough.map((row) => [row.name, String(row.restaurants)])}
+        />
+        <p className="mt-3 text-sm">
+          Year to date through {R.inspectionCutoff}: {R.closures.ytd2026Restaurants} unique still-active restaurants with at least one closure event ({R.closures.ytd2026Events} events). The current file still shows {R.closures.year2025Restaurants} such restaurants for all of 2025 ({R.closures.year2025Events} events). Use that year comparison only with the active-file caveat above.
+        </p>
+
+        <h2 className="h2-serif mt-12">Not yet inspected</h2>
+        <p className="mt-3 text-base leading-relaxed">
+          {fmt(R.uninspected)} establishments ({R.uninspectedShare} of {fmt(R.establishments)}) have an inspection date of January 1, 1900. The city’s data dictionary uses that date for a new establishment that has not yet been inspected. Some of those records may have a permit and may not have opened yet.
+        </p>
+        <Table
+          caption="Establishments with the January 1, 1900 inspection date"
+          headers={["Borough", "Uninspected"]}
+          rows={R.boroughs.map((row) => [row.name, fmt(row.uninspected)])}
+        />
+
+        <h2 className="h2-serif mt-12">City cuisine labels</h2>
+        <p className="mt-3 text-base leading-relaxed">
+          These seven cuisine_description values are the city’s labels, not Eat Real Food NYC dietary tags, and they are not a nutrition grade: {R.cuisines.labels.join("; ")}. Among letter-graded restaurants with one of those labels, {fmt(R.cuisines.gradeA)} of {fmt(R.cuisines.letterGraded)} ({R.cuisines.share}) currently hold a Grade A.
+        </p>
+
+        <h2 className="h2-serif mt-12">How to check a restaurant’s grade</h2>
+        <div className="mt-4 space-y-3 text-base leading-relaxed">
+          <p>
+            Use the city’s lookup, <a href={R.abceatsUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>ABCEats</a>, and search by name or address. A is 0–13 points, B is 14–27, and C is 28 or more. N means not yet graded. Z means grade pending.
+          </p>
+          <p>
+            The same records are in <a href={R.datasetUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>NYC Open Data dataset {R.datasetId}</a>. Eat Real Food NYC joins a matched grade onto published healthy-dining listings. A grade is a food-safety score, not a claim that a restaurant is healthy.
+          </p>
+          <p>
+            <Link href="/guides/nyc-health-grades-explained" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>How grades work</Link>
+            {" · "}
+            <Link href="/healthy-restaurants/grade-a" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Grade A restaurants in the directory</Link>
+            {" · "}
+            <Link href="/nyc/queens/healthy-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Healthy restaurants in Queens</Link>
+          </p>
+        </div>
+
+        <h2 className="h2-serif mt-12">Questions</h2>
+        <div className="mt-4 space-y-5">
+          {faqs.map((faq) => (
+            <section key={faq.q}>
+              <h3 className="text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>{faq.q}</h3>
+              <p className="mt-2 text-base leading-relaxed">{faq.a}</p>
+            </section>
+          ))}
+        </div>
+
+        <h2 className="h2-serif mt-12">Method</h2>
+        <div className="mt-4 space-y-3 text-base leading-relaxed">
+          <p>
+            Source file: DOHMH New York City Restaurant Inspection Results, Socrata id {R.datasetId}. The extract’s record_date is {R.extractLabel} (stored as {R.extractRecordedAt}). The latest inspection date in the file is {R.inspectionCutoff}. The file had {fmt(R.rows)} rows and {fmt(R.establishments)} distinct CAMIS values. These aggregates were computed on {R.computedOn}.
+          </p>
+          <p>
+            Current grade is one latest grade per CAMIS. When a grade date exists, the most recent grade_date is used; otherwise the most recent inspection_date that has a grade is used. Neighborhood names use 2010 Neighborhood Tabulation Areas.
+          </p>
+        </div>
+
+        <h2 className="h2-serif mt-12">Download and how to cite</h2>
+        <p className="mt-3 text-base leading-relaxed">
+          <a href="/data/nyc-inspection-fall-2026.csv" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Download the aggregate CSV</a>. It is licensed <a href="https://creativecommons.org/licenses/by/4.0/" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>CC BY 4.0</a>. Attribute the NYC Department of Health and Mental Hygiene via NYC Open Data dataset {R.datasetId}, and Eat Real Food NYC for this aggregation. The city file has its own terms.
+        </p>
+        <p className="mt-3 text-base leading-relaxed">
+          How to cite: Eat Real Food NYC. “NYC Restaurant Inspection Report, Fall 2026.” November 15, 2026. Based on NYC Open Data dataset {R.datasetId}, extract November 13, 2026, inspections through November 10, 2026. {URL}
+        </p>
+      </div>
+    </article>
   )
 }
 
-export default async function HealthGradeReportPage() {
-  const live = await getDirectorySnapshot()
-  const dateModified = live.lastPublishLabel ?? snapshotDate
+function fmt(n: number) {
+  return n.toLocaleString("en-US")
+}
 
-  const reportJsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Dataset",
-        name: "NYC Restaurant Health Grade Report 2026",
-        description: `Analysis of health inspection grades for ${summary.totalRestaurants.toLocaleString()} active NYC restaurants across all 5 boroughs and ${neighborhoods.totalAnalyzed} neighborhoods.`,
-        url: REPORT_URL,
-        creator: {
-          "@type": "Organization",
-          name: "Eat Real Food NYC",
-          url: "https://www.eatrealfoodnyc.com",
-        },
-        isBasedOn: {
-          "@type": "Dataset",
-          name: "DOHMH New York City Restaurant Inspection Results",
-          url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-          publisher: {
-            "@type": "GovernmentOrganization",
-            name: "NYC Department of Health and Mental Hygiene",
-          },
-        },
-        license: "https://creativecommons.org/licenses/by/4.0/",
-        temporalCoverage: "2024/2026",
-        spatialCoverage: { "@type": "City", name: "New York City" },
-        variableMeasured: [
-          "Health inspection grade (A/B/C)",
-          "Inspection score",
-          "Grade distribution by borough",
-          "Grade distribution by neighborhood",
-          "Grade distribution by restaurant type",
-        ],
-        dateModified,
-      },
-      {
-        "@type": "Article",
-        headline: "NYC Restaurant Health Grade Report 2026",
-        description: PAGE_DESCRIPTION,
-        url: REPORT_URL,
-        author: { "@type": "Organization", name: "Eat Real Food NYC" },
-        publisher: {
-          "@type": "Organization",
-          name: "Eat Real Food NYC",
-          url: "https://www.eatrealfoodnyc.com",
-        },
-        datePublished: "2026-03-01",
-        dateModified,
-      },
-    ],
-  }
-
-  const distributionCards = [
-    {
-      grade: "A",
-      count: summary.totalGradeA,
-      pct: summary.overallGradeAPct,
-      color: "border-green-200 bg-green-50",
-      textColor: "text-green-600",
-      badgeColor: "bg-green-100 text-green-700",
-      meaning: "Excellent food safety (0–13 inspection points)",
-    },
-    {
-      grade: "B",
-      count: summary.totalGradeB,
-      pct: summary.overallGradeBPct,
-      color: "border-amber-200 bg-amber-50",
-      textColor: "text-amber-600",
-      badgeColor: "bg-amber-100 text-amber-700",
-      meaning: "Good but with noted violations (14–27 points)",
-    },
-    {
-      grade: "C",
-      count: summary.totalGradeC,
-      pct: summary.overallGradeCPct,
-      color: "border-orange-200 bg-orange-50",
-      textColor: "text-orange-600",
-      badgeColor: "bg-orange-100 text-orange-700",
-      meaning: "Significant violations (28+ points)",
-    },
-  ]
-
-  const keyStatItems = [
-    {
-      stat: summary.totalGradeA.toLocaleString(),
-      label: "Grade A restaurants in NYC",
-      sub: `${summary.gradeACoverage}% of all restaurants tracked`,
-      color: "text-green-600",
-    },
-    {
-      stat: `${summary.overallGradeAPct}%`,
-      label: "Of graded restaurants hold Grade A",
-      sub: `Based on ${summary.totalGraded.toLocaleString()} graded restaurants`,
-      color: "text-jade",
-    },
-    {
-      stat: keyFindings.topBorough,
-      label: "Highest Grade A borough",
-      sub: `${keyFindings.topBoroughGradeAPct}% of graded restaurants`,
-      color: "text-forest",
-    },
-    {
-      stat: keyFindings.topNeighborhood ?? "—",
-      label: "Top neighborhood by Grade A rate",
-      sub: keyFindings.topNeighborhood
-        ? `${keyFindings.topNeighborhoodGradeAPct}% Grade A — ${keyFindings.topNeighborhoodBorough}`
-        : "Not enough graded data",
-      color: "text-forest",
-    },
-  ]
-
+function Table({ caption, headers, rows }: { caption: string; headers: string[]; rows: string[][] }) {
   return (
-    <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
-      <BreadcrumbJsonLd items={[{ name: "NYC health grade report", path: "/data/nyc-restaurant-health-grade-report" }]} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(reportJsonLd) }}
-      />
-
-      {/* Hero */}
-      <header className="bg-forest px-6 py-16">
-        <div className="mx-auto max-w-5xl">
-          <nav
-            aria-label="Breadcrumb"
-            className="mb-6 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-white/40"
-          >
-            <Link href="/" className="transition-colors hover:text-white">
-              Home
-            </Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-white/70">Data Reports</span>
-            <span aria-hidden="true">/</span>
-            <span className="text-white/70">Health Grade Report</span>
-          </nav>
-          <div className="flex flex-wrap items-start justify-between gap-6">
-            <div>
-              <span className="mb-4 inline-block rounded-full bg-sage/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sage">
-                <span aria-hidden="true">📊</span> Original Research — snapshot {snapshotDate}
-              </span>
-              <h1
-                className="text-4xl font-bold leading-tight text-white md:text-5xl"
-                style={{ fontFamily: "Georgia, serif" }}
-              >
-                NYC Restaurant
-                <br />
-                <span className="text-sage">Health Grade Report</span>
-              </h1>
-              <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
-                Tables below are the {snapshotDate} snapshot:{" "}
-                {summary.totalGradeA.toLocaleString()} Grade A restaurants among{" "}
-                {summary.totalRestaurants.toLocaleString()} published then, across{" "}
-                {neighborhoods.totalAnalyzed} neighborhoods. Data sourced from NYC DOHMH Open Data.
-              </p>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
-                Live directory today: {live.publishedCount.toLocaleString()} published,{" "}
-                {live.gradeAPublished.toLocaleString()} of them Grade A. The full dataset has{" "}
-                {live.gradeAAll.toLocaleString()} Grade A records, including unpublished rows.
-              </p>
-            </div>
-            <aside aria-label="Citation" className="flex flex-col gap-2 text-right">
-              <p className="text-xs text-white/30">Cite this report</p>
-              <p className="rounded-lg bg-white/5 px-3 py-2 font-mono text-xs text-white/50">
-                eatrealfoodnyc.com/data/
-                <br />
-                nyc-restaurant-health-grade-report
-              </p>
-            </aside>
-          </div>
-        </div>
-      </header>
-
-      {/* Key findings bar */}
-      <section
-        aria-label="Key findings"
-        className="border-b border-gray-100 bg-white shadow-sm"
-      >
-        <div className="mx-auto max-w-5xl px-6 py-6">
-          <p
-            className="mb-4 text-xs font-bold uppercase tracking-widest"
-            style={{ color: "var(--color-muted)" }}
-          >
-            KEY FINDINGS
-          </p>
-          <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {keyStatItems.map((item) => (
-              <div key={item.label} className="text-center">
-                <dt className="sr-only">{item.label}</dt>
-                <dd
-                  className={`text-2xl font-bold md:text-3xl ${item.color}`}
-                  style={{ fontFamily: "Georgia, serif" }}
-                >
-                  {item.stat}
-                </dd>
-                <p
-                  className="mt-1 text-xs leading-tight"
-                  style={{ color: "var(--color-muted)" }}
-                >
-                  {item.label}
-                </p>
-                <p className="mt-0.5 text-xs text-gray-400">{item.sub}</p>
-              </div>
+    <div className="mt-4 overflow-x-auto border" style={{ borderColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">{caption}</caption>
+        <thead>
+          <tr style={{ color: "var(--color-muted)" }}>
+            {headers.map((header) => (
+              <th key={header} scope="col" className="px-3 py-2 font-medium">{header}</th>
             ))}
-          </dl>
-        </div>
-      </section>
-
-      <main className="mx-auto max-w-5xl space-y-16 px-6 py-12">
-        {/* Section 1 — Overall grade distribution */}
-        <section aria-labelledby="overall-distribution-heading">
-          <h2
-            id="overall-distribution-heading"
-            className="mb-2 text-3xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Overall grade distribution
-          </h2>
-          <p className="mb-8 text-base" style={{ color: "var(--color-muted)" }}>
-            In the {snapshotDate} snapshot, {summary.totalRestaurants.toLocaleString()} restaurants
-            were published and {summary.gradedPct}% of them had a verified health inspection grade.
-            Live directory counts are in the header.
-          </p>
-
-          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {distributionCards.map((item) => (
-              <article
-                key={item.grade}
-                aria-label={`Grade ${item.grade} statistics`}
-                className={`rounded-2xl border ${item.color} p-6 text-center`}
-              >
-                <span
-                  className={`mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${item.badgeColor}`}
-                >
-                  Grade {item.grade}
-                </span>
-                <p
-                  className={`text-5xl font-bold ${item.textColor}`}
-                  style={{ fontFamily: "Georgia, serif" }}
-                >
-                  {item.pct}%
-                </p>
-                <p className="mt-2 text-sm font-semibold text-gray-700">
-                  {item.count.toLocaleString()} restaurants
-                </p>
-                <p
-                  className="mt-2 text-xs leading-relaxed"
-                  style={{ color: "var(--color-muted)" }}
-                >
-                  {item.meaning}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <p
-            className="rounded-xl bg-gray-50 px-5 py-4 text-sm"
-            style={{ color: "var(--color-muted)" }}
-          >
-            <strong className="text-gray-700">Note on coverage:</strong> {summary.gradedPct}% of our
-            directory ({summary.totalGraded.toLocaleString()} restaurants) have a verified
-            inspection grade. The remaining {100 - summary.gradedPct}% are either not yet inspected,
-            pending a grade, or were not matched in the DOHMH database. Percentages above are
-            calculated from graded restaurants only.
-          </p>
-        </section>
-
-        {/* Section 2 — By borough */}
-        <section aria-labelledby="by-borough-heading">
-          <h2
-            id="by-borough-heading"
-            className="mb-2 text-3xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Grade distribution by borough
-          </h2>
-          <p className="mb-8 text-base" style={{ color: "var(--color-muted)" }}>
-            Grade A rates vary across NYC&apos;s five boroughs. {keyFindings.topBorough} leads with{" "}
-            {keyFindings.topBoroughGradeAPct}% of graded restaurants holding Grade A, while{" "}
-            {keyFindings.bottomBorough} sits at {keyFindings.bottomBoroughGradeAPct}%.
-          </p>
-
-          <div
-            role="region"
-            aria-label="Borough grade distribution table"
-            className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
-          >
-            <table className="w-full text-sm">
-              <caption className="sr-only">
-                NYC borough health inspection grade distribution, sorted by Grade A percentage.
-              </caption>
-              <thead>
-                <tr className="grid grid-cols-12 bg-forest px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white/70">
-                  <th scope="col" className="col-span-3 text-left">
-                    Borough
-                  </th>
-                  <th scope="col" className="col-span-2 text-center">
-                    Restaurants
-                  </th>
-                  <th scope="col" className="col-span-2 text-center">
-                    Graded
-                  </th>
-                  <th scope="col" className="col-span-2 text-center">
-                    Grade A %
-                  </th>
-                  <th scope="col" className="col-span-3 text-left">
-                    Grade distribution
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...byBorough]
-                  .sort((a, b) => b.gradeAPct - a.gradeAPct)
-                  .map((b, i) => (
-                    <tr
-                      key={b.borough}
-                      className={`grid grid-cols-12 items-center gap-2 border-b border-gray-50 px-6 py-4 ${
-                        i % 2 === 0 ? "" : "bg-gray-50/40"
-                      }`}
-                    >
-                      <th scope="row" className="col-span-3 text-left font-normal">
-                        <Link
-                          href={`/nyc/${boroughToSlug(b.borough)}/healthy-restaurants`}
-                          className="text-sm font-semibold text-forest transition-colors hover:text-jade"
-                        >
-                          {b.borough}
-                        </Link>
-                        <p
-                          className="mt-0.5 text-xs"
-                          style={{ color: "var(--color-muted)" }}
-                        >
-                          {b.hiddenGems} hidden gems
-                        </p>
-                      </th>
-                      <td className="col-span-2 text-center text-sm font-medium text-gray-700">
-                        {b.total.toLocaleString()}
-                      </td>
-                      <td
-                        className="col-span-2 text-center text-sm"
-                        style={{ color: "var(--color-muted)" }}
-                      >
-                        {b.graded.toLocaleString()}
-                        <span className="ml-1 text-xs">({b.gradedPct}%)</span>
-                      </td>
-                      <td className="col-span-2 text-center">
-                        <span className="text-sm font-bold text-green-600">
-                          {b.gradeAPct}%
-                        </span>
-                        <p
-                          className="text-xs"
-                          style={{ color: "var(--color-muted)" }}
-                        >
-                          {b.gradeA.toLocaleString()} restaurants
-                        </p>
-                      </td>
-                      <td className="col-span-3 space-y-1">
-                        <GradeBar
-                          gradeAPct={b.gradeAPct}
-                          gradeBPct={b.gradeBPct}
-                          gradeCPct={b.gradeCPct}
-                        />
-                        <div
-                          className="flex gap-2 text-xs"
-                          style={{ color: "var(--color-muted)" }}
-                        >
-                          <span className="text-green-600">A:{b.gradeAPct}%</span>
-                          <span className="text-amber-500">B:{b.gradeBPct}%</span>
-                          <span className="text-orange-500">C:{b.gradeCPct}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Section 3 — Top neighborhoods */}
-        <section aria-labelledby="top-neighborhoods-heading">
-          <h2
-            id="top-neighborhoods-heading"
-            className="mb-2 text-3xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Top {neighborhoods.topByGradeA.length} neighborhoods by Grade A rate
-          </h2>
-          <p className="mb-8 text-base" style={{ color: "var(--color-muted)" }}>
-            Ranked by Grade A percentage among graded restaurants. Minimum 5 graded restaurants
-            required to qualify. {neighborhoods.totalAnalyzed} neighborhoods analyzed.
-          </p>
-
-          <div
-            role="region"
-            aria-label="Top neighborhoods by Grade A rate"
-            className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
-          >
-            <table className="w-full text-sm">
-              <caption className="sr-only">
-                Top NYC neighborhoods ranked by Grade A inspection rate.
-              </caption>
-              <thead>
-                <tr className="grid grid-cols-12 bg-forest px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white/70">
-                  <th scope="col" className="col-span-1 text-center">
-                    #
-                  </th>
-                  <th scope="col" className="col-span-4 text-left">
-                    Neighborhood
-                  </th>
-                  <th scope="col" className="col-span-2 hidden text-center sm:block">
-                    Total
-                  </th>
-                  <th scope="col" className="col-span-2 text-center">
-                    Grade A
-                  </th>
-                  <th scope="col" className="col-span-3 text-left">
-                    Distribution
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {neighborhoods.topByGradeA.map((n, i) => (
-                  <tr
-                    key={`${n.neighborhood}-${n.borough}`}
-                    className={`grid grid-cols-12 items-center border-b border-gray-50 px-6 py-4 ${
-                      i % 2 === 0 ? "" : "bg-gray-50/40"
-                    }`}
-                  >
-                    <td className="col-span-1 text-center">
-                      <span
-                        className={`text-sm font-bold ${
-                          i < 3 ? "text-amber-500" : ""
-                        }`}
-                        style={i < 3 ? undefined : { color: "var(--color-muted)" }}
-                      >
-                        {i + 1}
-                      </span>
-                    </td>
-                    <th scope="row" className="col-span-4 text-left font-normal">
-                      <Link
-                        href={`/nyc/${boroughToSlug(n.borough)}/${neighborhoodToSlug(n.neighborhood)}/healthy-restaurants`}
-                        className="text-sm font-semibold text-forest transition-colors hover:text-jade"
-                      >
-                        {n.neighborhood}
-                      </Link>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        {n.borough}
-                      </p>
-                    </th>
-                    <td
-                      className="col-span-2 hidden text-center text-sm sm:block"
-                      style={{ color: "var(--color-muted)" }}
-                    >
-                      {n.total}
-                    </td>
-                    <td className="col-span-2 text-center">
-                      <span className="text-sm font-bold text-green-600">{n.gradeAPct}%</span>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        {n.gradeA} restaurants
-                      </p>
-                    </td>
-                    <td className="col-span-3">
-                      <GradeBar
-                        gradeAPct={n.gradeAPct}
-                        gradeBPct={n.gradeBPct}
-                        gradeCPct={n.gradeCPct}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Section 4 — Bottom neighborhoods */}
-        <section aria-labelledby="bottom-neighborhoods-heading">
-          <h2
-            id="bottom-neighborhoods-heading"
-            className="mb-2 text-3xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Neighborhoods with the lowest Grade A rates
-          </h2>
-          <p className="mb-6 text-base" style={{ color: "var(--color-muted)" }}>
-            These neighborhoods have the lowest proportion of Grade A restaurants among those with
-            verified inspection records. Diners in these areas should check individual restaurant
-            grades before visiting.
-          </p>
-
-          <div
-            role="region"
-            aria-label="Neighborhoods with the lowest Grade A rates"
-            className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
-          >
-            <table className="w-full text-sm">
-              <caption className="sr-only">
-                NYC neighborhoods with the lowest Grade A inspection rates.
-              </caption>
-              <thead>
-                <tr className="grid grid-cols-12 bg-gray-700 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white/70">
-                  <th scope="col" className="col-span-1 text-center">
-                    #
-                  </th>
-                  <th scope="col" className="col-span-5 text-left">
-                    Neighborhood
-                  </th>
-                  <th scope="col" className="col-span-3 text-center">
-                    Grade A rate
-                  </th>
-                  <th scope="col" className="col-span-3 text-center">
-                    Grade C count
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {neighborhoods.bottomByGradeA.map((n, i) => (
-                  <tr
-                    key={`${n.neighborhood}-${n.borough}`}
-                    className={`grid grid-cols-12 items-center border-b border-gray-50 px-6 py-4 ${
-                      i % 2 === 0 ? "" : "bg-gray-50/40"
-                    }`}
-                  >
-                    <td
-                      className="col-span-1 text-center text-sm font-bold"
-                      style={{ color: "var(--color-muted)" }}
-                    >
-                      {i + 1}
-                    </td>
-                    <th scope="row" className="col-span-5 text-left font-normal">
-                      <Link
-                        href={`/nyc/${boroughToSlug(n.borough)}/${neighborhoodToSlug(n.neighborhood)}/healthy-restaurants`}
-                        className="text-sm font-semibold text-forest transition-colors hover:text-jade"
-                      >
-                        {n.neighborhood}
-                      </Link>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        {n.borough} · {n.total} restaurants
-                      </p>
-                    </th>
-                    <td className="col-span-3 text-center text-sm font-bold text-orange-500">
-                      {n.gradeAPct}%
-                    </td>
-                    <td
-                      className="col-span-3 text-center text-sm"
-                      style={{ color: "var(--color-muted)" }}
-                    >
-                      {n.gradeC} restaurants
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <p
-            className="mt-4 text-xs leading-relaxed"
-            style={{ color: "var(--color-muted)" }}
-          >
-            A lower Grade A rate does not necessarily indicate unsafe dining — it may reflect a
-            higher proportion of ungraded or recently inspected restaurants. Always check individual
-            restaurant grades at{" "}
-            <Link
-              href="/healthy-restaurants/grade-a"
-              className="text-jade underline underline-offset-2 hover:text-forest"
-            >
-              eatrealfoodnyc.com/search
-            </Link>
-            .
-          </p>
-        </section>
-
-        {/* Section 5 — By restaurant type */}
-        {byType.length > 0 && (
-          <section aria-labelledby="by-type-heading">
-            <h2
-              id="by-type-heading"
-              className="mb-2 text-3xl font-bold text-forest"
-              style={{ fontFamily: "Georgia, serif" }}
-            >
-              Grade A rates by restaurant type
-            </h2>
-            <p className="mb-8 text-base" style={{ color: "var(--color-muted)" }}>
-              Some restaurant categories consistently outperform others on health inspections.
-              Minimum 5 graded restaurants required per type.
-            </p>
-
-            <ol className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {byType.slice(0, 14).map((t, i) => (
-                <li
-                  key={t.type}
-                  className="flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span
-                      className={`w-5 flex-shrink-0 text-xs font-bold ${
-                        i < 3 ? "text-amber-500" : ""
-                      }`}
-                      style={i < 3 ? undefined : { color: "var(--color-muted)" }}
-                    >
-                      {i + 1}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-forest">{t.type}</p>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        {t.gradeA} of {t.graded} graded
-                      </p>
-                    </div>
-                  </div>
-                  <span className="ml-3 flex-shrink-0 text-sm font-bold text-green-600">
-                    {t.gradeAPct}%
-                  </span>
-                </li>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.join("|")} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+              {row.map((cell, index) => (
+                <td key={`${cell}-${index}`} className="px-3 py-2 tabular">{cell}</td>
               ))}
-            </ol>
-          </section>
-        )}
-
-        {/* Section 6 — Methodology */}
-        <section aria-labelledby="methodology-heading">
-          <h2
-            id="methodology-heading"
-            className="mb-6 text-3xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Methodology
-          </h2>
-          <div className="space-y-4 leading-relaxed text-gray-700">
-            <p>
-              This report analyzes the {snapshotDate} snapshot of health inspection data for{" "}
-              <strong>{summary.totalRestaurants.toLocaleString()} restaurants published then</strong> in
-              the Eat Real Food NYC directory. Restaurant listings are sourced from Google Maps
-              Platform and filtered to operational businesses only.
-            </p>
-            <p>
-              Health inspection grades (A, B, C) are sourced directly from the{" "}
-              <a
-                href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-jade underline underline-offset-2 hover:text-forest"
-              >
-                NYC Department of Health and Mental Hygiene Open Data portal
-              </a>
-              . We match inspection records to restaurant listings using restaurant name and
-              address. Only the most recent inspection grade per restaurant is used. Grade coverage
-              is {summary.gradedPct}% of our directory — the remainder have not been matched to the
-              DOHMH database or have not yet received a letter grade.
-            </p>
-            <p>
-              Neighborhood assignments are determined using the official NYC Neighborhood
-              Tabulation Area (NTA) GeoJSON boundaries. Each restaurant is assigned to a
-              neighborhood using a point-in-polygon algorithm. Borough-level data is aggregated
-              from neighborhood data.
-            </p>
-            <p>
-              Grade A percentages in this report are calculated from graded restaurants only
-              (excluding ungraded). Total Grade A coverage (as a percentage of all restaurants) is
-              shown separately in the borough table.
-            </p>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section aria-label="Browse Grade A restaurants" className="rounded-2xl bg-forest p-8 text-center">
-          <h2
-            className="text-2xl font-bold text-white"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Browse Grade A restaurants near you
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-white/60">
-            Every restaurant in our directory shows its official NYC health inspection grade.
-            Filter by grade, borough, neighborhood, and dietary need.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/healthy-restaurants/grade-a"
-              className="rounded-xl bg-sage px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-forest"
-            >
-              Browse Grade A restaurants →
-            </Link>
-            <Link
-              href="/nyc/compare"
-              className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white transition-all hover:bg-white/20"
-            >
-              Compare neighborhoods
-            </Link>
-          </div>
-        </section>
-
-        {/* Related reports */}
-        <section aria-labelledby="related-reports-heading">
-          <h2
-            id="related-reports-heading"
-            className="mb-4 text-xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            Related data reports
-          </h2>
-          <Link
-            href="/data/best-rated-restaurants"
-            className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
-          >
-            <span aria-hidden="true" className="text-3xl">⭐</span>
-            <div>
-              <p className="font-bold text-forest transition-colors group-hover:text-jade">
-                NYC&apos;s Best-Rated Healthy Restaurants
-              </p>
-              <p className="mt-0.5 text-sm" style={{ color: "var(--color-muted)" }}>
-                {bestRatedData.summary.total} restaurants rated {bestRatedData.algorithm.qualifyingRating}+ stars, including {bestRatedData.summary.eliteCount} in the elite ★{bestRatedData.algorithm.eliteRating}+ tier.
-              </p>
-            </div>
-            <span className="ml-auto flex-shrink-0 text-sm font-semibold text-jade">Read →</span>
-          </Link>
-        </section>
-
-        {/* About this data */}
-        <AboutThisData variant="guide" lastRefreshed={snapshotDate} />
-      </main>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

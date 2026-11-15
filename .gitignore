@@ -84,3 +84,4 @@ public/robots.txt
 *.docx
 *.csv
 !src/**/*.csv
+!public/data/nyc-inspection-fall-2026.csv

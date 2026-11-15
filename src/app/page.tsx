@@ -7,7 +7,6 @@ import { getCanonicalUrl } from "@/config/seo"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import RestaurantCard from "@/components/restaurant-card"
-import reportData from "@/data/health-grade-report"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
@@ -245,10 +244,10 @@ export default async function HomePage() {
                   color: "var(--color-cream)",
                 }}
               >
-                NYC Restaurant Health Grade Report 2026
+                NYC Restaurant Inspection Report, Fall 2026
               </p>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/75">
-                Grade A rates across all 5 boroughs and {reportData.neighborhoods.totalAnalyzed} neighborhoods — data you won&apos;t find anywhere else.
+                Closures, uninspected establishments, and Grade A rates from NYC Open Data through November 10, 2026.
               </p>
             </div>
             <span className="shrink-0 text-sm font-semibold text-cream/75 transition-all group-hover:translate-x-0.5 group-hover:text-cream">
