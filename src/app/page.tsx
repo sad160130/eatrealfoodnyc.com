@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
-import { boroughToSlug } from "@/lib/utils"
+import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
@@ -73,7 +73,7 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [counts, editorPickRows, hiddenGemRows, snapshot] = await Promise.all([
+  const [counts, editorPickRows, hiddenGemRows, snapshot, neighborhoodGroups] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.findMany({
       where: {
@@ -92,7 +92,21 @@ export default async function HomePage() {
       take: 4,
     }),
     getDirectorySnapshot(),
+    prisma.restaurant.groupBy({
+      by: ["borough", "neighborhood"],
+      where: {
+        business_status: "OPERATIONAL",
+        is_published: true,
+        borough: { not: null },
+        neighborhood: { not: null },
+      },
+      _count: { id: true },
+    }),
   ])
+  const topNeighborhoods = neighborhoodGroups
+    .filter((row) => row.borough && row.neighborhood && row._count.id >= 3)
+    .sort((a, b) => b._count.id - a._count.id)
+    .slice(0, 12)
 
   const [editorsPicks, hiddenGems] = await Promise.all([
     withPartnerStatus(editorPickRows),
@@ -444,6 +458,34 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="border-t px-6 py-16" style={{ borderColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <p className="eyebrow">Neighborhood hubs</p>
+          <h2 className="h2-serif mt-2">Healthy restaurants by neighborhood</h2>
+          <p className="dek mt-3" style={{ maxWidth: "62ch" }}>
+            The twelve neighborhoods with the most published listings. Every diet hub is linked in the filter above.
+          </p>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {topNeighborhoods.map((row) => (
+              <li key={`${row.borough}-${row.neighborhood}`}>
+                <Link
+                  href={`/nyc/${boroughToSlug(row.borough!)}/${neighborhoodToSlug(row.neighborhood!)}/healthy-restaurants`}
+                  className="flex items-baseline justify-between gap-4 border bg-white px-4 py-3"
+                  style={{ borderColor: "var(--hairline)" }}
+                >
+                  <span className="font-semibold" style={{ color: "var(--color-forest)" }}>
+                    Healthy restaurants in {row.neighborhood}
+                  </span>
+                  <span className="tabular text-sm" style={{ color: "var(--color-muted)" }}>
+                    {row._count.id.toLocaleString("en-US")}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

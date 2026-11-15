@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
-import { boroughToSlug, neighborhoodToSlug, formatDietaryTag } from "@/lib/utils"
+import { boroughToSlug, neighborhoodToSlug, formatDietaryTag, parseDietaryTags } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import RestaurantCard from "@/components/restaurant-card"
@@ -11,6 +11,8 @@ import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import ContextualLinks from "@/components/contextual-links"
 import { getNeighborhoodContextualLinks } from "@/lib/internal-links"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS, getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
+import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
+import { NEIGHBORHOOD_DIET_TAGS, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
@@ -150,7 +152,10 @@ export default async function NeighborhoodPage({
   const validHubs = await getBuiltNeighborhoodHubs()
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
-  const dietLinks = ["vegan", "halal", "gluten-free"]
+  const dietLinks = NEIGHBORHOOD_DIET_TAGS.map((tag) => ({
+    tag,
+    count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes(tag)).length,
+  }))
 
   // Card grid renders the top N; the full link list below renders all.
   const CARD_LIMIT = 24
@@ -346,10 +351,14 @@ export default async function NeighborhoodPage({
             Dietary options in {neighborhoodName}
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {dietLinks.map((tag) => (
+            {dietLinks.map(({ tag, count }) => (
               <Link
                 key={tag}
-                href={`/healthy-restaurants/${tag}`}
+                href={
+                  count >= COMBO_MIN_RESTAURANTS
+                    ? neighborhoodDietPath(boroughName, neighborhoodName, tag)
+                    : `/healthy-restaurants/${tag}`
+                }
                 className="group block border p-5 transition-colors"
                 style={{
                   backgroundColor: "#FFFFFF",
@@ -377,7 +386,9 @@ export default async function NeighborhoodPage({
                   className="eyebrow mt-2 inline-flex items-center gap-1.5"
                   style={{ color: "var(--color-jade)" }}
                 >
-                  See spots
+                  {count >= COMBO_MIN_RESTAURANTS
+                    ? `${count.toLocaleString("en-US")} in ${neighborhoodName}`
+                    : `${count.toLocaleString("en-US")} here · citywide list`}
                   <span aria-hidden="true">→</span>
                 </p>
               </Link>

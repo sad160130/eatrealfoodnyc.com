@@ -14,6 +14,7 @@ import {
   gradeANeighborhoodPath,
   gradeAPageCount,
 } from "@/lib/grade-a"
+import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import healthGradeReport from "@/data/health-grade-report"
 import bestRatedReport from "@/data/best-rated-restaurants"
 
@@ -240,6 +241,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ),
   ]
 
+  const neighborhoodDietPages = (await listNeighborhoodDietCombos()).map((combo) =>
+    entry(
+      siteUrl,
+      neighborhoodDietPath(combo.borough, combo.neighborhood, combo.tag),
+      0.85,
+      "weekly",
+      directoryUpdated
+    )
+  )
+
   return [
     ...staticPages,
     ...guidePages,
@@ -249,6 +260,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...neighborhoodPages,
     ...comboPages,
     ...gradeAPages,
+    ...neighborhoodDietPages,
     entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
     ...indexPages,
     ...restaurantPages,
