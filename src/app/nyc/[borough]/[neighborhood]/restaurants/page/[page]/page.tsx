@@ -8,7 +8,7 @@ import {
   resolveNeighborhood,
   RESTAURANT_INDEX_PAGE_SIZE,
 } from "@/lib/restaurant-index"
-import { buildPipeTitle, withBrand } from "@/lib/seo-titles"
+import { fitTitle } from "@/lib/seo-titles"
 import NeighborhoodRestaurantList from "@/components/neighborhood-restaurant-list"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
@@ -44,13 +44,13 @@ export async function generateMetadata({
   const pageNumber = Number(page)
   const resolved = await resolveNeighborhood(borough, neighborhood)
   if (!resolved || !Number.isInteger(pageNumber) || pageNumber < 2) return { title: "Not Found" }
-  const title = buildPipeTitle(`All restaurants in ${resolved.neighborhoodName}`, `Page ${pageNumber}`)
+  const title = fitTitle([`All restaurants in ${resolved.neighborhoodName} | Page ${pageNumber}`], { allowBrand: true })
   const canonical = getCanonicalUrl(neighborhoodIndexPath(resolved.boroughName, resolved.neighborhoodName, pageNumber))
   return {
-    title,
+    title: { absolute: title },
     description: `Page ${pageNumber} of published restaurants in ${resolved.neighborhoodName}, ${resolved.boroughName}.`,
     alternates: { canonical },
-    openGraph: { title: withBrand(title), url: canonical },
+    openGraph: { title, url: canonical },
     robots: { index: true, follow: true },
   }
 }

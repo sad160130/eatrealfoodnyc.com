@@ -7,7 +7,8 @@ import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { dietBoroughTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { dietBoroughHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { buildHubItemList } from "@/lib/schema"
 import { ANCHOR_TEXT } from "@/lib/internal-links"
 import RestaurantCard from "@/components/restaurant-card"
@@ -71,22 +72,25 @@ export async function generateMetadata({
     borough: boroughName,
     dietary_tags: { contains: tag },
   })
-  const title = dietBoroughTitle(config.label, boroughName, stats.gradeA)
-  const description = hubMetaDescription({
-    count: stats.count,
-    place: `${boroughName}, NYC`,
-    gradeA: stats.gradeA,
-    latestMonth: stats.latestMonth,
-    dietLabel: config.label,
-  })
+  const snapshot = await getDirectorySnapshot()
+  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
+  const title = dietBoroughHubTitle(config.label, boroughName, stats.count, stats.gradeA, year)
+  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const description = fitDescription(
+    [`${stats.count.toLocaleString("en-US")} ${config.label.toLowerCase()} restaurants in ${boroughName}, NYC, ${stats.gradeA.toLocaleString("en-US")} with a NYC DOHMH Grade A.`],
+    [
+      dataMonth ? `Compare inspection scores, ratings and hours by neighborhood. Data as of ${dataMonth}.` : "Compare inspection scores, ratings and hours by neighborhood.",
+      dataMonth ? `Data as of ${dataMonth}.` : "",
+    ].filter(Boolean)
+  )
   const canonicalUrl = getCanonicalUrl(`/nyc/${boroughSlug}/${tag}${SUFFIX}`)
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: withBrand(title),
+      title,
       description,
       url: canonicalUrl,
       type: "website",
@@ -156,7 +160,6 @@ export default async function DietBoroughPage({
           answer: `The rated ${dietLower} restaurants in ${boroughName} in our directory average ${avgRating.toFixed(1)}/5 across community reviews sourced from Google Maps. Unrated listings are left out of that average.`,
         }]
       : []),
-    ...config.faqs.slice(0, 2),
   ]
 
   const itemListJsonLd = buildHubItemList({

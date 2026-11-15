@@ -11,7 +11,8 @@ import {
   parseWorkingHours,
   getRestaurantImageAlt,
 } from "@/lib/utils"
-import { restaurantTitle, withBrand } from "@/lib/seo-titles"
+import { restaurantListingDescription, restaurantListingTitle } from "@/lib/seo-titles"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { inspectionFact, restaurantCapsule } from "@/lib/answer-capsule"
 import MapWrapper from "@/components/map-wrapper"
 import RestaurantPhotoGallery from "@/components/restaurant-photo-gallery"
@@ -34,7 +35,6 @@ import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
 import OfficialGradeLink from "@/components/official-grade-link"
 import { getCanonicalUrl } from "@/config/seo"
-import { buildRestaurantMetaDescription } from "@/lib/restaurant-description"
 import SaveButton from "@/components/save-button"
 import OpenNowBadge from "@/components/open-now-badge"
 import CompareButton from "@/components/compare-button"
@@ -47,6 +47,11 @@ import ClaimListing from "@/components/claim-listing"
 import BadgeReferral from "@/components/badge-referral"
 import BookingActions from "@/components/booking-actions"
 import NewsletterSignup from "@/components/newsletter-signup"
+import NearbyGradeAList from "@/components/nearby-grade-a"
+import FAQSection from "@/components/faq-section"
+import { nearbyGradeA } from "@/lib/nearby-grade-a"
+import { restaurantFaqs } from "@/lib/restaurant-faq"
+import { formatMonthYear } from "@/lib/inspection-dates"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
@@ -70,23 +75,39 @@ export async function generateMetadata({
     return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
   }
 
-  const gradeView = presentGrade(restaurant.inspection_grade)
-  const title = restaurantTitle({
+  const snapshot = await getDirectorySnapshot()
+  const title = restaurantListingTitle({
     name: restaurant.name,
-    inspectionGrade: gradeView.dataGrade || null,
-    inspectionDate: restaurant.inspection_date,
     neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    grade: restaurant.inspection_grade,
+    inspectionDate: restaurant.inspection_date,
+    type: restaurant.type,
+    snapshot: snapshot.lastPublishAt ?? new Date(),
   })
-  const description = buildRestaurantMetaDescription(restaurant)
+  const description = restaurantListingDescription({
+    name: restaurant.name,
+    type: restaurant.type,
+    address: restaurant.address,
+    neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    grade: restaurant.inspection_grade,
+    score: restaurant.inspection_score,
+    inspectionDate: restaurant.inspection_date,
+    snapshot: snapshot.lastPublishAt ?? new Date(),
+    rating: restaurant.rating,
+    reviews: restaurant.reviews,
+    tags: parseDietaryTags(restaurant.dietary_tags),
+  })
 
   const canonicalUrl = getCanonicalUrl(`/restaurants/${restaurant.slug}`)
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: withBrand(title),
+      title,
       description,
       url: canonicalUrl,
       type: "website",
@@ -552,7 +573,10 @@ export default async function RestaurantPage({
                       className="text-sm"
                       style={{ color: "var(--color-muted)", maxWidth: "52ch", lineHeight: 1.55 }}
                     >
-                      {gradeView.explanation}
+                      {restaurant.inspection_score != null
+                        ? `Grade ${gradeView.dataGrade || "pending"} means this score of ${restaurant.inspection_score} ${restaurant.inspection_score <= 13 ? "falls in the 0–13 point band" : restaurant.inspection_score <= 27 ? "falls in the 14–27 point band" : "is 28 points or more"}. `
+                        : ""}
+                      {gradeView.explanation} A letter grade is not a taste rating and is not a dietary claim.
                     </p>
                     <p className="mt-2">
                       <Link
@@ -569,6 +593,8 @@ export default async function RestaurantPage({
               </section>
 
             <InspectionRecord restaurant={restaurant} />
+            <NearbyGradeASection restaurant={restaurant} />
+            <RestaurantFaq restaurant={restaurant} />
 
             {/* Community Rating */}
             <CommunityRating
@@ -862,4 +888,76 @@ function ExploreCard({
       </p>
     </Link>
   )
+}
+
+async function NearbyGradeASection({
+  restaurant,
+}: {
+  restaurant: {
+    id: number
+    name: string
+    latitude: number | null
+    longitude: number | null
+    neighborhood: string | null
+    borough: string | null
+    dietary_tags: string | null
+  }
+}) {
+  const rows = await nearbyGradeA({
+    id: restaurant.id,
+    latitude: restaurant.latitude,
+    longitude: restaurant.longitude,
+    neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    dietaryTags: restaurant.dietary_tags,
+  })
+  return <NearbyGradeAList name={restaurant.name} rows={rows} />
+}
+
+async function RestaurantFaq({
+  restaurant,
+}: {
+  restaurant: {
+    name: string
+    inspection_grade: string | null
+    inspection_score: number | null
+    inspection_date: string | null
+    address: string | null
+    neighborhood: string | null
+    borough: string | null
+    dietary_tags: string | null
+    working_hours: string | null
+    rating: number | null
+    reviews: number | null
+    id: number
+    latitude: number | null
+    longitude: number | null
+  }
+}) {
+  const snapshot = await getDirectorySnapshot()
+  const nearby = await nearbyGradeA({
+    id: restaurant.id,
+    latitude: restaurant.latitude,
+    longitude: restaurant.longitude,
+    neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    dietaryTags: restaurant.dietary_tags,
+  })
+  const faqs = restaurantFaqs({
+    name: restaurant.name,
+    grade: restaurant.inspection_grade,
+    score: restaurant.inspection_score,
+    inspectionDate: restaurant.inspection_date,
+    address: restaurant.address,
+    neighborhood: restaurant.neighborhood,
+    borough: restaurant.borough,
+    dietaryTags: restaurant.dietary_tags,
+    workingHours: restaurant.working_hours,
+    rating: restaurant.rating,
+    reviews: restaurant.reviews,
+    dataMonth: snapshot.lastPublishLabel ?? formatMonthYear(new Date()),
+    nearby,
+  })
+  if (faqs.length < 3) return null
+  return <FAQSection faqs={faqs} heading={`${restaurant.name}`} />
 }

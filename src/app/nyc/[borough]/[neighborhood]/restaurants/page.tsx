@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { getCanonicalUrl } from "@/config/seo"
 import { neighborhoodIndexPath, pageCount, resolveNeighborhood, RESTAURANT_INDEX_PAGE_SIZE } from "@/lib/restaurant-index"
-import { buildPipeTitle, withBrand } from "@/lib/seo-titles"
+import { fitTitle } from "@/lib/seo-titles"
 import NeighborhoodRestaurantList from "@/components/neighborhood-restaurant-list"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
@@ -28,13 +28,13 @@ export async function generateMetadata({
   const { borough, neighborhood } = await params
   const resolved = await resolveNeighborhood(borough, neighborhood)
   if (!resolved) return { title: "Not Found" }
-  const title = buildPipeTitle(`All restaurants in ${resolved.neighborhoodName}`, null)
+  const title = fitTitle([`All restaurants in ${resolved.neighborhoodName}`], { allowBrand: true })
   const canonical = getCanonicalUrl(neighborhoodIndexPath(resolved.boroughName, resolved.neighborhoodName))
   return {
-    title,
+    title: { absolute: title },
     description: `Every published restaurant in ${resolved.neighborhoodName}, ${resolved.boroughName}. Plain links, page by page.`,
     alternates: { canonical },
-    openGraph: { title: withBrand(title), url: canonical },
+    openGraph: { title, url: canonical },
     robots: { index: true, follow: true },
   }
 }

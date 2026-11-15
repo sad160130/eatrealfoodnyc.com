@@ -29,10 +29,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.eatrealfoodnyc.com"),
-  title: {
-    default: SEO_CONFIG.defaultTitle,
-    template: "%s | Eat Real Food NYC",
-  },
+  title: "Healthy Restaurants NYC | Eat Real Food NYC",
   description: SEO_CONFIG.defaultDescription,
   applicationName: SEO_CONFIG.siteName,
   authors: [{ name: "Eat Real Food NYC", url: "https://www.eatrealfoodnyc.com" }],

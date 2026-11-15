@@ -8,12 +8,10 @@ export const DIET_CONFIG: Record<string, {
   'vegan': {
     label: 'Vegan',
     emoji: '🌱',
-    intro: 'New York City is one of the best cities in the world for vegan dining, with hundreds of dedicated vegan restaurants spanning every cuisine and price point. From upscale plant-based fine dining in Manhattan to budget-friendly vegan soul food in Brooklyn, NYC\'s vegan restaurant scene is thriving and constantly growing. This directory lists every vegan and vegan-friendly restaurant in all five boroughs, complete with health inspection grades and neighborhood-level filtering.',
+    intro: 'A vegan tag means the restaurant serves no animal products, or has a substantial vegan menu. The tag is not a price claim and not a certification beyond what the restaurant states.',
     whatIs: 'Vegan restaurants serve food that contains no animal products whatsoever — no meat, poultry, seafood, dairy, eggs, or honey. Restaurants tagged vegan in this directory either exclusively serve vegan food or have a substantial vegan menu.',
     faqs: [
-      { question: 'How many vegan restaurants are in NYC?', answer: 'NYC has hundreds of dedicated vegan restaurants across all five boroughs, with the highest concentrations in Manhattan and Brooklyn.' },
-      { question: 'Which NYC neighborhood has the most vegan restaurants?', answer: 'The East Village, Chelsea, and Williamsburg consistently rank as the top neighborhoods for vegan dining in NYC.' },
-      { question: 'Are vegan restaurants in NYC expensive?', answer: 'Vegan restaurants in NYC range from very affordable to upscale. Many budget-friendly options exist, particularly in Brooklyn and Queens, with meals available from $10-15 per person.' },
+      { question: 'What does the vegan tag mean?', answer: 'We tag a restaurant vegan only when it identifies as vegan or has substantial vegan menu coverage. A single vegan dish is not enough.' },
       { question: 'Do vegan restaurants in NYC have gluten-free options?', answer: 'Many vegan restaurants in NYC also offer gluten-free dishes. Use the combined vegan and gluten-free filter to find restaurants that accommodate both needs.' },
       { question: 'Are there vegan restaurants open late in NYC?', answer: 'Yes — several vegan restaurants in NYC stay open late, particularly in Manhattan neighborhoods like the East Village and Midtown.' },
     ]
@@ -50,7 +48,7 @@ export const DIET_CONFIG: Record<string, {
     intro: 'New York City has one of the largest and most diverse halal dining scenes in the United States, reflecting the city\'s large and culturally rich Muslim population. From the iconic halal food carts of Midtown Manhattan to dedicated halal restaurants serving Pakistani, Bangladeshi, Middle Eastern, and West African cuisine across Queens, Brooklyn, and the Bronx, NYC offers an extraordinary range of halal dining options.',
     whatIs: 'Halal restaurants serve food prepared according to Islamic dietary law, which prohibits pork and requires that meat be slaughtered in a specific way. Restaurants tagged halal in this directory are either halal-certified or explicitly advertise as halal.',
     faqs: [
-      { question: 'Where are the best halal restaurants in NYC?', answer: 'Jackson Heights in Queens, the Bronx, and Midtown Manhattan have some of the highest concentrations of halal restaurants in NYC.' },
+      { question: 'What does the halal tag mean?', answer: 'We tag a restaurant halal when it says it is halal or has substantial halal menu coverage. This directory does not add a certification the restaurant did not state.' },
       { question: 'Are NYC halal food carts as good as restaurants?', answer: 'NYC\'s halal food carts, particularly the famous Halal Guys cart in Midtown, are iconic and well-regarded. This directory focuses on brick-and-mortar halal restaurants across all five boroughs.' },
       { question: 'What cuisines are commonly available at halal NYC restaurants?', answer: 'Pakistani, Bangladeshi, Indian, Middle Eastern, Yemeni, and West African cuisines dominate NYC\'s halal restaurant scene, though halal versions of American, Caribbean, and other cuisines are also available.' },
       { question: 'How do I verify if a restaurant is genuinely halal certified?', answer: 'Look for halal certification certificates displayed in the restaurant window, or ask the restaurant directly about their halal sourcing. This directory tags restaurants that self-identify or are certified as halal.' },
@@ -63,7 +61,7 @@ export const DIET_CONFIG: Record<string, {
     intro: 'New York City is home to one of the largest Jewish communities in the world, and its kosher restaurant scene reflects that heritage with an extraordinary range of options from traditional Eastern European Jewish cuisine to modern Israeli, kosher sushi, and upscale kosher steakhouses.',
     whatIs: 'Kosher restaurants prepare food in accordance with Jewish dietary law, which includes separation of meat and dairy, prohibition of pork and shellfish, and requirements for how meat is slaughtered and prepared. Restaurants tagged kosher in this directory are kosher-certified or kosher-observant.',
     faqs: [
-      { question: 'Where are the best kosher restaurants in NYC?', answer: 'The Upper West Side, Midtown Manhattan, and Borough Park in Brooklyn have the highest concentrations of kosher restaurants in NYC.' },
+      { question: 'What does the kosher tag mean?', answer: 'We tag a restaurant kosher when it says it is kosher or keeps a kosher menu. This directory does not verify a supervising agency unless the restaurant states one.' },
       { question: 'Are there kosher restaurants in all five boroughs?', answer: 'Yes — while Manhattan has the largest selection, all five boroughs have kosher restaurant options reflecting their Jewish communities.' },
       { question: 'Can non-Jewish people eat at kosher restaurants?', answer: 'Absolutely — kosher restaurants are open to everyone. Many people choose kosher restaurants for their food quality standards and dietary transparency.' },
       { question: 'Are kosher restaurants more expensive?', answer: 'Kosher restaurants can be more expensive due to the additional certification and sourcing requirements, but budget-friendly kosher options exist throughout NYC.' },

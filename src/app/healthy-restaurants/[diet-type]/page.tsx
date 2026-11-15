@@ -15,7 +15,8 @@ import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { dietTitle, hubMetaDescription, withBrand } from "@/lib/seo-titles"
+import { dietHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dietCapsule } from "@/lib/answer-capsule"
 import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
@@ -36,21 +37,43 @@ export async function generateMetadata({
   if (!config) return { title: "Not Found" }
 
   const canonicalUrl = getCanonicalUrl(`/healthy-restaurants/${tag}`)
-  const stats = await gradeStatsFor({ dietary_tags: { contains: tag } })
-  const title = dietTitle(config.label, stats.gradeA)
-  const description = hubMetaDescription({
-    count: stats.count,
-    place: "NYC",
-    gradeA: stats.gradeA,
-    latestMonth: stats.latestMonth,
-    dietLabel: config.label,
-  })
+  const [stats, snapshot, boroughs] = await Promise.all([
+    gradeStatsFor({ dietary_tags: { contains: tag } }),
+    getDirectorySnapshot(),
+    prisma.restaurant.groupBy({
+      by: ["borough"],
+      where: {
+        is_published: true,
+        business_status: "OPERATIONAL",
+        dietary_tags: { contains: tag },
+        borough: { not: null },
+      },
+      _count: { id: true },
+    }),
+  ])
+  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
+  const title = dietHubTitle(config.label, stats.count, stats.gradeA, year)
+  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const split = boroughs
+    .filter((row) => row.borough && row._count.id > 0)
+    .sort((a, b) => b._count.id - a._count.id)
+    .map((row) => `${row.borough} ${row._count.id.toLocaleString("en-US")}`)
+    .join(", ")
+  const description = fitDescription(
+    [
+      `${stats.count.toLocaleString("en-US")} ${config.label.toLowerCase()} restaurants in NYC${split ? `: ${split}` : ""}.`,
+      stats.graded > 0
+        ? `${stats.gradeA.toLocaleString("en-US")} of ${stats.graded.toLocaleString("en-US")} graded hold a NYC DOHMH Grade A${stats.gradeC > 0 ? `, ${stats.gradeC.toLocaleString("en-US")} hold a C` : ""}.`
+        : "",
+    ].filter(Boolean),
+    [dataMonth ? `Data as of ${dataMonth}.` : ""].filter(Boolean)
+  )
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: withBrand(title),
+      title,
       description,
       url: canonicalUrl,
       type: "website",
