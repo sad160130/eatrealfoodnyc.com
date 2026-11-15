@@ -15,6 +15,7 @@ const COMPANY = [
   { label: "Team", href: "/about/team" },
   { label: "Dining Guides", href: "/guides" },
   { label: "Contact", href: "/contact" },
+  { label: "Request catering", href: "/catering" },
   { label: "Press", href: "/press" },
   { label: "Partner with us", href: "/partner-with-us" },
   { label: "Own a restaurant? Get featured", href: "/partner-with-us" },

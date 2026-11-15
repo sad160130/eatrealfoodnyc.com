@@ -430,6 +430,15 @@ export default async function RestaurantPage({
           </span>
         </div>
         <BookingActions slug={restaurant.slug} name={restaurant.name} address={restaurant.address} />
+        <p className="mt-4 text-sm">
+          <Link
+            href={`/catering?restaurant=${restaurant.slug}`}
+            className="font-semibold underline underline-offset-4"
+            style={{ color: "var(--color-jade)" }}
+          >
+            Request catering
+          </Link>
+        </p>
         <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} />
       </header>
 

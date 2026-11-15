@@ -133,6 +133,30 @@ model NewsletterSubscriber {
   @@map("newsletter_subscribers")
 }
 
+/// Catering requests from /catering. status stays "new" until a person routes the lead.
+/// No payment is collected here.
+model CateringLead {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String
+  event_date      DateTime @db.Date
+  headcount       Int
+  place           String
+  dietary_needs   String   @default("")
+  budget          String   @default("")
+  notes           String   @default("")
+  restaurant_slug String?
+  source_path     String
+  consent         Boolean  @default(false)
+  status          String   @default("new")
+  created_at      DateTime @default(now())
+
+  @@index([status])
+  @@index([event_date])
+  @@map("catering_leads")
+}
+
 model UserSubmission {
   id               Int      @id @default(autoincrement())
   restaurant_slug  String
