@@ -389,6 +389,18 @@ export function neighborhoodHubTitle(hood: string, borough: string, gradeA: numb
   )
 }
 
+export function boroughHubTitle(borough: string, gradeA: number, year: number): string {
+  const count = gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null
+  return fitTitle(
+    [
+      count ? `Healthy Restaurants in ${borough} | ${count}` : null,
+      count ? `Healthy Restaurants in ${borough} ${year} | ${count}` : null,
+      `Healthy Restaurants in ${borough}`,
+    ],
+    { allowBrand: false }
+  )
+}
+
 export function dietHubTitle(label: string, count: number, gradeA: number, year: number): string {
   return fitTitle(
     [

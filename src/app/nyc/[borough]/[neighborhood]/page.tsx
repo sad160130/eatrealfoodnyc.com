@@ -145,14 +145,14 @@ export default async function DietBoroughPage({
   const comboFaqs = [
     {
       question: `How many ${dietLower} restaurants are in ${boroughName}?`,
-      answer: `Our directory lists ${totalCount} ${dietLower} restaurants in ${boroughName}, NYC, each cross-referenced with its NYC Department of Health inspection record.`,
+      answer: `This directory lists ${totalCount} published ${dietLower} restaurants in ${boroughName}. ${gradeACount} hold Grade A. A listing with no letter is not described as graded.`,
     },
     {
       question: `Do ${dietLower} restaurants in ${boroughName} have NYC health grades?`,
       answer:
         gradeACount > 0
-          ? `Yes — ${gradeACount} of the ${totalCount} ${dietLower} restaurants we list in ${boroughName} currently hold a Grade A from the NYC DOHMH. Every listing shows its official grade, score, and inspection date.`
-          : `Every ${dietLower} restaurant we list in ${boroughName} shows its official NYC DOHMH inspection grade, score, and date wherever the city has published one.`,
+          ? `${gradeACount} of the ${totalCount} published ${dietLower} restaurants in ${boroughName} hold Grade A. The rest are not described as Grade A.`
+          : `None of the ${totalCount} published ${dietLower} restaurants in ${boroughName} holds Grade A.`,
     },
     ...(avgRating != null
       ? [{
@@ -216,7 +216,7 @@ export default async function DietBoroughPage({
           </h1>
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {dietLower} {totalCount === 1 ? "restaurant" : "restaurants"} in {boroughName} — every listing verified against its NYC Department of Health inspection grade.
+            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {dietLower} {totalCount === 1 ? "restaurant" : "restaurants"} in {boroughName}. {gradeACount.toLocaleString()} hold Grade A. Listings without a letter are not counted as Grade A.
           </p>
 
           {/* What it means — quiet editorial pull */}
