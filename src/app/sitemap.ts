@@ -28,6 +28,7 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/map": "2026-04-01",
   "/nyc/compare": "2026-04-01",
   "/guides": "2026-02-15",
+  "/newsletter": "2026-11-15",
 }
 
 export function editorialPaths(): string[] {

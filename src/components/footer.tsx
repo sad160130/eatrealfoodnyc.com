@@ -1,4 +1,5 @@
 import Link from "next/link"
+import NewsletterSignup from "@/components/newsletter-signup"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -106,6 +107,9 @@ export default function Footer() {
             >
               An independent NYC dining directory, ranked by real city inspection data. Labeled Partner placements never change a grade or a ranking.
             </p>
+            <div className="mt-8">
+              <NewsletterSignup tone="dark" />
+            </div>
 
             {/* Social — single-line, restrained */}
             <div className="mt-8">
