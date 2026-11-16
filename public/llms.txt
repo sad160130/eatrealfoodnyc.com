@@ -1,7 +1,7 @@
 # Eat Real Food NYC
 # https://www.eatrealfoodnyc.com
 # AI Agent Context File — llms.txt
-# Last updated: 2026-11-15
+# Last updated: 2026-11-16
 
 ## What this site is
 
@@ -74,7 +74,15 @@ Editorial & Partnership Policy: https://www.eatrealfoodnyc.com/about/editorial-s
   placements may be offered. They do not change official inspection data or organic sort.
 
 Partner with us: https://www.eatrealfoodnyc.com/partner-with-us
-  Optional labeled placements for eligible restaurants. Rates on request.
+  Optional labeled placements for eligible restaurants. Payment never changes
+  grades, scores, dietary tags, or rankings.
+  Monthly tiers: Featured $49/month, Spotlight $149/month,
+  Neighborhood Sponsor $299/month.
+  Inquiry offers: Sponsored guide placement $250 per placement in an existing
+  /guides page, labeled Sponsored. Newsletter sponsor slot $150 per weekly issue
+  of Grade A Eats This Week, labeled Sponsored. Catering referral partnership
+  $50 per accepted catering lead from /catering, or 10% of the first order
+  (partner’s choice), no upfront fee.
   Contact: partner@eatrealfoodnyc.com
   https://www.eatrealfoodnyc.com/contact
 

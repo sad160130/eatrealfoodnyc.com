@@ -4,7 +4,8 @@ import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
-import PartnerTierCards from "@/components/partner-tier-cards"
+import PartnerTierCards, { PartnerInquiryCards } from "@/components/partner-tier-cards"
+import { partnerTierPriceSentence } from "@/config/partner-tiers"
 import { PartnerCta } from "@/components/tracked-external-link"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
@@ -41,7 +42,7 @@ const FAQ = [
   },
   {
     q: "Do you guarantee traffic, bookings, or search rankings?",
-    a: "No. No honest directory can. Until our analytics are connected, we will not quote visit numbers at all. What we do guarantee is the placement, the label, and that your official data will be treated like everyone else’s.",
+    a: `No. Site analytics went live in November 2026. We share a current traffic report on request at ${PARTNER_INQUIRY_EMAIL}. We do not guarantee traffic, bookings, or rankings. What we do guarantee is the placement, the label, and that your official data will be treated like everyone else’s.`,
   },
   {
     q: "How is this different from a Yelp ad?",
@@ -136,7 +137,11 @@ export default async function PartnerWithUsPage({
             </div>
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Grade A badge</h3>
-              <p className="mt-3 text-sm leading-relaxed text-gray-700">A restaurant that currently holds a Grade A can embed a free badge. It shows the official NYC grade and updates when the grade does.</p>
+              <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                A restaurant that currently holds a Grade A can embed a{" "}
+                <Link href="/badge" className="font-semibold text-jade hover:text-forest">free Grade A badge</Link>
+                . It shows the official NYC grade and updates when the grade does.
+              </p>
             </div>
           </div>
         </section>
@@ -173,9 +178,7 @@ export default async function PartnerWithUsPage({
               and it never changes a health grade, a Health Score, a dietary tag, or our default rankings.
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
-              We do not quote traffic, search-click, or subscriber figures. Those numbers will be added
-              only after analytics and, if relevant, a newsletter list are in place and can be shown from
-              a current report.
+              Site analytics went live in November 2026. We share a current traffic report on request at {PARTNER_INQUIRY_EMAIL}. We do not guarantee traffic, bookings, or rankings.
             </p>
           </div>
         </section>
@@ -208,14 +211,41 @@ export default async function PartnerWithUsPage({
           </div>
         </section>
 
-        <section className="mb-16">
+        <section className="mb-16" aria-label="Free first">
+          <ol className="grid gap-4 md:grid-cols-3">
+            {[
+              { step: "1", href: "/claim", label: "Claim your free listing" },
+              { step: "2", href: "/badge", label: "Add the free Grade A badge" },
+              { step: "3", href: "#optional-paid-placement", label: "Optional labeled placement" },
+            ].map((item, index, items) => (
+              <li key={item.href} className="relative">
+                <Link
+                  href={item.href}
+                  className="flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-colors hover:border-jade focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jade"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-widest text-sage">{`Step ${item.step}`}</span>
+                  <span className="mt-3 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+                    {item.label}
+                  </span>
+                </Link>
+                {index < items.length - 1 ? (
+                  <span className="pointer-events-none absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 text-sage md:block" aria-hidden="true">
+                    →
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section id="optional-paid-placement" className="mb-16 scroll-mt-24">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">THE OFFER</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Optional paid placement
           </h2>
           <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             <p className="text-base leading-relaxed text-gray-700">
-              Three paid tiers are for sale. Featured is $49 a month, Spotlight is $149 a month, and Neighborhood Sponsor is $299 a month. Payment never changes an official grade, a Health Score, a dietary tag, or a ranking. Listing in the directory stays free.
+              {`Three paid tiers are for sale. ${partnerTierPriceSentence()}. Payment never changes an official grade, a Health Score, a dietary tag, or a ranking. Listing in the directory stays free.`}
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
               On a diner-facing page the words are Partner or Sponsored. Featured and Spotlight are the names of these paid products. They are not an editorial pick. The{" "}
@@ -229,6 +259,22 @@ export default async function PartnerWithUsPage({
           <p className="mt-6 text-sm leading-relaxed text-gray-700">
             Each paid button opens Stripe checkout in this tab. After payment, Stripe brings you back here. Questions still go to {PARTNER_INQUIRY_EMAIL}.
           </p>
+        </section>
+
+        <section className="mb-16">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">OTHER OFFERS</p>
+          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            More ways to work with us
+          </h2>
+          <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+            <p className="text-base leading-relaxed text-gray-700">
+              These three are inquiry-based. The button opens an email to {PARTNER_INQUIRY_EMAIL} with the subject line filled in. They are separate from the monthly Stripe tiers above.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-gray-700">
+              Payment never changes an official grade, a Health Score, a dietary tag, or a ranking. Eligibility is still required: current Grade A, or no current grade and no current violations, plus a genuine fit with this directory.
+            </p>
+          </div>
+          <PartnerInquiryCards />
         </section>
 
         <section className="mb-16">
@@ -273,7 +319,7 @@ export default async function PartnerWithUsPage({
             Ask about eligibility
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-base text-white/60">
-            The three prices are above. Partnership questions still go to {PARTNER_INQUIRY_EMAIL}. The full rules
+            The prices are above. Partnership questions still go to {PARTNER_INQUIRY_EMAIL}. The full rules
             live in the Editorial &amp; Partnership Policy. This page does not override that policy.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
