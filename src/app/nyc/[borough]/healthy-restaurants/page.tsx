@@ -20,7 +20,7 @@ import ContextualLinks from "@/components/contextual-links"
 import { getBoroughContextualLinks } from "@/lib/internal-links"
 import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
-import scorecardsData from "@/data/neighborhood-scorecards"
+import { buildNeighborhoodScorecard, scorecardNeighborhoodName } from "@/lib/neighborhood-scorecard"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
@@ -83,41 +83,36 @@ export default async function BoroughPage({
     business_status: "OPERATIONAL" as const,
     is_published: true,
   }
-  const [restaurantRows, stats, ratingAgg, gradeACount] = await Promise.all([
+  const [restaurantRows, ratingAgg] = await Promise.all([
     prisma.restaurant.findMany({
       where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
     }),
     prisma.restaurant.aggregate({
-      where: listedWhere,
-      _count: { id: true },
-    }),
-    prisma.restaurant.aggregate({
       where: { ...listedWhere, rating: { gt: 0 } },
       _avg: { rating: true },
     }),
-    prisma.restaurant.count({
-      where: { ...listedWhere, inspection_grade: "A" },
-    }),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
+  // One pass over the same published rows that render the sections below.
+  // Introduction, FAQ, JSON-LD, and the scorecard all read this object.
+  const scorecard = buildNeighborhoodScorecard(restaurants)
 
-  const totalCount = stats._count.id
+  const totalCount = scorecard.totalRestaurants
+  const gradeACount = scorecard.gradeA
+  const gradeBCount = scorecard.gradeB
+  const gradeCCount = scorecard.gradeC
   const avgRating = roundAverage(ratingAgg._avg.rating)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 
-  const neighborhoodScorecard = scorecardsData[boroughName] ?? []
-
   const byNeighborhood = restaurants.reduce((acc, r) => {
-    const hood = r.neighborhood || "Other"
+    const hood = scorecardNeighborhoodName(r.neighborhood)
     if (!acc[hood]) acc[hood] = []
     acc[hood].push(r)
     return acc
   }, {} as Record<string, typeof restaurants>)
 
   const neighborhoodsSorted = Object.entries(byNeighborhood).sort((a, b) => b[1].length - a[1].length)
-  const gradeBCount = restaurants.filter((row) => row.inspection_grade === "B").length
-  const gradeCCount = restaurants.filter((row) => row.inspection_grade === "C").length
   const latestBoroughInspection = latestInspectionDate(restaurants.map((row) => row.inspection_date))
   const dietCounts = [
     { label: "Vegan", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("vegan")).length },
@@ -132,7 +127,7 @@ export default async function BoroughPage({
     gradeC: gradeCCount,
     latestMonth: latestBoroughInspection ? formatMonthYear(latestBoroughInspection) : null,
     diets: dietCounts,
-    neighborhoodCount: neighborhoodsSorted.length,
+    neighborhoodCount: scorecard.neighborhoods.length,
   })
   const topNeighborhood = neighborhoodsSorted[0]
   const boroughFaqList = placeFaqs({
@@ -153,7 +148,7 @@ export default async function BoroughPage({
   const itemListJsonLd = {
     ...buildHubItemList({
       name: `Healthy Restaurants in ${boroughName}, NYC`,
-      description: `${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, with NYC health inspection grades and dietary filters.`,
+      description: `${totalCount} healthy restaurants across ${scorecard.neighborhoods.length} neighborhoods in ${boroughName}, with NYC health inspection grades and dietary filters.`,
       siteUrl,
       restaurants: restaurants.slice(0, 20),
     }),
@@ -168,7 +163,7 @@ export default async function BoroughPage({
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: `Healthy Restaurants in ${boroughName}, NYC — Health Grade Data`,
-    description: `Health inspection grades, dietary certifications, and restaurant data for ${totalCount} healthy restaurants across ${neighborhoodScorecard.length} neighborhoods in ${boroughName}, New York City. Sourced from NYC DOHMH Open Data.`,
+    description: `Health inspection grades, dietary certifications, and restaurant data for ${totalCount} healthy restaurants across ${scorecard.neighborhoods.length} neighborhoods in ${boroughName}, New York City. Sourced from NYC DOHMH Open Data.`,
     url: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
@@ -183,6 +178,8 @@ export default async function BoroughPage({
     variableMeasured: ["Health inspection grade", "Dietary certifications", "Community rating", "Hidden gem status"],
   }
 
+  // Share of every published listing, including those with no letter.
+  // The introduction and the scorecard use Grade A ÷ A, B, or C instead.
   const gradeARate = totalCount > 0 ? Math.round((gradeACount / totalCount) * 100) : 0
   // Full RestaurantCards for every listing made Manhattan's HTML about 2 MB.
   // Cards are capped; every other listing is a server-rendered anchor.
@@ -572,11 +569,11 @@ export default async function BoroughPage({
       </div>
 
       {/* ─── NEIGHBORHOOD HEALTH SCORECARD ─── */}
-      {neighborhoodScorecard.length > 0 && (
+      {scorecard.neighborhoods.length > 0 && (
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <NeighborhoodScorecard
             borough={boroughName}
-            neighborhoods={neighborhoodScorecard}
+            scorecard={scorecard}
             validHubSlugs={[...validHubs]}
           />
         </div>

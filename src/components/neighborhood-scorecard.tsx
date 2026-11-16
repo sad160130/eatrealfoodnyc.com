@@ -1,265 +1,399 @@
+import type { ReactNode } from "react"
 import Link from "next/link"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
-import type { NeighborhoodScore } from "@/data/neighborhood-scorecards"
+import {
+  MIN_GRADED_LISTINGS_FOR_RATE_LEADER,
+  type BoroughScorecard,
+  type NeighborhoodScore,
+} from "@/lib/neighborhood-scorecard"
 
 interface NeighborhoodScorecardProps {
   borough: string
-  neighborhoods: NeighborhoodScore[]
+  scorecard: BoroughScorecard
   /**
    * Hub keys ("borough-slug/neighborhood-slug") that were actually built.
-   * Gating happens HERE rather than in pull-neighborhood-scorecards.ts so the
-   * contents of the generated JSON can never produce a link to an unbuilt hub.
    * Passed as a plain string[] rather than a Set: this crosses a component
    * boundary and an array is unambiguous if this ever becomes client-side.
    */
   validHubSlugs: string[]
 }
 
+function n(value: number) {
+  return value.toLocaleString("en-US")
+}
+
+function rateLabel(rate: number | null) {
+  return rate == null ? "—" : `${rate}%`
+}
+
 export default function NeighborhoodScorecard({
   borough,
-  neighborhoods,
+  scorecard,
   validHubSlugs,
 }: NeighborhoodScorecardProps) {
-  if (neighborhoods.length === 0) return null
+  if (scorecard.neighborhoods.length === 0) return null
 
   const boroughSlug = boroughToSlug(borough)
   const validHubs = new Set(validHubSlugs)
-  const sorted = [...neighborhoods].sort((a, b) => b.total - a.total)
-
-  const gradeALeader = [...neighborhoods].sort((a, b) => b.gradeARate - a.gradeARate)[0]
-  const gemLeader = [...neighborhoods].sort((a, b) => b.hiddenGems - a.hiddenGems)[0]
-  const totalRestaurants = neighborhoods.reduce((sum, n) => sum + n.total, 0)
-  const avgGradeARate = Math.round(
-    neighborhoods.reduce((sum, n) => sum + n.gradeARate, 0) / neighborhoods.length
-  )
-
-  const quickStats = [
-    {
-      stat: neighborhoods.length.toString(),
-      label: "Neighborhoods tracked",
-      sub: `across ${borough}`,
-    },
-    {
-      stat: `${gradeALeader?.gradeARate ?? 0}%`,
-      label: "Highest Grade A rate",
-      sub: gradeALeader?.neighborhood ?? "",
-    },
-    {
-      stat: (gemLeader?.hiddenGems ?? 0).toString(),
-      label: "Most hidden gems",
-      sub: gemLeader?.neighborhood ?? "",
-    },
-    {
-      stat: `${avgGradeARate}%`,
-      label: `${borough} avg Grade A rate`,
-      sub: "Borough average",
-    },
-  ]
+  const leader = scorecard.gradeALeader
+  const gemLeader = scorecard.gemLeader
+  const minGraded = MIN_GRADED_LISTINGS_FOR_RATE_LEADER
 
   return (
-    <section
-      className="my-12"
-      aria-labelledby={`scorecard-heading-${boroughSlug}`}
-    >
-      {/* Section heading */}
+    <section className="my-12" aria-labelledby={`scorecard-heading-${boroughSlug}`}>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p
-            className="mb-1 text-xs font-bold uppercase tracking-widest"
-            style={{ color: "var(--color-muted)" }}
-          >
-            PROPRIETARY DATA — EAT REAL FOOD NYC
+          <p className="eyebrow" style={{ color: "var(--color-muted)" }}>
+            Published listings on this page
           </p>
-          <h2
-            id={`scorecard-heading-${boroughSlug}`}
-            className="text-2xl font-bold text-forest"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
+          <h2 id={`scorecard-heading-${boroughSlug}`} className="h2-serif mt-2">
             {borough} Neighborhood Health Scorecard
           </h2>
-          <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
-            {neighborhoods.length} neighborhoods · {totalRestaurants.toLocaleString()} restaurants ·{" "}
-            {avgGradeARate}% average Grade A rate
+          <p className="mt-2 text-sm" style={{ color: "var(--color-text)", maxWidth: "68ch" }}>
+            {n(scorecard.neighborhoods.length)} neighborhoods · {n(scorecard.totalRestaurants)} restaurants
+            {scorecard.graded > 0 ? (
+              <>
+                {" "}
+                · {n(scorecard.gradeA)} of {n(scorecard.graded)} graded listings hold Grade A (
+                {rateLabel(scorecard.gradeARate)})
+              </>
+            ) : (
+              <> · no listings with an A, B, or C</>
+            )}
           </p>
         </div>
         <Link
           href="/nyc/compare"
-          className="flex-shrink-0 rounded-xl border border-sage/30 px-4 py-2 text-xs font-semibold text-jade transition-colors hover:border-jade"
+          className="eyebrow inline-flex flex-shrink-0 items-center gap-1.5"
+          style={{ color: "var(--color-jade)" }}
         >
-          Compare all neighborhoods →
+          Compare neighborhoods
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
 
-      {/* Quick stats row */}
-      <dl className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {quickStats.map((item) => (
-          <div
-            key={item.label}
-            className="rounded-xl border border-gray-100 bg-white p-4 text-center shadow-sm"
+      <dl className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatTile label="Neighborhoods">
+          <p
+            className="tabular mt-2"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 700,
+              fontSize: "1.75rem",
+              lineHeight: 1,
+              color: "var(--color-forest)",
+            }}
           >
-            <dt className="sr-only">{item.label}</dt>
-            <dd
-              className="text-2xl font-bold text-forest"
-              style={{ fontFamily: "Georgia, serif" }}
-            >
-              {item.stat}
-            </dd>
-            <p
-              className="mt-1 text-xs leading-tight"
-              style={{ color: "var(--color-muted)" }}
-            >
-              {item.label}
-            </p>
-            <p className="mt-0.5 text-xs font-medium text-sage">{item.sub}</p>
-          </div>
-        ))}
+            {n(scorecard.neighborhoods.length)}
+          </p>
+          <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
+            in {borough}
+          </p>
+        </StatTile>
+
+        <StatTile label="Highest Grade A rate">
+          {leader ? (
+            <>
+              <p
+                className="mt-2"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.25rem",
+                  lineHeight: 1.2,
+                  color: "var(--color-forest)",
+                }}
+              >
+                {leader.neighborhood}
+              </p>
+              <p
+                className="tabular mt-1"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.75rem",
+                  lineHeight: 1,
+                  color: "var(--color-jade)",
+                }}
+              >
+                {leader.gradeARate}%
+              </p>
+              <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
+                {n(leader.gradeA)} of {n(leader.graded)} graded listings. Neighborhoods with at least{" "}
+                {minGraded} graded listings.
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="mt-2"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.75rem",
+                  lineHeight: 1,
+                  color: "var(--color-forest)",
+                }}
+              >
+                —
+              </p>
+              <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
+                No neighborhood has {minGraded} graded listings.
+              </p>
+            </>
+          )}
+        </StatTile>
+
+        <StatTile label="Most hidden gems">
+          {gemLeader ? (
+            <>
+              <p
+                className="mt-2"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.25rem",
+                  lineHeight: 1.2,
+                  color: "var(--color-forest)",
+                }}
+              >
+                {gemLeader.neighborhood}
+              </p>
+              <p className="mt-2 text-sm" style={{ color: "var(--color-text)" }}>
+                <span className="gem-mark" aria-hidden="true">
+                  ✦
+                </span>{" "}
+                <span className="tabular">{n(gemLeader.hiddenGems)}</span> hidden{" "}
+                {gemLeader.hiddenGems === 1 ? "gem" : "gems"}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="mt-2"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.75rem",
+                  lineHeight: 1,
+                  color: "var(--color-forest)",
+                }}
+              >
+                —
+              </p>
+              <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
+                No hidden gems in {borough}.
+              </p>
+            </>
+          )}
+        </StatTile>
+
+        <StatTile label="Grade A of graded listings">
+          <p
+            className="tabular mt-2"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 700,
+              fontSize: "1.75rem",
+              lineHeight: 1,
+              color: "var(--color-forest)",
+            }}
+          >
+            {rateLabel(scorecard.gradeARate)}
+          </p>
+          <p className="mt-2 text-xs" style={{ color: "var(--color-muted)" }}>
+            {scorecard.graded > 0
+              ? `${n(scorecard.gradeA)} of ${n(scorecard.graded)} with an A, B, or C.`
+              : "No listings with an A, B, or C."}
+          </p>
+        </StatTile>
       </dl>
 
-      {/* Scorecard table */}
       <div
-        role="region"
-        aria-label={`${borough} neighborhood scorecard table`}
-        className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
+        className="overflow-x-auto border"
+        style={{
+          borderColor: "var(--hairline)",
+          borderRadius: "4px",
+          backgroundColor: "#FFFFFF",
+        }}
       >
-        <table className="w-full text-sm">
-          <caption className="sr-only">
-            {borough} neighborhoods ranked by restaurant count, with Grade A rate, hidden gem
-            count, and top dietary tag for each.
+        <table className="w-full min-w-[44rem] border-collapse text-sm">
+          <caption
+            className="px-5 py-4 text-left text-xs"
+            style={{ captionSide: "bottom", color: "var(--color-muted)" }}
+          >
+            {borough} neighborhoods ranked by published listing count. Grade A rate is Grade A divided
+            by listings with an A, B, or C — the same ratio as the introduction on this page. A dash
+            means that neighborhood has no graded listings. Highest Grade A rate includes only
+            neighborhoods with at least {minGraded} graded listings. Hidden gems are published listings
+            rated 4.5 or higher with fewer than 200 reviews. Top diet is the canonical tag on the most
+            listings. Grades are the latest matched NYC DOHMH record.
           </caption>
           <thead>
-            <tr className="grid grid-cols-12 bg-forest px-5 py-3 text-xs font-semibold uppercase tracking-wider text-white/70">
-              <th scope="col" className="col-span-4 text-left">
+            <tr style={{ backgroundColor: "var(--color-cream)" }}>
+              <th
+                scope="col"
+                className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
+                <span className="sr-only">Rank</span>
+                <span aria-hidden="true">#</span>
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
                 Neighborhood
               </th>
-              <th scope="col" className="col-span-2 hidden text-center sm:block">
+              <th
+                scope="col"
+                className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
                 Restaurants
               </th>
-              <th scope="col" className="col-span-2 text-center">
-                Grade A %
+              <th
+                scope="col"
+                className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
+                Grade A rate
+                <span className="mt-0.5 block font-normal normal-case tracking-normal">of A, B, or C</span>
               </th>
-              <th scope="col" className="col-span-2 hidden text-center md:block">
-                Hidden Gems
+              <th
+                scope="col"
+                className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
+                Hidden gems
               </th>
-              <th scope="col" className="col-span-2 hidden text-center lg:block">
-                Top Diet
+              <th
+                scope="col"
+                className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                style={{ color: "var(--color-muted)" }}
+              >
+                Top diet
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
-            {sorted.map((n, i) => {
-              const hoodSlug = neighborhoodToSlug(n.neighborhood)
-              const gradeColor =
-                n.gradeARate >= 70
-                  ? "text-green-600 bg-green-50"
-                  : n.gradeARate >= 50
-                    ? "text-jade bg-sage/10"
-                    : n.gradeARate >= 30
-                      ? "text-amber-600 bg-amber-50"
-                      : "text-gray-500 bg-gray-50"
-
-              return (
-                <tr
-                  key={n.neighborhood}
-                  className={`grid grid-cols-12 items-center px-5 py-3.5 transition-colors hover:bg-gray-50/50 ${
-                    i % 2 === 0 ? "" : "bg-gray-50/30"
-                  }`}
-                >
-                  {/* Neighborhood name */}
-                  <th
-                    scope="row"
-                    className="col-span-4 flex min-w-0 items-center gap-2 text-left font-normal"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="hidden w-5 flex-shrink-0 text-xs sm:block"
-                      style={{ color: "var(--color-muted)" }}
-                    >
-                      {i + 1}
-                    </span>
-                    {validHubs.has(`${boroughSlug}/${hoodSlug}`) ? (
-                      <Link
-                        href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
-                        className="truncate text-sm font-semibold text-forest transition-colors hover:text-jade"
-                      >
-                        {n.neighborhood}
-                      </Link>
-                    ) : (
-                      <span className="truncate text-sm font-semibold text-forest">
-                        {n.neighborhood}
-                      </span>
-                    )}
-                  </th>
-
-                  <td className="col-span-2 hidden text-center sm:block">
-                    <span className="text-sm font-medium text-gray-700">
-                      {n.total.toLocaleString()}
-                    </span>
-                  </td>
-
-                  <td className="col-span-2 text-center">
-                    {n.gradeA > 0 ? (
-                      <span
-                        aria-label={`${n.gradeARate} percent Grade A — ${n.gradeA} of ${n.total} restaurants`}
-                        className={`rounded-full px-2 py-1 text-xs font-bold ${gradeColor}`}
-                      >
-                        {n.gradeARate}%
-                      </span>
-                    ) : (
-                      <span aria-label="No Grade A data" className="text-xs text-gray-300">
-                        —
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="col-span-2 hidden text-center md:block">
-                    {n.hiddenGems > 0 ? (
-                      <span
-                        aria-label={`${n.hiddenGems} hidden gems`}
-                        className="text-sm font-medium text-amber-500"
-                      >
-                        <span aria-hidden="true">💎</span> {n.hiddenGems}
-                      </span>
-                    ) : (
-                      <span aria-label="No hidden gems" className="text-xs text-gray-300">
-                        —
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="col-span-2 hidden text-center lg:block">
-                    {n.topDietaryLabel ? (
-                      <span
-                        aria-label={`Top dietary tag: ${n.topDietaryLabel} (${n.topDietaryCount} restaurants)`}
-                        className="rounded-full bg-sage/10 px-2 py-1 text-xs font-medium text-jade"
-                      >
-                        {n.topDietaryLabel}
-                      </span>
-                    ) : (
-                      <span aria-label="No dietary data" className="text-xs text-gray-300">
-                        —
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+          <tbody>
+            {scorecard.neighborhoods.map((row, index) => (
+              <ScorecardRow
+                key={row.neighborhood}
+                row={row}
+                rank={index + 1}
+                boroughSlug={boroughSlug}
+                linked={validHubs.has(`${boroughSlug}/${neighborhoodToSlug(row.neighborhood)}`)}
+              />
+            ))}
           </tbody>
         </table>
-
-        {/* Table footer */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 bg-gray-50/50 px-5 py-4">
-          <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-            Data: Eat Real Food NYC + NYC DOHMH Open Data. Each grade is the latest matched DOHMH record. Grade A % shown only
-            for restaurants with verified inspection records.
-          </p>
-          <Link
-            href={`/nyc/${boroughSlug}/healthy-restaurants`}
-            className="text-xs font-semibold text-jade transition-colors hover:text-forest"
-          >
-            View all {borough} restaurants →
-          </Link>
-        </div>
       </div>
     </section>
+  )
+}
+
+function StatTile({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div
+      className="border p-4"
+      style={{
+        borderColor: "var(--hairline)",
+        borderRadius: "4px",
+        backgroundColor: "#FFFFFF",
+      }}
+    >
+      <dt className="eyebrow" style={{ color: "var(--color-muted)" }}>
+        {label}
+      </dt>
+      <dd className="m-0">{children}</dd>
+    </div>
+  )
+}
+
+function ScorecardRow({
+  row,
+  rank,
+  boroughSlug,
+  linked,
+}: {
+  row: NeighborhoodScore
+  rank: number
+  boroughSlug: string
+  linked: boolean
+}) {
+  const hoodSlug = neighborhoodToSlug(row.neighborhood)
+  const rateText =
+    row.gradeARate == null
+      ? "No graded listings"
+      : `${row.gradeARate}% Grade A, ${row.gradeA} of ${row.graded} graded listings`
+
+  return (
+    <tr style={{ borderTop: "1px solid var(--hairline)" }}>
+      <td className="tabular px-3 py-3 text-xs" style={{ color: "var(--color-muted)" }}>
+        {rank}
+      </td>
+      <th scope="row" className="px-3 py-3 text-left font-normal">
+        {linked ? (
+          <Link
+            href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
+            className="text-sm font-semibold"
+            style={{ color: "var(--color-forest)" }}
+          >
+            {row.neighborhood}
+          </Link>
+        ) : (
+          <span className="text-sm font-semibold" style={{ color: "var(--color-forest)" }}>
+            {row.neighborhood}
+          </span>
+        )}
+      </th>
+      <td className="tabular px-3 py-3 text-right" style={{ color: "var(--color-text)" }}>
+        {n(row.total)}
+      </td>
+      <td className="px-3 py-3 text-right">
+        {row.gradeARate == null ? (
+          <span aria-label={`${row.neighborhood}: no graded listings`}>—</span>
+        ) : (
+          <span aria-label={`${row.neighborhood}: ${rateText}`}>
+            <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>
+              {row.gradeARate}%
+            </span>
+            <span className="mt-0.5 block text-xs tabular" style={{ color: "var(--color-muted)" }}>
+              {n(row.gradeA)} of {n(row.graded)}
+            </span>
+          </span>
+        )}
+      </td>
+      <td className="tabular px-3 py-3 text-right" style={{ color: "var(--color-text)" }}>
+        {row.hiddenGems > 0 ? (
+          <span
+            aria-label={`${n(row.hiddenGems)} hidden ${row.hiddenGems === 1 ? "gem" : "gems"} in ${row.neighborhood}`}
+          >
+            <span className="gem-mark" aria-hidden="true">
+              ✦
+            </span>{" "}
+            {n(row.hiddenGems)}
+          </span>
+        ) : (
+          <span aria-label={`No hidden gems in ${row.neighborhood}`}>—</span>
+        )}
+      </td>
+      <td className="px-3 py-3 text-left">
+        {row.topDietaryTag && row.topDietaryLabel ? (
+          <Link
+            href={`/healthy-restaurants/${row.topDietaryTag}`}
+            aria-label={`Top dietary tag in ${row.neighborhood}: ${row.topDietaryLabel}, ${n(row.topDietaryCount)} ${row.topDietaryCount === 1 ? "listing" : "listings"}`}
+            className="text-sm"
+            style={{ color: "var(--color-jade)" }}
+          >
+            {row.topDietaryLabel}
+          </Link>
+        ) : (
+          <span aria-label={`No dietary tag in ${row.neighborhood}`}>—</span>
+        )}
+      </td>
+    </tr>
   )
 }
