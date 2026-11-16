@@ -26,6 +26,7 @@ import { withPartnerStatus } from "@/lib/partner-status-db"
 import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { presentGrade } from "@/lib/grade-display"
+import NewsletterSignup from "@/components/newsletter-signup"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -596,6 +597,12 @@ export default async function BoroughPage({
         heading={`Healthy restaurants in ${boroughName}`}
         subheading={`Counts from the published ${boroughName} listings.`}
       />
+
+      <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
+        <div className="mx-auto max-w-7xl">
+          <NewsletterSignup sourcePath={`/nyc/${boroughSlug}/healthy-restaurants`} />
+        </div>
+      </div>
 
       <BackToTop />
     </>
