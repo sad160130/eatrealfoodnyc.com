@@ -43,7 +43,6 @@ export default function FAQSection({
               key={index}
               question={faq.question}
               answer={faq.answer}
-              isFirst={index === 0}
               isLast={index === faqs.length - 1}
             />
           ))}
