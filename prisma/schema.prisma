@@ -157,6 +157,36 @@ model CateringLead {
   @@map("catering_leads")
 }
 
+/// Paid NYC Restaurant Compliance Weekly subscriber, recorded from Stripe.
+/// STRIPE_SECRET_KEY is read-only. This table is written by our webhook, not by Stripe.
+model ComplianceSubscription {
+  id                     Int       @id @default(autoincrement())
+  stripe_customer_id     String
+  stripe_subscription_id String    @unique
+  email                  String
+  plan                   String
+  status                 String
+  current_period_end     DateTime?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @updatedAt
+
+  @@index([status])
+  @@map("compliance_subscriptions")
+}
+
+/// One row per subscription per Monday, written only after Resend accepts the email.
+model ComplianceWeeklySend {
+  id                     Int      @id @default(autoincrement())
+  stripe_subscription_id String
+  monday_date            String
+  email                  String
+  sent_at                DateTime @default(now())
+
+  @@unique([stripe_subscription_id, monday_date])
+  @@index([monday_date])
+  @@map("compliance_weekly_sends")
+}
+
 model UserSubmission {
   id               Int      @id @default(autoincrement())
   restaurant_slug  String
