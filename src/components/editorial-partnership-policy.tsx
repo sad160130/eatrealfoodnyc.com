@@ -52,8 +52,18 @@ const PRODUCTS = [
   },
   {
     product: "Newsletter sponsor",
-    what: "Labeled sponsorship of a future email newsletter, once it exists. Not for sale today.",
+    what: "Labeled sponsorship of a weekly issue of Grade A Eats This Week.",
     label: "Sponsored",
+  },
+  {
+    product: "Sponsored guide placement",
+    what: "A labeled placement in an existing guide.",
+    label: "Sponsored",
+  },
+  {
+    product: "Catering referral",
+    what: "A referral when a catering lead is accepted. Not a listing placement, and not a change to a grade, a score, a tag, or a ranking.",
+    label: "No listing label",
   },
 ]
 
@@ -181,8 +191,7 @@ export default function EditorialPartnershipPolicy() {
         <Link href="/partner-with-us" className="font-semibold text-jade hover:text-forest">
           Partner with us
         </Link>
-        . Rates are available on request and are not published on the site. Products may be added
-        or retired; this policy still governs them.
+        . Published rates are on that page. Products may be added or retired; this policy still governs them.
       </p>
       <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white shadow-sm">
         <table className="w-full min-w-[36rem] text-left text-sm">

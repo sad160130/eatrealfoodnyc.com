@@ -4,6 +4,13 @@ import {
   organicRankKey,
   partnerLinkRel,
 } from "../lib/partner-status"
+import {
+  PARTNER_INQUIRY_OFFERS,
+  PARTNER_TIERS,
+  partnerInquiryHref,
+  partnerTierHref,
+  partnerTierPrice,
+} from "../config/partner-tiers"
 import type { Restaurant } from "../types"
 
 function assert(condition: boolean, message: string) {
@@ -102,6 +109,39 @@ assert(
 assert(
   partnerLinkRel("featured") === "noopener noreferrer",
   "vague labels are not treated as partner links"
+)
+
+assert(partnerTierPrice(PARTNER_TIERS[0]) === "$49/month", "Featured price is one text string")
+assert(partnerTierPrice(PARTNER_TIERS[1]) === "$149/month", "Spotlight price is one text string")
+assert(partnerTierPrice(PARTNER_TIERS[2]) === "$299/month", "Neighborhood Sponsor price is one text string")
+assert(PARTNER_TIERS.map((tier) => tier.name).join("|") === "Featured|Spotlight|Neighborhood Sponsor", "tier names")
+assert(
+  partnerTierHref(PARTNER_TIERS[0]) === "https://buy.stripe.com/4gM4gzgNt7Is3cab9HcV200" &&
+    partnerTierHref(PARTNER_TIERS[1]) === "https://buy.stripe.com/14A28r40H8Mw7sqelTcV201" &&
+    partnerTierHref(PARTNER_TIERS[2]) === "https://buy.stripe.com/dRmdR9gNtfaUcMKfpXcV202",
+  "Stripe Payment Links are unchanged"
+)
+assert(
+  PARTNER_INQUIRY_OFFERS.map((offer) => offer.id).join("|") ===
+    "sponsored_guide|newsletter_sponsor|catering_referral",
+  "inquiry offer ids match the tracked tiers"
+)
+assert(PARTNER_INQUIRY_OFFERS[0].price === "$250 per placement", "guide placement price")
+assert(PARTNER_INQUIRY_OFFERS[0].label === "Sponsored", "guide placement is labeled Sponsored")
+assert(PARTNER_INQUIRY_OFFERS[1].price === "$150 per weekly issue", "newsletter slot price")
+assert(PARTNER_INQUIRY_OFFERS[1].label === "Sponsored", "newsletter slot is labeled Sponsored")
+assert(
+  PARTNER_INQUIRY_OFFERS[2].price === "$50 per accepted catering lead, or 10% of the first order",
+  "catering referral price"
+)
+assert(
+  decodeURIComponent(partnerInquiryHref(PARTNER_INQUIRY_OFFERS[0]).split("subject=")[1]) ===
+    "Sponsored guide placement",
+  "guide inquiry mailto subject"
+)
+assert(
+  partnerInquiryHref(PARTNER_INQUIRY_OFFERS[1]).startsWith("mailto:partner@eatrealfoodnyc.com?subject="),
+  "newsletter inquiry uses the partner inbox"
 )
 
 if (process.exitCode) {
