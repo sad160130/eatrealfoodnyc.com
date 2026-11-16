@@ -248,7 +248,8 @@ npx tsx src/scripts/weekly-publish.ts      # mark next 100 as published
 
 # Information Gain data refresh
 npx tsx src/scripts/pull-guide-stats.ts
-npx tsx src/scripts/pull-neighborhood-scorecards.ts
+# Borough neighborhood scorecards are computed at render from the published
+# listings on the hub (src/lib/neighborhood-scorecard.ts). No JSON snapshot.
 npx tsx src/scripts/pull-health-grade-report.ts
 npx tsx src/scripts/pull-best-rated-restaurants.ts
 
