@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
+import FAQItem from "@/components/faq-item"
 import { getCanonicalUrl } from "@/config/seo"
 import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
@@ -244,15 +245,12 @@ export default async function InspectionProcessGuide() {
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Frequently asked questions</h2>
           <div className="space-y-0 overflow-hidden rounded-2xl border border-gray-100 bg-white">
             {GUIDE_FAQS.map((faq, i) => (
-              <div key={i} className={`border-b border-gray-100 ${i === GUIDE_FAQS.length - 1 ? "border-b-0" : ""}`}>
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 hover:bg-gray-50">
-                    <span className="pr-4 text-base font-semibold text-forest" style={{ fontFamily: "Georgia, serif" }}>{faq.question}</span>
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 border-sage text-sage group-open:rotate-45 transition-transform">+</span>
-                  </summary>
-                  <div className="px-6 pb-6"><p className="text-base leading-relaxed text-gray-600">{faq.answer}</p></div>
-                </details>
-              </div>
+              <FAQItem
+                key={i}
+                question={faq.question}
+                answer={faq.answer}
+                isLast={i === GUIDE_FAQS.length - 1}
+              />
             ))}
           </div>
         </section>
