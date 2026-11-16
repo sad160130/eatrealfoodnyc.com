@@ -723,7 +723,7 @@ export default async function RestaurantPage({
 
       <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
         <div className="mx-auto max-w-7xl">
-          <NewsletterSignup />
+          <NewsletterSignup sourcePath={`/restaurants/${restaurant.slug}`} />
         </div>
       </div>
     </>

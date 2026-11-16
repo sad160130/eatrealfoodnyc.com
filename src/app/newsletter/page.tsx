@@ -1,5 +1,6 @@
 import Link from "next/link"
 import NewsletterSignup from "@/components/newsletter-signup"
+import { GENERAL_CONTACT_EMAIL } from "@/config/contact"
 import { pageMeta } from "@/lib/page-meta"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
@@ -9,7 +10,7 @@ export const metadata = pageMeta({
   path: "/newsletter",
   title: TITLE,
   description:
-    "A weekly email of Grade A restaurant picks, new openings, and diet-friendly finds in New York City. No other email service is attached yet.",
+    "A weekly email of Grade A picks, new openings, and diet-friendly finds in NYC. Confirm by email. Unsubscribe anytime.",
 })
 
 export default function NewsletterPage() {
@@ -30,7 +31,10 @@ export default function NewsletterPage() {
             <li>Diet-friendly finds: places tagged for a specific diet, such as vegan, halal, kosher, or gluten-free, using the same conservative tags as the site.</li>
           </ul>
           <p>
-            Signing up stores your email on our server with the page you signed up from. We do not send it to another email company. A confirmation step is not running yet, so the first messages will start when that sending is in place. Listing data, grades, and rankings are unchanged by a signup.
+            Enter your email and tick the consent box. We store the address and the page you signed up from, then send a confirmation link from {GENERAL_CONTACT_EMAIL}. The link expires after 7 days. The weekly email starts after you confirm. Every email has an unsubscribe link, and you can leave the list anytime.
+          </p>
+          <p>
+            If an edition includes a sponsor, that block is labeled Sponsored. Grades, rankings, and which restaurants are listed stay independent of any sponsor.
           </p>
           <p>
             The directory itself stays at{" "}

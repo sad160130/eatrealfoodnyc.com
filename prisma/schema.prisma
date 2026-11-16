@@ -122,7 +122,8 @@ model Review {
 /// by prisma/migrations/20261115180000_user_submissions and by the
 /// idempotent script src/scripts/create-user-submissions-table.ts.
 /// Weekly "Grade A Eats This Week" signups. confirmed stays false until
-/// a confirmation step exists. No third-party email service is wired up.
+/// the reader opens the signed confirmation link. Tokens are stateless
+/// HMACs, so this table has no token or expiry columns.
 model NewsletterSubscriber {
   id          Int      @id @default(autoincrement())
   email       String   @unique

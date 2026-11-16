@@ -16,7 +16,7 @@ export default function NewsletterSignup({
   const pathname = usePathname()
   const source = sourcePath ?? pathname ?? "/"
   const headingId = useId()
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
+  const [status, setStatus] = useState<"idle" | "submitting" | "confirm" | "already" | "error">("idle")
   const [error, setError] = useState("")
   const dark = tone === "dark"
   const text = dark ? "rgba(248, 246, 241, 0.82)" : "var(--color-text)"
@@ -31,8 +31,8 @@ export default function NewsletterSignup({
       setStatus("error")
       return
     }
-    track("newsletter_signup", { source_path: source })
-    setStatus("success")
+    if (result.status === "confirm") track("newsletter_signup", { source_path: source })
+    setStatus(result.status)
   }
 
   return (
@@ -48,14 +48,16 @@ export default function NewsletterSignup({
         Grade A Eats This Week
       </h2>
       <p className="mt-2 text-sm leading-relaxed" style={{ color: muted }}>
-        Grade A picks, new openings, and diet-friendly finds. One email a week.{" "}
+        Grade A picks, new openings, and diet-friendly finds. One email a week, after you confirm. Unsubscribe anytime.{" "}
         <Link href="/newsletter" className="underline underline-offset-4" style={{ color: dark ? "var(--color-sage)" : "var(--color-jade)" }}>
           What you get
         </Link>
       </p>
-      {status === "success" ? (
+      {status === "confirm" || status === "already" ? (
         <p role="status" className="mt-4 text-sm font-medium" style={{ color: dark ? "var(--color-sage)" : "var(--color-jade)" }}>
-          Thanks. You&apos;re signed up for Grade A Eats This Week.
+          {status === "already"
+            ? "That email is already confirmed for Grade A Eats This Week."
+            : "Check your email for a confirmation link. It expires in 7 days."}
         </p>
       ) : (
         <form action={onSubmit} className="mt-4">
