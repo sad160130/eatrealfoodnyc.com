@@ -48,7 +48,7 @@ const GUIDE_FAQS = [
 ]
 
 export default async function HealthyNeighborhoodsGuide() {
-  const { restaurants } = await getPublishedDirectoryCounts()
+  const { restaurants, neighborhoods } = await getPublishedDirectoryCounts()
   const stats = await getLiveGuideStats()
   const faqs = GUIDE_FAQS.map((faq) =>
     faq.question === "How do you rank neighborhoods for healthy dining?"
@@ -82,7 +82,7 @@ export default async function HealthyNeighborhoodsGuide() {
         guide={guide}
         subtitle="Data-driven rankings of NYC neighborhoods for healthy dining across all five boroughs."
         stats={[
-          { label: "Neighborhoods", stat: "116" },
+          { label: "Neighborhoods", stat: neighborhoods.toLocaleString("en-US") },
           { label: "Boroughs", stat: "5" },
           { label: "Health scores computed", stat: "Yes" },
           { label: "Live DOHMH data", stat: "Yes" },
@@ -334,7 +334,7 @@ export default async function HealthyNeighborhoodsGuide() {
 
         <GuideCTA
           heading="Compare every NYC neighborhood"
-          body="Use our interactive comparison tool to rank 116 neighborhoods across all five boroughs by the metrics that matter to you: restaurant density, ratings, health scores, and dietary diversity."
+          body={`Use our interactive comparison tool to rank ${neighborhoods.toLocaleString("en-US")} ${neighborhoods === 1 ? "neighborhood" : "neighborhoods"} across all five boroughs by the metrics that matter to you: restaurant density, ratings, health scores, and dietary diversity.`}
           primaryLabel="Compare neighborhoods →"
           primaryHref="/nyc/compare"
           secondaryLabel="View map"

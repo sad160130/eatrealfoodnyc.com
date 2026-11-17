@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
 import FAQItem from "@/components/faq-item"
-import { getCanonicalUrl } from "@/config/seo"
 import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
@@ -12,16 +11,24 @@ import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { pageMeta } from "@/lib/page-meta"
+import { lateNightGuideDescription, lateNightGuideTitle } from "@/lib/seo-titles"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("late-night-healthy-eating-nyc")!
 
-export const metadata: Metadata = {
-  title: guide.metaTitle,
-  description: guide.description,
-  alternates: { canonical: getCanonicalUrl(`/guides/${guide.slug}`) },
-  robots: { index: true, follow: true },
-  openGraph: { title: guide.metaTitle, description: guide.description, type: "article", url: `${siteUrl}/guides/${guide.slug}`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: guide.metaTitle }] },
+export async function generateMetadata(): Promise<Metadata> {
+  const stats = await getLiveGuideStats()
+  return pageMeta({
+    path: `/guides/${guide.slug}`,
+    title: lateNightGuideTitle(stats.global.totalUniqueNeighborhoods),
+    description: lateNightGuideDescription({
+      restaurants: stats.global.totalPublished,
+      neighborhoods: stats.global.totalUniqueNeighborhoods,
+    }),
+    type: "article",
+    brand: false,
+  })
 }
 
 const GUIDE_FAQS = [
@@ -49,6 +56,10 @@ const GUIDE_FAQS = [
 
 export default async function LateNightGuide() {
   const stats = await getLiveGuideStats()
+  const description = lateNightGuideDescription({
+    restaurants: stats.global.totalPublished,
+    neighborhoods: stats.global.totalUniqueNeighborhoods,
+  })
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -59,7 +70,7 @@ export default async function LateNightGuide() {
             "@context": "https://schema.org",
             "@type": "Article",
             headline: guide.title,
-            description: guide.description,
+            description,
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,

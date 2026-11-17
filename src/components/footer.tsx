@@ -1,5 +1,7 @@
 import Link from "next/link"
+import { unstable_rethrow } from "next/navigation"
 import NewsletterSignup from "@/components/newsletter-signup"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -38,7 +40,26 @@ function boroughToSlug(borough: string): string {
   return borough.toLowerCase().replace(/ /g, "-")
 }
 
-export default function Footer() {
+async function loadFooterCounts(): Promise<{ listed: string; neighborhoods: string } | null> {
+  try {
+    const counts = await getPublishedDirectoryCounts()
+    return {
+      listed: counts.restaurants.toLocaleString("en-US"),
+      neighborhoods: counts.neighborhoods.toLocaleString("en-US"),
+    }
+  } catch (error) {
+    unstable_rethrow(error)
+    const name = error instanceof Error ? error.name : "Error"
+    const raw = error instanceof Error ? error.message : ""
+    const message = raw.replace(/[a-z][a-z0-9+.-]*:\/\/\S+/gi, "[redacted]").slice(0, 160)
+    console.error(`Footer directory counts unavailable (${name}${message ? `: ${message}` : ""})`)
+    return null
+  }
+}
+
+export default async function Footer() {
+  const counts = await loadFooterCounts()
+
   return (
     <footer
       style={{
@@ -145,8 +166,12 @@ export default function Footer() {
           {/* Trust badge — set on the right of the brand row */}
           <div className="md:col-span-7 md:pl-12">
             <div className="grid grid-cols-3 gap-8">
-              <TrustStat number="1,500+" label="Restaurants listed" />
-              <TrustStat number="116" label="NYC neighborhoods" />
+              {counts ? (
+                <>
+                  <TrustStat number={counts.listed} label="Restaurants listed" />
+                  <TrustStat number={counts.neighborhoods} label="NYC neighborhoods" />
+                </>
+              ) : null}
               <TrustStat number="A" label="DOHMH source data" plaque />
             </div>
           </div>

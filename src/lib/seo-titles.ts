@@ -365,6 +365,106 @@ export function restaurantListingDescription(input: {
   return fitDescription(head, tails)
 }
 
+const CTR_DESCRIPTION_MAX = 155
+
+function formatCount(value: number): string {
+  return value.toLocaleString("en-US")
+}
+
+/**
+ * Titles for the pages that already earn the clicks. The lead is the query.
+ * The benefit is a count that page already computes. Nothing here is invented.
+ */
+export function breakfastGuideTitle(neighborhoods: number): string {
+  const benefit = neighborhoods > 0 ? `${formatCount(neighborhoods)} ${neighborhoods === 1 ? "Neighborhood" : "Neighborhoods"}` : null
+  return fitTitle(
+    [benefit ? `Healthy Breakfast NYC | ${benefit}` : null, "Healthy Breakfast NYC"],
+    { allowBrand: false },
+  )
+}
+
+export function lateNightGuideTitle(neighborhoods: number): string {
+  const benefit = neighborhoods > 0 ? `${formatCount(neighborhoods)} ${neighborhoods === 1 ? "Neighborhood" : "Neighborhoods"}` : null
+  return fitTitle(
+    [benefit ? `Late Night Healthy Eating NYC | ${benefit}` : null, "Late Night Healthy Eating NYC"],
+    { allowBrand: false },
+  )
+}
+
+export function healthGradesGuideTitle(gradeA: number): string {
+  const benefit = gradeA > 0 ? `${formatCount(gradeA)} Grade A` : null
+  return fitTitle(
+    [benefit ? `NYC Health Grades Explained | ${benefit}` : null, "NYC Health Grades Explained"],
+    { allowBrand: false },
+  )
+}
+
+export function dietCtrTitle(label: string, gradeA: number, count: number): string {
+  const graded = gradeA > 0 ? `${formatCount(gradeA)} Grade A` : null
+  const listed = count > 0 ? `${formatCount(count)} Listed` : null
+  return fitTitle(
+    [
+      graded ? `${label} Restaurants NYC | ${graded}` : null,
+      listed ? `${label} Restaurants NYC | ${listed}` : null,
+      `${label} Restaurants NYC`,
+    ],
+    { allowBrand: false },
+  )
+}
+
+export function breakfastGuideDescription(input: { restaurants: number; neighborhoods: number }): string {
+  const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
+  const rest = input.restaurants === 1 ? "listing shows" : "listings show"
+  return fitCtrBand(
+    `Healthy breakfast in NYC spans ${formatCount(input.neighborhoods)} ${hood}. ${formatCount(input.restaurants)} published ${rest} the official NYC DOHMH grade on the restaurant page. Filter by borough.`,
+  )
+}
+
+export function lateNightGuideDescription(input: { restaurants: number; neighborhoods: number }): string {
+  const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
+  const rest = input.restaurants === 1 ? "listing" : "listings"
+  const verb = input.restaurants === 1 ? "includes" : "include"
+  return fitCtrBand(
+    `Late night healthy eating in NYC means after 10 pm. ${formatCount(input.restaurants)} published ${rest} across ${formatCount(input.neighborhoods)} ${hood} ${verb} hours and an official NYC DOHMH grade.`,
+  )
+}
+
+export function healthGradesGuideDescription(input: { gradeA: number; gradeB: number; gradeC: number }): string {
+  const verb = input.gradeA === 1 ? "holds" : "hold"
+  return fitCtrBand(
+    `NYC health grades explained: ${formatCount(input.gradeA)} ${verb} Grade A, ${formatCount(input.gradeB)} Grade B, and ${formatCount(input.gradeC)} Grade C. A is 0\u201313 points on the official NYC DOHMH score. The card is posted.`,
+  )
+}
+
+export function dietCtrDescription(label: string, count: number, gradeA: number): string {
+  const name = label.toLowerCase()
+  const noun = count === 1 ? "restaurant" : "restaurants"
+  const listed = formatCount(count)
+  if (gradeA > 0) {
+    const verb = gradeA === 1 ? "holds" : "hold"
+    return fitCtrBand(
+      `${listed} ${name} ${noun} in NYC. ${formatCount(gradeA)} ${verb} an official NYC DOHMH Grade A. The letter on each listing is the latest matched NYC DOHMH inspection.`,
+    )
+  }
+  return fitCtrBand(
+    `${listed} ${name} ${noun} in NYC. An official NYC DOHMH grade is shown when a record is matched, and none of these listings hold Grade A on the page.`,
+  )
+}
+
+/** Keep a finished sentence inside the CTR description band. Do not clip mid-thought. */
+function fitCtrBand(text: string): string {
+  const cleaned = text.replace(/\s+/g, " ").trim()
+  if (cleaned.length <= CTR_DESCRIPTION_MAX) return cleaned
+  const sentences = cleaned.split(/(?<=\.)\s+/)
+  let cut = ""
+  for (const sentence of sentences) {
+    const next = cut ? `${cut} ${sentence}` : sentence
+    if (next.length > CTR_DESCRIPTION_MAX) break
+    cut = next
+  }
+  return cut || cleaned
+}
+
 export function homeTitle(gradeA: number, year: number): string {
   return fitTitle(
     [

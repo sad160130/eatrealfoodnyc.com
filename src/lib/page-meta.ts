@@ -38,6 +38,7 @@ export function pageMeta(options: {
       card: "summary_large_image",
       title: absolute,
       description: options.description,
+      images: [SEO_CONFIG.ogImage],
     },
     robots: {
       index,

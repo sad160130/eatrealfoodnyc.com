@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
 import FAQItem from "@/components/faq-item"
-import { getCanonicalUrl } from "@/config/seo"
 import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
@@ -11,16 +10,21 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import GuideLinkIndex from "@/components/guide-link-index"
+import { pageMeta } from "@/lib/page-meta"
+import { breakfastGuideDescription, breakfastGuideTitle } from "@/lib/seo-titles"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("healthy-breakfast-nyc")!
 
-export const metadata: Metadata = {
-  title: guide.metaTitle,
-  description: guide.description,
-  alternates: { canonical: getCanonicalUrl(`/guides/${guide.slug}`) },
-  robots: { index: true, follow: true },
-  openGraph: { title: guide.metaTitle, description: guide.description, type: "article", url: `${siteUrl}/guides/${guide.slug}`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: guide.metaTitle }] },
+export async function generateMetadata(): Promise<Metadata> {
+  const counts = await getPublishedDirectoryCounts()
+  return pageMeta({
+    path: `/guides/${guide.slug}`,
+    title: breakfastGuideTitle(counts.neighborhoods),
+    description: breakfastGuideDescription(counts),
+    type: "article",
+    brand: false,
+  })
 }
 
 const GUIDE_FAQS = [
@@ -55,7 +59,9 @@ const GUIDE_FAQS = [
 ]
 
 export default async function HealthyBreakfastGuide() {
-  const { restaurants, hiddenGems, neighborhoods } = await getPublishedDirectoryCounts()
+  const counts = await getPublishedDirectoryCounts()
+  const { restaurants, hiddenGems, neighborhoods } = counts
+  const description = breakfastGuideDescription(counts)
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -66,7 +72,7 @@ export default async function HealthyBreakfastGuide() {
             "@context": "https://schema.org",
             "@type": "Article",
             headline: guide.title,
-            description: guide.description,
+            description,
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
