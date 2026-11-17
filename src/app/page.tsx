@@ -23,8 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
   ])
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const title = homeTitle(counts.gradeA, year)
-  const dataMonth = snapshot.lastPublishLabel
-    ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(snapshot.lastPublishAt ?? new Date())
+  const dataMonth = snapshot.latestInspectionAt
+    ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(snapshot.latestInspectionAt)
     : null
   const extraTags = Math.max(0, snapshot.dietaryTagCount - 3)
   const description = fitDescription(

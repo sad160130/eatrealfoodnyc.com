@@ -6,7 +6,8 @@ export default async function DirectoryAsOf({
   variant?: "sentence" | "month"
 }) {
   const snapshot = await getDirectorySnapshot()
-  const label = snapshot.lastPublishLabel ?? "date not recorded"
+  // Same newest inspection date the footer prints in full.
+  const label = snapshot.latestInspectionMonth ?? "date not recorded"
   if (variant === "month") return <span>{label}</span>
   return <span>Listings updated {label}</span>
 }

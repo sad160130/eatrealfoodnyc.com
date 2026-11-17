@@ -22,7 +22,7 @@ import { fitDescription, neighborhoodHubTitle, shortMonth } from "@/lib/seo-titl
 import { placeIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { neighborhoodCapsule } from "@/lib/answer-capsule"
-import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
 import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 import NeighborhoodSponsorSlot from "@/components/neighborhood-sponsor-slot"
@@ -87,7 +87,7 @@ export async function generateMetadata({
   const snapshot = await getDirectorySnapshot()
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const title = neighborhoodHubTitle(resolved.neighborhoodName, resolved.boroughName, stats.gradeA, year)
-  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const description = fitDescription(
     [
       `${stats.count.toLocaleString("en-US")} healthy restaurants in ${resolved.neighborhoodName}, ${resolved.boroughName}: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`,
@@ -123,7 +123,7 @@ export default async function NeighborhoodPage({
     business_status: "OPERATIONAL" as const,
     is_published: true,
   }
-  const [restaurantRows, stats, ratingAgg, gradeACount] = await Promise.all([
+  const [restaurantRows, stats, ratingAgg, gradeACount, snapshot] = await Promise.all([
     prisma.restaurant.findMany({
       where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
@@ -139,6 +139,7 @@ export default async function NeighborhoodPage({
     prisma.restaurant.count({
       where: { ...listedWhere, inspection_grade: "A" },
     }),
+    getDirectorySnapshot(),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
   const avgRating = roundAverage(ratingAgg._avg.rating)
@@ -147,13 +148,12 @@ export default async function NeighborhoodPage({
 
   const gradedCount = restaurants.filter((row) => row.inspection_grade === "A" || row.inspection_grade === "B" || row.inspection_grade === "C").length
   const taggedCount = restaurants.filter((row) => row.dietary_tags?.trim()).length
-  const latestInspection = latestInspectionDate(restaurants.map((row) => row.inspection_date))
   const capsule = neighborhoodCapsule({
     neighborhood: neighborhoodName,
     count: restaurants.length,
     graded: gradedCount,
     gradeA: restaurants.filter((row) => row.inspection_grade === "A").length,
-    latestMonth: latestInspection ? formatMonthYear(latestInspection) : null,
+    latestMonth: snapshot.latestInspectionMonth,
     tagged: taggedCount,
   })
 
@@ -166,12 +166,12 @@ export default async function NeighborhoodPage({
     count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes(tag)).length,
   }))
 
-  // Card grid renders the top N; the full link list below renders all.
+  // Card grid is the curated Top N. The link list below keeps organic order.
   const CARD_LIMIT = 24
+  const picks = selectTopPicks(restaurants, CARD_LIMIT)
 
-  // ItemList publishes a 10-entry excerpt. Binding itemListElement to this
-  // array keeps the entries and any derived count from drifting apart.
-  const schemaItems = restaurants.slice(0, 10)
+  // ItemList publishes the curated excerpt, not the unfiltered organic head.
+  const schemaItems = picks.slice(0, 10)
 
   const itemListJsonLd = buildHubItemList({
     name: `Healthy Restaurants in ${neighborhoodName}, ${boroughName}`,
@@ -283,12 +283,12 @@ export default async function NeighborhoodPage({
         {/* ─── Restaurant grid ─── */}
         <div className="mb-12">
           <p className="eyebrow">Listings</p>
-          <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, CARD_LIMIT)} spots</h2>
+          <h2 className="h2-serif mt-2">Top {picks.length} spots</h2>
           <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
-            Ranked by editorial priority, rating, and review depth.
+            {TOP_PICKS_EXPLAINER}
           </p>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {restaurants.slice(0, CARD_LIMIT).map((r, i) => (
+            {picks.map((r, i) => (
               <RestaurantCard key={r.id} restaurant={r} priority={i === 0} />
             ))}
           </div>
@@ -311,7 +311,7 @@ export default async function NeighborhoodPage({
             </h2>
             <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
               Every published listing in {neighborhoodName}, including the{" "}
-              {Math.min(restaurants.length, CARD_LIMIT)} featured above.{" "}
+              {picks.length} featured above.{" "}
               <Link href={`/nyc/${boroughSlug}/${neighborhoodSlug}/restaurants`} style={{ color: "var(--color-jade)" }}>
                 All restaurants in {neighborhoodName}
               </Link>
@@ -428,7 +428,7 @@ export default async function NeighborhoodPage({
             gradeA: gradeACount,
             gradeB: restaurants.filter((row) => row.inspection_grade === "B").length,
             gradeC: restaurants.filter((row) => row.inspection_grade === "C").length,
-            latestMonth: latestInspection ? formatMonthYear(latestInspection) : null,
+            latestMonth: snapshot.latestInspectionLabel,
             diets: dietLinks.map((link) => ({ label: link.tag, count: link.count })),
           }).map((paragraph) => (
             <span key={paragraph.slice(0, 40)}>{paragraph} </span>
@@ -462,7 +462,7 @@ export default async function NeighborhoodPage({
                 .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || (b.reviews ?? 0) - (a.reviews ?? 0))
                 .slice(0, 3)
               if (rated.length === 0) return ""
-              return `The highest stored ratings are ${rated.map((row) => `${row.name} (${row.rating?.toFixed(1)}/5 from ${row.reviews} reviews)`).join("; ")}. Our picks elsewhere on the page are ordered editorially, not by rating.`
+              return `The highest stored ratings are ${rated.map((row) => `${row.name} (${row.rating?.toFixed(1)}/5 from ${row.reviews} reviews)`).join("; ")}. The top picks elsewhere on the page follow grade, editorial priority, rating, and review depth, and leave out Grade C.`
             })(),
           },
           {
