@@ -9,7 +9,9 @@ export const contentType = "image/png"
  * Cream-on-cream editorial OG. The monumental placard on the left is the
  * brand mark — the same DOHMH-inspired signature used everywhere on the
  * site. Wordmark + dek to the right. A hairline stat strip across the
- * bottom names the numbers that back the directory. No emoji, no pills.
+ * bottom names what backs the directory. The neighbourhood count is not
+ * drawn here: this file runs on the edge runtime, where a database read is
+ * not safe, and a hardcoded count would disagree with the live directory.
  *
  * Font note: next/og's edge runtime makes Georgia loading fragile, so the
  * type stays in the default sans. The plaque, the palette, the hairline
@@ -152,8 +154,6 @@ export default function OgImage() {
             }}
           >
             <Stat number="Published" label="restaurant listings" />
-            <Dot />
-            <Stat number="116" label="neighborhoods" />
             <Dot />
             <Stat number="12" label="dietary tags" />
             <Dot />

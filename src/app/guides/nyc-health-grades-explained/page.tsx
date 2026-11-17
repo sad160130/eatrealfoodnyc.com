@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
 import FAQItem from "@/components/faq-item"
-import { getCanonicalUrl } from "@/config/seo"
 import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
@@ -13,26 +12,33 @@ import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import GradeHubLinks from "@/components/grade-hub-links"
+import { pageMeta } from "@/lib/page-meta"
+import { healthGradesGuideDescription, healthGradesGuideTitle } from "@/lib/seo-titles"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
 
-export const metadata: Metadata = {
-  title: guide.metaTitle,
-  description: guide.description,
-  alternates: { canonical: `${siteUrl}/guides/nyc-health-grades-explained` },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" as const },
-  },
-  openGraph: {
-    title: guide.metaTitle,
-    description: guide.description,
+export async function generateMetadata(): Promise<Metadata> {
+  const stats = await getLiveGuideStats()
+  const meta = pageMeta({
+    path: "/guides/nyc-health-grades-explained",
+    title: healthGradesGuideTitle(stats.letters.A),
+    description: healthGradesGuideDescription({
+      gradeA: stats.letters.A,
+      gradeB: stats.letters.B,
+      gradeC: stats.letters.C,
+    }),
     type: "article",
-    url: `${siteUrl}/guides/nyc-health-grades-explained`,
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "NYC Restaurant Grades: A, B, and C" }],
-  },
+    brand: false,
+  })
+  return {
+    ...meta,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" as const },
+    },
+  }
 }
 
 const GUIDE_FAQS = [
@@ -95,6 +101,12 @@ const GUIDE_FAQS = [
 
 export default async function NYCHealthGradesGuide() {
   const stats = await getLiveGuideStats()
+  const title = healthGradesGuideTitle(stats.letters.A)
+  const description = healthGradesGuideDescription({
+    gradeA: stats.letters.A,
+    gradeB: stats.letters.B,
+    gradeC: stats.letters.C,
+  })
   const graded = stats.global.totalWithGrade
   const shareOfGraded = (count: number) => (graded > 0 ? Math.round((count / graded) * 100) : 0)
   const gradeAShare = shareOfGraded(stats.letters.A)
@@ -114,8 +126,8 @@ export default async function NYCHealthGradesGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: guide.metaTitle,
-            description: guide.description,
+            headline: title,
+            description,
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",

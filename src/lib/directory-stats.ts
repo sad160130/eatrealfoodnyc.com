@@ -23,7 +23,7 @@ export interface PublishedDirectoryCounts {
   hiddenGems: number
 }
 
-export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDirectoryCounts> => {
+async function queryPublishedDirectoryCounts(): Promise<PublishedDirectoryCounts> {
   const where = PUBLISHED_LISTING_WHERE
   const [restaurants, gradeA, letterGraded, hiddenGems, neighborhoodGroups] = await Promise.all([
     prisma.restaurant.count({ where }),
@@ -47,4 +47,14 @@ export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDire
     letterGraded,
     hiddenGems,
   }
-})
+}
+
+/**
+ * Per-request dedupe. Homepage, partner, and the footer all call this.
+ * `cache()` is request-scoped, so one render shares one count. It is not a
+ * dynamic API: routes keep the static or ISR setting they already export.
+ * `unstable_cache` is intentionally not used here. Its `revalidate` is copied
+ * onto the prerender store, and a layout-level call would pull fully static
+ * routes down to that interval.
+ */
+export const getPublishedDirectoryCounts = cache(queryPublishedDirectoryCounts)

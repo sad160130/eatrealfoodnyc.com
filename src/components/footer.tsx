@@ -1,5 +1,6 @@
 import Link from "next/link"
 import NewsletterSignup from "@/components/newsletter-signup"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -38,7 +39,11 @@ function boroughToSlug(borough: string): string {
   return borough.toLowerCase().replace(/ /g, "-")
 }
 
-export default function Footer() {
+export default async function Footer() {
+  const counts = await getPublishedDirectoryCounts()
+  const listed = counts.restaurants.toLocaleString("en-US")
+  const neighborhoods = counts.neighborhoods.toLocaleString("en-US")
+
   return (
     <footer
       style={{
@@ -145,8 +150,8 @@ export default function Footer() {
           {/* Trust badge — set on the right of the brand row */}
           <div className="md:col-span-7 md:pl-12">
             <div className="grid grid-cols-3 gap-8">
-              <TrustStat number="1,500+" label="Restaurants listed" />
-              <TrustStat number="116" label="NYC neighborhoods" />
+              <TrustStat number={listed} label="Restaurants listed" />
+              <TrustStat number={neighborhoods} label="NYC neighborhoods" />
               <TrustStat number="A" label="DOHMH source data" plaque />
             </div>
           </div>

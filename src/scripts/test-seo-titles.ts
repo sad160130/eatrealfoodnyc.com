@@ -6,9 +6,17 @@ import {
   GUIDE_DESCRIPTIONS,
   TITLE_MAX,
   boroughTitle,
+  breakfastGuideDescription,
+  breakfastGuideTitle,
   buildPipeTitle,
+  dietCtrDescription,
+  dietCtrTitle,
   dietTitle,
+  healthGradesGuideDescription,
+  healthGradesGuideTitle,
   hubMetaDescription,
+  lateNightGuideDescription,
+  lateNightGuideTitle,
   neighborhoodTitle,
   renderedTitleLength,
   restaurantMetaDescription,
@@ -146,6 +154,53 @@ for (const guide of GUIDES) {
 const tight = buildPipeTitle("Healthy Restaurants in Williamsburg", "400 Grade A")
 expectWithin("tight", tight)
 assert.ok(!tight.includes("400"), tight)
+
+const counts = [0, 1, 9, 10, 99, 100, 112, 116, 200, 412, 999, 1000, 1816, 2212, 3952, 8835]
+const hoods = [0, 1, 5, 12, 99, 100, 112, 116, 200]
+
+function expectCtr(label: string, title: string, description: string) {
+  assert.ok(title.length <= TITLE_MAX, `${label} title ${title.length}: ${title}`)
+  assert.ok(title.length > 0, label)
+  assert.ok(/NYC/i.test(title), `${label} title missing NYC: ${title}`)
+  assert.ok(description.length >= 140 && description.length <= 155, `${label} description ${description.length}: ${description}`)
+  assert.ok(/official NYC DOHMH/i.test(description), `${label} description missing DOHMH: ${description}`)
+  assert.ok(!description.includes("…"), description)
+}
+
+for (const neighborhoods of hoods) {
+  for (const restaurants of counts) {
+    const breakfastTitle = breakfastGuideTitle(neighborhoods)
+    const breakfastDescription = breakfastGuideDescription({ restaurants, neighborhoods })
+    if (neighborhoods > 0 && restaurants > 0) expectCtr("breakfast", breakfastTitle, breakfastDescription)
+    else assert.ok(breakfastTitle.length <= TITLE_MAX, breakfastTitle)
+    const lateTitle = lateNightGuideTitle(neighborhoods)
+    const lateDescription = lateNightGuideDescription({ restaurants, neighborhoods })
+    if (neighborhoods > 0 && restaurants > 0) expectCtr("late night", lateTitle, lateDescription)
+    else assert.ok(lateTitle.length <= TITLE_MAX, lateTitle)
+  }
+}
+for (const gradeA of counts) {
+  for (const gradeB of counts) {
+    for (const gradeC of [0, 1, 28, 280, 1816]) {
+      const title = healthGradesGuideTitle(gradeA)
+      const description = healthGradesGuideDescription({ gradeA, gradeB, gradeC })
+      if (gradeA > 0) expectCtr("grades", title, description)
+      else assert.ok(title.length <= TITLE_MAX && description.length >= 140 && description.length <= 155, `${title} / ${description}`)
+    }
+  }
+}
+for (const label of ["Gluten-Free", "Vegetarian"]) {
+  for (const count of counts) {
+    for (const gradeA of counts) {
+      const title = dietCtrTitle(label, gradeA, count)
+      const description = dietCtrDescription(label, count, gradeA)
+      assert.ok(title.startsWith(label), title)
+      if (count > 0) expectCtr(label, title, description)
+      else assert.ok(title.length <= TITLE_MAX, title)
+      if (gradeA > 0) assert.ok(title.includes("Grade A"), title)
+    }
+  }
+}
 
 console.log("seo title tests passed")
 for (const guide of GUIDES) {
