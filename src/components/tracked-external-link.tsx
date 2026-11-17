@@ -7,11 +7,17 @@ import { track } from "@vercel/analytics"
 type PartnerTier = string
 
 function onTrack(name: "outbound_website_click" | "directions_click" | "claim_listing_click"): () => void
-function onTrack(name: "partner_cta_click", tier: PartnerTier): () => void
-function onTrack(name: "outbound_website_click" | "directions_click" | "claim_listing_click" | "partner_cta_click", tier?: PartnerTier) {
+function onTrack(name: "partner_cta_click", tier: PartnerTier, source?: string): () => void
+function onTrack(
+  name: "outbound_website_click" | "directions_click" | "claim_listing_click" | "partner_cta_click",
+  tier?: PartnerTier,
+  source?: string,
+) {
   return () => {
     if (name === "partner_cta_click") {
-      track(name, { tier: tier ?? "inquiry" })
+      const tierValue = tier ?? "inquiry"
+      if (source) track(name, { tier: tierValue, source })
+      else track(name, { tier: tierValue })
       return
     }
     track(name)
@@ -49,14 +55,16 @@ export function PartnerCta({
   tier,
   href,
   className,
+  source,
   children,
 }: {
   tier: string
   href: string
   className?: string
+  source?: string
   children: ReactNode
 }) {
-  const trackClick = onTrack("partner_cta_click", tier)
+  const trackClick = onTrack("partner_cta_click", tier, source)
   if (href.startsWith("/")) {
     return (
       <Link href={href} className={className} onClick={trackClick}>

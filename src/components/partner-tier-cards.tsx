@@ -21,7 +21,7 @@ export default function PartnerTierCards() {
       {PARTNER_TIERS.map((tier) => {
         const price = partnerTierPrice(tier)
         return (
-          <article key={tier.id} className={cardClass} style={cardStyle}>
+          <article key={tier.id} id={tier.id} className={`${cardClass} scroll-mt-24`} style={cardStyle}>
             <p className="eyebrow">Paid</p>
             <h3 className="mt-3 text-3xl font-bold" style={headingStyle}>
               {tier.name}
