@@ -1,5 +1,6 @@
 import { cache } from "react"
 import { prisma } from "@/lib/db"
+import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 
 /**
  * Published operational listings — the same filter public listing pages use
@@ -47,4 +48,24 @@ export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDire
     letterGraded,
     hiddenGems,
   }
+})
+
+/**
+ * Neighborhoods that have a published hub page (the same minimum as
+ * /nyc/[borough]/[neighborhood]/healthy-restaurants). Used to confirm a
+ * `nbhd-` referral is a real neighborhood before mentioning it.
+ */
+export const getPublishedHubNeighborhoodNames = cache(async (): Promise<string[]> => {
+  const rows = await prisma.restaurant.groupBy({
+    by: ["borough", "neighborhood"],
+    where: {
+      ...PUBLISHED_LISTING_WHERE,
+      borough: { not: null },
+      neighborhood: { not: null },
+    },
+    having: { id: { _count: { gte: NEIGHBORHOOD_HUB_MIN_RESTAURANTS } } },
+  })
+  return [
+    ...new Set(rows.flatMap((row) => (row.neighborhood ? [row.neighborhood] : []))),
+  ].sort((a, b) => a.localeCompare(b, "en"))
 })
