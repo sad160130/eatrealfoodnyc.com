@@ -1,12 +1,14 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { getPublishedDirectoryCounts, getPublishedHubNeighborhoodNames } from "@/lib/directory-stats"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
 import PartnerTierCards, { PartnerInquiryCards } from "@/components/partner-tier-cards"
 import { partnerTierPriceSentence } from "@/config/partner-tiers"
 import { PartnerCta } from "@/components/tracked-external-link"
+import { PartnerPurchaseNotice, PartnerReferralLine } from "@/components/partner-query-notes"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
@@ -66,16 +68,11 @@ const FAQ = [
   },
 ]
 
-export default async function PartnerWithUsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ status?: string }>
-}) {
-  const [{ status }, counts] = await Promise.all([
-    searchParams,
+export default async function PartnerWithUsPage() {
+  const [counts, neighborhoodNames] = await Promise.all([
     getPublishedDirectoryCounts(),
+    getPublishedHubNeighborhoodNames(),
   ])
-  const purchaseConfirmed = status === "success"
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -110,15 +107,9 @@ export default async function PartnerWithUsPage({
       </div>
 
       <div className="mx-auto max-w-4xl px-6 py-16">
-        {purchaseConfirmed && (
-          <p
-            role="status"
-            className="mb-10 rounded-md border bg-white px-5 py-4 text-base leading-relaxed"
-            style={{ borderColor: "var(--color-jade)", color: "var(--color-forest)" }}
-          >
-            Thanks! Your placement is confirmed. We&apos;ll email you within 1 business day to set it up.
-          </p>
-        )}
+        <Suspense fallback={null}>
+          <PartnerPurchaseNotice />
+        </Suspense>
         <section className="mb-16">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">START HERE</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -255,6 +246,9 @@ export default async function PartnerWithUsPage({
               is the rule. Eligibility is still required: current Grade A, or no current grade and no current violations, plus a genuine fit with this directory.
             </p>
           </div>
+          <Suspense fallback={null}>
+            <PartnerReferralLine neighborhoods={neighborhoodNames} />
+          </Suspense>
           <PartnerTierCards />
           <p className="mt-6 text-sm leading-relaxed text-gray-700">
             Each paid button opens Stripe checkout in this tab. After payment, Stripe brings you back here. Questions still go to {PARTNER_INQUIRY_EMAIL}.

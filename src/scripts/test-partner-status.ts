@@ -1,4 +1,9 @@
+import { createElement } from "react"
+import { renderToStaticMarkup } from "react-dom/server"
 import { computeHealthScore } from "../lib/utils"
+import NeighborhoodSponsorSlot from "../components/neighborhood-sponsor-slot"
+import ClaimListing from "../components/claim-listing"
+import PartnerTierCards from "../components/partner-tier-cards"
 import {
   ORGANIC_SORT_KEYS,
   organicRankKey,
@@ -11,6 +16,21 @@ import {
   partnerTierHref,
   partnerTierPrice,
 } from "../config/partner-tiers"
+import {
+  CLAIM_LISTING_LABEL,
+  GRADE_A_BADGE_LABEL,
+  LISTING_OWNER_TRACK,
+  NEIGHBORHOOD_SLOT_TRACK,
+  SPONSOR_SLOT_CTA,
+  SPONSOR_SLOT_LEAD,
+  SPONSOR_SLOT_TITLE,
+  listingOwnerPartnerHref,
+  listingOwnerPartnerLabel,
+  neighborhoodNameFromRef,
+  neighborhoodSponsorDetail,
+  neighborhoodSponsorHref,
+  partnerReferralLine,
+} from "../lib/partner-entry"
 import type { Restaurant } from "../types"
 
 function assert(condition: boolean, message: string) {
@@ -143,6 +163,64 @@ assert(
   partnerInquiryHref(PARTNER_INQUIRY_OFFERS[1]).startsWith("mailto:partner@eatrealfoodnyc.com?subject="),
   "newsletter inquiry uses the partner inbox"
 )
+
+assert(
+  PARTNER_TIERS.map((tier) => tier.id).join("|") === "featured|spotlight|neighborhood-sponsor",
+  "tier ids are the partner-page anchors"
+)
+assert(neighborhoodSponsorDetail() === "A labeled Sponsored unit for a restaurant or brand that fits this directory. $299/month. It never changes grades or the order of the list.", "sponsor slot copy")
+assert(listingOwnerPartnerLabel() === "Optional: labeled Partner placement from $49/month", "listing owner paid step")
+assert(neighborhoodSponsorHref("kips-bay") === "/partner-with-us?ref=nbhd-kips-bay#neighborhood-sponsor", "neighborhood sponsor href")
+assert(listingOwnerPartnerHref() === "/partner-with-us?ref=listing#featured", "listing owner href")
+assert(
+  partnerReferralLine("Kips Bay") === "You came from the Kips Bay page. The Neighborhood Sponsor slot on that page is open.",
+  "neighborhood referral line"
+)
+assert(NEIGHBORHOOD_SLOT_TRACK.tier === "neighborhood_sponsor" && NEIGHBORHOOD_SLOT_TRACK.source === "neighborhood_slot", "neighborhood slot tracking")
+assert(LISTING_OWNER_TRACK.tier === "featured" && LISTING_OWNER_TRACK.source === "listing_owner_box", "listing owner tracking")
+
+const neighborhoodNames = ["Harlem", "Kips Bay", "Hell's Kitchen"]
+assert(neighborhoodNameFromRef("nbhd-kips-bay", neighborhoodNames) === "Kips Bay", "kips bay ref maps to the neighborhood")
+assert(neighborhoodNameFromRef("nbhd-hells-kitchen", neighborhoodNames) === "Hell's Kitchen", "apostrophe slug maps")
+assert(neighborhoodNameFromRef("listing", neighborhoodNames) === null, "listing ref is not a neighborhood arrival")
+assert(neighborhoodNameFromRef("nbhd-not-a-place", neighborhoodNames) === null, "unknown neighborhood ref shows nothing")
+assert(neighborhoodNameFromRef(null, neighborhoodNames) === null, "missing ref shows nothing")
+assert(neighborhoodNameFromRef("nbhd-", neighborhoodNames) === null, "empty neighborhood slug shows nothing")
+assert(neighborhoodNameFromRef("NBHD-kips-bay", neighborhoodNames) === null, "ref prefix is lowercase nbhd-")
+
+const slotHtml = renderToStaticMarkup(createElement(NeighborhoodSponsorSlot, { neighborhoodSlug: "kips-bay" }))
+assert(slotHtml.includes(SPONSOR_SLOT_TITLE), "sponsor slot title is in the html")
+assert(slotHtml.includes(SPONSOR_SLOT_LEAD), "sponsor slot lead is in the html")
+assert(slotHtml.includes(neighborhoodSponsorDetail()), "sponsor slot detail is in the html")
+assert(slotHtml.includes(SPONSOR_SLOT_CTA), "sponsor slot cta is in the html")
+assert(slotHtml.includes('href="/partner-with-us?ref=nbhd-kips-bay#neighborhood-sponsor"'), "sponsor slot href is in the html")
+assert(!slotHtml.includes("nofollow"), "sponsor slot link is not nofollow")
+assert(!slotHtml.includes("ld+json"), "sponsor slot is not json-ld")
+
+const ownerHtml = renderToStaticMarkup(
+  createElement(ClaimListing, { restaurantSlug: "dirt-candy", restaurantName: "Dirt Candy", showBadge: true }),
+)
+assert(ownerHtml.includes("Own this restaurant?"), "owner box heading")
+assert(ownerHtml.includes(CLAIM_LISTING_LABEL), "claim link text")
+assert(ownerHtml.includes(GRADE_A_BADGE_LABEL), "grade a badge link text")
+assert(ownerHtml.includes(listingOwnerPartnerLabel()), "paid step text")
+assert(ownerHtml.indexOf(CLAIM_LISTING_LABEL) < ownerHtml.indexOf(GRADE_A_BADGE_LABEL), "claim comes before the badge")
+assert(ownerHtml.indexOf(GRADE_A_BADGE_LABEL) < ownerHtml.indexOf(listingOwnerPartnerLabel()), "badge comes before the paid step")
+assert(ownerHtml.includes('href="/claim?r=dirt-candy"'), "claim href")
+assert(ownerHtml.includes('href="/restaurants/dirt-candy/badge"'), "badge href")
+assert(ownerHtml.includes('href="/partner-with-us?ref=listing#featured"'), "paid step href")
+assert(!ownerHtml.includes("nofollow"), "owner box links are not nofollow")
+
+const noBadgeHtml = renderToStaticMarkup(
+  createElement(ClaimListing, { restaurantSlug: "dirt-candy", restaurantName: "Dirt Candy" }),
+)
+assert(!noBadgeHtml.includes(GRADE_A_BADGE_LABEL), "badge step is omitted without a Grade A")
+assert(noBadgeHtml.indexOf(CLAIM_LISTING_LABEL) < noBadgeHtml.indexOf(listingOwnerPartnerLabel()), "paid step stays last without a badge")
+
+const tierHtml = renderToStaticMarkup(createElement(PartnerTierCards))
+assert(tierHtml.includes('id="featured"'), "featured card anchor")
+assert(tierHtml.includes('id="spotlight"'), "spotlight card anchor")
+assert(tierHtml.includes('id="neighborhood-sponsor"'), "neighborhood sponsor card anchor")
 
 if (process.exitCode) {
   console.error("\nPartner-status tests failed")

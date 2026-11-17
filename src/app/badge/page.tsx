@@ -30,7 +30,7 @@ export default function BadgeIndexPage() {
           If the restaurant does not currently hold a Grade A, the badge does not claim a grade. It says the restaurant is listed here.
         </p>
         <p>
-          Claim the listing first. On that restaurant’s page, the link is “Get a free badge.” Claiming does not change a grade or a place in the directory.
+          Claim the listing first. On that restaurant’s page, the link is “Get the free Grade A badge.” Claiming does not change a grade or a place in the directory.
         </p>
         <p>
           <Link href="/claim" className="font-semibold text-jade hover:text-forest">

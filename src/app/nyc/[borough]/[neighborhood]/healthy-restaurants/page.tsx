@@ -25,6 +25,7 @@ import { neighborhoodCapsule } from "@/lib/answer-capsule"
 import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
 import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
+import NeighborhoodSponsorSlot from "@/components/neighborhood-sponsor-slot"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -348,6 +349,9 @@ export default async function NeighborhoodPage({
             </ul>
           </section>
         )}
+
+        {/* Paid slot sits below the organic list and is not part of ItemList JSON-LD. */}
+        <NeighborhoodSponsorSlot neighborhoodSlug={neighborhoodSlug} />
 
         {/* ─── Diet sub-links ─── */}
         <section
