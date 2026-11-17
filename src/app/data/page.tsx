@@ -30,7 +30,13 @@ type SampleRow = {
   score: string
 }
 
-export default async function DataProductPage() {
+export default async function DataProductPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subscribed?: string }>
+}) {
+  const { subscribed } = await searchParams
+  const purchaseConfirmed = subscribed === "1"
   const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows] = await Promise.all([
     prisma.restaurant.count({ where: { inspection_grade: { in: ["Z", "P"] } } }),
     prisma.restaurant.count({ where: { inspection_score: { gte: 28 } } }),
@@ -81,6 +87,15 @@ export default async function DataProductPage() {
           <p className="dek mt-4">
             One email each Monday with two CSV files for people who sell to restaurants. ${DATA_PRODUCT.priceMonthlyUsd} a month, or ${DATA_PRODUCT.priceYearlyUsd} a year.
           </p>
+          {purchaseConfirmed ? (
+            <p
+              role="status"
+              className="mt-6 border px-5 py-4 text-base leading-relaxed"
+              style={{ borderColor: "var(--color-jade)", backgroundColor: "#fff", color: "var(--color-forest)" }}
+            >
+              Thanks. Your subscription is confirmed.
+            </p>
+          ) : null}
           <DataProductCta />
         </div>
       </header>
