@@ -18,6 +18,7 @@ import ContextualLinks from "@/components/contextual-links"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
+import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
 
 // This route serves the diet+borough combo pages, e.g. /nyc/brooklyn/vegan-restaurants.
 // It lives under the [neighborhood] dynamic segment because Next.js requires a single
@@ -75,7 +76,7 @@ export async function generateMetadata({
   const snapshot = await getDirectorySnapshot()
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const title = dietBoroughHubTitle(config.label, boroughName, stats.count, stats.gradeA, year)
-  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const description = fitDescription(
     [`${stats.count.toLocaleString("en-US")} ${config.label.toLowerCase()} restaurants in ${boroughName}, NYC, ${stats.gradeA.toLocaleString("en-US")} with a NYC DOHMH Grade A.`],
     [
@@ -121,7 +122,6 @@ export default async function DietBoroughPage({
     prisma.restaurant.findMany({
       where: baseWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
-      take: 48,
     }),
     prisma.restaurant.count({ where: baseWhere }),
     prisma.restaurant.count({ where: { ...baseWhere, inspection_grade: "A" } }),
@@ -130,7 +130,7 @@ export default async function DietBoroughPage({
       _avg: { rating: true },
     }),
   ])
-  const restaurants = await withPartnerStatus(restaurantRows)
+  const restaurants = selectTopPicks(await withPartnerStatus(restaurantRows), 48)
 
   // Gate thin pages — never index a doorway page with too few listings.
   if (totalCount < COMBO_MIN_RESTAURANTS) notFound()
@@ -295,7 +295,7 @@ export default async function DietBoroughPage({
           <p className="eyebrow">Listings</p>
           <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, 48)} {dietLower} spots in {boroughName}</h2>
           <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
-            Ranked by editorial priority, rating, and review depth.
+            {TOP_PICKS_EXPLAINER}
           </p>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {restaurants.map((r, i) => (

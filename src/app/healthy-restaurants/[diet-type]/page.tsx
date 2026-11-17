@@ -19,6 +19,7 @@ import { dietCtrDescription, dietCtrTitle, dietHubTitle, fitDescription, shortMo
 import { dietFaqs, dietIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dietCapsule } from "@/lib/answer-capsule"
+import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
 import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 
@@ -57,7 +58,7 @@ export async function generateMetadata({
   const title = ctrDiet
     ? dietCtrTitle(config.label, stats.gradeA, stats.count)
     : dietHubTitle(config.label, stats.count, stats.gradeA, year)
-  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const split = boroughs
     .filter((row) => row.borough && row._count.id > 0)
     .sort((a, b) => b._count.id - a._count.id)
@@ -111,11 +112,12 @@ export default async function DietTypePage({
     is_published: true,
     dietary_tags: { contains: tag },
   }
-  const [restaurantRows, totalCount, boroughBreakdown, ratingAgg, neighborhoodBreakdown] = await Promise.all([
+  const [restaurantRows, totalCount, boroughBreakdown, ratingAgg, neighborhoodBreakdown, gradeSplit, snapshot] = await Promise.all([
+    // Full ordered set, then selectTopPicks. A take: 24 here would keep a
+    // Grade C or unrated row that sorts first and drop a later Grade A.
     prisma.restaurant.findMany({
       where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
-      take: 24,
     }),
     prisma.restaurant.count({ where: listedWhere }),
     prisma.restaurant.groupBy({
@@ -137,20 +139,21 @@ export default async function DietTypePage({
       orderBy: { _count: { id: "desc" } },
       take: 1,
     }),
+    gradeStatsFor({ dietary_tags: { contains: tag } }),
+    getDirectorySnapshot(),
   ])
-  const restaurants = await withPartnerStatus(restaurantRows)
+  const restaurants = selectTopPicks(await withPartnerStatus(restaurantRows), 24)
   const topHood = neighborhoodBreakdown[0]
   const topNeighborhood = topHood?.neighborhood && topHood.borough
     ? { name: topHood.neighborhood, borough: topHood.borough, count: topHood._count.id }
     : null
-  const gradeSplit = await gradeStatsFor({ dietary_tags: { contains: tag } })
   const capsule = dietCapsule({
     label: config.label,
     count: totalCount,
     gradeA: gradeSplit.gradeA,
     gradeB: gradeSplit.gradeB,
     gradeC: gradeSplit.gradeC,
-    latestMonth: gradeSplit.latestMonth,
+    latestMonth: snapshot.latestInspectionMonth,
   })
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -192,7 +195,7 @@ export default async function DietTypePage({
       "NYC health inspection grades",
       "healthy restaurants NYC",
     ],
-    ...(gradeSplit.latestIso && { dateModified: gradeSplit.latestIso }),
+    ...(snapshot.latestInspectionAt && { dateModified: snapshot.latestInspectionAt.toISOString().slice(0, 10) }),
   }
 
   return (
@@ -323,7 +326,7 @@ export default async function DietTypePage({
           <p className="eyebrow">Listings</p>
           <h2 className="h2-serif mt-2">Top {Math.min(restaurants.length, 24)} {config.label.toLowerCase()} restaurants</h2>
           <p className="dek mt-2" style={{ fontSize: "0.95rem" }}>
-            Ranked by editorial priority, rating, and review depth.
+            {TOP_PICKS_EXPLAINER}
           </p>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {restaurants.map((r, i) => (

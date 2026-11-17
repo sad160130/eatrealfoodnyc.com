@@ -4,7 +4,7 @@ import Link from "next/link"
 import type { Metadata } from "next"
 import { prisma } from "@/lib/db"
 import { neighborhoodToSlug, parseDietaryTags } from "@/lib/utils"
-import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { selectTopPicks } from "@/lib/top-picks"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
@@ -50,7 +50,7 @@ export async function generateMetadata({
   const snapshot = await getDirectorySnapshot()
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const title = boroughHubTitle(name, stats.gradeA, year)
-  const dataMonth = shortMonth(snapshot.lastPublishAt)
+  const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const description = fitDescription(
     [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name}, NYC: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`],
     [dataMonth ? `Data as of ${dataMonth}.` : ""].filter(Boolean)
@@ -84,7 +84,7 @@ export default async function BoroughPage({
     business_status: "OPERATIONAL" as const,
     is_published: true,
   }
-  const [restaurantRows, ratingAgg] = await Promise.all([
+  const [restaurantRows, ratingAgg, snapshot] = await Promise.all([
     prisma.restaurant.findMany({
       where: listedWhere,
       orderBy: [{ priorityRank: "desc" }, { rating: "desc" }, { reviews: "desc" }],
@@ -93,6 +93,7 @@ export default async function BoroughPage({
       where: { ...listedWhere, rating: { gt: 0 } },
       _avg: { rating: true },
     }),
+    getDirectorySnapshot(),
   ])
   const restaurants = await withPartnerStatus(restaurantRows)
   // One pass over the same published rows that render the sections below.
@@ -114,7 +115,6 @@ export default async function BoroughPage({
   }, {} as Record<string, typeof restaurants>)
 
   const neighborhoodsSorted = Object.entries(byNeighborhood).sort((a, b) => b[1].length - a[1].length)
-  const latestBoroughInspection = latestInspectionDate(restaurants.map((row) => row.inspection_date))
   const dietCounts = [
     { label: "Vegan", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("vegan")).length },
     { label: "Halal", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("halal")).length },
@@ -126,7 +126,7 @@ export default async function BoroughPage({
     gradeA: gradeACount,
     gradeB: gradeBCount,
     gradeC: gradeCCount,
-    latestMonth: latestBoroughInspection ? formatMonthYear(latestBoroughInspection) : null,
+    latestMonth: snapshot.latestInspectionLabel,
     diets: dietCounts,
     neighborhoodCount: scorecard.neighborhoods.length,
   })
@@ -383,10 +383,10 @@ export default async function BoroughPage({
                 </div>
 
                 {(() => {
-                  const featuredCount = Math.min(4, boroughCardBudget, neighborhoodRestaurants.length)
-                  boroughCardBudget -= featuredCount
-                  const featured = neighborhoodRestaurants.slice(0, featuredCount)
-                  const rest = neighborhoodRestaurants.slice(featuredCount)
+                  const featured = selectTopPicks(neighborhoodRestaurants, Math.min(4, boroughCardBudget))
+                  boroughCardBudget -= featured.length
+                  const featuredIds = new Set(featured.map((restaurant) => restaurant.id))
+                  const rest = neighborhoodRestaurants.filter((restaurant) => !featuredIds.has(restaurant.id))
                   return (
                     <>
                       {featured.length > 0 && (
@@ -416,7 +416,7 @@ export default async function BoroughPage({
                           ))}
                         </ul>
                       )}
-                      {hubExists(neighborhood) && neighborhoodRestaurants.length > featuredCount && (
+                      {hubExists(neighborhood) && rest.length > 0 && (
                         <div className="mt-6">
                           <Link
                             href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}

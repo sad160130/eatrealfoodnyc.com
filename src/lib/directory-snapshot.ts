@@ -13,6 +13,7 @@ export interface DirectorySnapshot {
   dietaryTagCount: number
   lastPublishAt: Date | null
   lastPublishLabel: string | null
+  latestInspectionAt: Date | null
   latestInspectionLabel: string | null
   latestInspectionMonth: string | null
 }
@@ -24,6 +25,9 @@ export interface DirectorySnapshot {
  * `lastPublishAt` is the newest `updated_at` among published rows, which the
  * weekly publish script bumps. A later edit to a published row moves it too.
  * Inspection labels use the newest parsed inspection_date, not a hardcoded month.
+ * Hub "Data as of" lines and "Newest inspection date on file" both read
+ * `latestInspectionAt`. `lastPublishAt` is the publish clock and is not a
+ * data-as-of date.
  */
 export const getDirectorySnapshot = cache(async (): Promise<DirectorySnapshot> => {
   const [counts, trackedCount, gradeAAll, lastPublish, inspectionDates] = await Promise.all([
@@ -53,6 +57,7 @@ export const getDirectorySnapshot = cache(async (): Promise<DirectorySnapshot> =
     dietaryTagCount: Object.keys(DIET_CONFIG).length,
     lastPublishAt,
     lastPublishLabel: lastPublishAt ? formatMonthYear(lastPublishAt) : null,
+    latestInspectionAt: latest,
     latestInspectionLabel: latest ? formatLongDate(latest) : null,
     latestInspectionMonth: latest ? formatMonthYear(latest) : null,
   }

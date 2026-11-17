@@ -21,11 +21,13 @@ export async function gradeStatsFor(where: {
     prisma.restaurant.count({ where: { ...published, inspection_grade: "A" } }),
     prisma.restaurant.count({ where: { ...published, inspection_grade: "B" } }),
     prisma.restaurant.count({ where: { ...published, inspection_grade: "C" } }),
+    // Stored as M/D/YYYY. String ORDER BY is not chronological
+    // ("9/30/2026" sorts ahead of "11/10/2026"), so load every distinct
+    // date and parse it with the same helper as the directory footer.
     prisma.restaurant.findMany({
       where: { ...published, inspection_date: { not: null } },
+      distinct: ["inspection_date"],
       select: { inspection_date: true },
-      orderBy: { inspection_date: "desc" },
-      take: 40,
     }),
   ])
   const latest = latestInspectionDate(dated.map((row) => row.inspection_date))
