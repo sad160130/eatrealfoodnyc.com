@@ -48,7 +48,7 @@ export default function NewsletterSignup({
         Grade A Eats This Week
       </h2>
       <p className="mt-2 text-sm leading-relaxed" style={{ color: muted }}>
-        Grade A picks, new openings, and diet-friendly finds. One email a week, after you confirm. Unsubscribe anytime.{" "}
+        New Grade A listings and the neighborhood with the most of them. One email a week, after you confirm. Unsubscribe anytime.{" "}
         <Link href="/newsletter" className="underline underline-offset-4" style={{ color: dark ? "var(--color-sage)" : "var(--color-jade)" }}>
           What you get
         </Link>

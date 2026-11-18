@@ -14,19 +14,20 @@ export async function confirmNewsletterSubscriber(email: string): Promise<"confi
 }
 
 /**
- * Remove the row. If deletion is not possible, leave the row and set confirmed false
- * so a later issue will not include the address.
+ * Keep the row and set confirmed false so the next issue skips the address.
+ * If the update cannot run, delete the row instead. A missing row is still
+ * treated as unsubscribed: there is nothing left to mail.
  */
 export async function unsubscribeNewsletterSubscriber(email: string): Promise<"removed" | "error"> {
   try {
-    await prisma.newsletterSubscriber.deleteMany({ where: { email } })
+    await prisma.newsletterSubscriber.updateMany({
+      where: { email },
+      data: { confirmed: false },
+    })
     return "removed"
   } catch {
     try {
-      await prisma.newsletterSubscriber.updateMany({
-        where: { email },
-        data: { confirmed: false },
-      })
+      await prisma.newsletterSubscriber.deleteMany({ where: { email } })
       return "removed"
     } catch {
       console.error("newsletter unsubscribe failed")

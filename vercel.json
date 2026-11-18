@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/compliance-weekly",
       "schedule": "0 13 * * 1"
+    },
+    {
+      "path": "/api/cron/newsletter-weekly",
+      "schedule": "0 14 * * 4"
     }
   ]
 }
