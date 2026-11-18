@@ -5,6 +5,10 @@ import {
   getPublishedDirectoryCounts,
   PUBLISHED_LISTING_WHERE,
 } from "@/lib/directory-stats"
+import {
+  summarizePublishedGrades,
+  type PublishedGradeSnapshot,
+} from "@/lib/grade-guide-snapshot"
 
 export const BOROUGH_NAMES = [
   "Manhattan",
@@ -73,6 +77,8 @@ export interface LiveGuideStats {
     topNeighborhoodsByTag: Record<string, NeighborhoodCountRow[]>
   }
   letters: { A: number; B: number; C: number }
+  /** Same published rows as `letters`, plus pending codes and the newest parsed inspection date. */
+  grades: PublishedGradeSnapshot
 }
 
 function percent(part: number, whole: number): number {
@@ -98,6 +104,7 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
         borough: true,
         neighborhood: true,
         inspection_grade: true,
+        inspection_date: true,
         is_hidden_gem: true,
         dietary_tags: true,
       },
@@ -117,8 +124,7 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
     dietHoods.set(tag, new Map())
   }
 
-  const letters = { A: 0, B: 0, C: 0 }
-  let letterGrades = 0
+  const grades = summarizePublishedGrades(rows)
   let unassignedBorough = 0
   let hiddenGemGradeA = 0
   const gemsByBorough: Record<string, number> = {}
@@ -126,8 +132,6 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
   for (const row of rows) {
     const grade = (row.inspection_grade ?? "").trim().toUpperCase()
     const isLetter = LETTERS.has(grade)
-    if (grade === "A" || grade === "B" || grade === "C") letters[grade] += 1
-    if (isLetter) letterGrades += 1
 
     const borough = row.borough && boroughs[row.borough] ? row.borough : null
     if (!borough) unassignedBorough += 1
@@ -199,10 +203,10 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
   return {
     global: {
       totalPublished: counts.restaurants,
-      totalWithGrade: letterGrades,
+      totalWithGrade: grades.A + grades.B + grades.C,
       gradeAPercent,
       gradeACoverage: gradeAPercent,
-      letterGradePercent: percent(letterGrades, counts.restaurants),
+      letterGradePercent: percent(grades.A + grades.B + grades.C, counts.restaurants),
       totalUniqueNeighborhoods: counts.neighborhoods,
       totalHiddenGems: counts.hiddenGems,
       hiddenGemGradeA,
@@ -230,6 +234,7 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
       ),
       topNeighborhoodsByTag,
     },
-    letters,
+    letters: { A: grades.A, B: grades.B, C: grades.C },
+    grades,
   }
 })

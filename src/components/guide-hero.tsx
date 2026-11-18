@@ -5,9 +5,11 @@ interface GuideHeroProps {
   guide: GuideArticle
   subtitle: string
   stats?: Array<{ stat: string; label: string }>
+  /** A data-derived line under the lede, such as the newest inspection date. */
+  note?: string | null
 }
 
-export default function GuideHero({ guide, subtitle, stats }: GuideHeroProps) {
+export default function GuideHero({ guide, subtitle, stats, note }: GuideHeroProps) {
   const publishedLabel = new Date(`${guide.publishedDate}T00:00:00Z`).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -59,6 +61,12 @@ export default function GuideHero({ guide, subtitle, stats }: GuideHeroProps) {
         >
           {subtitle}
         </p>
+
+        {note ? (
+          <p className="mt-4 text-sm" style={{ color: "var(--color-muted)" }}>
+            {note}
+          </p>
+        ) : null}
 
         {/* Stats — hairline cards, no white/10 background */}
         {stats && stats.length > 0 && (

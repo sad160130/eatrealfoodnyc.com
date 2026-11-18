@@ -14,6 +14,8 @@ import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import GradeHubLinks from "@/components/grade-hub-links"
 import { pageMeta } from "@/lib/page-meta"
 import { healthGradesGuideDescription, healthGradesGuideTitle } from "@/lib/seo-titles"
+import { HEALTH_GRADE_FAQS } from "@/content/health-grade-faqs"
+import { ClaimListingCta, InspectionLeadsCta } from "@/components/product-ctas"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
@@ -41,64 +43,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const GUIDE_FAQS = [
-  {
-    question: "What do NYC restaurant grades mean?",
-    answer:
-      "New York City converts a sanitary inspection score into a letter grade. Fewer points is better. Fewer than 14 points is a Grade A. A B is 14 to 27 points on a reinspection, and a C is 28 or more points on a reinspection. The cutoffs are in Health Code Chapter 23.",
-  },
-  {
-    question: "What does a Grade A mean for a NYC restaurant?",
-    answer:
-      "A Grade A means the restaurant scored fewer than 14 points (0 to 13) on the initial inspection or the reinspection in that cycle. The Department issues an A card, and the restaurant posts it immediately.",
-  },
-  {
-    question: "What does a B rating mean for a restaurant?",
-    answer:
-      "A B rating means the reinspection score was 14 to 27 points. The Department does not issue a B on the first inspection of a cycle. A first-visit score of 14 or more is ungraded, and a reinspection is scheduled no sooner than 7 days later.",
-  },
-  {
-    question: "What does a C rating mean for a restaurant?",
-    answer:
-      "A C rating means the reinspection score was 28 or more points. The Department may also run a compliance inspection after a score of 28 or more. That compliance score does not change the letter grade for the cycle.",
-  },
-  {
-    question: "What does Grade Pending mean at a NYC restaurant?",
-    answer:
-      "Grade Pending means the letter grade for the current inspection cycle is still being determined. When a reinspection scores 14 or more and the restaurant is not closed, it receives both the letter-grade card and a Grade Pending card and posts one of them until it has a chance to be heard at the OATH Health Tribunal.",
-  },
-  {
-    question: "What does Z mean on a NYC restaurant inspection?",
-    answer:
-      "In the NYC DOHMH restaurant inspection dataset, Z means Grade Pending. P means Grade Pending issued on re-opening after an initial inspection that resulted in a closure. N means Not Yet Graded. A, B, and C are the letter grades.",
-  },
-  {
-    question: "How often are NYC restaurants inspected?",
-    answer:
-      "The Department conducts an inspection cycle at least annually at each food service establishment required to post a letter grade. An establishment that scores 14 or more is not put on a one-year wait for the next cycle. The gap depends on the higher of the initial score and the reinspection score.",
-  },
-  {
-    question: "What happens if a restaurant scores 14 or more on its first inspection?",
-    answer:
-      "It does not receive a letter grade on that visit. If it is not closed, it keeps posting its previous grade card, or posts nothing if it has never had one, until the reinspection. The reinspection is scheduled no sooner than 7 days after the initial inspection.",
-  },
-  {
-    question: "Can a restaurant be open with a Grade B or C?",
-    answer:
-      "Yes — restaurants can operate with a Grade B or Grade C unless the violations pose an immediate danger to public health. In those cases the Health Department can order immediate closure. Restaurants with Grade B or C are re-inspected quickly and have the opportunity to improve their score.",
-  },
-  {
-    question: "Where can I look up a NYC restaurant health inspection record?",
-    answer:
-      "You can look up any NYC restaurant inspection record through the NYC Open Data portal at data.cityofnewyork.us. Our directory also shows the current grade, inspection date, and score for thousands of NYC restaurants directly on each listing page.",
-  },
-  {
-    question: "What do inspectors actually check during a NYC restaurant inspection?",
-    answer:
-      "NYC health inspectors check food temperatures, food handling procedures, pest evidence, personal hygiene of staff, facility conditions, and proper labeling of food. Each violation is assigned a point value. Minor violations are worth fewer points than critical violations.",
-  },
-]
-
 export default async function NYCHealthGradesGuide() {
   const stats = await getLiveGuideStats()
   const title = healthGradesGuideTitle(stats.letters.A)
@@ -107,6 +51,8 @@ export default async function NYCHealthGradesGuide() {
     gradeB: stats.letters.B,
     gradeC: stats.letters.C,
   })
+  const grades = stats.grades
+  const count = (value: number) => value.toLocaleString("en-US")
   const graded = stats.global.totalWithGrade
   const shareOfGraded = (count: number) => (graded > 0 ? Math.round((count / graded) * 100) : 0)
   const gradeAShare = shareOfGraded(stats.letters.A)
@@ -119,7 +65,7 @@ export default async function NYCHealthGradesGuide() {
   return (
     <GuideLayout guide={guide}>
       {/* JSON-LD schemas */}
-      <FAQSchema faqs={GUIDE_FAQS} />
+      <FAQSchema faqs={[...HEALTH_GRADE_FAQS]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -131,7 +77,7 @@ export default async function NYCHealthGradesGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",
-            dateModified: "2026-11-15",
+            ...(stats.grades.latestInspectionIso ? { dateModified: stats.grades.latestInspectionIso } : {}),
             mainEntityOfPage: {
               "@type": "WebPage",
               "@id": `${siteUrl}/guides/nyc-health-grades-explained`,
@@ -143,11 +89,16 @@ export default async function NYCHealthGradesGuide() {
       <GuideHero
         guide={guide}
         subtitle="A is 0–13 points, B is 14–27 on a reinspection, and C is 28 or more. Grade Pending and a Z in the city data are not letter grades."
+        note={
+          grades.latestInspectionLabel
+            ? `Last updated ${grades.latestInspectionLabel}. That is the newest inspection date on a published listing.`
+            : null
+        }
         stats={[
-          { stat: stats.global.totalPublished.toLocaleString(), label: "Published listings" },
-          { stat: `${stats.global.gradeAPercent}%`, label: "Grade A in this directory" },
-          { stat: "1x/year", label: "Minimum inspection frequency" },
-          { stat: "0-13", label: "Points for Grade A" },
+          { stat: count(grades.published), label: "Published listings" },
+          { stat: `${grades.gradeAShareOfPublished}%`, label: "Grade A of published listings" },
+          { stat: count(grades.pending), label: "Grade Pending (Z or P)" },
+          { stat: grades.latestInspectionLabel ?? "None on file", label: "Newest inspection on file" },
         ]}
       />
 
@@ -161,6 +112,8 @@ export default async function NYCHealthGradesGuide() {
             { href: "#what-a-c-rating-means", label: "What a C rating means" },
             { href: "#grade-pending", label: "What Grade Pending means" },
             { href: "#grade-z", label: "What Z means in the inspection data" },
+            { href: "#how-scoring-works", label: "How the scoring works" },
+            { href: "#look-up-by-borough", label: "Look up a grade by borough" },
             { href: "#what-is-a-health-grade", label: "What is a NYC restaurant health grade?" },
             { href: "#grade-breakdown", label: "Grade A, B, and C — what each means" },
             { href: "#how-inspection-works", label: "How the inspection process works" },
@@ -222,9 +175,58 @@ export default async function NYCHealthGradesGuide() {
           </div>
         </section>
 
+        <section id="how-scoring-works" className="mb-16 scroll-mt-24">
+          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            How the scoring works
+          </h2>
+          <p className="mb-6 text-lg leading-relaxed text-gray-700">
+            Inspectors assign points for sanitary violations. Fewer points is a better grade. The letter cutoffs are in Health Code Chapter 23. A B or a C is issued on the reinspection, not on the first visit of the cycle. Z and P are Grade Pending codes in the city dataset, not letters in the window.
+          </p>
+          <div className="my-6 overflow-hidden border" style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}>
+            <table className="w-full text-sm">
+              <caption className="sr-only">How NYC inspection scores map to grades, with published listing counts</caption>
+              <thead>
+                <tr style={{ color: "var(--color-muted)" }}>
+                  <th className="px-4 py-3 text-left font-medium">On file</th>
+                  <th className="px-4 py-3 text-left font-medium">What the city uses</th>
+                  <th className="px-4 py-3 text-right font-medium">Published listings</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["A", "0–13 points, on the initial inspection or the reinspection", count(grades.A)],
+                  ["B", "14–27 points on a reinspection", count(grades.B)],
+                  ["C", "28 or more points on a reinspection", count(grades.C)],
+                  ["Z / P", "Grade Pending. Z is pending. P is pending on re-opening after a closure.", `${count(grades.pending)} (${count(grades.pendingZ)} Z, ${count(grades.pendingP)} P)`],
+                ].map((row) => (
+                  <tr key={row[0]} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+                    <td className="px-4 py-3 font-bold text-jade" style={{ fontFamily: "Georgia, serif" }}>{row[0]}</td>
+                    <td className="px-4 py-3 text-gray-700">{row[1]}</td>
+                    <td className="px-4 py-3 text-right tabular font-semibold text-forest">{row[2]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-lg leading-relaxed text-gray-700">
+            Among {count(grades.published)} published listings, Grade A is {grades.gradeAShareOfPublished}% ({count(grades.A)} of {count(grades.published)}). {count(grades.ungraded)} have no A, B, C, Z, or P on file.{grades.latestInspectionLabel ? ` The newest inspection date on file is ${grades.latestInspectionLabel}.` : ""} These counts are this directory, not the citywide inspection file.
+          </p>
+          <aside
+            className="mt-6 border p-4"
+            style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}
+          >
+            <p className="eyebrow" style={{ color: "var(--color-jade)" }}>For vendors</p>
+            <p className="mt-2 text-sm leading-relaxed">
+              <InspectionLeadsCta source="grades_guide">
+                Sell to NYC restaurants? Get weekly inspection leads
+              </InspectionLeadsCta>
+            </p>
+          </aside>
+        </section>
+
         <DataCallout
           heading="NYC Health Grade Data — Eat Real Food NYC Directory"
-          intro={`Of the ${stats.global.totalPublished.toLocaleString()} active NYC restaurants in our directory, ${stats.letters.A.toLocaleString()} (${stats.global.gradeAPercent}%) hold a NYC DOHMH Grade A. ${stats.global.totalWithGrade.toLocaleString()} (${stats.global.letterGradePercent}%) have a letter grade (A, B, or C). The same Grade A share is in the data note at the bottom of this page. Borough counts below cover all five boroughs and add up to ${boroughTotal.toLocaleString()} published listings${stats.global.unassignedBorough > 0 ? `; ${stats.global.unassignedBorough.toLocaleString()} published listings have no borough on file` : ""}.`}
+          intro={`Of the ${count(grades.published)} published listings in this directory, ${count(grades.A)} (${grades.gradeAShareOfPublished}%) hold a NYC DOHMH Grade A, ${count(grades.B)} hold a Grade B, and ${count(grades.C)} hold a Grade C. ${count(grades.pending)} are Grade Pending (${count(grades.pendingZ)} coded Z and ${count(grades.pendingP)} coded P). ${count(grades.ungraded)} have no A, B, C, Z, or P on file.${grades.latestInspectionLabel ? ` The newest inspection date on file is ${grades.latestInspectionLabel}.` : ""} Borough counts below cover all five boroughs and add up to ${boroughTotal.toLocaleString()} published listings${stats.global.unassignedBorough > 0 ? `; ${stats.global.unassignedBorough.toLocaleString()} published listings have no borough on file` : ""}.`}
           dataPoints={["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"].map((name) => {
             const borough = stats.global.boroughs[name]
             return {
@@ -246,7 +248,7 @@ export default async function NYCHealthGradesGuide() {
               href="/data/nyc-restaurant-health-grade-report"
               className="font-medium text-jade underline underline-offset-2 hover:text-forest"
             >
-              Read the NYC Restaurant Health Grade Report →
+              Read the Fall 2026 NYC inspection report
             </Link>
           </p>
         </div>
@@ -375,6 +377,11 @@ export default async function NYCHealthGradesGuide() {
                   >
                     Healthy restaurants in Manhattan
                   </Link>
+                  <p className="mt-3 text-sm leading-relaxed">
+                    <ClaimListingCta source="grades_guide">
+                      Own a Grade A restaurant? Claim your free listing and get the free Grade A badge
+                    </ClaimListingCta>
+                  </p>
                 </div>
               </div>
             </div>
@@ -647,7 +654,7 @@ export default async function NYCHealthGradesGuide() {
               title: "Related pages",
               links: [
                 { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
-                { href: "/data/nyc-restaurant-health-grade-report", label: "NYC restaurant health grade report" },
+                { href: "/data/nyc-restaurant-health-grade-report", label: "Fall 2026 NYC inspection report" },
                 { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
                 { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },
               ],
@@ -661,12 +668,12 @@ export default async function NYCHealthGradesGuide() {
             Frequently asked questions
           </h2>
           <div className="space-y-0 overflow-hidden rounded-2xl border border-gray-100 bg-white">
-            {GUIDE_FAQS.map((faq, index) => (
+            {HEALTH_GRADE_FAQS.map((faq, index) => (
               <FAQItem
-                key={index}
+                key={faq.question}
                 question={faq.question}
                 answer={faq.answer}
-                isLast={index === GUIDE_FAQS.length - 1}
+                isLast={index === HEALTH_GRADE_FAQS.length - 1}
               />
             ))}
           </div>
