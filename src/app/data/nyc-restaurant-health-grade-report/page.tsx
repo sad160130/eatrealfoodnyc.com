@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import { FALL_2026_REPORT as R } from "@/data/fall-2026-inspection-report"
+import { InspectionLeadsCta } from "@/components/product-ctas"
 
 const PATH = "/data/nyc-restaurant-health-grade-report"
 const URL = `https://www.eatrealfoodnyc.com${PATH}`
@@ -173,6 +174,11 @@ export default function InspectionReportPage() {
             <Link href="/healthy-restaurants/grade-a" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Grade A restaurants in the directory</Link>
             {" · "}
             <Link href="/nyc/queens/healthy-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Healthy restaurants in Queens</Link>
+          </p>
+          <p className="text-sm">
+            <InspectionLeadsCta source="inspection_report">
+              Sell to NYC restaurants? Get weekly inspection leads
+            </InspectionLeadsCta>
           </p>
         </div>
 
