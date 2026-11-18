@@ -28,6 +28,7 @@ const COMPANY = [
 const TOOLS = [
   { label: "Compliance Weekly", href: "/data" },
   { label: "Health Grade Report", href: "/data/nyc-restaurant-health-grade-report" },
+  { label: "NYC Health Grades Explained", href: "/guides/nyc-health-grades-explained" },
   { label: "Best-Rated Restaurants", href: "/data/best-rated-restaurants" },
   { label: "Interactive Map", href: "/map" },
   { label: "Compare Neighborhoods", href: "/nyc/compare" },
