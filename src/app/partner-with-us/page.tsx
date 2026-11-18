@@ -255,7 +255,7 @@ export default async function PartnerWithUsPage() {
           </p>
         </section>
 
-        <section className="mb-16">
+        <section id="more-ways" className="mb-16 scroll-mt-24">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">OTHER OFFERS</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             More ways to work with us

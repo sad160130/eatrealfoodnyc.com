@@ -16,6 +16,7 @@ import {
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import bestRatedReport from "@/data/best-rated-restaurants"
+import { archivedIssueDates } from "@/lib/newsletter-issue"
 
 const DIET_TYPES = Object.keys(DIET_CONFIG)
 const BOROUGHS = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"] as const
@@ -38,7 +39,8 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/map": "2026-04-01",
   "/nyc/compare": "2026-04-01",
   "/guides": "2026-02-15",
-  "/newsletter": "2026-11-16",
+  "/newsletter": "2026-11-18",
+  "/newsletter/issues": "2026-11-18",
   "/data": "2026-11-15",
   "/catering": "2026-11-15",
   "/claim": "2026-11-15",
@@ -244,6 +246,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ),
   ]
 
+  const gradeAInspectionDates = await prisma.restaurant.findMany({
+    where: { is_published: true, inspection_grade: "A", inspection_date: { not: null } },
+    select: { inspection_date: true },
+    distinct: ["inspection_date"],
+  })
+  const newsletterIssuePages = archivedIssueDates(gradeAInspectionDates.map((row) => row.inspection_date)).map((date) =>
+    entry(siteUrl, `/newsletter/issues/${date}`, 0.6, "weekly", asDate(date))
+  )
+
   const neighborhoodDietPages = (await listNeighborhoodDietCombos()).map((combo) =>
     entry(
       siteUrl,
@@ -264,6 +275,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...comboPages,
     ...gradeAPages,
     ...neighborhoodDietPages,
+    ...newsletterIssuePages,
     entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
     ...indexPages,
     ...restaurantPages,
