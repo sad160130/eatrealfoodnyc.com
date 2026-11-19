@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
 import { buildPipeTitle } from "@/lib/seo-titles"
-import { presentGrade } from "@/lib/grade-display"
+import { dohmhSourceLine, presentSampleFact } from "@/lib/data-sample"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import DataProductCta from "@/components/data-product-cta"
+import DataSampleForm from "@/components/data-sample-form"
 import { DATA_PRODUCT, DOHMH_DATASET } from "@/config/data-product"
 
 export const revalidate = 86400
@@ -16,11 +17,6 @@ export const metadata = pageMeta({
   description:
     "A Monday email with two CSVs: NYC inspection leads and new openings. $79 a month or $790 a year. Built from DOHMH dataset 43nn-pn8j.",
 })
-
-function redactName(name: string) {
-  const first = name.trim().charAt(0)
-  return first ? `${first}…` : "…"
-}
 
 type SampleRow = {
   label: string
@@ -100,7 +96,10 @@ export default async function DataProductPage({
         </div>
       </header>
       <article className="mx-auto max-w-3xl px-6 py-12">
-        <h2 className="h2-serif">What is in the email</h2>
+        <div id="free-sample" className="scroll-mt-24">
+          <DataSampleForm source="data_page_top" variant="full" idPrefix="data-sample-top" />
+        </div>
+        <h2 className="h2-serif mt-12">What is in the email</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <section className="border p-5" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
             <h3 className="font-bold" style={{ fontFamily: "var(--font-display)" }}>Inspection leads</h3>
@@ -144,10 +143,13 @@ export default async function DataProductPage({
             </tbody>
           </table>
         </div>
+        <div className="mt-8">
+          <DataSampleForm source="data_page_bottom" variant="compact" idPrefix="data-sample-bottom" />
+        </div>
 
         <h2 className="h2-serif mt-12">Source</h2>
         <p className="mt-3 text-sm leading-relaxed">
-          Source: {DOHMH_DATASET.source}. Dataset: {DOHMH_DATASET.name} ({DOHMH_DATASET.id}). Version: NYC Open Data rows updated {DOHMH_DATASET.version}.{" "}
+          {dohmhSourceLine()}{" "}
           <a href={DOHMH_DATASET.url} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
             NYC Open Data
           </a>
@@ -162,11 +164,6 @@ function toSample(
   row: { name: string; borough: string | null; neighborhood: string | null; inspection_grade: string | null; inspection_score: number | null },
   label: string
 ): SampleRow {
-  return {
-    label,
-    name: redactName(row.name),
-    place: [row.neighborhood, row.borough].filter(Boolean).join(", ") || "New York City",
-    grade: presentGrade(row.inspection_grade).title,
-    score: row.inspection_score == null ? "—" : String(row.inspection_score),
-  }
+  const fact = presentSampleFact(row, true)
+  return { label, name: fact.name, place: fact.place, grade: fact.grade, score: fact.score }
 }

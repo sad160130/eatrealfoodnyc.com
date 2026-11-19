@@ -16,6 +16,7 @@ import { pageMeta } from "@/lib/page-meta"
 import { healthGradesGuideDescription, healthGradesGuideTitle } from "@/lib/seo-titles"
 import { HEALTH_GRADE_FAQS } from "@/content/health-grade-faqs"
 import { ClaimListingCta, InspectionLeadsCta } from "@/components/product-ctas"
+import DataSampleForm from "@/components/data-sample-form"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-health-grades-explained")!
@@ -212,7 +213,8 @@ export default async function NYCHealthGradesGuide() {
             Among {count(grades.published)} published listings, Grade A is {grades.gradeAShareOfPublished}% ({count(grades.A)} of {count(grades.published)}). {count(grades.ungraded)} have no A, B, C, Z, or P on file.{grades.latestInspectionLabel ? ` The newest inspection date on file is ${grades.latestInspectionLabel}.` : ""} These counts are this directory, not the citywide inspection file.
           </p>
           <aside
-            className="mt-6 border p-4"
+            id="free-sample"
+            className="mt-6 scroll-mt-24 border p-4"
             style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}
           >
             <p className="eyebrow" style={{ color: "var(--color-jade)" }}>For vendors</p>
@@ -221,6 +223,7 @@ export default async function NYCHealthGradesGuide() {
                 Sell to NYC restaurants? Get weekly inspection leads
               </InspectionLeadsCta>
             </p>
+            <DataSampleForm source="grades_guide" variant="compact" embedded idPrefix="grades-sample" />
           </aside>
         </section>
 
