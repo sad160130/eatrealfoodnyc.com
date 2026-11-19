@@ -1,5 +1,7 @@
 import { DOHMH_DATASET } from "@/config/data-product"
 
+export const COMPLIANCE_FROM = "Eat Real Food NYC <compliance@eatrealfoodnyc.com>"
+
 export function mondayKey(date: Date): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/New_York",
@@ -71,7 +73,7 @@ export async function sendComplianceEmail(input: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Eat Real Food NYC <compliance@eatrealfoodnyc.com>",
+      from: COMPLIANCE_FROM,
       to: [input.to],
       subject: input.subject,
       text: input.text,
