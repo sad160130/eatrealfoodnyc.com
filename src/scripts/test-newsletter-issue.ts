@@ -1,10 +1,16 @@
 import { createElement } from "react"
 import { readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 import { renderToStaticMarkup } from "react-dom/server"
+import NewsletterArchiveList from "../components/newsletter-archive-list"
 import NewsletterIssueView from "../components/newsletter-issue-view"
+import { pageMeta } from "../lib/page-meta"
 import { DESCRIPTION_MAX, fitTitle } from "../lib/seo-titles"
 import {
   GRADE_CHANGE_HISTORY,
+  NEWSLETTER_INDEX_MIN_GRADE_A,
+  NEWSLETTER_RECENT_WEEKS,
   NEWSLETTER_SPONSOR_TEXT,
   addIsoDays,
   archivedIssueDates,
@@ -12,11 +18,14 @@ import {
   buildNewsletterIssue,
   currentIssueDate,
   isIssueDate,
+  isNewsletterIssueIndexable,
   issuePageDescription,
   issuePageTitle,
   issueWindow,
   newsletterWebPageSchema,
   parseInspectionDay,
+  partitionNewsletterArchive,
+  recentNewsletterIssueStart,
   summarizeNewsletterArchive,
   thursdayOnOrBefore,
   type NewsletterSourceRow,
@@ -189,6 +198,11 @@ const title = fitTitle([issuePageTitle("2026-11-19")], { allowBrand: true })
 assert(title.length <= 60, `issue title is ${title.length} characters`)
 assert(title.includes("Eat Real Food NYC"), "issue title keeps the brand")
 assert(issuePageDescription("2026-11-19").length <= DESCRIPTION_MAX, "issue description stays within 160 characters")
+assert(
+  archivePageDescription() ===
+    "Weekly Grade A roundups, rebuilt from published listings and the NYC DOHMH inspection date on each one. The email edition started in November 2026.",
+  "the archive description names roundups and the November 2026 email start"
+)
 assert(archivePageDescription().length <= DESCRIPTION_MAX, "archive description stays within 160 characters")
 assert(
   "A weekly email of NYC restaurants newly showing a NYC DOHMH Grade A, plus that week's neighborhood. Confirm by email.".length <= DESCRIPTION_MAX,
@@ -366,6 +380,145 @@ const badPost = await unsubscribePost(new Request("https://www.eatrealfoodnyc.co
   body: "List-Unsubscribe=One-Click",
 }))
 assert(badPost.status === 400, "a one-click post with a bad token is rejected")
+
+const indexNow = new Date("2026-11-19T14:00:00.000Z")
+assert(NEWSLETTER_RECENT_WEEKS === 12, "the recent window is twelve weeks")
+assert(NEWSLETTER_INDEX_MIN_GRADE_A === 3, "indexing requires three Grade A listings")
+assert(recentNewsletterIssueStart(indexNow) === "2026-09-03", "twelve Thursdays ending November 19 start on September 3")
+assert(isNewsletterIssueIndexable("2026-11-19", 3, indexNow), "the current Thursday with three listings is indexable")
+assert(isNewsletterIssueIndexable("2026-09-03", 3, indexNow), "the oldest of the twelve weeks with three listings is indexable")
+assert(!isNewsletterIssueIndexable("2026-08-27", 10, indexNow), "the Thursday before the window stays out of the index")
+assert(!isNewsletterIssueIndexable("2026-11-19", 2, indexNow), "two listings are below the minimum")
+assert(!isNewsletterIssueIndexable("2026-10-08", 2, indexNow), "a recent week with two listings is not indexable")
+assert(!isNewsletterIssueIndexable("2026-11-19", 0, indexNow), "an empty current week is not indexable")
+assert(isNewsletterIssueIndexable("2026-11-12", 3, indexNow), "three listings is enough")
+assert(!isNewsletterIssueIndexable("2026-11-18", 5, indexNow), "a Wednesday is not an issue date")
+assert(!isNewsletterIssueIndexable("2026-11-26", 5, indexNow), "a future Thursday is not indexable")
+assert(!isNewsletterIssueIndexable("2026-02-31", 5, indexNow), "an impossible date is not indexable")
+assert(!isNewsletterIssueIndexable("2026-11-19", 2.5, indexNow), "a fractional count is not indexable")
+assert(!isNewsletterIssueIndexable("2026-11-19", Number.NaN, indexNow), "NaN is not indexable")
+assert(!isNewsletterIssueIndexable("2022-07-07", 1, indexNow), "a one-listing week from 2022 is not indexable")
+
+const wednesday = new Date("2026-11-18T15:00:00.000Z")
+assert(recentNewsletterIssueStart(wednesday) === "2026-08-27", "on Wednesday the window ends on the previous Thursday")
+assert(isNewsletterIssueIndexable("2026-08-27", 3, wednesday), "that window includes August 27 when it has three listings")
+assert(!isNewsletterIssueIndexable("2026-11-19", 5, wednesday), "next Thursday is not indexable yet")
+assert(!isNewsletterIssueIndexable("2026-08-20", 9, wednesday), "the Thursday before that window is excluded")
+
+const windowDates: string[] = []
+for (let date = currentIssueDate(indexNow); date >= recentNewsletterIssueStart(indexNow); date = addIsoDays(date, -7)) {
+  windowDates.push(date)
+}
+assert(windowDates.length === 12, "the window contains twelve Thursdays")
+assert(
+  windowDates.every((date) => isNewsletterIssueIndexable(date, NEWSLETTER_INDEX_MIN_GRADE_A, indexNow)),
+  "every Thursday in the window is indexable at the minimum count"
+)
+assert(
+  !isNewsletterIssueIndexable(addIsoDays(windowDates[windowDates.length - 1], -7), 3, indexNow),
+  "one Thursday earlier is not indexable"
+)
+
+const archiveEntries = [
+  ...windowDates.map((date) => ({ date })),
+  { date: "2026-08-27" },
+]
+const parts = partitionNewsletterArchive(archiveEntries, indexNow)
+assert(parts.recent.length === 12 && parts.older.length === 1, "the archive split keeps twelve recent weeks and the rest")
+assert(parts.recent[0].date === "2026-11-19" && parts.older[0].date === "2026-08-27", "newest stays first and August 27 is older")
+
+const indexRows = [
+  row({ name: "Nov A", slug: "nov-a", inspection_date: "11/12/2026" }),
+  row({ name: "Nov B", slug: "nov-b", inspection_date: "11/11/2026" }),
+  row({ name: "Nov C", slug: "nov-c", inspection_date: "11/10/2026" }),
+  row({ name: "Oct A", slug: "oct-a", inspection_date: "10/8/2026" }),
+  row({ name: "Oct B", slug: "oct-b", inspection_date: "10/7/2026" }),
+  row({ name: "Aug A", slug: "aug-a", inspection_date: "8/27/2026" }),
+  row({ name: "Aug B", slug: "aug-b", inspection_date: "8/26/2026" }),
+  row({ name: "Aug C", slug: "aug-c", inspection_date: "8/25/2026" }),
+]
+const candidateDates = archivedIssueDates(indexRows.map((item) => item.inspection_date), indexNow)
+const countedIndexable = candidateDates.filter((date) =>
+  isNewsletterIssueIndexable(date, buildNewsletterIssue(indexRows, date).gradeA.length, indexNow)
+)
+const probedIndexable = candidateDates.flatMap((date) => {
+  if (!isNewsletterIssueIndexable(date, NEWSLETTER_INDEX_MIN_GRADE_A, indexNow)) return []
+  const gradeACount = buildNewsletterIssue(indexRows, date).gradeA.length
+  return isNewsletterIssueIndexable(date, gradeACount, indexNow) ? [date] : []
+})
+assert(countedIndexable.join("|") === "2026-11-12", "only the recent week with three listings is indexable")
+assert(probedIndexable.join("|") === countedIndexable.join("|"), "the sitemap probe matches a full count")
+assert(!countedIndexable.includes("2026-10-08"), "October 8 has two listings and stays out")
+assert(!countedIndexable.includes("2026-08-27"), "August 27 has three listings and is still outside the window")
+assert(!countedIndexable.includes("2026-11-19"), "the empty current Thursday is not indexable")
+
+function robotsOf(meta: { robots?: unknown }): { index?: boolean; follow?: boolean; googleBot?: { index?: boolean; follow?: boolean } } {
+  const robots = meta.robots
+  if (!robots || typeof robots !== "object") throw new Error("missing robots")
+  return robots as { index?: boolean; follow?: boolean; googleBot?: { index?: boolean; follow?: boolean } }
+}
+
+const indexedMeta = pageMeta({
+  path: "/newsletter/issues/2026-11-12",
+  title: issuePageTitle("2026-11-12"),
+  description: issuePageDescription("2026-11-12"),
+  index: isNewsletterIssueIndexable("2026-11-12", 3, indexNow),
+})
+const hiddenMeta = pageMeta({
+  path: "/newsletter/issues/2026-08-27",
+  title: issuePageTitle("2026-08-27"),
+  description: issuePageDescription("2026-08-27"),
+  index: isNewsletterIssueIndexable("2026-08-27", 6, indexNow),
+})
+const indexedRobots = robotsOf(indexedMeta)
+const hiddenRobots = robotsOf(hiddenMeta)
+assert(indexedRobots.index === true && indexedRobots.follow === true, "an indexable issue is index, follow")
+const indexedCanonical = indexedMeta.alternates && "canonical" in indexedMeta.alternates ? indexedMeta.alternates.canonical : ""
+assert(indexedCanonical === "https://www.eatrealfoodnyc.com/newsletter/issues/2026-11-12", "an issue canonical points at itself")
+assert(hiddenRobots.index === false && hiddenRobots.follow === true, "an old issue is noindex, follow")
+assert(hiddenRobots.googleBot?.index === false && hiddenRobots.googleBot?.follow === true, "googlebot follows noindex issues")
+const hiddenCanonical = hiddenMeta.alternates && "canonical" in hiddenMeta.alternates ? hiddenMeta.alternates.canonical : ""
+assert(hiddenCanonical === "https://www.eatrealfoodnyc.com/newsletter/issues/2026-08-27", "a noindex issue keeps a self canonical")
+assert(issuePageTitle("2026-11-12") !== issuePageTitle("2026-09-03"), "issue titles differ by date")
+assert(issuePageDescription("2026-11-12") !== issuePageDescription("2026-09-03"), "issue descriptions differ by date")
+
+const archiveMarkup = renderToStaticMarkup(createElement(NewsletterArchiveList, {
+  recent: [
+    { date: "2026-11-12", label: "November 12, 2026", gradeACount: 3, neighborhood: "East Village", borough: "Manhattan" },
+    { date: "2026-10-08", label: "October 8, 2026", gradeACount: 2, neighborhood: null, borough: null },
+  ],
+  older: [
+    { date: "2026-08-27", label: "August 27, 2026", gradeACount: 6, neighborhood: "Astoria", borough: "Queens" },
+  ],
+}))
+assert(archiveMarkup.includes("Recent weeks"), "recent weeks are labeled")
+assert(archiveMarkup.includes("<details open"), "older weeks stay open in the HTML")
+assert(archiveMarkup.includes("Older weekly roundups"), "older weeks have their heading")
+assert(archiveMarkup.indexOf("/newsletter/issues/2026-11-12") < archiveMarkup.indexOf("Older weekly roundups"), "recent weeks come before older weeks")
+assert(archiveMarkup.includes("3 new Grade A listings."), "a count of three is printed")
+assert(archiveMarkup.includes("2 new Grade A listings."), "a thin week is still listed")
+assert(archiveMarkup.includes("Neighborhood pick: East Village, Manhattan."), "the neighborhood pick is named")
+assert(!archiveMarkup.includes("Past issues"), "the list does not call the weeks past email issues")
+
+const onlyRecent = renderToStaticMarkup(createElement(NewsletterArchiveList, {
+  recent: [{ date: "2026-11-12", label: "November 12, 2026", gradeACount: 0, neighborhood: null, borough: null }],
+  older: [],
+}))
+assert(!onlyRecent.includes("<details"), "no older section when every week is recent")
+assert(onlyRecent.includes("No new Grade A listings in this window."), "an empty week says so")
+
+const scriptDir = dirname(fileURLToPath(import.meta.url))
+const issuePageSource = readFileSync(join(scriptDir, "../app/newsletter/issues/[date]/page.tsx"), "utf8")
+assert(issuePageSource.includes("isNewsletterIssueIndexable"), "issue metadata uses the indexing helper")
+assert(issuePageSource.includes("issuePageTitle") && issuePageSource.includes("issuePageDescription"), "issue titles and descriptions stay unique per date")
+const sitemapSource = readFileSync(join(scriptDir, "../app/sitemap.ts"), "utf8")
+assert(sitemapSource.includes("isNewsletterIssueIndexable"), "the sitemap uses the indexing helper")
+const archivePageSource = readFileSync(join(scriptDir, "../app/newsletter/issues/page.tsx"), "utf8")
+assert(archivePageSource.includes("partitionNewsletterArchive"), "the archive page uses the same twelve-week split")
+assert(archivePageSource.includes("archivePageDescription()"), "the archive page uses the shared description")
+const newsletterPageSource = readFileSync(join(scriptDir, "../app/newsletter/page.tsx"), "utf8")
+assert(newsletterPageSource.includes("The email edition started in November 2026."), "the newsletter page dates the email edition")
+assert(!newsletterPageSource.includes("past edition"), "the newsletter page does not call the archive past editions")
 
 console.log("\nNewsletter issue tests passed")
 }

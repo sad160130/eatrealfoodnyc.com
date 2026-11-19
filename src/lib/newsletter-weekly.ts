@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { prisma } from "@/lib/db"
 import { deliverNewsletterIssue, type NewsletterIssueResult } from "@/lib/newsletter-mail"
 import {
@@ -59,16 +60,20 @@ export async function loadConfirmedNewsletterEmails(): Promise<string[]> {
   return rows.map((row) => row.email)
 }
 
-export async function loadNewsletterIssue(date: string, now = new Date()): Promise<NewsletterIssue | null> {
+async function loadNewsletterIssueUncached(date: string, now = new Date()): Promise<NewsletterIssue | null> {
   if (!isIssueDate(date, now)) return null
   const rows = await loadNewsletterRestaurants()
   return buildNewsletterIssue(rows, date)
 }
 
-export async function loadNewsletterArchive(now = new Date()): Promise<NewsletterArchiveEntry[]> {
+async function loadNewsletterArchiveUncached(now = new Date()): Promise<NewsletterArchiveEntry[]> {
   const rows = await loadNewsletterRestaurants()
   return summarizeNewsletterArchive(rows, now)
 }
+
+/** Metadata and the page render share one load per request. */
+export const loadNewsletterIssue = cache(loadNewsletterIssueUncached)
+export const loadNewsletterArchive = cache(loadNewsletterArchiveUncached)
 
 /**
  * Build this Thursday's issue and send it to confirmed subscribers.
