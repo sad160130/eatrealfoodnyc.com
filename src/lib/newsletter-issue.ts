@@ -152,6 +152,48 @@ export function isIssueDate(date: string, now = new Date()): boolean {
   return thursdayOnOrBefore(date) === date
 }
 
+/**
+ * Thursday issues treated as recent, ending on currentIssueDate.
+ * That is the current Thursday plus the eleven before it. The Thursday
+ * twelve weeks earlier is outside the window.
+ */
+export const NEWSLETTER_RECENT_WEEKS = 12
+
+/** Published Grade A listings required before a recent issue is indexable. */
+export const NEWSLETTER_INDEX_MIN_GRADE_A = 3
+
+/** Oldest Thursday in the recent window. Issue dates are seven days apart. */
+export function recentNewsletterIssueStart(now = new Date()): string {
+  return addIsoDays(currentIssueDate(now), -(NEWSLETTER_RECENT_WEEKS - 1) * 7)
+}
+
+/**
+ * Index an issue only when it falls in the last 12 weeks relative to
+ * currentIssueDate and it has at least 3 Grade A listings. Every other
+ * valid Thursday stays reachable and is omitted from the sitemap.
+ */
+export function isNewsletterIssueIndexable(issueDate: string, gradeACount: number, now = new Date()): boolean {
+  if (!isIssueDate(issueDate, now)) return false
+  if (issueDate < recentNewsletterIssueStart(now)) return false
+  return Number.isInteger(gradeACount) && gradeACount >= NEWSLETTER_INDEX_MIN_GRADE_A
+}
+
+/** Split archive rows into the recent 12 weeks and everything older. Order is preserved. */
+export function partitionNewsletterArchive<T extends { date: string }>(
+  entries: T[],
+  now = new Date(),
+): { recent: T[]; older: T[] } {
+  const start = recentNewsletterIssueStart(now)
+  const current = currentIssueDate(now)
+  const recent: T[] = []
+  const older: T[] = []
+  for (const entry of entries) {
+    if (entry.date >= start && entry.date <= current) recent.push(entry)
+    else older.push(entry)
+  }
+  return { recent, older }
+}
+
 export function formatIssueLabel(iso: string): string {
   const [year, month, day] = iso.split("-").map(Number)
   return new Intl.DateTimeFormat("en-US", {
@@ -188,7 +230,7 @@ export function issuePageDescription(issueDate: string): string {
 }
 
 export function archivePageDescription(): string {
-  return "Past issues of Grade A Eats This Week. Each issue lists published NYC restaurants with a new NYC DOHMH Grade A inspection date."
+  return "Weekly Grade A roundups, rebuilt from published listings and the NYC DOHMH inspection date on each one. The email edition started in November 2026."
 }
 
 function escapeHtml(value: string): string {

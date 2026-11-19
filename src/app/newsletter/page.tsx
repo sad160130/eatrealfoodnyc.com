@@ -31,11 +31,11 @@ export default function NewsletterPage() {
             <li>A Sponsored slot. Until a sponsor takes it, the slot is a house ad. The block is labeled Sponsored.</li>
           </ul>
           <p>
-            Read a past edition in the{" "}
+            Weekly Grade A roundups are listed in the{" "}
             <Link href="/newsletter/issues" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
               Grade A Eats This Week archive
             </Link>
-            .
+            . The email edition started in November 2026.
           </p>
           <p>
             Enter your email and tick the consent box. We store the address and the page you signed up from, then send a confirmation link from {GENERAL_CONTACT_EMAIL}. The link expires after 7 days. The weekly email starts after you confirm. Every email has an unsubscribe link, and you can leave the list anytime.

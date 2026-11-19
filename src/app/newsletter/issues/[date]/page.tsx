@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/page-meta"
 import { fitTitle } from "@/lib/seo-titles"
 import {
   formatIssueLabel,
-  isIssueDate,
+  isNewsletterIssueIndexable,
   issuePageDescription,
   issuePageTitle,
   newsletterWebPageSchema,
@@ -23,7 +23,8 @@ export async function generateMetadata({
   params: Promise<{ date: string }>
 }): Promise<Metadata> {
   const { date } = await params
-  if (!isIssueDate(date)) {
+  const issue = await loadNewsletterIssue(date)
+  if (!issue) {
     return {
       title: { absolute: fitTitle(["Issue not found"], { allowBrand: true }) },
       robots: { index: false, follow: false },
@@ -33,6 +34,7 @@ export async function generateMetadata({
     path: `/newsletter/issues/${date}`,
     title: issuePageTitle(date),
     description: issuePageDescription(date),
+    index: isNewsletterIssueIndexable(date, issue.gradeA.length),
   })
 }
 

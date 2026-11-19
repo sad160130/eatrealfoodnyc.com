@@ -16,7 +16,12 @@ import {
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import bestRatedReport from "@/data/best-rated-restaurants"
-import { archivedIssueDates } from "@/lib/newsletter-issue"
+import {
+  NEWSLETTER_INDEX_MIN_GRADE_A,
+  archivedIssueDates,
+  buildNewsletterIssue,
+  isNewsletterIssueIndexable,
+} from "@/lib/newsletter-issue"
 
 const DIET_TYPES = Object.keys(DIET_CONFIG)
 const BOROUGHS = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"] as const
@@ -39,8 +44,8 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/map": "2026-04-01",
   "/nyc/compare": "2026-04-01",
   "/guides": "2026-02-15",
-  "/newsletter": "2026-11-18",
-  "/newsletter/issues": "2026-11-18",
+  "/newsletter": "2026-11-19",
+  "/newsletter/issues": "2026-11-19",
   "/data": "2026-11-15",
   "/catering": "2026-11-15",
   "/claim": "2026-11-15",
@@ -246,14 +251,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ),
   ]
 
-  const gradeAInspectionDates = await prisma.restaurant.findMany({
+  const gradeARows = await prisma.restaurant.findMany({
     where: { is_published: true, inspection_grade: "A", inspection_date: { not: null } },
-    select: { inspection_date: true },
-    distinct: ["inspection_date"],
+    select: {
+      name: true,
+      slug: true,
+      borough: true,
+      neighborhood: true,
+      inspection_grade: true,
+      inspection_date: true,
+      is_published: true,
+    },
   })
-  const newsletterIssuePages = archivedIssueDates(gradeAInspectionDates.map((row) => row.inspection_date)).map((date) =>
-    entry(siteUrl, `/newsletter/issues/${date}`, 0.6, "weekly", asDate(date))
-  )
+  const issueNow = new Date()
+  const newsletterIssuePages = archivedIssueDates(
+    gradeARows.map((row) => row.inspection_date),
+    issueNow,
+  ).flatMap((date) => {
+    // The minimum count only opens the 12-week gate. Weeks outside that
+    // window are dropped before the listing scan. The rebuilt count is
+    // what decides whether a recent week is indexable.
+    if (!isNewsletterIssueIndexable(date, NEWSLETTER_INDEX_MIN_GRADE_A, issueNow)) return []
+    const gradeACount = buildNewsletterIssue(gradeARows, date).gradeA.length
+    if (!isNewsletterIssueIndexable(date, gradeACount, issueNow)) return []
+    return [entry(siteUrl, `/newsletter/issues/${date}`, 0.6, "weekly", asDate(date))]
+  })
 
   const neighborhoodDietPages = (await listNeighborhoodDietCombos()).map((combo) =>
     entry(

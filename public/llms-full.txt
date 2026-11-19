@@ -1,7 +1,7 @@
 # Eat Real Food NYC — extended agent index
 # https://www.eatrealfoodnyc.com/llms-full.txt
 # Companion to https://www.eatrealfoodnyc.com/llms.txt
-# Last updated: 2026-11-15
+# Last updated: 2026-11-19
 
 This file lists the public, indexable documents. It does not list individual
 restaurant URLs. Those live in the sitemap, which also carries each URL's
@@ -72,6 +72,23 @@ https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
 
 https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-grade-report
 https://www.eatrealfoodnyc.com/data/best-rated-restaurants
+
+## Newsletter
+
+https://www.eatrealfoodnyc.com/newsletter
+https://www.eatrealfoodnyc.com/newsletter/issues
+
+An issue URL is /newsletter/issues/YYYY-MM-DD for a Thursday on or before
+today. The sitemap includes that URL when the issue is one of the last 12
+Thursday issues and the week has at least 3 published Grade A listings.
+Other issue URLs stay reachable and are omitted from the sitemap. The email
+edition started in November 2026.
+
+## NYC Restaurant Compliance Weekly
+
+https://www.eatrealfoodnyc.com/data
+
+For vendors. $79/month or $790/year.
 
 ## Restaurant listings
 
