@@ -1,7 +1,7 @@
 # Eat Real Food NYC
 # https://www.eatrealfoodnyc.com
 # AI Agent Context File — llms.txt
-# Last updated: 2026-11-19
+# Last updated: 2026-11-20
 
 ## What this site is
 
@@ -51,6 +51,12 @@ Neighbourhood comparison: https://www.eatrealfoodnyc.com/nyc/compare
 Map: https://www.eatrealfoodnyc.com/map
 Guides index: https://www.eatrealfoodnyc.com/guides
 NYC Health Grades Explained: https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+Holiday party catering: https://www.eatrealfoodnyc.com/catering/holiday-party-catering-nyc
+  Office holiday catering and Thanksgiving week requests in NYC.
+  The directory does not record a catering menu. The page lists published
+  Grade A restaurants for group orders. The request form is free for the
+  person sending it. Leads are saved on catering_leads.
+Catering request form: https://www.eatrealfoodnyc.com/catering
 Grade A Eats This Week: https://www.eatrealfoodnyc.com/newsletter
   Archive: https://www.eatrealfoodnyc.com/newsletter/issues
   Each Thursday issue lists published restaurants whose NYC DOHMH grade is A

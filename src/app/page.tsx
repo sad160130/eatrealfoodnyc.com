@@ -15,6 +15,7 @@ import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { fitDescription, homeTitle } from "@/lib/seo-titles"
 import { skipImageOptimizer } from "@/lib/photo-src"
+import HolidayCateringBanner from "@/components/holiday-catering-banner"
 
 export async function generateMetadata(): Promise<Metadata> {
   const [counts, snapshot] = await Promise.all([
@@ -216,6 +217,9 @@ export default async function HomePage() {
               Request catering
             </Link>
           </p>
+          <div className="mt-4">
+            <HolidayCateringBanner />
+          </div>
 
           {/* Quick filter callouts — initial-letter cards. The "A." card is a mini
               placard echoing the per-restaurant grade signature on every card below. */}

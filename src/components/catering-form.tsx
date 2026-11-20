@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { track } from "@vercel/analytics"
 import { submitCateringLead } from "@/app/actions/catering"
+import { withCateringSource } from "@/lib/catering-source"
 
 const DIETS = [
   ["vegan", "Vegan"],
@@ -17,13 +18,21 @@ const DIETS = [
 export default function CateringForm({
   restaurantSlug = "",
   restaurantName = "",
+  source = "",
+  sourcePath,
+  labelledBy,
 }: {
   restaurantSlug?: string
   restaurantName?: string
+  /** Short token stored on the lead and sent with catering_lead_submit. */
+  source?: string
+  sourcePath?: string
+  labelledBy?: string
 }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
   const [error, setError] = useState("")
-  const sourcePath = restaurantSlug ? `/catering?restaurant=${restaurantSlug}` : "/catering"
+  const basePath = sourcePath ?? (restaurantSlug ? `/catering?restaurant=${restaurantSlug}` : "/catering")
+  const recordedPath = source ? withCateringSource(basePath, source) : basePath
 
   async function onSubmit(formData: FormData) {
     setStatus("submitting")
@@ -35,7 +44,8 @@ export default function CateringForm({
       return
     }
     track("catering_lead_submit", {
-      source_path: sourcePath,
+      ...(source ? { source } : {}),
+      source_path: recordedPath,
       restaurant_slug: restaurantSlug || "",
     })
     setStatus("success")
@@ -50,8 +60,9 @@ export default function CateringForm({
   }
 
   return (
-    <form action={onSubmit} className="grid gap-4">
-      <input type="hidden" name="source_path" value={sourcePath} />
+    <form action={onSubmit} className="grid gap-4" aria-labelledby={labelledBy}>
+      <input type="hidden" name="source_path" value={recordedPath} />
+      <input type="hidden" name="source" value={source} />
       <input type="hidden" name="restaurant_slug" value={restaurantSlug} />
       {restaurantName ? (
         <p className="text-sm" style={{ color: "var(--color-muted)" }}>
