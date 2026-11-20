@@ -16,6 +16,7 @@ import {
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import bestRatedReport from "@/data/best-rated-restaurants"
+import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import {
   NEWSLETTER_INDEX_MIN_GRADE_A,
   archivedIssueDates,
@@ -287,8 +288,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   )
 
+  const holidayCateringPage = entry(
+    siteUrl,
+    HOLIDAY_CATERING_PATH,
+    0.8,
+    "weekly",
+    asDate("2026-11-20")
+  )
+
   return [
     ...staticPages,
+    holidayCateringPage,
     ...guidePages,
     ...dataPages,
     ...dietPages,

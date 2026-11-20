@@ -3,6 +3,7 @@
 import { headers } from "next/headers"
 import { prisma } from "@/lib/db"
 import { allowNewsletterSignup } from "@/lib/newsletter-rate-limit"
+import { isCateringSource, withCateringSource } from "@/lib/catering-source"
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const DIETS = ["vegan", "vegetarian", "gluten-free", "kosher", "halal", "nut-free"] as const
@@ -24,6 +25,7 @@ export async function submitCateringLead(formData: FormData): Promise<CateringRe
   const notes = text(formData, "notes", 2000)
   const budget = text(formData, "budget", 20)
   const sourcePath = text(formData, "source_path", 200)
+  const source = text(formData, "source", 40)
   const restaurantSlug = text(formData, "restaurant_slug", 200)
   const consent = formData.get("consent") === "yes"
   const headcount = Number(formData.get("headcount"))
@@ -47,7 +49,14 @@ export async function submitCateringLead(formData: FormData): Promise<CateringRe
   if (!BUDGETS.includes(budget as (typeof BUDGETS)[number])) {
     return { ok: false, error: "Choose a budget, or leave it blank." }
   }
-  if (!sourcePath.startsWith("/") || sourcePath.includes("://")) {
+  if (!sourcePath.startsWith("/") || sourcePath.startsWith("//") || sourcePath.includes("://")) {
+    return { ok: false, error: "That request could not be saved." }
+  }
+  if (source && !isCateringSource(source)) {
+    return { ok: false, error: "That request could not be saved." }
+  }
+  const recordedPath = source ? withCateringSource(sourcePath, source) : sourcePath
+  if (recordedPath.length > 200 || recordedPath.length === 0) {
     return { ok: false, error: "That request could not be saved." }
   }
 
@@ -81,7 +90,7 @@ export async function submitCateringLead(formData: FormData): Promise<CateringRe
         budget,
         notes,
         restaurant_slug: storedSlug,
-        source_path: sourcePath,
+        source_path: recordedPath,
         consent: true,
         status: "new",
       },

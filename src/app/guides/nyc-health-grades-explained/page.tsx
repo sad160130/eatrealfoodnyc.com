@@ -140,6 +140,13 @@ export default async function NYCHealthGradesGuide() {
               <p className="leading-relaxed text-gray-700">
                 A Grade A is a score of fewer than 14 points, which is 0 to 13, on the initial inspection or the reinspection in that cycle. The restaurant receives an A card and posts it immediately.
               </p>
+              <p className="mt-4 leading-relaxed text-gray-700">
+                A Grade A is an inspection letter, not a catering menu. For an office party or Thanksgiving week,{" "}
+                <Link href="/catering/holiday-party-catering-nyc" className="font-semibold text-jade hover:text-forest">
+                  holiday party catering in NYC from Grade A restaurants
+                </Link>{" "}
+                lists published Grade A restaurants for group orders. The request is free, and the page does not quote restaurant prices.
+              </p>
             </div>
             <div id="what-a-b-rating-means" className="scroll-mt-24">
               <h3 className="mb-2 text-xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -656,6 +663,7 @@ export default async function NYCHealthGradesGuide() {
             {
               title: "Related pages",
               links: [
+                { href: "/catering/holiday-party-catering-nyc", label: "Holiday party catering in NYC from Grade A restaurants" },
                 { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
                 { href: "/data/nyc-restaurant-health-grade-report", label: "Fall 2026 NYC inspection report" },
                 { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },

@@ -1,7 +1,7 @@
 # Eat Real Food NYC — extended agent index
 # https://www.eatrealfoodnyc.com/llms-full.txt
 # Companion to https://www.eatrealfoodnyc.com/llms.txt
-# Last updated: 2026-11-19
+# Last updated: 2026-11-20
 
 This file lists the public, indexable documents. It does not list individual
 restaurant URLs. Those live in the sitemap, which also carries each URL's
@@ -89,6 +89,16 @@ edition started in November 2026.
 https://www.eatrealfoodnyc.com/data
 
 For vendors. $79/month or $790/year.
+
+## Catering
+
+https://www.eatrealfoodnyc.com/catering
+https://www.eatrealfoodnyc.com/catering/holiday-party-catering-nyc
+
+The holiday page is for office holiday catering and Thanksgiving week
+requests. It lists published Grade A restaurants for group orders. The
+directory does not record a catering menu. The request form is free for
+the person sending it.
 
 ## Restaurant listings
 
