@@ -1,3 +1,5 @@
+import { parseInspectionDate } from "./inspection-dates"
+
 /**
  * NYC DOHMH dataset 43nn-pn8j stores every inspection, not one current grade.
  * Our `inspection_grade` column is a copy of whichever row was joined when the
@@ -48,6 +50,42 @@ export interface GradeChange {
   inspectionDate: string
   camis: string
   matchedBy: "address" | "name"
+}
+
+export interface InspectionTarget extends RestaurantGradeTarget {
+  inspection_grade: string | null
+  inspection_score: number | null
+  inspection_date: string | null
+}
+
+/** Address-matched write. Name-only matches are never included. */
+export interface InspectionWrite {
+  id: number
+  fromGrade: string | null
+  toGrade: string | null
+  fromScore: number | null
+  toScore: number | null
+  fromDate: string | null
+  toDate: string
+  inspectionIso: string
+  camis: string
+  matchedBy: "address"
+}
+
+export interface InspectionPlan {
+  writes: InspectionWrite[]
+  matched: number
+  unmatched: number
+  skippedNameOnly: number
+  skippedOlder: number
+  unchanged: number
+  nameOnlySample: Array<{
+    id: number
+    name: string
+    fromGrade: string | null
+    toGrade: string | null
+    camis: string
+  }>
 }
 
 const BOROUGHS: Record<string, string> = {
@@ -155,10 +193,17 @@ export function toStoredDate(isoDate: string): string {
   return `${Number(month)}/${Number(day)}/${year}`
 }
 
-export function matchLatestGrades(
-  restaurants: Array<RestaurantGradeTarget & { inspection_grade: string | null }>,
-  snapshots: GradeSnapshot[]
-): { changes: GradeChange[]; matched: number; unmatched: number } {
+function storedScore(score: number | null): number | null {
+  if (score == null || !Number.isFinite(score)) return null
+  return Math.trunc(score)
+}
+
+interface GradeIndexes {
+  byAddress: Map<string, GradeSnapshot[]>
+  byName: Map<string, GradeSnapshot[]>
+}
+
+function indexGradeSnapshots(snapshots: GradeSnapshot[]): GradeIndexes {
   const byAddress = new Map<string, GradeSnapshot[]>()
   const byName = new Map<string, GradeSnapshot[]>()
   for (const snapshot of snapshots) {
@@ -175,52 +220,147 @@ export function matchLatestGrades(
       byName.set(key, list)
     }
   }
+  return { byAddress, byName }
+}
 
+function chooseSnapshot(
+  restaurant: RestaurantGradeTarget,
+  indexes: GradeIndexes
+): { snapshot: GradeSnapshot; matchedBy: "address" | "name" } | null {
+  const addressKey = addressKeyFromListing(restaurant.address)
+  const borough = normalizeBorough(restaurant.borough)
+  const addressHits = (addressKey ? indexes.byAddress.get(addressKey) ?? [] : []).filter((snapshot) => {
+    if (!snapshot.borough || !borough) return true
+    return snapshot.borough === borough
+  })
+  const nameHits = borough
+    ? indexes.byName.get(`${normalizePlaceName(restaurant.name)}|${borough}`) ?? []
+    : []
+
+  if (addressHits.length === 1) return { snapshot: addressHits[0], matchedBy: "address" }
+  if (nameHits.length === 1) return { snapshot: nameHits[0], matchedBy: "name" }
+  if (addressHits.length > 1 && nameHits.length === 1) return { snapshot: nameHits[0], matchedBy: "name" }
+  return null
+}
+
+export function matchLatestGrades(
+  restaurants: Array<RestaurantGradeTarget & { inspection_grade: string | null }>,
+  snapshots: GradeSnapshot[]
+): { changes: GradeChange[]; matched: number; unmatched: number } {
+  const indexes = indexGradeSnapshots(snapshots)
   const changes: GradeChange[] = []
   let matched = 0
   let unmatched = 0
 
   for (const restaurant of restaurants) {
-    const addressKey = addressKeyFromListing(restaurant.address)
-    const borough = normalizeBorough(restaurant.borough)
-    const addressHits = (addressKey ? byAddress.get(addressKey) ?? [] : []).filter((snapshot) => {
-      if (!snapshot.borough || !borough) return true
-      return snapshot.borough === borough
-    })
-    const nameHits = borough
-      ? byName.get(`${normalizePlaceName(restaurant.name)}|${borough}`) ?? []
-      : []
-
-    let chosen: GradeSnapshot | undefined
-    let matchedBy: "address" | "name" | undefined
-    if (addressHits.length === 1) {
-      chosen = addressHits[0]
-      matchedBy = "address"
-    } else if (nameHits.length === 1) {
-      chosen = nameHits[0]
-      matchedBy = "name"
-    } else if (addressHits.length > 1 && nameHits.length === 1) {
-      chosen = nameHits[0]
-      matchedBy = "name"
-    }
-
-    if (!chosen || !matchedBy) {
+    const chosen = chooseSnapshot(restaurant, indexes)
+    if (!chosen) {
       unmatched += 1
       continue
     }
     matched += 1
-    const toGrade = toStoredGrade(chosen.grade)
+    const toGrade = toStoredGrade(chosen.snapshot.grade)
     if ((restaurant.inspection_grade ?? null) === toGrade) continue
     changes.push({
       id: restaurant.id,
       fromGrade: restaurant.inspection_grade,
       toGrade,
-      score: chosen.score,
-      inspectionDate: toStoredDate(chosen.inspectionDate),
-      camis: chosen.camis,
-      matchedBy,
+      score: chosen.snapshot.score,
+      inspectionDate: toStoredDate(chosen.snapshot.inspectionDate),
+      camis: chosen.snapshot.camis,
+      matchedBy: chosen.matchedBy,
     })
   }
 
   return { changes, matched, unmatched }
+}
+
+function canonicalStoredDate(isoDate: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return null
+  const parsed = parseInspectionDate(isoDate)
+  if (!parsed || parsed.toISOString().slice(0, 10) !== isoDate) return null
+  return toStoredDate(isoDate)
+}
+
+/**
+ * Rows to write onto existing restaurants.
+ *
+ * Address is the only write key. A fetched inspection older than the stored
+ * calendar day is skipped unless `replaceOlder` is set (the manual full
+ * lookback trusts the fetched latest). Same values write nothing, so a second
+ * run is a no-op. Dates are compared as calendar days, not as M/D/YYYY text.
+ */
+export function planInspectionUpdates(
+  restaurants: InspectionTarget[],
+  snapshots: GradeSnapshot[],
+  options?: { replaceOlder?: boolean }
+): InspectionPlan {
+  const indexes = indexGradeSnapshots(snapshots)
+  const replaceOlder = options?.replaceOlder === true
+  const writes: InspectionWrite[] = []
+  const nameOnlySample: InspectionPlan["nameOnlySample"] = []
+  let matched = 0
+  let unmatched = 0
+  let skippedNameOnly = 0
+  let skippedOlder = 0
+  let unchanged = 0
+
+  for (const restaurant of restaurants) {
+    const chosen = chooseSnapshot(restaurant, indexes)
+    if (!chosen) {
+      unmatched += 1
+      continue
+    }
+    matched += 1
+    const toGrade = toStoredGrade(chosen.snapshot.grade)
+    if (chosen.matchedBy === "name") {
+      skippedNameOnly += 1
+      if (nameOnlySample.length < 10) {
+        nameOnlySample.push({
+          id: restaurant.id,
+          name: restaurant.name,
+          fromGrade: restaurant.inspection_grade,
+          toGrade,
+          camis: chosen.snapshot.camis,
+        })
+      }
+      continue
+    }
+
+    const inspectionIso = chosen.snapshot.inspectionDate.slice(0, 10)
+    const toDate = canonicalStoredDate(inspectionIso)
+    const incoming = parseInspectionDate(inspectionIso)
+    if (!toDate || !incoming) {
+      unchanged += 1
+      continue
+    }
+    const stored = parseInspectionDate(restaurant.inspection_date)
+    if (!replaceOlder && stored && incoming.getTime() < stored.getTime()) {
+      skippedOlder += 1
+      continue
+    }
+
+    const toScore = storedScore(chosen.snapshot.score)
+    const fromScore = storedScore(restaurant.inspection_score)
+    const fromGrade = restaurant.inspection_grade ?? null
+    const fromDate = restaurant.inspection_date ?? null
+    if (fromGrade === toGrade && fromScore === toScore && fromDate === toDate) {
+      unchanged += 1
+      continue
+    }
+    writes.push({
+      id: restaurant.id,
+      fromGrade,
+      toGrade,
+      fromScore,
+      toScore,
+      fromDate,
+      toDate,
+      inspectionIso,
+      camis: chosen.snapshot.camis,
+      matchedBy: "address",
+    })
+  }
+
+  return { writes, matched, unmatched, skippedNameOnly, skippedOlder, unchanged, nameOnlySample }
 }

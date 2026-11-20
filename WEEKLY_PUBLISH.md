@@ -52,7 +52,11 @@ Unpublished restaurant URLs call `notFound()` (HTTP 404). The sitemap queries `i
 
 ## 5. Refresh inspection grades
 
-Inspection dates in the database are `M/D/YYYY` strings. The newest parsed date is what hub pages call "Newest inspection date on file." Refreshing that data is a separate write:
+Inspection dates in the database are `M/D/YYYY` strings. Ordering that column is not chronological (`9/30/2026` sorts ahead of `11/10/2026`). The newest parsed date is what hub pages call "Newest inspection date on file."
+
+Production runs `GET /api/cron/refresh-dohmh` every day at 12:00 UTC (`0 12 * * *`), before the Thursday newsletter at 14:00 UTC. That expression runs once a day, which is the Hobby cron limit and is also valid on Pro. The route reads NYC Open Data dataset 43nn-pn8j for rows whose `inspection_date` is in the last 14 days. `record_date` is part of the same filter, and `inspection_date` is floored at that day: the city restamps `record_date` on historical rows, so an unbounded `record_date` check would download the whole graded file. It then updates grade, score, and inspection date on address-matched restaurants already in the table. It does not insert restaurants. A second run with the same city data writes nothing. `?dry=1` returns the plan and does not write. The route requires `Authorization: Bearer ${CRON_SECRET}`. `DOHMH_APP_TOKEN` is optional. The cron will not replace a newer stored inspection with an older row from its 14-day window.
+
+The manual script below is the full lookback. It trusts the fetched latest grade even when that calendar day is older than the stored date:
 
 ```bash
 npx tsx src/scripts/refresh-dohmh-inspections.ts
