@@ -5,6 +5,10 @@
       "schedule": "0 13 * * 1"
     },
     {
+      "path": "/api/cron/refresh-dohmh",
+      "schedule": "0 12 * * *"
+    },
+    {
       "path": "/api/cron/newsletter-weekly",
       "schedule": "0 14 * * 4"
     }

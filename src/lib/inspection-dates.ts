@@ -1,4 +1,16 @@
-/** NYC DOHMH dates in this database are stored as M/D/YYYY strings. */
+/**
+ * NYC DOHMH dates in this database are stored as M/D/YYYY text.
+ * "9/30/2026" sorts after "11/10/2026" as a string, so newest-date and
+ * "last 7 days" logic must parse the calendar day. Impossible days
+ * (February 31) are rejected instead of rolling into the next month.
+ */
+function utcCalendarDay(year: number, month: number, day: number): Date | null {
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null
+  return date
+}
+
 export function parseInspectionDate(value: string | null | undefined): Date | null {
   if (!value) return null
   const trimmed = value.trim()
@@ -7,12 +19,12 @@ export function parseInspectionDate(value: string | null | undefined): Date | nu
     const month = Number(mdy[1])
     const day = Number(mdy[2])
     const year = Number(mdy[3])
-    if (month < 1 || month > 12 || day < 1 || day > 31 || year < 2000) return null
-    return new Date(Date.UTC(year, month - 1, day))
+    if (year < 2000) return null
+    return utcCalendarDay(year, month, day)
   }
   const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})/)
   if (!iso) return null
-  return new Date(Date.UTC(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3])))
+  return utcCalendarDay(Number(iso[1]), Number(iso[2]), Number(iso[3]))
 }
 
 export function formatMonthYear(date: Date): string {

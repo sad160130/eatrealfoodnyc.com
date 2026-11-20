@@ -45,6 +45,9 @@ export async function countGradeA(where: { borough?: string; neighborhood?: stri
 }
 
 export async function latestGradeAMonth(where: { borough?: string; neighborhood?: string }) {
+  // inspection_date is M/D/YYYY text. ORDER BY that column is not
+  // chronological ("9/30/2026" sorts ahead of "11/18/2026"), and taking the
+  // first page of that sort can hide the real newest day.
   const dated = await prisma.restaurant.findMany({
     where: {
       ...GRADE_A_WHERE,
@@ -52,9 +55,8 @@ export async function latestGradeAMonth(where: { borough?: string; neighborhood?
       ...(where.neighborhood ? { neighborhood: where.neighborhood } : {}),
       inspection_date: { not: null },
     },
+    distinct: ["inspection_date"],
     select: { inspection_date: true },
-    orderBy: { inspection_date: "desc" },
-    take: 40,
   })
   const latest = latestInspectionDate(dated.map((row) => row.inspection_date))
   return latest ? formatMonthYear(latest) : null
