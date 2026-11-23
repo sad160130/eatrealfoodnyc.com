@@ -128,8 +128,16 @@ export function formatSampleLine(row: SampleLeadRow): string {
   return `${SAMPLE_CATEGORY_LABEL[row.category]}: ${row.name} — ${row.place} — ${row.grade} — score ${row.score}`
 }
 
-export function dohmhSourceLine(): string {
-  return `Source: ${DOHMH_DATASET.source}. Dataset: ${DOHMH_DATASET.name} (${DOHMH_DATASET.id}). Version: NYC Open Data rows updated ${DOHMH_DATASET.version}.`
+/**
+ * Source citation for the compliance extract.
+ * Pass the newest parsed inspection date from the database.
+ * Omitting it leaves the date off rather than printing a stored timestamp.
+ */
+export function dohmhSourceLine(newestInspectionLabel?: string | null): string {
+  const base = `Source: ${DOHMH_DATASET.source}. Dataset: ${DOHMH_DATASET.name} (${DOHMH_DATASET.id}).`
+  const label = newestInspectionLabel?.trim()
+  if (!label) return base
+  return `${base} Newest inspection date on file: ${label}.`
 }
 
 function categoryFor(row: SampleSourceRow): SampleCategory | null {
@@ -244,7 +252,11 @@ function planLine(label: string, price: number, href: string): string {
   return `${label}, $${price}: ${url}`
 }
 
-export function sampleEmailText(rows: readonly SampleLeadRow[], links: SampleEmailLinks = defaultSampleEmailLinks()): string {
+export function sampleEmailText(
+  rows: readonly SampleLeadRow[],
+  links: SampleEmailLinks = defaultSampleEmailLinks(),
+  newestInspectionLabel?: string | null,
+): string {
   const countLine =
     rows.length === 0
       ? "The current extract has no published rows in the grade-pending, high-score, or not-yet-inspected lists."
@@ -260,7 +272,7 @@ export function sampleEmailText(rows: readonly SampleLeadRow[], links: SampleEma
     "",
     ...lines,
     ...(lines.length > 0 ? [""] : []),
-    dohmhSourceLine(),
+    dohmhSourceLine(newestInspectionLabel),
     DOHMH_DATASET.url,
     "",
     "This extract is filtered to published listings in this directory. Street addresses are not included. Z and P are labeled Grade Pending rather than printed as letters. These rows are the current file. They are not a forecast.",

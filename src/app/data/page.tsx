@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
 import { buildPipeTitle } from "@/lib/seo-titles"
-import { dohmhSourceLine, presentSampleFact } from "@/lib/data-sample"
+import { DATA_SAMPLE_LIMIT, dohmhSourceLine, presentSampleFact } from "@/lib/data-sample"
+import { loadNewestInspectionLabel } from "@/lib/data-sample-query"
+import { HIGH_SCORE } from "@/lib/compliance-csv"
+import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
-import DataProductCta from "@/components/data-product-cta"
+import DataProductCta, { DataHeroCta } from "@/components/data-product-cta"
 import DataSampleForm from "@/components/data-sample-form"
 import { DATA_PRODUCT, DOHMH_DATASET } from "@/config/data-product"
 
@@ -33,9 +36,10 @@ export default async function DataProductPage({
 }) {
   const { subscribed } = await searchParams
   const purchaseConfirmed = subscribed === "1"
-  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows] = await Promise.all([
+  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionLabel] =
+    await Promise.all([
     prisma.restaurant.count({ where: { inspection_grade: { in: ["Z", "P"] } } }),
-    prisma.restaurant.count({ where: { inspection_score: { gte: 28 } } }),
+    prisma.restaurant.count({ where: { inspection_score: { gte: HIGH_SCORE } } }),
     prisma.restaurant.count({ where: { NOT: { business_status: "OPERATIONAL" } } }),
     prisma.restaurant.count({
       where: {
@@ -51,7 +55,7 @@ export default async function DataProductPage({
       take: 3,
     }),
     prisma.restaurant.findMany({
-      where: { is_published: true, inspection_score: { gte: 28 } },
+      where: { is_published: true, inspection_score: { gte: HIGH_SCORE } },
       select: { name: true, borough: true, neighborhood: true, inspection_grade: true, inspection_score: true },
       orderBy: { inspection_score: "desc" },
       take: 3,
@@ -65,6 +69,7 @@ export default async function DataProductPage({
       select: { name: true, borough: true, neighborhood: true, inspection_grade: true, inspection_score: true },
       take: 3,
     }),
+    loadNewestInspectionLabel(),
   ])
 
   const rows: SampleRow[] = [
@@ -77,11 +82,11 @@ export default async function DataProductPage({
     <div style={{ backgroundColor: "var(--color-cream)" }}>
       <BreadcrumbJsonLd items={[{ name: "Data", path: "/data" }]} />
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
-        <div className="mx-auto max-w-3xl px-6 pb-10 pt-10">
-          <p className="eyebrow">Monday email</p>
-          <h1 className="display-2 mt-3">{DATA_PRODUCT.name}</h1>
+        <div className="mx-auto max-w-3xl px-6 pb-8 pt-8 sm:pb-10 sm:pt-10">
+          <p className="eyebrow">{DATA_PRODUCT.name}</p>
+          <h1 className="display-2 mt-3">Reach NYC restaurants the week they need help.</h1>
           <p className="dek mt-4">
-            One email each Monday with two CSV files for people who sell to restaurants. ${DATA_PRODUCT.priceMonthlyUsd} a month, or ${DATA_PRODUCT.priceYearlyUsd} a year.
+            Every Monday, get a CSV of restaurants with Grade Pending, high scores, or closed status, plus new openings not yet inspected.
           </p>
           {purchaseConfirmed ? (
             <p
@@ -92,14 +97,45 @@ export default async function DataProductPage({
               Thanks. Your subscription is confirmed.
             </p>
           ) : null}
-          <DataProductCta />
+          <DataHeroCta />
+          <section aria-labelledby="what-you-get" className="mt-8">
+            <h2 id="what-you-get" className="eyebrow">What you get</h2>
+            <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-relaxed sm:text-base">
+              <li>
+                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>Inspection leads CSV: </span>
+                Grade Pending (city codes Z and P), {HIGH_SCORE}+ violation points (the Grade C threshold), or closed status — today {countLabel(pending, "grade-pending row", "grade-pending rows")} and {countLabel(highScore, "high-score row", "high-score rows")}.
+              </li>
+              <li>
+                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>New openings CSV: </span>
+                published listings not yet inspected — today {countLabel(notInspected, "row", "rows")}.
+              </li>
+              <li>
+                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>Fast start: </span>
+                {DATA_SAMPLE_LIMIT} real rows arrive by email right away; paid lists land every Monday; source NYC Open Data {DOHMH_DATASET.id}, refreshed daily.
+              </li>
+            </ul>
+          </section>
         </div>
       </header>
-      <article className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto max-w-3xl px-6 pt-8">
         <div id="free-sample" className="scroll-mt-24">
           <DataSampleForm source="data_page_top" variant="full" idPrefix="data-sample-top" />
         </div>
-        <h2 className="h2-serif mt-12">What is in the email</h2>
+        <p className="mt-8 text-sm leading-relaxed" style={{ color: "var(--color-text)" }}>
+          See {DATA_SAMPLE_LIMIT} real rows free first, no card needed. If you subscribe, cancel anytime by email to{" "}
+          <a
+            href={`mailto:${PARTNER_INQUIRY_EMAIL}`}
+            className="underline underline-offset-4"
+            style={{ color: "var(--color-jade)" }}
+          >
+            {PARTNER_INQUIRY_EMAIL}
+          </a>
+          .
+        </p>
+        <DataProductCta />
+      </div>
+      <article className="mx-auto max-w-3xl px-6 py-12">
+        <h2 className="h2-serif">What is in the email</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <section className="border p-5" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
             <h3 className="font-bold" style={{ fontFamily: "var(--font-display)" }}>Inspection leads</h3>
@@ -149,7 +185,7 @@ export default async function DataProductPage({
 
         <h2 className="h2-serif mt-12">Source</h2>
         <p className="mt-3 text-sm leading-relaxed">
-          {dohmhSourceLine()}{" "}
+          {dohmhSourceLine(newestInspectionLabel)}{" "}
           <a href={DOHMH_DATASET.url} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
             NYC Open Data
           </a>
@@ -158,6 +194,10 @@ export default async function DataProductPage({
       </article>
     </div>
   )
+}
+
+function countLabel(count: number, singular: string, plural: string) {
+  return `${count.toLocaleString("en-US")} ${count === 1 ? singular : plural}`
 }
 
 function toSample(

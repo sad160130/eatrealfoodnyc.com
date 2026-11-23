@@ -15,7 +15,7 @@ import {
   validateDataSampleRequest,
 } from "@/lib/data-sample"
 import { sendDataSampleEmail } from "@/lib/data-sample-mail"
-import { loadDataSampleRows } from "@/lib/data-sample-query"
+import { loadDataSampleRows, loadNewestInspectionLabel } from "@/lib/data-sample-query"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -179,8 +179,9 @@ export async function POST(request: NextRequest) {
   }
 
   let rows
+  let newestInspectionLabel: string | null = null
   try {
-    rows = await loadDataSampleRows()
+    ;[rows, newestInspectionLabel] = await Promise.all([loadDataSampleRows(), loadNewestInspectionLabel()])
   } catch {
     console.error(JSON.stringify({ event: "data_sample_store_failed", reason: "rows" }))
     return respond(request, 500, { ok: false, error: DATA_SAMPLE_MESSAGES.failed }, lead.source)
@@ -197,7 +198,7 @@ export async function POST(request: NextRequest) {
     return respond(request, 500, { ok: false, error: DATA_SAMPLE_MESSAGES.failed }, lead.source)
   }
 
-  const emailed = await sendDataSampleEmail(lead.email, sampleEmailText(rows))
+  const emailed = await sendDataSampleEmail(lead.email, sampleEmailText(rows, undefined, newestInspectionLabel))
   console.info(
     JSON.stringify({
       event: "data_sample_stored",

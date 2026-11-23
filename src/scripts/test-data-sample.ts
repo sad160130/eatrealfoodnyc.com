@@ -20,6 +20,7 @@ import {
   isNotYetInspectedSample,
   maskEmail,
   presentSampleFact,
+  dohmhSourceLine,
   sampleEmailText,
   validateDataSampleRequest,
   type SampleSourceRow,
@@ -164,8 +165,16 @@ assert(text.includes("Here is 1 current row from this week's lead lists."), "the
 assert(text.includes(DOHMH_DATASET.source), "the email cites DOHMH")
 assert(text.includes(DOHMH_DATASET.name), "the email names the dataset")
 assert(text.includes(DOHMH_DATASET.id), "the email includes the dataset id")
-assert(text.includes(DOHMH_DATASET.version), "the email includes the dataset version")
+assert(!text.includes("rows updated"), "the email does not print a stored Open Data timestamp")
+assert(!text.includes("2026-11-13T23:06:43Z"), "the email does not print the stale version date")
 assert(text.includes(DOHMH_DATASET.url), "the email links the NYC Open Data source")
+const datedMail = sampleEmailText(emailRows, undefined, "November 19, 2026")
+assert(
+  datedMail.includes("Newest inspection date on file: November 19, 2026."),
+  "the email prints a live inspection date when one is passed"
+)
+assert(dohmhSourceLine() === `Source: ${DOHMH_DATASET.source}. Dataset: ${DOHMH_DATASET.name} (${DOHMH_DATASET.id}).`, "a missing inspection date is left off the source line")
+assert(dohmhSourceLine("  ") === dohmhSourceLine(), "a blank inspection date is left off the source line")
 assert(text.includes("Street addresses are not included."), "the email says addresses are omitted")
 assert(text.includes(DATA_PRODUCT.stripePaymentLinkMonthly), "the email uses the monthly payment link")
 assert(text.includes(DATA_PRODUCT.stripePaymentLinkYearly), "the email uses the yearly payment link")

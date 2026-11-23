@@ -6,7 +6,8 @@ import { getPublishedDirectoryCounts, getPublishedHubNeighborhoodNames } from "@
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
 import PartnerTierCards, { PartnerInquiryCards } from "@/components/partner-tier-cards"
-import { partnerTierPriceSentence } from "@/config/partner-tiers"
+import { PARTNER_TIERS, partnerTierPriceSentence, type PartnerTier } from "@/config/partner-tiers"
+import { ClaimListingCta } from "@/components/product-ctas"
 import { PartnerCta } from "@/components/tracked-external-link"
 import { PartnerPurchaseNotice, PartnerReferralLine } from "@/components/partner-query-notes"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
@@ -73,31 +74,40 @@ export default async function PartnerWithUsPage() {
     getPublishedDirectoryCounts(),
     getPublishedHubNeighborhoodNames(),
   ])
+  const [featured, spotlight, neighborhoodSponsor] = PARTNER_TIERS
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
       <BreadcrumbJsonLd items={[{ name: "Partner with us", path: "/partner-with-us" }]} />
-      <div className="bg-forest px-6 py-20">
+      <div className="bg-forest px-6 py-8 sm:py-16">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-8 flex items-center gap-2 text-xs uppercase tracking-widest text-white/50">
+          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-widest text-white/50">
             <Link href="/" className="transition-colors hover:text-white">Home</Link>
             <span>/</span>
             <span className="text-white/80">Partner with us</span>
           </div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sage">FOR RESTAURANTS</p>
-          <h1 className="text-5xl font-bold leading-tight text-white" style={{ fontFamily: "Georgia, serif" }}>
-            Partner with<br />
-            <span className="text-sage">Eat Real Food NYC</span>
+          <p className="text-xs font-semibold uppercase tracking-widest text-sage">Partner with Eat Real Food NYC</p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-5xl" style={{ fontFamily: "Georgia, serif" }}>
+            Your Grade A is earned. Make sure diners see it.
           </h1>
-          <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Start with a free listing, a claim, and a Grade A badge.
-            A labeled placement is optional. Grades and default rankings stay unpaid.
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
+            Your listing is free. Claim it, add your free Grade A badge, then upgrade to a labeled placement only if you want more visibility.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/claim" className="rounded-xl bg-sage px-5 py-3 text-sm font-semibold text-white">Claim a listing</Link>
-            <Link href="/healthy-restaurants/grade-a" className="rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white">See Grade A listings</Link>
+          <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <ClaimListingCta
+              source="partner_hero"
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-cream px-5 text-sm font-semibold text-forest focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"
+            >
+              Claim my free listing
+            </ClaimListingCta>
+            <a
+              href="#optional-paid-placement"
+              className="text-sm font-semibold text-white underline underline-offset-4 hover:text-sage focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              See paid placements
+            </a>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <span className="text-sm text-white/70">Diners see</span>
             <PartnerLabel kind="partner" tone="on-dark" />
             <span className="text-sm text-white/50">or</span>
@@ -106,10 +116,27 @@ export default async function PartnerWithUsPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-4xl px-6 py-16">
+      <div className="mx-auto max-w-4xl px-6 py-10 sm:py-16">
         <Suspense fallback={null}>
           <PartnerPurchaseNotice />
         </Suspense>
+        <section aria-labelledby="partner-value" className="mb-16">
+          <h2 id="partner-value" className="mb-4 text-xs font-semibold uppercase tracking-widest text-sage">What you get</h2>
+          <ul className="list-disc space-y-3 pl-5 text-base leading-relaxed text-gray-700">
+            <li>
+              <span className="font-semibold text-forest">Free, always: </span>
+              listing, claim, and Grade A badge; eligible with a current Grade A, or no current grade and no current violations.
+            </li>
+            <li>
+              <span className="font-semibold text-forest">Optional labeled placements: </span>
+              {featured.name} {tierMonthly(featured)}, {spotlight.name} {tierMonthly(spotlight)}, {neighborhoodSponsor.name} {tierMonthly(neighborhoodSponsor)}; payment never changes a grade, score, tag, or ranking.
+            </li>
+            <li>
+              <span className="font-semibold text-forest">Trusted company: </span>
+              {counted(counts.restaurants, "published listing")}, {counted(counts.gradeA, "Grade A listing")}, and {counted(counts.neighborhoods, "neighborhood")}. Analytics started November 2026; we make no traffic guarantees. These counts are published, operational listings, the same set as the public directory, not the full inspection dataset.
+            </li>
+          </ul>
+        </section>
         <section className="mb-16">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">START HERE</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
@@ -146,18 +173,7 @@ export default async function PartnerWithUsPage() {
             <p className="text-base leading-relaxed text-gray-700">
               Eat Real Food NYC helps health-conscious diners find restaurants in New York City using
               official NYC Department of Health and Mental Hygiene inspection grades, conservative dietary
-              tags across 12 categories, and neighborhood-level pages. We currently publish{" "}
-              <span className="font-semibold text-forest">
-                {counts.restaurants.toLocaleString()} {counts.restaurants === 1 ? "restaurant listing" : "restaurant listings"}
-              </span>{" "}
-              across{" "}
-              <span className="font-semibold text-forest">
-                {counts.neighborhoods.toLocaleString()} {counts.neighborhoods === 1 ? "neighborhood" : "neighborhoods"}
-              </span>, in all five boroughs.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-              Those counts are published, operational listings — the same set as the public directory
-              and the sitemap — not the full inspection dataset.
+              tags across 12 categories, and neighborhood-level pages in all five boroughs.
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
               Diners come to us when they need something other platforms are weak at: a current official
@@ -165,11 +181,7 @@ export default async function PartnerWithUsPage() {
               neighborhood view that is not bought and paid for.
             </p>
             <p className="mt-4 text-base leading-relaxed text-gray-700">
-              A listing in the directory is free. A Partner placement is optional. It is clearly labeled,
-              and it never changes a health grade, a Health Score, a dietary tag, or our default rankings.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-gray-700">
-              Site analytics went live in November 2026. We share a current traffic report on request at {PARTNER_INQUIRY_EMAIL}. We do not guarantee traffic, bookings, or rankings.
+              We share a current traffic report on request at {PARTNER_INQUIRY_EMAIL}.
             </p>
           </div>
         </section>
@@ -341,4 +353,13 @@ export default async function PartnerWithUsPage() {
       </div>
     </div>
   )
+}
+
+function counted(count: number, singular: string) {
+  const plural = singular.endsWith("y") ? `${singular.slice(0, -1)}ies` : `${singular}s`
+  return `${count.toLocaleString("en-US")} ${count === 1 ? singular : plural}`
+}
+
+function tierMonthly(tier: PartnerTier) {
+  return `$${tier.priceMonthlyUsd}/mo`
 }

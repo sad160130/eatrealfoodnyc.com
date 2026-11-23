@@ -9,6 +9,24 @@ function trackCta(plan: "monthly" | "yearly" | "waitlist") {
   track("data_cta_click", { plan })
 }
 
+export function DataHeroCta() {
+  return (
+    <a
+      href="#free-sample"
+      onClick={() => {
+        try {
+          track("data_hero_cta_click")
+        } catch {
+          // Analytics must not block the jump to the sample form.
+        }
+      }}
+      className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-md bg-forest px-5 text-sm font-semibold text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jade sm:w-auto"
+    >
+      Email me 10 free rows
+    </a>
+  )
+}
+
 export default function DataProductCta() {
   const monthly = DATA_PRODUCT.stripePaymentLinkMonthly.trim()
   const yearly = DATA_PRODUCT.stripePaymentLinkYearly.trim()

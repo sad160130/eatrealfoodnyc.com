@@ -1,6 +1,7 @@
 import { HIGH_SCORE } from "@/lib/compliance-csv"
 import { prisma } from "@/lib/db"
 import { buildSampleRows, DATA_SAMPLE_LIMIT, type SampleLeadRow, type SampleSourceRow } from "@/lib/data-sample"
+import { formatLongDate, latestInspectionDate } from "@/lib/inspection-dates"
 
 const select = {
   name: true,
@@ -55,4 +56,20 @@ export async function loadDataSampleRows(limit = DATA_SAMPLE_LIMIT): Promise<Sam
   ])
   const rows: SampleSourceRow[] = [...pending, ...high, ...uninspected]
   return buildSampleRows(rows, limit)
+}
+
+/**
+ * Newest inspection_date in the restaurants table.
+ * The column is M/D/YYYY text, so the max is parsed, not string-sorted.
+ */
+export async function loadNewestInspectionLabel(): Promise<string | null> {
+  const dated = await prisma.restaurant.findMany({
+    where: {
+      AND: [{ inspection_date: { not: null } }, { NOT: { inspection_date: "" } }],
+    },
+    distinct: ["inspection_date"],
+    select: { inspection_date: true },
+  })
+  const latest = latestInspectionDate(dated.map((row) => row.inspection_date))
+  return latest ? formatLongDate(latest) : null
 }
