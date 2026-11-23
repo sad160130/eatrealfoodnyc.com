@@ -2,7 +2,10 @@ import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import { attachDatabasePool } from "@vercel/functions"
 import pg from "pg"
-import { withConnectionRetry } from "@/lib/connection-retry"
+import { isTransientConnectionError, withConnectionRetry } from "@/lib/connection-retry"
+import { errorLabel } from "@/lib/db-fallback"
+import { UnsupportedFallbackError } from "@/lib/fallback-engine"
+import { canFallback, fallbackQuery } from "@/lib/rest-snapshot"
 
 /**
  * One client per function instance. `globalThis` is shared even when the
@@ -79,6 +82,21 @@ function warnIfDirectPort(connectionString: string | undefined) {
   }
 }
 
+/**
+ * Preview-only switch for testing the outage path end to end: with
+ * DB_FORCE_FALLBACK=1 on a non-production deployment every Prisma call fails
+ * as EMAXCONN before reaching Postgres. Ignored in production.
+ */
+export function forcedOutage(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.DB_FORCE_FALLBACK === "1" && env.VERCEL_ENV !== "production"
+}
+
+function simulatedOutage(): Error {
+  return Object.assign(new Error("(EMAXCONN) max client connections reached (simulated by DB_FORCE_FALLBACK)"), {
+    name: "DriverAdapterError",
+  })
+}
+
 type AppPrisma = ReturnType<typeof createPrismaClient>
 
 const globalForPrisma = globalThis as unknown as {
@@ -117,8 +135,22 @@ function createPrismaClient() {
   })
   return base.$extends({
     query: {
-      async $allOperations({ args, query }) {
-        return withConnectionRetry(() => query(args))
+      async $allOperations({ model, operation, args, query }) {
+        try {
+          if (forcedOutage()) throw simulatedOutage()
+          return await withConnectionRetry(() => query(args))
+        } catch (error) {
+          if (!isTransientConnectionError(error) || !canFallback(model, operation)) throw error
+          try {
+            const value = await fallbackQuery(model as string, operation, args as Record<string, unknown> | undefined)
+            console.error(`[db-degraded] ${model}.${operation} answered from Supabase REST (${errorLabel(error)})`)
+            return value as never
+          } catch (fallbackError) {
+            const reason = fallbackError instanceof UnsupportedFallbackError ? fallbackError.message : errorLabel(fallbackError)
+            console.error(`[db-degraded] ${model}.${operation} has no fallback (${reason})`)
+            throw error
+          }
+        }
       },
     },
   })
