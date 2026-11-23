@@ -62,7 +62,8 @@ async function loadHubSet(): Promise<Set<string>> {
  * Module-level promise singleton. The build prerenders ~2,001 restaurant pages
  * and 103 hubs; without memoisation each would fire an identical groupBy.
  * Caching the PROMISE (not the resolved value) also collapses concurrent
- * callers during parallel prerendering into one in-flight query.
+ * callers during parallel prerendering into one in-flight query. A rejection
+ * clears the slot so a connection error is not sticky for the process life.
  *
  * Scope is the Node process, so a `next build` using N workers issues N
  * queries total (last build reported 3 workers => 3 queries).
@@ -75,7 +76,15 @@ async function loadHubSet(): Promise<Set<string>> {
 let hubSetPromise: Promise<Set<string>> | null = null
 
 export function getBuiltNeighborhoodHubs(): Promise<Set<string>> {
-  if (!hubSetPromise) hubSetPromise = loadHubSet()
+  if (!hubSetPromise) {
+    hubSetPromise = loadHubSet().then(
+      (value) => value,
+      (error: unknown) => {
+        hubSetPromise = null
+        throw error
+      }
+    )
+  }
   return hubSetPromise
 }
 

@@ -19,6 +19,7 @@ import {
 } from "../lib/dohmh-refresh"
 import { buildNewsletterIssue, type NewsletterSourceRow } from "../lib/newsletter-issue"
 import { handleDohmhRefreshCron } from "../app/api/cron/refresh-dohmh/route"
+import { inspectionRefreshPaths } from "../lib/inspection-revalidate"
 
 function assert(condition: boolean, message: string) {
   if (!condition) throw new Error(message)
@@ -446,6 +447,58 @@ const failed = await handleDohmhRefreshCron(
 const failedBody = await failed.json()
 assert(failed.status === 500 && failedBody.error === "refresh failed", "a failed refresh returns a generic error")
 assert(!JSON.stringify(failedBody).includes("secret-token"), "the error response does not include the failure detail")
+
+assert(inspectionRefreshPaths({ dryRun: true, restaurantsUpdated: 4 }).length === 0, "a dry run does not revalidate pages")
+assert(inspectionRefreshPaths({ dryRun: false, restaurantsUpdated: 0 }).length === 0, "a refresh that writes nothing does not revalidate pages")
+const refreshPaths = inspectionRefreshPaths({ dryRun: false, restaurantsUpdated: 3 })
+assert(refreshPaths.includes("/restaurants/[slug]"), "a grade change marks listing pages stale")
+assert(
+  refreshPaths.includes("/nyc/[borough]/healthy-restaurants") &&
+    refreshPaths.includes("/nyc/[borough]/[neighborhood]/healthy-restaurants"),
+  "a grade change marks borough and neighbourhood hubs stale"
+)
+
+const updatedBody = {
+  dryRun: false,
+  since: "2026-11-06",
+  rowsFetched: 4,
+  restaurantsUpdated: 3,
+  plannedUpdates: 3,
+  newestInspectionDate: "2026-11-18",
+  matched: 3,
+  skippedNameOnly: 0,
+  skippedOlder: 0,
+  unchanged: 1,
+}
+let revalidated = 0
+const updated = await handleDohmhRefreshCron(
+  new Request("https://www.eatrealfoodnyc.com/api/cron/refresh-dohmh", {
+    headers: { authorization: "Bearer cron-secret" },
+  }),
+  async () => updatedBody,
+  (result) => {
+    revalidated = inspectionRefreshPaths(result).length
+  }
+)
+assert(
+  updated.status === 200 && revalidated === refreshPaths.length,
+  "a successful refresh revalidates listing and hub paths"
+)
+
+const revalidateFailed = await handleDohmhRefreshCron(
+  new Request("https://www.eatrealfoodnyc.com/api/cron/refresh-dohmh", {
+    headers: { authorization: "Bearer cron-secret" },
+  }),
+  async () => updatedBody,
+  () => {
+    throw new Error("revalidate exploded")
+  }
+)
+const revalidateBody = await revalidateFailed.json()
+assert(
+  revalidateFailed.status === 200 && revalidateBody.restaurantsUpdated === 3,
+  "a revalidation failure still reports the completed refresh"
+)
 
 console.log("\nDOHMH refresh tests passed")
 }

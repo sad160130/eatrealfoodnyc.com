@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "test": "tsx src/scripts/test-slugs.ts && tsx src/scripts/test-partner-status.ts && tsx src/scripts/test-badge-claim.ts && tsx src/scripts/test-compliance-weekly.ts && tsx src/scripts/test-neighborhood-scorecard.ts && tsx src/scripts/test-jsonld.ts && tsx src/scripts/test-newsletter-token.ts && tsx src/scripts/test-newsletter-issue.ts && tsx src/scripts/test-dohmh-refresh.ts && tsx src/scripts/test-top-picks.ts && tsx src/scripts/test-grade-guide-snapshot.ts && tsx src/scripts/test-data-sample.ts && tsx src/scripts/test-holiday-catering.ts"
+    "test": "tsx src/scripts/test-slugs.ts && tsx src/scripts/test-partner-status.ts && tsx src/scripts/test-badge-claim.ts && tsx src/scripts/test-compliance-weekly.ts && tsx src/scripts/test-neighborhood-scorecard.ts && tsx src/scripts/test-jsonld.ts && tsx src/scripts/test-newsletter-token.ts && tsx src/scripts/test-newsletter-issue.ts && tsx src/scripts/test-dohmh-refresh.ts && tsx src/scripts/test-top-picks.ts && tsx src/scripts/test-grade-guide-snapshot.ts && tsx src/scripts/test-data-sample.ts && tsx src/scripts/test-holiday-catering.ts && tsx src/scripts/test-db-connection.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "@prisma/client": "^7.5.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/functions": "^3.11.3",
     "@vercel/speed-insights": "^2.1.0",
     "dotenv": "^17.3.1",
     "leaflet": "^1.9.4",
