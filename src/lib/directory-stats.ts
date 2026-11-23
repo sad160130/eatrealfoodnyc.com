@@ -1,6 +1,15 @@
 import { cache } from "react"
 import { prisma } from "@/lib/db"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
+import { memoizeSuccess } from "@/lib/success-memo"
+
+/**
+ * Footer, homepage, and listing metadata all read these totals. One minute
+ * collapses a crawl burst onto one query per instance. Failures are not
+ * stored. `unstable_cache` is not used: its numeric `revalidate` is copied
+ * onto the prerender and would pull fully static routes down to that interval.
+ */
+export const DIRECTORY_SHARED_TTL_MS = 60_000
 
 /**
  * Published operational listings — the same filter public listing pages use
@@ -51,14 +60,12 @@ async function queryPublishedDirectoryCounts(): Promise<PublishedDirectoryCounts
 }
 
 /**
- * Per-request dedupe. Homepage, partner, and the footer all call this.
- * `cache()` is request-scoped, so one render shares one count. It is not a
- * dynamic API: routes keep the static or ISR setting they already export.
- * `unstable_cache` is intentionally not used here. Its `revalidate` is copied
- * onto the prerender store, and a layout-level call would pull fully static
- * routes down to that interval.
+ * Request dedupe via `cache()`, plus the process memo above so parallel
+ * renders on one instance share one successful load.
  */
-export const getPublishedDirectoryCounts = cache(queryPublishedDirectoryCounts)
+export const getPublishedDirectoryCounts = cache(() =>
+  memoizeSuccess("published-directory-counts", DIRECTORY_SHARED_TTL_MS, queryPublishedDirectoryCounts)
+)
 
 /**
  * Neighborhoods that have a published hub page (the same minimum as

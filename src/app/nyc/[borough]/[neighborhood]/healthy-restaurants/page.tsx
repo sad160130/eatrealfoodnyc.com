@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -49,7 +50,7 @@ export async function generateStaticParams() {
 
 export const revalidate = 86400
 
-async function getBoroughAndNeighborhood(
+const getBoroughAndNeighborhood = cache(async function getBoroughAndNeighborhood(
   boroughSlug: string,
   neighborhoodSlug: string
 ) {
@@ -68,7 +69,7 @@ async function getBoroughAndNeighborhood(
 
   if (!matchedNeighborhood) return null
   return { boroughName, neighborhoodName: matchedNeighborhood }
-}
+})
 
 export async function generateMetadata({
   params,

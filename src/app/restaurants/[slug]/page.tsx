@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -50,14 +51,19 @@ import { formatMonthYear, parseInspectionDate } from "@/lib/inspection-dates"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
 
 export const revalidate = 86400
+export const dynamicParams = true
 
-export async function generateStaticParams() {
-  const restaurants = await prisma.restaurant.findMany({
-    where: { is_published: true },
-    select: { slug: true },
-  })
-  return restaurants.map((r) => ({ slug: r.slug }))
+/**
+ * On-demand ISR. Prebuilding every published listing at once holds a
+ * connection per page and makes the whole set expire together.
+ */
+export function generateStaticParams(): Array<{ slug: string }> {
+  return []
 }
+
+const getRestaurantBySlug = cache((slug: string) =>
+  prisma.restaurant.findUnique({ where: { slug } })
+)
 
 export async function generateMetadata({
   params,
@@ -65,7 +71,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const restaurant = await prisma.restaurant.findUnique({ where: { slug } })
+  const restaurant = await getRestaurantBySlug(slug)
   if (!restaurant || !restaurant.is_published) {
     return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
   }
@@ -123,7 +129,7 @@ export default async function RestaurantPage({
   // Fetch restaurant + reviews in parallel — reviews query keys on slug
   // so it doesn't depend on the restaurant fetch resolving first.
   const [restaurant, reviewsSummary] = await Promise.all([
-    prisma.restaurant.findUnique({ where: { slug } }),
+    getRestaurantBySlug(slug),
     getReviewsForRestaurant(slug, 15),
   ])
   if (!restaurant || !restaurant.is_published) notFound()

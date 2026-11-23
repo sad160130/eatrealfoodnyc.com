@@ -1,8 +1,9 @@
 import { cache } from "react"
 import { prisma } from "@/lib/db"
 import { DIET_CONFIG } from "@/config/dietary-tags"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { DIRECTORY_SHARED_TTL_MS, getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { formatLongDate, formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { memoizeSuccess } from "@/lib/success-memo"
 
 export interface DirectorySnapshot {
   trackedCount: number
@@ -29,7 +30,7 @@ export interface DirectorySnapshot {
  * `latestInspectionAt`. `lastPublishAt` is the publish clock and is not a
  * data-as-of date.
  */
-export const getDirectorySnapshot = cache(async (): Promise<DirectorySnapshot> => {
+async function queryDirectorySnapshot(): Promise<DirectorySnapshot> {
   const [counts, trackedCount, gradeAAll, lastPublish, inspectionDates] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.count(),
@@ -61,4 +62,8 @@ export const getDirectorySnapshot = cache(async (): Promise<DirectorySnapshot> =
     latestInspectionLabel: latest ? formatLongDate(latest) : null,
     latestInspectionMonth: latest ? formatMonthYear(latest) : null,
   }
-})
+}
+
+export const getDirectorySnapshot = cache(() =>
+  memoizeSuccess("directory-snapshot", DIRECTORY_SHARED_TTL_MS, queryDirectorySnapshot)
+)

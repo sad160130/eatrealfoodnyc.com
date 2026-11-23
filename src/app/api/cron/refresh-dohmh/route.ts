@@ -1,6 +1,8 @@
+import { revalidatePath } from "next/cache"
 import { cronAuthorized } from "@/lib/compliance-weekly"
 import { prisma } from "@/lib/db"
 import { applyInspectionWrites } from "@/lib/dohmh-refresh-db"
+import { inspectionRefreshPaths } from "@/lib/inspection-revalidate"
 import {
   DOHMH_CRON_MAX_ROWS,
   DOHMH_CRON_PAGE_SIZE,
@@ -44,9 +46,16 @@ async function defaultRun(options: { dry: boolean }): Promise<DohmhRefreshResult
   })
 }
 
+function revalidateInspectionPages(result: DohmhRefreshResult) {
+  for (const path of inspectionRefreshPaths(result)) {
+    revalidatePath(path, "page")
+  }
+}
+
 export async function handleDohmhRefreshCron(
   request: Request,
-  run: (options: { dry: boolean }) => Promise<DohmhRefreshResult> = defaultRun
+  run: (options: { dry: boolean }) => Promise<DohmhRefreshResult> = defaultRun,
+  revalidate: (result: DohmhRefreshResult) => void | Promise<void> = revalidateInspectionPages
 ): Promise<Response> {
   if (!cronAuthorized(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return Response.json({ error: "unauthorized" }, { status: 401 })
@@ -54,6 +63,14 @@ export async function handleDohmhRefreshCron(
   const dry = new URL(request.url).searchParams.get("dry") === "1"
   try {
     const result = await run({ dry })
+    try {
+      await revalidate(result)
+    } catch (error) {
+      const name = error instanceof Error ? error.name : "Error"
+      const raw = error instanceof Error ? error.message : ""
+      const message = raw.replace(/[a-z][a-z0-9+.-]*:\/\/\S+/gi, "[redacted]").slice(0, 160)
+      console.error(`DOHMH page revalidation failed (${name}${message ? `: ${message}` : ""})`)
+    }
     console.info(JSON.stringify({ event: "dohmh_refresh", ...result }))
     return Response.json({ ok: true, ...result })
   } catch (error) {
