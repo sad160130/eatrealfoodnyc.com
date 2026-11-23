@@ -255,7 +255,7 @@ export function formatDistance(miles: number): string {
   return `${miles.toFixed(1)} mi`
 }
 
-function parseTimeToMinutes(time: string): number | null {
+export function parseTimeToMinutes(time: string): number | null {
   const cleaned = time.trim().toUpperCase()
   const match = cleaned.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?$/)
   if (!match) return null

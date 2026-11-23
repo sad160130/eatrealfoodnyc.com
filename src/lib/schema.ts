@@ -181,7 +181,7 @@ export function siteGraph() {
   }
 }
 
-export function buildArticleSchema(guide: { title: string; slug: string; description: string; publishedDate: string }) {
+export function buildArticleSchema(guide: { title: string; slug: string; description: string; publishedDate: string; dateModified?: string }) {
   return {
     "@type": "Article",
     "@id": `${SITE_URL}/guides/${guide.slug}#article`,
@@ -189,7 +189,7 @@ export function buildArticleSchema(guide: { title: string; slug: string; descrip
     description: guide.description,
     url: `${SITE_URL}/guides/${guide.slug}`,
     datePublished: guide.publishedDate,
-    dateModified: guide.publishedDate,
+    dateModified: guide.dateModified ?? guide.publishedDate,
     author: PUBLISHER_REF,
     publisher: PUBLISHER_REF,
     isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Eat Real Food NYC" },

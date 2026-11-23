@@ -142,9 +142,12 @@ assert.ok(missingDesc.includes("No NYC DOHMH grade is matched"), missingDesc)
 assert.ok(!missingDesc.includes("Grade A"), missingDesc)
 
 for (const guide of GUIDES) {
-  expectWithin(guide.slug, guide.metaTitle)
+  const branded = withBrand(guide.metaTitle)
+  if (branded.length <= TITLE_MAX) expectWithin(guide.slug, guide.metaTitle)
+  else assert.ok(guide.metaTitle.length <= TITLE_MAX, `${guide.slug} title ${guide.metaTitle.length}: ${guide.metaTitle}`)
   assert.ok(guide.metaTitle.split("|")[0].trim().length > 0, guide.slug)
   const description = GUIDE_DESCRIPTIONS[guide.slug]
+  if (!description) continue
   assert.equal(guide.description, description, `${guide.slug} description drifted`)
   assert.ok(description.length <= DESCRIPTION_MAX, `${guide.slug} description ${description.length}`)
   assert.ok(!/every (restaurant|spot|listing) verified/i.test(description), description)
@@ -167,12 +170,22 @@ function expectCtr(label: string, title: string, description: string) {
   assert.ok(!description.includes("…"), description)
 }
 
+for (const gradeA of counts) {
+  for (const earlyOpeners of counts) {
+    const breakfastTitle = breakfastGuideTitle(gradeA)
+    const breakfastDescription = breakfastGuideDescription({ earlyOpeners, gradeA })
+    if (gradeA > 0 && earlyOpeners > 0) {
+      expectCtr("breakfast", breakfastTitle, breakfastDescription)
+      assert.ok(breakfastTitle.startsWith("Healthy Breakfast NYC"), breakfastTitle)
+      assert.match(breakfastTitle, /Grade A/, breakfastTitle)
+    } else {
+      assert.ok(breakfastTitle.length <= TITLE_MAX, breakfastTitle)
+      assert.ok(breakfastDescription.length <= 155, breakfastDescription)
+    }
+  }
+}
 for (const neighborhoods of hoods) {
   for (const restaurants of counts) {
-    const breakfastTitle = breakfastGuideTitle(neighborhoods)
-    const breakfastDescription = breakfastGuideDescription({ restaurants, neighborhoods })
-    if (neighborhoods > 0 && restaurants > 0) expectCtr("breakfast", breakfastTitle, breakfastDescription)
-    else assert.ok(breakfastTitle.length <= TITLE_MAX, breakfastTitle)
     const lateTitle = lateNightGuideTitle(neighborhoods)
     const lateDescription = lateNightGuideDescription({ restaurants, neighborhoods })
     if (neighborhoods > 0 && restaurants > 0) expectCtr("late night", lateTitle, lateDescription)

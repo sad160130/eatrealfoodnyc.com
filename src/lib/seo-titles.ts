@@ -375,10 +375,15 @@ function formatCount(value: number): string {
  * Titles for the pages that already earn the clicks. The lead is the query.
  * The benefit is a count that page already computes. Nothing here is invented.
  */
-export function breakfastGuideTitle(neighborhoods: number): string {
-  const benefit = neighborhoods > 0 ? `${formatCount(neighborhoods)} ${neighborhoods === 1 ? "Neighborhood" : "Neighborhoods"}` : null
+export function breakfastGuideTitle(gradeA: number): string {
+  const count = formatCount(gradeA)
+  const spots = gradeA === 1 ? "Spot" : "Spots"
   return fitTitle(
-    [benefit ? `Healthy Breakfast NYC | ${benefit}` : null, "Healthy Breakfast NYC"],
+    [
+      gradeA > 0 ? `Healthy Breakfast NYC: ${count} Grade A ${spots} Open by 8 AM` : null,
+      gradeA > 0 ? `Healthy Breakfast NYC | ${count} Grade A` : null,
+      "Healthy Breakfast NYC",
+    ],
     { allowBrand: false },
   )
 }
@@ -412,11 +417,11 @@ export function dietCtrTitle(label: string, gradeA: number, count: number): stri
   )
 }
 
-export function breakfastGuideDescription(input: { restaurants: number; neighborhoods: number }): string {
-  const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
-  const rest = input.restaurants === 1 ? "listing shows" : "listings show"
+export function breakfastGuideDescription(input: { earlyOpeners: number; gradeA: number }): string {
+  const spot = input.gradeA === 1 ? "spot opens" : "spots open"
+  const listing = input.earlyOpeners === 1 ? "listing opens" : "listings open"
   return fitCtrBand(
-    `Healthy breakfast in NYC spans ${formatCount(input.neighborhoods)} ${hood}. ${formatCount(input.restaurants)} published ${rest} the official NYC DOHMH grade on the restaurant page. Filter by borough.`,
+    `Healthy Breakfast NYC: ${formatCount(input.gradeA)} Grade A ${spot} by 8 AM weekdays. ${formatCount(input.earlyOpeners)} published ${listing} that early. The letter is the official NYC DOHMH grade.`,
   )
 }
 
@@ -551,5 +556,5 @@ export const GUIDE_DESCRIPTIONS: Record<string, string> = {
   "seafood-healthy-restaurants-nyc":
     "Seafood-focused listings in the NYC directory, with the matched NYC DOHMH grade shown when we have one.",
   "healthy-breakfast-nyc":
-    "Healthy breakfast in NYC by borough: cafes, juice shops, and whole-food listings in the directory, each with its NYC health inspection grade.",
+    "Published NYC restaurants open by 8 AM on weekdays, and how many of them hold a Grade A from the NYC Health Department.",
 }

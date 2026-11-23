@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
 import FAQItem from "@/components/faq-item"
@@ -6,488 +7,273 @@ import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
-import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
-import GuideLinkIndex from "@/components/guide-link-index"
+import { getBreakfastGuideData, type BreakfastBorough, type BreakfastGuideData } from "@/lib/breakfast-guide"
 import { pageMeta } from "@/lib/page-meta"
 import { breakfastGuideDescription, breakfastGuideTitle } from "@/lib/seo-titles"
+import { buildArticleSchema, buildHubItemList } from "@/lib/schema"
+import { presentGrade } from "@/lib/grade-display"
+import { boroughToSlug } from "@/lib/utils"
+import { ClaimListingCta } from "@/components/product-ctas"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("healthy-breakfast-nyc")!
 
+export const revalidate = 86400
+
+function countPhrase(count: number, singular: string, plural: string): string {
+  return `${count.toLocaleString("en-US")} ${count === 1 ? singular : plural}`
+}
+
+function boroughIn(borough: string): string {
+  return borough === "Bronx" ? "the Bronx" : borough
+}
+
+function boroughSubject(borough: string): string {
+  return borough === "Bronx" ? "The Bronx" : borough
+}
+
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? ""
+  if (names.length === 2) return `${names[0]} and ${names[1]}`
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`
+}
+
+function lede(data: BreakfastGuideData): string {
+  const first = `${countPhrase(data.earlyOpeners, "listing opens", "listings open")} by 8 AM on weekdays; ${countPhrase(data.gradeA, "holds", "hold")} a current Grade A from the NYC Health Department.`
+  const second = data.newestInspectionLabel
+    ? `Newest inspection on file: ${data.newestInspectionLabel}.`
+    : "No inspection date is stored for these listings."
+  return `${first} ${second}`
+}
+
+function mostBoroughAnswer(boroughs: BreakfastBorough[]): string {
+  const max = boroughs.reduce((highest, borough) => Math.max(highest, borough.gradeA), 0)
+  if (max === 0) {
+    return "No borough has a published Grade A restaurant that opens by 8 AM on weekdays."
+  }
+  const leaders = boroughs.filter((borough) => borough.gradeA === max)
+  if (leaders.length === 1) {
+    const leader = leaders[0]
+    return `${boroughSubject(leader.borough)} has the most: ${countPhrase(leader.gradeA, "Grade A restaurant", "Grade A restaurants")} open by 8 AM on weekdays, out of ${countPhrase(leader.earlyOpeners, "early opener", "early openers")} there.`
+  }
+  return `${joinNames(leaders.map((borough) => boroughSubject(borough.borough)))} are tied for the most, with ${countPhrase(max, "Grade A restaurant", "Grade A restaurants")} that open by 8 AM on weekdays.`
+}
+
+function newestStat(date: Date | null): { stat: string; label: string } {
+  if (!date) return { stat: "None", label: "Newest inspection" }
+  return {
+    stat: new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(date),
+    label: `Newest inspection, ${date.getUTCFullYear()}`,
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const counts = await getPublishedDirectoryCounts()
+  const data = await getBreakfastGuideData()
   return pageMeta({
     path: `/guides/${guide.slug}`,
-    title: breakfastGuideTitle(counts.neighborhoods),
-    description: breakfastGuideDescription(counts),
+    title: breakfastGuideTitle(data.gradeA),
+    description: breakfastGuideDescription({ earlyOpeners: data.earlyOpeners, gradeA: data.gradeA }),
     type: "article",
     brand: false,
   })
 }
 
-const GUIDE_FAQS = [
-  {
-    question: "Where can I find a healthy breakfast near me in NYC?",
-    answer: "This site does not detect your location. Choose a borough hub — Manhattan, Brooklyn, Queens, the Bronx, or Staten Island — then open a cafe, juice shop, bakery, or breakfast restaurant for its address and NYC health inspection grade. Whole-foods, vegan, and dairy-free hubs list restaurants that carry those tags.",
-  },
-  {
-    question: "What makes a breakfast restaurant healthy in NYC?",
-    answer: "Three factors define a genuinely healthy breakfast restaurant: whole ingredient sourcing (oats, nuts, fresh fruit, eggs from known suppliers), minimal processed ingredients (no pre-made mixes, artificial sweeteners, or packaged pastries), and an NYC health inspection grade of A. Restaurants that make their granola, nut milks, and grain bowls in-house from whole ingredients consistently outperform chain alternatives on both taste and nutritional value.",
-  },
-  {
-    question: "Which NYC neighborhoods have the best healthy breakfast spots?",
-    answer: "The West Village, Flatiron, and the Upper West Side in Manhattan have the highest density of quality healthy breakfast restaurants. In Brooklyn, Williamsburg, Park Slope, and Cobble Hill have strong whole-food café cultures. The East Village has a concentration of vegan and plant-based breakfast spots. Use our neighborhood comparison tool to compare areas by restaurant health scores.",
-  },
-  {
-    question: "What are the healthiest breakfast choices at NYC restaurants?",
-    answer: "Grain-forward breakfasts — granola with whole fruit and non-dairy milk, overnight oats, muesli — provide sustained energy from complex carbohydrates and healthy fats. Protein-forward options like eggs with seasonal vegetables, smoked salmon, and avocado toast on whole grain bread are strong alternatives. The worst choices nutritionally are pastry-heavy menus with refined flour, added sugars, and minimal whole ingredients, which are common at standard NYC coffee chains.",
-  },
-  {
-    question: "Are there dairy-free breakfast options at NYC restaurants?",
-    answer: "Yes, extensively. NYC's health food café culture has normalised dairy-free milk alternatives — oat milk, almond milk, cashew milk, and coconut milk are offered at most health-focused breakfast spots. Granola and muesli bowls, açaí bowls, and grain-based breakfasts are often naturally dairy-free. Use the dairy-free filter in our directory to find certified options.",
-  },
-  {
-    question: "What is the difference between muesli and granola at NYC health cafes?",
-    answer: "Muesli is typically raw or minimally processed — untoasted oats mixed with nuts, dried fruit, and seeds. It is higher in raw fibre and lower in added sugar than granola. Granola is baked, typically with oil and sweetener, which gives it more crunch but adds calories. Both are nutritionally strong options compared to typical breakfast alternatives. Raw muesli in particular aligns with the raw food philosophy emphasised by many NYC health food restaurants.",
-  },
-  {
-    question: "Can I find organic breakfast options at NYC restaurants?",
-    answer: "Many of NYC's health-focused breakfast restaurants use organic ingredients, particularly for items like açaí, oats, and nut milks where the organic certification has the greatest nutritional and sourcing significance. The restaurants most likely to use organic ingredients are those that prominently mention sourcing on their menus and are categorised as whole foods or farm-to-table in our directory.",
-  },
-]
+const linkClass = "font-medium text-jade underline underline-offset-2 hover:text-forest"
 
 export default async function HealthyBreakfastGuide() {
-  const counts = await getPublishedDirectoryCounts()
-  const { restaurants, hiddenGems, neighborhoods } = counts
-  const description = breakfastGuideDescription(counts)
+  const data = await getBreakfastGuideData()
+  const description = breakfastGuideDescription({ earlyOpeners: data.earlyOpeners, gradeA: data.gradeA })
+  const gradeExplanation = presentGrade("A").explanation
+  const gradeHref = "/guides/nyc-health-grades-explained"
+  const faqs: Array<{ question: string; answer: string; answerNode?: ReactNode }> = [
+    {
+      question: "How many NYC restaurants open by 8 AM hold Grade A?",
+      answer: `${countPhrase(data.gradeA, "published restaurant opens", "published restaurants open")} by 8 AM on weekdays and ${data.gradeA === 1 ? "holds" : "hold"} Grade A. ${countPhrase(data.earlyOpeners, "published listing opens", "published listings open")} that early in total.`,
+    },
+    {
+      question: "Which borough has the most Grade A restaurants open by 8 AM?",
+      answer: mostBoroughAnswer(data.boroughs),
+    },
+    {
+      question: "What does Grade A mean?",
+      answer: `${gradeExplanation} NYC health grades explained (${siteUrl}${gradeHref}) covers how the city scores A, B, and C.`,
+      answerNode: (
+        <>
+          {gradeExplanation}{" "}
+          <Link href={gradeHref} className={linkClass}>
+            NYC health grades explained
+          </Link>{" "}
+          covers how the city scores A, B, and C.
+        </>
+      ),
+    },
+  ]
+  const inspection = newestStat(data.newestInspection)
+  const article = {
+    "@context": "https://schema.org",
+    ...buildArticleSchema({
+      title: guide.title,
+      slug: guide.slug,
+      description,
+      publishedDate: guide.publishedDate,
+      dateModified: guide.updatedDate,
+    }),
+  }
+  const itemList = data.listed.length > 0
+    ? buildHubItemList({
+        name: "Grade A restaurants open by 8 AM in NYC",
+        description: `${data.listed.length} published Grade A restaurants that open by 8 AM on weekdays, up to 10 per borough.`,
+        siteUrl,
+        restaurants: data.listed.map((spot) => ({
+          name: spot.name,
+          slug: spot.slug,
+          rating: spot.rating,
+          reviews: spot.reviews,
+        })),
+      })
+    : null
+
   return (
     <GuideLayout guide={guide}>
-      <FAQSchema faqs={GUIDE_FAQS} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: guide.title,
-            description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
-            publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
-            datePublished: guide.publishedDate,
-            dateModified: "2026-11-15",
-            mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
-          }),
-        }}
-      />
+      <FAQSchema faqs={faqs.map(({ question, answer }) => ({ question, answer }))} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(article) }} />
+      {itemList ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
+      ) : null}
 
       <GuideHero
         guide={guide}
-        subtitle="Healthy breakfast in NYC is listed by borough, not by GPS. Cafes, juice shops, and whole-food spots below include the health inspection grade on each listing."
+        subtitle={lede(data)}
         stats={[
-          { stat: restaurants.toLocaleString(), label: "Published restaurant listings" },
-          { stat: hiddenGems.toLocaleString(), label: "Hidden gems, published" },
-          { stat: "12", label: "Dietary categories tracked" },
-          { stat: neighborhoods.toLocaleString(), label: "Neighborhoods with a listing" },
+          { stat: data.earlyOpeners.toLocaleString("en-US"), label: "Open by 8 AM on weekdays" },
+          { stat: data.gradeA.toLocaleString("en-US"), label: "Grade A among them" },
+          inspection,
+          { stat: "5", label: "Boroughs" },
         ]}
       />
 
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <GuideTOC items={[
-          { href: "#near-me", label: "Healthy breakfast near me in NYC" },
-          { href: "#why-breakfast", label: "Why healthy breakfast matters in NYC" },
-          { href: "#what-to-look-for", label: "What separates a healthy breakfast spot from the rest" },
-          { href: "#key-foods", label: "Key whole food breakfast items to look for" },
-          { href: "#dairy-free", label: "Nut milks and dairy-free breakfast options" },
-          { href: "#by-neighborhood", label: "Best NYC neighborhoods for healthy breakfast" },
-          { href: "#budget", label: "Eating a healthy breakfast in NYC on a budget" },
-          { href: "#faq", label: "Frequently asked questions" },
-        ]} />
+        <GuideTOC
+          items={[
+            { href: "#by-borough", label: "Grade A breakfast spots by borough" },
+            { href: "#what-to-look-for", label: "What to look for" },
+            { href: "#faq", label: "Frequently asked questions" },
+          ]}
+        />
 
-        <section id="near-me" className="mb-16 scroll-mt-24">
-          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Healthy breakfast near me in NYC
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            This directory does not use your location. “Near me” here means the borough and neighborhood on the listing. Open a borough hub, then a restaurant page, for the address and the NYC health inspection grade.
-          </p>
-          <p className="text-lg leading-relaxed text-gray-700">
-            Listings tagged{" "}
-            <Link href="/healthy-restaurants/whole-foods" className="font-medium text-jade underline underline-offset-2 hover:text-forest">whole foods</Link>
-            ,{" "}
-            <Link href="/healthy-restaurants/vegan" className="font-medium text-jade underline underline-offset-2 hover:text-forest">vegan</Link>
-            , or{" "}
-            <Link href="/healthy-restaurants/dairy-free" className="font-medium text-jade underline underline-offset-2 hover:text-forest">dairy-free</Link>
-            {" "}are tagged only when the restaurant identifies that way or has substantial menu coverage. A cafe or bagel shop without those tags is still a breakfast listing. It is not labeled healthy by inference.
-          </p>
-        </section>
-
-        {/* Section 1 */}
-        <section id="why-breakfast" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Why healthy breakfast matters in NYC
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            New York City has a breakfast problem. The city that never sleeps also tends not to
-            eat well in the morning. The default breakfast infrastructure — bodega coffee and a
-            roll, chain coffee shop pastries, street cart bacon-egg-and-cheese sandwiches — is
-            not designed for sustained energy or nutritional value.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The corrective to this has been the rise of NYC&apos;s whole food café culture: restaurants
-            and cafes that take breakfast and brunch seriously as an opportunity to use quality
-            ingredients. Housemade granola with whole oats, nuts, and dried fruit. Raw muesli
-            soaked overnight with fresh fruit. Nut milks made from scratch. Açaí bowls with real
-            toppings rather than sugar syrup.
+        <section id="by-borough" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">Grade A breakfast spots by borough</h2>
+          <p className="dek mt-4">
+            Counts include every published operational restaurant that is open by 8:00 AM every weekday. Open 24 hours counts. A missing weekday does not. Each borough then lists up to 10 Grade A restaurants from that count.{" "}
+            <Link href="/healthy-restaurants/whole-foods" className={linkClass}>Whole-foods</Link>,{" "}
+            <Link href="/healthy-restaurants/vegan" className={linkClass}>vegan</Link>,{" "}
+            <Link href="/healthy-restaurants/vegetarian" className={linkClass}>vegetarian</Link>,{" "}
+            <Link href="/healthy-restaurants/gluten-free" className={linkClass}>gluten-free</Link>, and{" "}
+            <Link href="/healthy-restaurants/dairy-free" className={linkClass}>dairy-free</Link>{" "}
+            tags come first, then rating. The hours, grade, score, and inspection date are the values stored on the listing.
           </p>
 
-          {/* Tone shift */}
-          <div className="my-6 border-l-4 border-sage pl-5">
-            <p className="text-base italic text-gray-600">
-              These places exist across all five boroughs — the challenge is finding them reliably.
-              A $4 bodega egg sandwich will always be easier to find than a $12 granola bowl made
-              with house-toasted oats. But the nutritional gap between the two is enormous.
-            </p>
-          </div>
-
-          <p className="text-lg leading-relaxed text-gray-700">
-            Our directory tracks the{" "}
-            <Link href="/healthy-restaurants/whole-foods" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              whole foods restaurants
-            </Link>{" "}
-            and{" "}
-            <Link href="/healthy-restaurants/vegan" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              vegan restaurants
-            </Link>{" "}
-            that anchor NYC&apos;s healthy breakfast scene — every listing verified with an official
-            NYC Department of Health inspection grade.
-          </p>
-        </section>
-
-        {/* Section 2 */}
-        <section id="what-to-look-for" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            What separates a healthy breakfast spot from the rest
-          </h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {[
-              { signal: "Housemade whole-ingredient granola", detail: "Made from oats, nuts, seeds, and natural sweeteners rather than sourced from a commercial supplier. Look for menus that name the ingredients rather than just calling it \"house granola\"." },
-              { signal: "Real non-dairy milk options", detail: "Not flavoured coffee syrups or pre-bottled commercial oat milk — but cafes that are deliberate about their milk programme. The best spots offer multiple alternatives and know their sourcing." },
-              { signal: "Seasonal fruit", detail: "Breakfast spots that use fresh, seasonal fruit in their granola bowls and smoothies rather than frozen or canned fruit tend to be more committed to whole-ingredient sourcing across the board." },
-              { signal: "Grade A health inspection", detail: "A strong breakfast restaurant that handles raw ingredients well should have no problem maintaining a Grade A inspection. We show the grade, score, and date on every listing." },
-              { signal: "Complex carbohydrate focus", detail: "Whole grain breads, oats, quinoa, and millet over refined white bread and pastries. Look for menus that distinguish between whole grain and refined options." },
-              { signal: "Transparent nutrition language", detail: "Restaurants that talk about their ingredients honestly — naming suppliers, noting that items are raw, gluten-free, or vegan — tend to be more trustworthy than those with vague health claims." },
-            ].map(item => (
-              <div key={item.signal} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                <h3 className="mb-2 text-sm font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                  {item.signal}
-                </h3>
-                <p className="text-xs leading-relaxed text-gray-600">{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 3 — Key foods (topical bridge to expired domain recipe pages) */}
-        <section id="key-foods" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Key whole food breakfast items to look for on NYC menus
-          </h2>
-
-          <div className="space-y-6">
-            {[
-              {
-                food: "Granola — The Benchmark Dish",
-                detail: "A restaurant's granola reveals almost everything about its kitchen philosophy. Housemade granola from whole oats, raw nuts, seeds, and a minimal natural sweetener like maple syrup is a labour-intensive commitment. Restaurants that make their own are signalling care for ingredient quality. The best versions in NYC use locally sourced oats and seasonally appropriate nuts and dried fruits — hazelnut, orange, and cacao combinations are particularly popular at NYC whole food cafes for their mineral density and flavour complexity.",
-                tags: ["whole-foods", "vegan", "dairy-free"],
-                link: { label: "Whole foods breakfast restaurants in NYC", href: "/healthy-restaurants/whole-foods" },
-              },
-              {
-                food: "Raw Muesli",
-                detail: "Raw muesli — untoasted oats soaked overnight in non-dairy milk with nuts, seeds, and fresh fruit — is one of the most nutritionally complete breakfast options available. Unlike granola, it is not baked and does not require added oil or sweetener to be palatable. The soaking process partially breaks down phytic acid in the oats, improving mineral absorption. NYC's raw food and whole food cafes have elevated muesli from health food staple to a genuinely considered menu item.",
-                tags: ["raw-food", "whole-foods", "dairy-free", "vegan"],
-                link: { label: "Raw food restaurants in NYC", href: "/healthy-restaurants/raw-food" },
-              },
-              {
-                food: "Nut Milks and Plant-Based Milks",
-                detail: "Housemade nut milks — almond, cashew, hazelnut — are a signal of commitment to whole ingredient philosophy. Made from raw soaked nuts blended with water and minimal seasoning, they contain no added gums, stabilisers, or sugars. The difference in taste and nutritional value between a housemade nut milk and a commercial alternative is significant. NYC's most committed health cafes make their own, and they are worth seeking out.",
-                tags: ["dairy-free", "vegan", "raw-food"],
-                link: { label: "Dairy-free restaurants in NYC", href: "/healthy-restaurants/dairy-free" },
-              },
-              {
-                food: "Açaí Bowls",
-                detail: "Açaí bowls — frozen açaí blended with banana and topped with granola, fresh fruit, and nut butter — have become NYC's defining healthy breakfast format. At their best they are nutrient-dense, fibre-rich, and satisfying. At their worst they are bowls of commercial açaí blend drowning in sugar and processed toppings. The distinguishing factor is the quality of the base (pure açaí vs flavoured commercial blends), the granola (housemade vs commercial), and the toppings (fresh seasonal fruit vs frozen or syrup-soaked).",
-                tags: ["vegan", "whole-foods", "dairy-free"],
-                link: { label: "Vegan breakfast restaurants in NYC", href: "/healthy-restaurants/vegan" },
-              },
-            ].map(item => (
-              <div key={item.food} className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div className="border-b border-gray-100 bg-forest/5 px-6 py-4">
-                  <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                    {item.food}
-                  </h3>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {item.tags.map(tag => (
-                      <Link key={tag} href={`/healthy-restaurants/${tag}`} className="rounded-full bg-sage/10 px-2 py-0.5 text-xs font-medium capitalize text-jade transition-colors hover:bg-sage/20">
-                        {tag.replace("-", " ")}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="mb-4 text-sm leading-relaxed text-gray-600">{item.detail}</p>
-                  <Link href={item.link.href} className="text-sm font-semibold text-jade transition-colors hover:text-forest">
-                    {item.link.label} →
+          <div className="mt-10 space-y-12">
+            {data.boroughs.map((borough) => (
+              <section key={borough.borough} aria-labelledby={`breakfast-${boroughToSlug(borough.borough)}`}>
+                <h3 id={`breakfast-${boroughToSlug(borough.borough)}`} className="text-2xl font-bold" style={{ fontFamily: "Georgia, serif", color: "var(--color-forest)" }}>
+                  <Link href={borough.href} className="underline-offset-4 hover:underline" style={{ color: "var(--color-jade)" }}>
+                    Healthy restaurants in {boroughIn(borough.borough)}
                   </Link>
-                </div>
-              </div>
+                </h3>
+                <p className="mt-2 text-sm" style={{ color: "var(--color-text)" }}>
+                  {countPhrase(borough.earlyOpeners, "listing opens", "listings open")} by 8 AM on weekdays. {countPhrase(borough.gradeA, "holds", "hold")} Grade A.
+                </p>
+                {borough.shown.length === 0 ? (
+                  <p className="mt-4 text-base" style={{ color: "var(--color-text)" }}>
+                    {borough.earlyOpeners === 0
+                      ? `No published listing in ${boroughIn(borough.borough)} is open by 8 AM on weekdays.`
+                      : `None of the early openers in ${boroughIn(borough.borough)} hold Grade A.`}
+                  </p>
+                ) : (
+                  <>
+                    <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+                      {borough.shown.length === borough.gradeA
+                        ? `All ${countPhrase(borough.gradeA, "Grade A restaurant", "Grade A restaurants")} open by 8 AM on weekdays in ${boroughIn(borough.borough)}.`
+                        : `Showing ${borough.shown.length} of ${borough.gradeA.toLocaleString("en-US")} Grade A restaurants. Tags come first, then rating.`}
+                    </p>
+                    <ul className="mt-3 divide-y" style={{ borderColor: "var(--hairline)" }}>
+                      {borough.shown.map((spot) => (
+                        <li key={spot.slug} className="flex gap-3 border-b py-4" style={{ borderColor: "var(--hairline)" }}>
+                          <span className="plaque shrink-0" data-grade="A" aria-label="NYC Department of Health inspection grade A">
+                            <span aria-hidden="true">A</span>
+                          </span>
+                          <div className="min-w-0">
+                            <Link href={`/restaurants/${spot.slug}`} className="font-semibold underline-offset-4 hover:underline" style={{ color: "var(--color-jade)" }}>
+                              {spot.name}
+                            </Link>
+                            <p className="mt-1 text-sm" style={{ color: "var(--color-text)" }} title={spot.weekdayOpenDetail}>
+                              {spot.neighborhood ?? "Neighborhood not on file"}
+                              {" · "}
+                              {spot.weekdayOpenLabel === "Open 24 hours" ? "Open 24 hours" : `Weekdays ${spot.weekdayOpenLabel}`}
+                            </p>
+                            <p className="mt-1 text-sm tabular" style={{ color: "var(--color-muted)" }}>
+                              Grade A
+                              {" · "}
+                              {spot.inspectionScore != null ? `Score ${spot.inspectionScore}` : "Score not on file"}
+                              {" · "}
+                              Inspected {spot.inspectionDateLabel}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </section>
             ))}
           </div>
+          {data.unassignedEarlyOpeners > 0 ? (
+            <p className="mt-8 text-sm" style={{ color: "var(--color-muted)" }}>
+              {countPhrase(data.unassignedEarlyOpeners, "published early opener has", "published early openers have")} no borough on file and {data.unassignedEarlyOpeners === 1 ? "is" : "are"} not listed under a borough.
+              {data.unassignedGradeA > 0 ? ` ${countPhrase(data.unassignedGradeA, "of them holds", "of them hold")} Grade A.` : ""}
+            </p>
+          ) : null}
+        </section>
 
-          {/* Pattern break */}
-          <div className="mt-8 rounded-xl bg-gray-50 px-6 py-4">
-            <p className="text-sm text-gray-600">
-              <strong className="text-forest">Why these four items:</strong> Granola, muesli, nut milks,
-              and açaí bowls are the dishes where the gap between a good health cafe and a mediocre one
-              is most obvious. They&apos;re also the items where &quot;healthy&quot; labelling is most misleading —
-              a granola bowl with 40g of added sugar is not a health food, regardless of what the menu says.
+        <section id="what-to-look-for" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">What to look for</h2>
+          <div className="mt-4 space-y-4 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>
+            <p>
+              Open by 8:00 AM means the stored hours cover 8:00 AM on Monday, Tuesday, Wednesday, Thursday, and Friday. A restaurant that opens at 6:00 AM and closes at 7:00 AM is not included. Open 24 hours is included.
+            </p>
+            <p>
+              {gradeExplanation} The score and date on each row are the NYC Health Department record matched to that listing.{" "}
+              <Link href={gradeHref} className={linkClass}>NYC health grades explained</Link> is the longer account of how A, B, and C are scored.
+            </p>
+            <p>
+              A dietary tag is on a listing only when the restaurant identifies that way or has substantial menu coverage. A restaurant without a tag is not labeled healthy by inference.
             </p>
           </div>
-
-          <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Not every healthy breakfast is grain-based. Protein-forward, low-carb mornings — eggs with
-            seasonal vegetables, smoked salmon, avocado — are a NYC staple too; browse{" "}
-            <Link href="/healthy-restaurants/keto" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              keto-friendly restaurants in NYC
-            </Link>{" "}
-            for spots that lead with protein over grains.
-          </p>
         </section>
 
-        {/* Section 4 */}
-        <section id="dairy-free" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Nut milks and dairy-free breakfast options in NYC
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            NYC&apos;s dairy-free breakfast scene has matured from a niche dietary requirement into a
-            mainstream preference. The city&apos;s best health cafes treat plant-based milks as a
-            serious part of their food programme rather than an afterthought.
-          </p>
-          <p className="mb-6 text-lg leading-relaxed text-gray-700">
-            The shift has been driven both by vegan demand and by the growing number of
-            lactose-intolerant diners — particularly in NYC&apos;s diverse communities where
-            dairy-free eating has always been more common than standard American food culture
-            acknowledges.
-          </p>
-
-          {/* Ranked list — format rotation */}
-          <div className="mb-6 rounded-2xl border border-sage/10 bg-sage/5 p-6">
-            <p className="mb-4 text-base font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-              The hierarchy of plant-based milks at NYC health cafes:
-            </p>
-            <div className="space-y-3">
-              {[
-                { milk: "Housemade nut milk", notes: "The gold standard. Raw nuts soaked and blended in-house. No additives, maximum flavour. A marker of kitchen commitment." },
-                { milk: "Cold-pressed nut milk", notes: "Commercial but minimally processed — typically just nuts and water. Better than standard commercial alternatives." },
-                { milk: "Oat milk (barista grade)", notes: "The most popular commercial option. Works well in hot coffee. Look for unsweetened versions without added vegetable oils." },
-                { milk: "Standard commercial almond/oat milk", notes: "Common but often contains gums, sunflower oil, and added sugar. Fine for most uses but not the same as whole-ingredient alternatives." },
-              ].map((item, i) => (
-                <div key={item.milk} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 text-sm font-bold text-sage">{i + 1}.</span>
-                  <div>
-                    <p className="text-sm font-semibold text-forest">{item.milk}</p>
-                    <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>{item.notes}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <p className="leading-relaxed text-gray-700">
-            Use our{" "}
-            <Link href="/healthy-restaurants/dairy-free" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              dairy-free restaurant filter
-            </Link>{" "}
-            to find breakfast and brunch spots with strong plant-based milk programmes across
-            all five boroughs.
-          </p>
-        </section>
-
-        {/* Section 5 */}
-        <section id="by-neighborhood" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Best NYC neighborhoods for healthy breakfast
-          </h2>
-
-          {/* Data table — format rotation */}
-          <div className="mb-8 overflow-hidden rounded-xl border border-gray-200">
-            <table className="w-full text-sm">
-              <thead className="bg-forest text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold">Neighborhood</th>
-                  <th className="px-4 py-3 text-left font-semibold">Strength</th>
-                  <th className="px-4 py-3 text-left font-semibold">Best For</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-700">
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 font-semibold">West Village</td>
-                  <td className="px-4 py-3">Highest café density</td>
-                  <td className="px-4 py-3">Granola, nut milks</td>
-                </tr>
-                <tr className="border-b border-gray-100 bg-gray-50/50">
-                  <td className="px-4 py-3 font-semibold">Williamsburg</td>
-                  <td className="px-4 py-3">Vegan breakfast hub</td>
-                  <td className="px-4 py-3">Açaí, grain bowls</td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 font-semibold">East Village</td>
-                  <td className="px-4 py-3">Plant-based specialists</td>
-                  <td className="px-4 py-3">Raw muesli, vegan</td>
-                </tr>
-                <tr className="border-b border-gray-100 bg-gray-50/50">
-                  <td className="px-4 py-3 font-semibold">Park Slope</td>
-                  <td className="px-4 py-3">Family-friendly organic</td>
-                  <td className="px-4 py-3">Organic, dairy-free</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-3 font-semibold">Astoria</td>
-                  <td className="px-4 py-3">Mediterranean breakfast</td>
-                  <td className="px-4 py-3">Budget-friendly, whole foods</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { neighborhood: "West Village, Manhattan", desc: "The highest concentration of independent health cafes in the city. Strong granola and grain bowl culture. Multiple spots making housemade nut milks.", link: "/nyc/manhattan/healthy-restaurants" },
-              { neighborhood: "Williamsburg, Brooklyn", desc: "Brooklyn's health cafe epicentre. Strong vegan breakfast scene alongside whole food grain bowls and açaí. Many spots open from 7am for the commuter market.", link: "/nyc/brooklyn/williamsburg/healthy-restaurants" },
-              { neighborhood: "Park Slope, Brooklyn", desc: "Family-oriented healthy breakfast culture. Strong organic sourcing across multiple cafes. Good dairy-free options driven by both vegan and lactose-intolerant demographics.", link: "/nyc/brooklyn/healthy-restaurants" },
-              { neighborhood: "East Village, Manhattan", desc: "The heart of NYC's vegan breakfast scene. Multiple dedicated plant-based cafes open early. Strong raw food and muesli options.", link: "/nyc/manhattan/healthy-restaurants" },
-              { neighborhood: "Astoria, Queens", desc: "Excellent Mediterranean and Middle Eastern breakfast traditions — olive-oil based preparations, fresh yogurt and fruit, mezze-style spreads. Naturally healthy and significantly more affordable than Manhattan equivalents.", link: "/nyc/queens/healthy-restaurants" },
-            ].map(item => (
-              <div key={item.neighborhood} className="flex items-start justify-between gap-4 rounded-xl border border-gray-100 bg-white p-5">
-                <div className="flex-1">
-                  <h3 className="mb-1 text-sm font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{item.neighborhood}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>{item.desc}</p>
-                </div>
-                <Link href={item.link} className="flex-shrink-0 text-xs font-semibold text-jade transition-colors hover:text-forest">
-                  Browse →
-                </Link>
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-lg leading-relaxed text-gray-700">
-            Four recent additions worth a morning detour: <Link href="/restaurants/juke-box-juice-salads" className="font-semibold text-jade hover:text-forest">Juke Box Juice &amp; Salads in Harlem</Link> and <Link href="/restaurants/hawa-smoothies-bubble-tea" className="font-semibold text-jade hover:text-forest">Hawa Smoothies &amp; Bubble Tea on the Lower East Side</Link> anchor Manhattan&apos;s whole-foods breakfast lineup, <Link href="/restaurants/familiars-bagels-coffee" className="font-semibold text-jade hover:text-forest">Familiars Bagels &amp; Coffee in Bushwick</Link> brings it to Brooklyn as a hidden gem, and <Link href="/restaurants/julias" className="font-semibold text-jade hover:text-forest">Julia&apos;s in Ridgewood</Link> extends it to Queens.
-          </p>
-        </section>
-
-        {/* Section 6 */}
-        <section id="budget" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Eating a healthy breakfast in NYC on a budget
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            NYC&apos;s premium health cafe culture can be expensive. A housemade granola bowl with
-            seasonal fruit and nut milk can cost $18-22 at a Manhattan café. But healthy
-            breakfast in NYC does not require that price point.
-          </p>
-
-          {/* Tone shift — conversational aside */}
-          <div className="my-6 border-l-4 border-amber pl-5">
-            <p className="text-base text-gray-600">
-              <strong>Honest take:</strong> The best-value healthy breakfasts in this city aren&apos;t
-              at the places with &quot;wellness&quot; in the name. They&apos;re at Greek cafes in Astoria,
-              Dominican spots in the Heights, and Japanese rice-and-egg joints in the East Village.
-              These traditions have been cooking healthy morning food for generations — they just
-              don&apos;t charge $20 for it.
-            </p>
-          </div>
-
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The best-value healthy breakfasts in the city are found in its ethnic food
-            traditions: Greek yogurt and honey at Astoria&apos;s Greek cafes, Middle Eastern
-            breakfasts in Bay Ridge, Japanese tamago-kake gohan in the East Village, and
-            Dominican mangú in Washington Heights and the Bronx. These are nutritionally
-            excellent meals at prices that reflect neighbourhood rather than brand premium.
-          </p>
-          <p className="text-lg leading-relaxed text-gray-700">
-            Our{" "}
-            <Link href="/guides/hidden-gem-restaurants-nyc" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              hidden gem filter
-            </Link>{" "}
-            surfaces the highest-rated restaurants with fewer reviews — often the best-value
-            healthy breakfast spots in the city. See also our full guide to{" "}
-            <Link href="/guides/how-eat-healthy-nyc-15-dollars" className="font-medium text-jade underline underline-offset-2 hover:text-forest">
-              eating healthy in NYC on $15 a day
-            </Link>
-            .
-          </p>
-        </section>
-
-        {/* FAQ */}
         <section id="faq" className="mb-16 scroll-mt-24">
-          <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Frequently asked questions
-          </h2>
-          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white">
-            {GUIDE_FAQS.map((faq, i) => (
+          <h2 className="h2-serif">Frequently asked questions</h2>
+          <div className="mt-8 overflow-hidden rounded-2xl border border-gray-100 bg-white">
+            {faqs.map((faq, index) => (
               <FAQItem
-                key={i}
+                key={faq.question}
                 question={faq.question}
-                answer={faq.answer}
-                isLast={i === GUIDE_FAQS.length - 1}
+                answer={faq.answerNode ?? faq.answer}
+                isLast={index === faqs.length - 1}
               />
             ))}
           </div>
         </section>
 
-        <GuideLinkIndex
-          heading="Breakfast listings by borough"
-          intro="Each link is a published page. Grade and dietary tags are stated only when that listing has them."
-          groups={[
-            {
-              title: "Borough and diet hubs",
-              links: [
-                { href: "/nyc/manhattan/healthy-restaurants", label: "Healthy restaurants in Manhattan" },
-                { href: "/nyc/brooklyn/healthy-restaurants", label: "Healthy restaurants in Brooklyn" },
-                { href: "/nyc/queens/healthy-restaurants", label: "Healthy restaurants in Queens" },
-                { href: "/nyc/bronx/healthy-restaurants", label: "Healthy restaurants in the Bronx" },
-                { href: "/nyc/staten-island/healthy-restaurants", label: "Healthy restaurants in Staten Island" },
-                { href: "/healthy-restaurants/whole-foods", label: "Whole-foods restaurants in NYC" },
-                { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },
-                { href: "/healthy-restaurants/vegetarian", label: "Vegetarian restaurants in NYC" },
-                { href: "/healthy-restaurants/dairy-free", label: "Dairy-free restaurants in NYC" },
-                { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
-              ],
-            },
-            {
-              title: "Restaurant pages",
-              links: [
-                { href: "/restaurants/787-coffee-mott", label: "787 Coffee in Mott Haven — Grade A coffee shop" },
-                { href: "/restaurants/juices-for-life-parkchester", label: "Juices For Life in Parkchester — tagged whole foods and low calorie" },
-                { href: "/restaurants/the-common", label: "The Common in Bay Ridge — Grade A breakfast restaurant" },
-                { href: "/restaurants/marthas-country-bakery-astoria", label: "Martha's Country Bakery in Astoria — Grade A bakery" },
-                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A, tagged whole foods" },
-                { href: "/restaurants/juke-box-juice-salads", label: "Juke Box Juice & Salads in Harlem" },
-                { href: "/restaurants/familiars-bagels-coffee", label: "Familiars Bagels & Coffee in Bushwick" },
-              ],
-            },
-          ]}
-        />
-
-        <GuideCTA
-          heading="Find healthy breakfast and brunch in NYC"
-          body="Start with whole-foods and vegan hubs. Every listing shows the NYC health inspection grade we have on file."
-          primaryLabel="Whole-foods restaurants in NYC"
-          primaryHref="/healthy-restaurants/whole-foods"
-          secondaryLabel="Vegan restaurants in NYC"
-          secondaryHref="/healthy-restaurants/vegan"
-        />
+        <p className="text-lg" style={{ color: "var(--color-text)" }}>
+          <ClaimListingCta source="breakfast_guide">
+            Own a Grade A breakfast spot? Claim your free listing
+          </ClaimListingCta>
+        </p>
       </div>
-        <AboutThisData variant="guide" />
+      <AboutThisData variant="guide" />
     </GuideLayout>
   )
 }

@@ -663,6 +663,7 @@ export default async function NYCHealthGradesGuide() {
             {
               title: "Related pages",
               links: [
+                { href: "/guides/healthy-breakfast-nyc", label: "healthy breakfast in NYC" },
                 { href: "/catering/holiday-party-catering-nyc", label: "Holiday party catering in NYC from Grade A restaurants" },
                 { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
                 { href: "/data/nyc-restaurant-health-grade-report", label: "Fall 2026 NYC inspection report" },
