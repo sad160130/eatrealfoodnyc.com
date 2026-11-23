@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db"
 import { DEGRADED_REVALIDATE_SECONDS, errorLabel, restSelect } from "@/lib/db-fallback"
 import { isTransientConnectionError } from "@/lib/connection-retry"
+import { RESTAURANT_REST_COLUMNS } from "@/lib/rest-snapshot"
 
 function findListing(slug: string) {
   return prisma.restaurant.findUnique({ where: { slug } })
@@ -8,15 +9,7 @@ function findListing(slug: string) {
 
 export type ListingRestaurant = NonNullable<Awaited<ReturnType<typeof findListing>>>
 
-/** Columns of `restaurants` the listing page reads (no partner_status, no search_vector). */
-const REST_COLUMNS = [
-  "id", "name", "slug", "type", "borough", "neighborhood", "address", "street", "city", "state",
-  "latitude", "longitude", "rating", "reviews", "price_range", "dietary_tags", "inspection_grade",
-  "inspection_date", "inspection_score", "description", "phone", "website", "working_hours", "photo",
-  "street_view", "business_status", "is_hidden_gem", "is_published", "is_verified", "priority_rank",
-  "email", "company_facebook", "company_instagram", "company_linkedin", "company_x",
-  "created_at", "updated_at",
-] as const
+const REST_COLUMNS = RESTAURANT_REST_COLUMNS
 
 type RestRow = Record<(typeof REST_COLUMNS)[number], unknown>
 
