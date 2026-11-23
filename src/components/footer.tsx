@@ -2,6 +2,7 @@ import Link from "next/link"
 import { unstable_rethrow } from "next/navigation"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { shortenRevalidate } from "@/lib/db-fallback"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -54,6 +55,8 @@ async function loadFooterCounts(): Promise<{ listed: string; neighborhoods: stri
     const raw = error instanceof Error ? error.message : ""
     const message = raw.replace(/[a-z][a-z0-9+.-]*:\/\/\S+/gi, "[redacted]").slice(0, 160)
     console.error(`Footer directory counts unavailable (${name}${message ? `: ${message}` : ""})`)
+    // Keep a page rendered without counts from staying cached for a full day.
+    await shortenRevalidate()
     return null
   }
 }

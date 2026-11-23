@@ -2,6 +2,7 @@ import { attachDatabasePool } from "@vercel/functions"
 import pg from "pg"
 import {
   CONNECTION_RETRY_DELAY_MS,
+  CONNECTION_RETRY_DELAYS_MS,
   isTransientConnectionError,
   withConnectionRetry,
 } from "../lib/connection-retry"
@@ -13,6 +14,8 @@ import {
   selectRuntimeDatabaseUrl,
 } from "../lib/db"
 import { memoizeSuccess, type SuccessMemoStore } from "../lib/success-memo"
+import { softRead } from "../lib/db-fallback"
+import { listingRestQuery, loadListingBySlug, restRowToListing } from "../lib/listing-loader"
 
 function assert(condition: boolean, message: string) {
   if (!condition) throw new Error(message)
@@ -105,7 +108,28 @@ async function main() {
   } catch {
     threw = true
   }
-  assert(threw && attempts === 2, "a second connection error is thrown")
+  assert(
+    threw && attempts === CONNECTION_RETRY_DELAYS_MS.length + 1,
+    "a connection error that persists through every backoff is thrown"
+  )
+
+  attempts = 0
+  const delays: number[] = []
+  const lateRecovery = await withConnectionRetry(async () => {
+    attempts += 1
+    if (attempts < 4) throw driver
+    return "late"
+  }, async (ms) => {
+    delays.push(ms)
+  })
+  assert(
+    lateRecovery === "late" && delays.join(",") === CONNECTION_RETRY_DELAYS_MS.join(","),
+    "retries back off with growing delays before giving up"
+  )
+  assert(
+    CONNECTION_RETRY_DELAYS_MS.reduce((sum, ms) => sum + ms, 0) <= 6_000,
+    "the total retry backoff stays well inside the function timeout"
+  )
 
   attempts = 0
   threw = false
@@ -156,6 +180,67 @@ async function main() {
     return "recovered"
   }, { store: failing })
   assert(afterFailure === "recovered" && failures === 2, "a failed load is not cached")
+
+  const soft = await softRead("reviews", async () => {
+    throw driver
+  }, "fallback")
+  assert(soft === "fallback", "a connection error on secondary data renders the fallback")
+  let softThrew = false
+  await softRead("reviews", async () => {
+    throw new Error("column does not exist")
+  }, "fallback").catch(() => {
+    softThrew = true
+  })
+  assert(softThrew, "a non-connection error on secondary data is not hidden")
+
+  const restRow = {
+    id: 7, name: "Cafe", slug: "cafe", type: "Cafe", borough: "Brooklyn", neighborhood: "Red Hook",
+    address: "1 Main St", street: null, city: "Brooklyn", state: "NY", latitude: 40.6, longitude: -74,
+    rating: 4.5, reviews: 10, price_range: 2, dietary_tags: "vegan", inspection_grade: "A",
+    inspection_date: "11/1/2026", inspection_score: 9, description: null, phone: null, website: null,
+    working_hours: null, photo: null, street_view: null, business_status: "OPERATIONAL",
+    is_hidden_gem: false, is_published: true, is_verified: true, priority_rank: 3, email: null,
+    company_facebook: null, company_instagram: null, company_linkedin: null, company_x: null,
+    created_at: "2026-01-01T00:00:00Z", updated_at: "2026-11-20T12:00:00Z",
+  }
+  const mapped = restRowToListing(restRow)
+  assert(
+    mapped.isVerified === true && mapped.priorityRank === 3 && mapped.updated_at instanceof Date,
+    "a Supabase REST row maps onto the Prisma listing shape"
+  )
+  assert(!("is_verified" in mapped) && !("priority_rank" in mapped), "mapped rows drop snake_case aliases")
+  assert(
+    listingRestQuery("joe's pizza").includes("slug=eq.joe's%20pizza") && !listingRestQuery("x").includes("partner_status"),
+    "the REST query filters by encoded slug and skips partner_status"
+  )
+
+  let restCalls = 0
+  const viaRest = await loadListingBySlug("cafe", {
+    primary: async () => {
+      throw driver
+    },
+    rest: async () => {
+      restCalls += 1
+      return [restRow]
+    },
+  })
+  assert(viaRest?.slug === "cafe" && restCalls === 1, "a listing read falls back to Supabase REST on EMAXCONN")
+  const missing = await loadListingBySlug("gone", {
+    primary: async () => {
+      throw driver
+    },
+    rest: async () => [],
+  })
+  assert(missing === null, "a REST fallback with no row still yields not found")
+  restCalls = 0
+  const healthy = await loadListingBySlug("cafe", {
+    primary: async () => mapped,
+    rest: async () => {
+      restCalls += 1
+      return []
+    },
+  })
+  assert(healthy?.id === 7 && restCalls === 0, "a healthy Postgres read never touches the REST fallback")
 
   console.log("\nDB connection tests passed")
 }

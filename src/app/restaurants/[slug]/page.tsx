@@ -2,7 +2,10 @@ import { cache } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
-import { prisma } from "@/lib/db"
+import { loadListingBySlug } from "@/lib/listing-loader"
+import { softRead } from "@/lib/db-fallback"
+import type { DirectorySnapshot } from "@/lib/directory-snapshot"
+import type { ReviewsSummary } from "@/lib/reviews"
 import {
   formatPriceRange,
   parseDietaryTags,
@@ -61,8 +64,41 @@ export function generateStaticParams(): Array<{ slug: string }> {
   return []
 }
 
-const getRestaurantBySlug = cache((slug: string) =>
-  prisma.restaurant.findUnique({ where: { slug } })
+const getRestaurantBySlug = cache((slug: string) => loadListingBySlug(slug))
+
+/**
+ * Secondary data degrades instead of failing the page when Postgres is out of
+ * connections (see db-fallback.ts). The listing row itself falls back to the
+ * Supabase HTTP API, so a crawl burst renders a slightly thinner page that
+ * ISR refreshes within minutes rather than a 500.
+ */
+const EMPTY_SNAPSHOT: DirectorySnapshot = {
+  trackedCount: 0,
+  publishedCount: 0,
+  gradeAPublished: 0,
+  gradeAAll: 0,
+  neighborhoodCount: 0,
+  dietaryTagCount: 0,
+  lastPublishAt: null,
+  lastPublishLabel: null,
+  latestInspectionAt: null,
+  latestInspectionLabel: null,
+  latestInspectionMonth: null,
+}
+
+const EMPTY_REVIEWS: ReviewsSummary = {
+  reviews: [],
+  totalCount: 0,
+  averageStars: null,
+  starBreakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+  ownerResponseCount: 0,
+  hasReviews: false,
+}
+
+const listingSnapshot = cache(() => softRead("directory snapshot", getDirectorySnapshot, EMPTY_SNAPSHOT))
+
+const listingNearby = cache((input: Parameters<typeof nearbyGradeA>[0]) =>
+  softRead("nearby Grade A", () => nearbyGradeA(input), [] as Awaited<ReturnType<typeof nearbyGradeA>>)
 )
 
 export async function generateMetadata({
@@ -76,7 +112,7 @@ export async function generateMetadata({
     return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
   }
 
-  const snapshot = await getDirectorySnapshot()
+  const snapshot = await listingSnapshot()
   const title = restaurantListingTitle({
     name: restaurant.name,
     neighborhood: restaurant.neighborhood,
@@ -130,18 +166,19 @@ export default async function RestaurantPage({
   // so it doesn't depend on the restaurant fetch resolving first.
   const [restaurant, reviewsSummary] = await Promise.all([
     getRestaurantBySlug(slug),
-    getReviewsForRestaurant(slug, 15),
+    softRead("reviews", () => getReviewsForRestaurant(slug, 15), EMPTY_REVIEWS),
   ])
   if (!restaurant || !restaurant.is_published) notFound()
 
   // Loaded separately so a build can prerender before the partner_status
   // column exists. Null means this listing is not a partner.
-  const partnerStatus = (await loadPartnerStatuses([restaurant.slug])).get(restaurant.slug) ?? null
+  const partnerStatus =
+    (await softRead("partner status", () => loadPartnerStatuses([restaurant.slug]), new Map())).get(restaurant.slug) ?? null
 
   // Memoised — see neighborhood-hubs.ts. Gates the breadcrumb, the Explore
   // card, and getListingHubLinks below so none of them can link to a
   // neighbourhood hub that fell under NEIGHBORHOOD_HUB_MIN_RESTAURANTS.
-  const validHubs = await getBuiltNeighborhoodHubs()
+  const validHubs = await softRead("neighborhood hubs", getBuiltNeighborhoodHubs, new Set<string>())
   const neighborhoodHubExists = hasBuiltHub(validHubs, restaurant.borough, restaurant.neighborhood)
 
   const price = formatPriceRange(restaurant.price_range)
@@ -165,7 +202,7 @@ export default async function RestaurantPage({
   const todayName = DAYS_ORDER[new Date().getDay()]
   const gradeView = presentGrade(restaurant.inspection_grade)
   const parsedInspection = parseInspectionDate(restaurant.inspection_date)
-  const snapshot = await getDirectorySnapshot()
+  const snapshot = await listingSnapshot()
   const dataThrough = parsedInspection
     ? formatMonthYear(parsedInspection)
     : snapshot.lastPublishLabel ?? "the latest directory update"
@@ -838,7 +875,7 @@ async function NearbyGradeASection({
     dietary_tags: string | null
   }
 }) {
-  const rows = await nearbyGradeA({
+  const rows = await listingNearby({
     id: restaurant.id,
     latitude: restaurant.latitude,
     longitude: restaurant.longitude,
@@ -869,8 +906,8 @@ async function RestaurantFaq({
     longitude: number | null
   }
 }) {
-  const snapshot = await getDirectorySnapshot()
-  const nearby = await nearbyGradeA({
+  const snapshot = await listingSnapshot()
+  const nearby = await listingNearby({
     id: restaurant.id,
     latitude: restaurant.latitude,
     longitude: restaurant.longitude,

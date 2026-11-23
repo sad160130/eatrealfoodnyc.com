@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { softRead } from "@/lib/db-fallback"
 import { presentGrade } from "@/lib/grade-display"
 import { formatLongDate, parseInspectionDate } from "@/lib/inspection-dates"
 
@@ -50,6 +51,16 @@ function comparisonSentence(
 }
 
 async function peerAverage(where: {
+  borough?: string
+  neighborhood?: string
+  type?: string
+  id: { not: number }
+}) {
+  // A comparison line is optional. A connection failure drops it, not the page.
+  return softRead("inspection peer average", () => queryPeerAverage(where), null)
+}
+
+async function queryPeerAverage(where: {
   borough?: string
   neighborhood?: string
   type?: string
