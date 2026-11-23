@@ -30,6 +30,17 @@ module.exports = {
           '/api/',
         ],
       },
+      ...['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended', 'OAI-SearchBot', 'Bingbot'].map((userAgent) => ({
+        userAgent,
+        allow: '/',
+        disallow: [
+          '/search',
+          '/near-me',
+          '/compare',
+          '/saved',
+          '/api/',
+        ],
+      })),
     ],
   },
 

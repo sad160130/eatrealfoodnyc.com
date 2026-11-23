@@ -272,6 +272,36 @@ export const GUIDES: GuideArticle[] = [
       { label: "NYC neighborhood health comparison", href: "/nyc/compare" },
     ],
   },
+  {
+    slug: "best-italian-restaurants-nyc",
+    title: "Best Italian Restaurants in NYC (2027): Top 10 Ranked",
+    metaTitle: "Best Italian Restaurants in NYC (2027): Top 10 Ranked",
+    shortTitle: "Best Italian Restaurants NYC",
+    description: "The best Italian restaurants in NYC, ranked by current NYC Health Department Grade A scores and violation counts, verified against official DOHMH Open Data.",
+    category: "Dining Situations",
+    emoji: "🍝",
+    readTime: "12 min read",
+    featured: true,
+    publishedDate: "2026-11-23",
+    keywords: [
+      "best italian restaurants in nyc",
+      "best italian restaurants nyc",
+      "grade a italian restaurants nyc",
+    ],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "nyc-restaurant-inspection-process",
+      "best-healthy-neighborhoods-nyc",
+      "hidden-gem-restaurants-nyc",
+    ],
+    relatedHubPages: [
+      { label: "Browse Grade A restaurants", href: "/healthy-restaurants/grade-a" },
+      { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
+      { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
+      { label: "Staten Island healthy restaurants", href: "/nyc/staten-island/healthy-restaurants" },
+      { label: "Neighborhood health comparison", href: "/nyc/compare" },
+    ],
+  },
 ]
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {
