@@ -56,6 +56,8 @@ Best Italian Restaurants in NYC (2027): Top 10 Ranked:
   inspection score, then violation count. Every grade, score, and date
   was matched to Open Data dataset 43nn-pn8j on 2026-11-23.
 NYC Health Grades Explained: https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+Healthy breakfast in NYC: https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
+  Published restaurants open by 8 AM on weekdays. Grade A counts come from the NYC DOHMH inspection on each listing.
 Holiday party catering: https://www.eatrealfoodnyc.com/catering/holiday-party-catering-nyc
   Office holiday catering and Thanksgiving week requests in NYC.
   The directory does not record a catering menu. The page lists published

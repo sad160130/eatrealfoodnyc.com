@@ -11,6 +11,8 @@ export interface GuideArticle {
   readTime: string
   featured: boolean
   publishedDate: string
+  /** Copy revision. Sitemap lastmod uses this when the publish date should stay put. */
+  updatedDate?: string
   keywords: string[]
   relatedGuides: string[]
   relatedHubPages: Array<{ label: string; href: string }>
@@ -245,15 +247,16 @@ export const GUIDES: GuideArticle[] = [
   },
   {
     slug: "healthy-breakfast-nyc",
-    title: "The Best Healthy Breakfast Spots in NYC — Where to Eat Well in the Morning",
+    title: "Healthy breakfast in NYC",
     metaTitle: guideTitle("healthy-breakfast-nyc", "Healthy Breakfast NYC"),
     shortTitle: "Healthy Breakfast NYC",
-    description: "Healthy breakfast in NYC by borough: cafes, juice shops, and whole-food listings in the directory, each with its NYC health inspection grade.",
+    description: GUIDE_DESCRIPTIONS["healthy-breakfast-nyc"],
     category: "Dining Situations",
     emoji: "🌅",
-    readTime: "8 min read",
+    readTime: "4 min read",
     featured: false,
     publishedDate: "2026-04-01",
+    updatedDate: "2026-11-23",
     keywords: [
       "healthy breakfast nyc",
       "best breakfast restaurants nyc",
@@ -261,7 +264,7 @@ export const GUIDES: GuideArticle[] = [
       "whole food breakfast new york",
     ],
     relatedGuides: [
-      "how-eat-healthy-nyc-15-dollars",
+      "nyc-health-grades-explained",
       "best-healthy-neighborhoods-nyc",
       "vegan-nyc-borough-guide",
     ],

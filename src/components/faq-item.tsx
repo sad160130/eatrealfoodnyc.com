@@ -1,6 +1,8 @@
+import type { ReactNode } from "react"
+
 interface FAQItemProps {
   question: string
-  answer: string
+  answer: ReactNode
   isLast: boolean
 }
 
