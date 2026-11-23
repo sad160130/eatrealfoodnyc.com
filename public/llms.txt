@@ -1,7 +1,7 @@
 # Eat Real Food NYC
 # https://www.eatrealfoodnyc.com
 # AI Agent Context File — llms.txt
-# Last updated: 2026-11-20
+# Last updated: 2026-11-23
 
 ## What this site is
 
@@ -50,6 +50,11 @@ Dietary hubs:
 Neighbourhood comparison: https://www.eatrealfoodnyc.com/nyc/compare
 Map: https://www.eatrealfoodnyc.com/map
 Guides index: https://www.eatrealfoodnyc.com/guides
+Best Italian Restaurants in NYC (2027): Top 10 Ranked:
+  https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
+  Ten currently open Italian restaurants ranked by official NYC DOHMH
+  inspection score, then violation count. Every grade, score, and date
+  was matched to Open Data dataset 43nn-pn8j on 2026-11-23.
 NYC Health Grades Explained: https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
 Holiday party catering: https://www.eatrealfoodnyc.com/catering/holiday-party-catering-nyc
   Office holiday catering and Thanksgiving week requests in NYC.
@@ -105,7 +110,10 @@ Partner with us: https://www.eatrealfoodnyc.com/partner-with-us
 ## Data sources
 
 - NYC Department of Health and Mental Hygiene (DOHMH) Open Data
-  Health inspection grades: A, B, and C
+  Dataset 43nn-pn8j, DOHMH New York City Restaurant Inspection Results:
+  https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j
+  Health inspection grades: A, B, and C. Scores are violation points.
+  A is 0-13 points, B is 14-27, C is 28 or more.
 - Community ratings sourced from Google Maps
 - Dietary tags applied only when a restaurant explicitly identifies that way
   or has substantial dedicated menu coverage
