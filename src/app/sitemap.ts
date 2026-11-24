@@ -115,7 +115,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const guidePages = GUIDES.map((guide) =>
-    entry(siteUrl, `/guides/${guide.slug}`, 0.85, "monthly", asDate(guide.updatedDate ?? guide.publishedDate))
+    entry(
+      siteUrl,
+      `/guides/${guide.slug}`,
+      guide.slug === "grade-a-restaurants-by-borough-nyc" ? 0.8 : 0.85,
+      "monthly",
+      asDate(guide.updatedDate ?? guide.publishedDate)
+    )
   )
 
   const byDiet = new Map<string, Date[]>()
