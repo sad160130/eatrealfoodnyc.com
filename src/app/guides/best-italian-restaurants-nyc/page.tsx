@@ -120,7 +120,11 @@ export default function BestItalianRestaurantsNyc() {
             <Link href="/nyc/staten-island/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
               Staten Island
             </Link>{" "}
-            hubs.
+            hubs. The same inspection ranking for pizza is{" "}
+            <Link href="/guides/best-pizza-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              best pizza restaurants in NYC
+            </Link>
+            .
           </p>
         </section>
 

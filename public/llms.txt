@@ -56,6 +56,12 @@ Best Italian Restaurants in NYC: Top 10 Ranked:
   inspection score, then violation count. Every grade, score, and date
   was matched to Open Data dataset 43nn-pn8j. Re-checked 2026-11-24;
   unchanged from the 2026-11-23 verification.
+Best Pizza Restaurants in NYC (2026): Top 10 Ranked:
+  https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
+  Ten published pizza listings ranked by official NYC DOHMH inspection
+  score, then violation count, not by taste. Every grade, score, and date
+  was matched to Open Data dataset 43nn-pn8j on 2026-11-24. The newest
+  inspection_date in that pull was 2026-11-22.
 Grade A Restaurants by Borough: 3 NYC Matches (2026):
   https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
   Five recent YouTube Shorts, one kitchen in each borough, checked on

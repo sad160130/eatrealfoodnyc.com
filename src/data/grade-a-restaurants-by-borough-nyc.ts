@@ -320,6 +320,7 @@ export const GRADE_A_BOROUGH_RELATED_HREFS = [
   "/guides/nyc-health-grades-explained",
   "/guides/nyc-restaurant-inspection-process",
   "/guides/best-italian-restaurants-nyc",
+  "/guides/best-pizza-restaurants-nyc",
   "/guides/seafood-healthy-restaurants-nyc",
   "/healthy-restaurants/grade-a",
   "/healthy-restaurants/vegan",

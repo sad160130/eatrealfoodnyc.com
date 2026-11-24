@@ -210,6 +210,10 @@ export default function GradeARestaurantsByBoroughNyc() {
             <Link href="/guides/best-italian-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
               best Italian restaurants in NYC
             </Link>
+            , and applied to pizza on{" "}
+            <Link href="/guides/best-pizza-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              best pizza restaurants in NYC
+            </Link>
             . Browse every published{" "}
             <Link href="/healthy-restaurants/grade-a" className="font-semibold text-jade hover:text-forest">
               Grade A restaurant in the directory
