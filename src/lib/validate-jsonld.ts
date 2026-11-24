@@ -83,6 +83,41 @@ export function validateJsonLd(
         })
       }
     }
+    if (types.includes("VideoObject")) {
+      if (typeof node.name !== "string" || node.name.length === 0) {
+        issues.push({ level: "error", message: "VideoObject is missing name" })
+      }
+      const thumbnail = node.thumbnailUrl
+      const thumbnailOk =
+        (typeof thumbnail === "string" && thumbnail.startsWith("https://")) ||
+        (Array.isArray(thumbnail) &&
+          thumbnail.length > 0 &&
+          thumbnail.every((item) => typeof item === "string" && item.startsWith("https://")))
+      if (!thumbnailOk) issues.push({ level: "error", message: "VideoObject is missing thumbnailUrl" })
+      if (typeof node.uploadDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(node.uploadDate)) {
+        issues.push({ level: "error", message: "VideoObject uploadDate must be a calendar date" })
+      }
+      if (
+        typeof node.duration !== "string" ||
+        !/^PT(?:\d+H)?(?:\d+M)?(?:\d+S)?$/.test(node.duration) ||
+        node.duration === "PT"
+      ) {
+        issues.push({ level: "error", message: "VideoObject duration must be an ISO 8601 duration" })
+      }
+      if (typeof node.embedUrl !== "string" || !node.embedUrl.startsWith("https://")) {
+        issues.push({ level: "error", message: "VideoObject is missing embedUrl" })
+      }
+      for (const banned of [
+        "interactionStatistic",
+        "aggregateRating",
+        "transcript",
+        "interactionCount",
+        "viewCount",
+        "commentCount",
+      ]) {
+        if (banned in node) issues.push({ level: "error", message: `VideoObject must not include ${banned}` })
+      }
+    }
     if (types.includes("BreadcrumbList")) {
       const elements = Array.isArray(node.itemListElement) ? node.itemListElement : []
       if (elements.length === 0) issues.push({ level: "error", message: "BreadcrumbList is empty" })
