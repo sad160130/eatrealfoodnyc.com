@@ -1,7 +1,7 @@
 # Eat Real Food NYC — extended agent index
 # https://www.eatrealfoodnyc.com/llms-full.txt
 # Companion to https://www.eatrealfoodnyc.com/llms.txt
-# Last updated: 2026-11-23
+# Last updated: 2026-11-24
 
 This file lists the public, indexable documents. It does not list individual
 restaurant URLs. Those live in the sitemap, which also carries each URL's
@@ -55,6 +55,8 @@ https://www.eatrealfoodnyc.com/healthy-restaurants/nut-free
 
 ## Guides
 
+https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
+  Five Shorts checked on 2026-11-24. Three latest DOHMH inspections are Grade A and match the listing. Two are not.
 https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
 https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process

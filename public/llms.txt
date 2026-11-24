@@ -1,7 +1,7 @@
 # Eat Real Food NYC
 # https://www.eatrealfoodnyc.com
 # AI Agent Context File — llms.txt
-# Last updated: 2026-11-23
+# Last updated: 2026-11-24
 
 ## What this site is
 
@@ -55,6 +55,12 @@ Best Italian Restaurants in NYC (2027): Top 10 Ranked:
   Ten currently open Italian restaurants ranked by official NYC DOHMH
   inspection score, then violation count. Every grade, score, and date
   was matched to Open Data dataset 43nn-pn8j on 2026-11-23.
+Grade A Restaurants by Borough: 3 NYC Matches (2026):
+  https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
+  Five recent YouTube Shorts, one kitchen in each borough, checked on
+  2026-11-24. Three latest DOHMH inspections are Grade A and match the
+  listing. Ali's Trinbago Roti Shop and Pho Hoang do not: their latest
+  inspections have no letter.
 NYC Health Grades Explained: https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
 Healthy breakfast in NYC: https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
   Published restaurants open by 8 AM on weekdays. Grade A counts come from the NYC DOHMH inspection on each listing.

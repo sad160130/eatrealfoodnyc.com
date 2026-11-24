@@ -2,6 +2,11 @@ export const HEAD_KEYWORD = "healthy restaurants"
 export const BRAND = "Eat Real Food NYC"
 export const YEAR = "2026"
 
+/** One target query per guide that is built around a single keyword. */
+export const GUIDE_KEYWORDS = {
+  "grade-a-restaurants-by-borough-nyc": "grade a restaurants by borough nyc",
+} as const
+
 export const BOROUGH_KEYWORDS: Record<string, {
   primary: string
   h1: string

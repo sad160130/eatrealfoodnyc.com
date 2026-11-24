@@ -19,6 +19,7 @@ export function getBoroughContextualLinks(borough: string): Array<[string, strin
   return [
     [ANCHOR_TEXT.boroughHub(borough), `/nyc/${slug}/healthy-restaurants`],
     [ANCHOR_TEXT.healthGrades, "/guides/nyc-health-grades-explained"],
+    ["grade A restaurants by borough in NYC", "/guides/grade-a-restaurants-by-borough-nyc"],
     [ANCHOR_TEXT.hiddenGems, "/guides/hidden-gem-restaurants-nyc"],
     [ANCHOR_TEXT.neighborhoodComparison, "/nyc/compare"],
   ]

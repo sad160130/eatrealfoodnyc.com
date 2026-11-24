@@ -305,6 +305,33 @@ export const GUIDES: GuideArticle[] = [
       { label: "Neighborhood health comparison", href: "/nyc/compare" },
     ],
   },
+  {
+    slug: "grade-a-restaurants-by-borough-nyc",
+    title: "Grade A Restaurants by Borough: 3 NYC Matches (2026)",
+    metaTitle: "Grade A Restaurants by Borough: 3 NYC Matches (2026)",
+    shortTitle: "Grade A by Borough",
+    description:
+      "Grade A restaurants by borough in NYC, verified November 24, 2026. Three latest DOHMH inspections are Grade A. Two of the five kitchens we checked are not.",
+    category: "Health & Safety",
+    emoji: "A",
+    readTime: "9 min read",
+    featured: false,
+    publishedDate: "2026-11-24",
+    keywords: ["grade a restaurants by borough nyc"],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "nyc-restaurant-inspection-process",
+      "best-italian-restaurants-nyc",
+    ],
+    relatedHubPages: [
+      { label: "Browse Grade A restaurants", href: "/healthy-restaurants/grade-a" },
+      { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
+      { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
+      { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
+      { label: "Bronx healthy restaurants", href: "/nyc/bronx/healthy-restaurants" },
+      { label: "Staten Island healthy restaurants", href: "/nyc/staten-island/healthy-restaurants" },
+    ],
+  },
 ]
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {
