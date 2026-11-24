@@ -32,6 +32,7 @@ import { getReviewsForRestaurant } from "@/lib/reviews"
 import { buildRestaurantSchema, PUBLISHER_REF } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
+import YoutubeShortEmbed from "@/components/youtube-short-embed"
 import OfficialGradeLink from "@/components/official-grade-link"
 import { getCanonicalUrl } from "@/config/seo"
 import SaveButton from "@/components/save-button"
@@ -565,6 +566,11 @@ export default async function RestaurantPage({
               </section>
 
             <InspectionRecord restaurant={restaurant} />
+            <YoutubeShortEmbed
+              slug={restaurant.slug}
+              restaurantName={restaurant.name}
+              inspectionDate={restaurant.inspection_date}
+            />
             <NearbyGradeASection restaurant={restaurant} />
             <RestaurantFaq restaurant={restaurant} />
 
