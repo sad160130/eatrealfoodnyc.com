@@ -20,6 +20,7 @@ import {
   BEST_ITALIAN_RESTAURANTS,
   BEST_ITALIAN_TITLE,
   BEST_ITALIAN_VERIFIED_ON,
+  BEST_ITALIAN_VIDEO_CHAPTERS,
   DOHMH_DATASET_ID,
   DOHMH_DATASET_URL,
   articleSchema,
@@ -76,7 +77,10 @@ export default function BestItalianRestaurantsNyc() {
         <GuideTOC
           items={[
             ...(bestItalianLongformVideo
-              ? [{ href: "#video-walkthrough", label: "Video walkthrough" }]
+              ? [
+                  { href: "#video-walkthrough", label: "Video walkthrough" },
+                  { href: "#video-chapters", label: "Video chapters" },
+                ]
               : []),
             { href: "#the-list", label: "The top 10" },
             { href: "#how-we-picked-them", label: "How we picked them" },
@@ -85,7 +89,7 @@ export default function BestItalianRestaurantsNyc() {
           ]}
         />
 
-        <section className="mb-16">
+        <section id="what-this-list-is" className="mb-16 scroll-mt-24">
           <p className="text-lg leading-relaxed text-gray-700">{BEST_ITALIAN_INTRO}</p>
           <p className="mt-6 text-base leading-relaxed text-gray-700">
             Official letter grades and scores come from the{" "}
@@ -121,6 +125,44 @@ export default function BestItalianRestaurantsNyc() {
         </section>
 
         <YoutubeLongformEmbed video={bestItalianLongformVideo} />
+
+        {bestItalianLongformVideo ? (
+          <section id="video-chapters" className="mb-16 scroll-mt-24">
+            <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+              Video chapters
+            </h2>
+            <p className="text-base leading-relaxed text-gray-700">
+              Chapter titles and timestamps are copied from the YouTube description of{" "}
+              <a
+                href={bestItalianLongformVideo.watchUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="font-semibold text-jade hover:text-forest"
+              >
+                {bestItalianLongformVideo.title}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              . Each link jumps to the matching section of this guide. The ranking in the video is the same sanitary-score order as the list below.
+            </p>
+            <ol className="mt-6 space-y-2 text-base leading-relaxed text-gray-700" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {BEST_ITALIAN_VIDEO_CHAPTERS.map((chapter) => (
+                <li key={chapter.timestamp}>
+                  <span className="tabular">{chapter.timestamp}</span>
+                  {chapter.href ? (
+                    <>
+                      {" "}
+                      <a href={chapter.href} className="font-semibold text-jade hover:text-forest">
+                        {chapter.label}
+                      </a>
+                    </>
+                  ) : (
+                    <> {chapter.label}</>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
 
         <section id="the-list" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>

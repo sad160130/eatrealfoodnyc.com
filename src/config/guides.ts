@@ -277,8 +277,8 @@ export const GUIDES: GuideArticle[] = [
   },
   {
     slug: "best-italian-restaurants-nyc",
-    title: "Best Italian Restaurants in NYC (2027): Top 10 Ranked",
-    metaTitle: "Best Italian Restaurants in NYC (2027): Top 10 Ranked",
+    title: "Best Italian Restaurants in NYC: Top 10 Ranked",
+    metaTitle: "Best Italian Restaurants in NYC: Top 10 Ranked",
     shortTitle: "Best Italian Restaurants NYC",
     description: "The best Italian restaurants in NYC, ranked by current NYC Health Department Grade A scores and violation counts, verified against official DOHMH Open Data.",
     category: "Dining Situations",
@@ -286,6 +286,7 @@ export const GUIDES: GuideArticle[] = [
     readTime: "12 min read",
     featured: true,
     publishedDate: "2026-11-23",
+    updatedDate: "2026-11-24",
     keywords: [
       "best italian restaurants in nyc",
       "best italian restaurants nyc",

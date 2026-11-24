@@ -1,17 +1,20 @@
 /**
  * Verified "best Italian restaurants in NYC" ranking.
  * Every grade, score, date, CAMIS, and violation count was checked against
- * NYC DOHMH Open Data dataset 43nn-pn8j on 2026-11-23 (America/New_York).
+ * NYC DOHMH Open Data dataset 43nn-pn8j and the live listing on 2026-11-24
+ * (America/New_York). Those values are unchanged from the 2026-11-23 check.
  * Only restaurants whose latest city inspection matches the published listing
  * are included. Do not invent facts or add restaurants without a fresh match.
  */
 export const BEST_ITALIAN_PATH = "/guides/best-italian-restaurants-nyc"
-export const BEST_ITALIAN_TITLE = "Best Italian Restaurants in NYC (2027): Top 10 Ranked"
+export const BEST_ITALIAN_TITLE = "Best Italian Restaurants in NYC: Top 10 Ranked"
 export const BEST_ITALIAN_SHORT_TITLE = "Best Italian Restaurants NYC"
 export const BEST_ITALIAN_DESCRIPTION =
   "The best Italian restaurants in NYC, ranked by current NYC Health Department Grade A scores and violation counts, verified against official DOHMH Open Data."
 export const BEST_ITALIAN_PUBLISHED = "2026-11-23"
-export const BEST_ITALIAN_VERIFIED_ON = "November 23, 2026"
+export const BEST_ITALIAN_MODIFIED = "2026-11-24"
+export const BEST_ITALIAN_VERIFIED_ON = "November 24, 2026"
+export const BEST_ITALIAN_FIRST_VERIFIED_ON = "November 23, 2026"
 export const BEST_ITALIAN_KEYWORD = "best italian restaurants in nyc"
 export const BEST_ITALIAN_KEYWORD_VOLUME = 27100
 export const BEST_ITALIAN_KEYWORD_SOURCE =
@@ -86,7 +89,7 @@ export const BEST_ITALIAN_RESTAURANTS: RankedItalianRestaurant[] = [
     inspectionType: "Cycle Inspection / Initial Inspection",
     honestLine:
       "A Greenwich Village trattoria at 211 Waverly Place whose latest inspection is the cleanest on this list: Grade A, 2 points, 1 violation.",
-    body: "Morandi is listed in our directory as an Italian restaurant at 211 Waverly Place in Greenwich Village. The site description calls it a rustic trattoria with sidewalk seating. It sits at the top of this ranking only because of its official inspection record. On December 8, 2025, a NYC Department of Health cycle inspection (an initial inspection) scored the kitchen at 2 points and recorded 1 violation, a non-critical 10F finding about a non-food contact surface or piece of equipment. The posted grade is A. That grade, score, and date match the published listing, and a full CAMIS history pulled on November 23, 2026 showed no later inspection. Two points is well inside the Grade A range of 0 to 13. This is a food-safety ranking, not a review of the menu or the room.",
+    body: "Morandi is listed in our directory as an Italian restaurant at 211 Waverly Place in Greenwich Village. The site description calls it a rustic trattoria with sidewalk seating. It sits at the top of this ranking only because of its official inspection record. On December 8, 2025, a NYC Department of Health cycle inspection (an initial inspection) scored the kitchen at 2 points and recorded 1 violation, a non-critical 10F finding about a non-food contact surface or piece of equipment. The posted grade is A. That grade, score, and date match the published listing, and a full CAMIS history pulled on November 24, 2026 showed no later inspection. Two points is well inside the Grade A range of 0 to 13. This is a food-safety ranking, not a review of the menu or the room.",
     violations: [
       {
         code: "10F",
@@ -365,7 +368,7 @@ export const BEST_ITALIAN_RESTAURANTS: RankedItalianRestaurant[] = [
     inspectionType: "Cycle Inspection / Re-inspection",
     honestLine:
       "A Tribeca Italian restaurant at 165 Duane Street with a Grade A, 11 points, and 2 violations from its latest inspection on December 18, 2024.",
-    body: "Scalini Fedeli is listed at 165 Duane Street in Tribeca. The site description mentions French-influenced Italian fixed-price menus in a vaulted interior. On December 18, 2024, a cycle re-inspection scored 11 points and recorded 2 violations: a critical 02G cold-holding finding and a non-critical 10F finding. The published Grade A, score, and date match that inspection. A full CAMIS history pulled on November 23, 2026 found no later inspection, so this remains the current official record even though it is the oldest date on the list (about 11 months before this page was verified). It ties the other 11-point, 2-violation kitchens and ranks tenth because of that older date. If a newer inspection is posted, this rank should be rechecked before it is trusted as current.",
+    body: "Scalini Fedeli is listed at 165 Duane Street in Tribeca. The site description mentions French-influenced Italian fixed-price menus in a vaulted interior. On December 18, 2024, a cycle re-inspection scored 11 points and recorded 2 violations: a critical 02G cold-holding finding and a non-critical 10F finding. The published Grade A, score, and date match that inspection. A full CAMIS history pulled on November 24, 2026 found no later inspection, so this remains the current official record even though December 18, 2024 is the oldest date on the list. It ties the other 11-point, 2-violation kitchens and ranks tenth because of that older date. If a newer inspection is posted, this rank should be rechecked before it is trusted as current.",
     violations: [
       {
         code: "10F",
@@ -389,7 +392,31 @@ export const BEST_ITALIAN_HOW_WE_PICKED = [
   "This is not a taste poll, a paid placement, or a popularity list. Eat Real Food NYC is a directory of healthy restaurants whose published listings are tied to official NYC Department of Health inspection records. For this page we used one question: among currently open Italian restaurants in our directory, which kitchens have the strongest current inspection records that still match what the site shows?",
   "We started with published, operational listings whose type is Italian restaurant. We then looked up the latest inspection for each kitchen in the NYC DOHMH Restaurant Inspection Results dataset (Open Data 43nn-pn8j). A restaurant made the candidate pool only when the latest city grade, inspection score, and inspection date matched the listing. If the city had a newer inspection that did not match the listing, we left the kitchen off, including cases where the newer inspection was worse than the grade still shown on the site. That is the same rule we use when a listing has gone stale against the city file.",
   "From the kitchens that passed that match test and currently hold a Grade A, we ranked by lowest inspection score (violation points), then fewest recorded violation rows on that latest inspection, then most recent inspection date. A Grade A means 0 to 13 points. A B starts at 14 points. A C starts at 28. The letter is based on the point total, so a Grade A can still include critical violations. We report those codes when they appear on the official record. Payment does not change a grade, a score, a tag, or this ranking.",
-  `The records above were checked against the live Open Data file on ${BEST_ITALIAN_VERIFIED_ON}, America/New_York. Inspection results change when the city inspects again. If a later inspection is posted, a kitchen on this list may no longer belong here.`,
+  `The records above were checked against the live Open Data file and the published listings on ${BEST_ITALIAN_VERIFIED_ON}, America/New_York. That re-check found the same grades, scores, dates, and violation counts as the ${BEST_ITALIAN_FIRST_VERIFIED_ON} verification spoken in the video "10 NYC Italian Kitchens, Ranked by Inspection Score." This order is a sanitary-score ranking, not a taste ranking. Inspection results change when the city inspects again. If a later inspection is posted, a kitchen on this list may no longer belong here.`,
+]
+
+/**
+ * Chapter titles and timestamps copied from the YouTube description of
+ * NNkuZAOiVCU on November 24, 2026. hrefs are anchors on this guide.
+ */
+export const BEST_ITALIAN_VIDEO_CHAPTERS: Array<{
+  timestamp: string
+  label: string
+  href: string | null
+}> = [
+  { timestamp: "0:00", label: "What this list is, and what it is not", href: "#what-this-list-is" },
+  { timestamp: "1:29", label: "How the ranking works", href: "#how-we-picked-them" },
+  { timestamp: "2:17", label: "#1 Morandi, Greenwich Village", href: "#morandi" },
+  { timestamp: "3:01", label: "#2 Carmine's - Upper West Side", href: "#carmines-upper-west-side" },
+  { timestamp: "3:46", label: "#3 Isabelle's Osteria, Flatiron District", href: "#isabelles-osteria" },
+  { timestamp: "4:35", label: "#4 Panzerotti Bites, Cobble Hill", href: "#panzerotti-bites" },
+  { timestamp: "5:17", label: "#5 Forma Pasta Factory, Greenpoint", href: "#forma-pasta-factory-greenpoint" },
+  { timestamp: "6:02", label: "#6 Evelina, Clinton Hill", href: "#evelina" },
+  { timestamp: "6:44", label: "#7 Olive Garden, East New York", href: "#olive-garden-italian-restaurant-east" },
+  { timestamp: "7:27", label: "#8 San Marzano, East Village", href: "#san-marzano" },
+  { timestamp: "7:59", label: "#9 Don Cheech, Stapleton", href: "#don-cheech" },
+  { timestamp: "8:36", label: "#10 Scalini Fedeli, Tribeca", href: "#scalini-fedeli" },
+  { timestamp: "9:15", label: "How to use this list", href: "#which-one-fits-whom" },
 ]
 
 export type FitGroup = {
@@ -460,7 +487,7 @@ export const BEST_ITALIAN_FAQS: Array<{ question: string; answer: string }> = [
   {
     question: "How current is this Best Italian restaurants in NYC list?",
     answer:
-      "We verified each kitchen against the live NYC DOHMH Open Data file on November 23, 2026. The newest inspection on the list is Carmine's - Upper West Side on October 22, 2026. The oldest is Scalini Fedeli on December 18, 2024, which was still the latest inspection on that CAMIS when we checked. NYC inspects restaurants at least once a year in ordinary cases, and a new inspection can change a grade or score. Recheck the listing and the official record before you rely on an older date.",
+      "We re-checked each kitchen against the live NYC DOHMH Open Data file and the published listing on November 24, 2026. Grades, scores, dates, and violation counts are unchanged from the November 23, 2026 verification spoken in the video. The newest inspection on the list is Carmine's - Upper West Side on October 22, 2026. The oldest is Scalini Fedeli on December 18, 2024, which was still the latest inspection on that CAMIS when we checked. NYC inspects restaurants at least once a year in ordinary cases, and a new inspection can change a grade or score. Recheck the listing and the official record before you rely on an older date.",
   },
 ]
 
@@ -513,7 +540,7 @@ export function articleSchema(siteUrl: string) {
     headline: BEST_ITALIAN_TITLE,
     description: BEST_ITALIAN_DESCRIPTION,
     datePublished: BEST_ITALIAN_PUBLISHED,
-    dateModified: BEST_ITALIAN_PUBLISHED,
+    dateModified: BEST_ITALIAN_MODIFIED,
     author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },

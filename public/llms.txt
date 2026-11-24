@@ -50,11 +50,12 @@ Dietary hubs:
 Neighbourhood comparison: https://www.eatrealfoodnyc.com/nyc/compare
 Map: https://www.eatrealfoodnyc.com/map
 Guides index: https://www.eatrealfoodnyc.com/guides
-Best Italian Restaurants in NYC (2027): Top 10 Ranked:
+Best Italian Restaurants in NYC: Top 10 Ranked:
   https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
   Ten currently open Italian restaurants ranked by official NYC DOHMH
   inspection score, then violation count. Every grade, score, and date
-  was matched to Open Data dataset 43nn-pn8j on 2026-11-23.
+  was matched to Open Data dataset 43nn-pn8j. Re-checked 2026-11-24;
+  unchanged from the 2026-11-23 verification.
 Grade A Restaurants by Borough: 3 NYC Matches (2026):
   https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
   Five recent YouTube Shorts, one kitchen in each borough, checked on
