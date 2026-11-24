@@ -11,28 +11,35 @@ function preconnect(origin: string) {
   document.head.appendChild(link)
 }
 
-/**
- * Facade player. The iframe is created on click, so the listing does not
- * download a YouTube player on first paint. The poster is one image.
- */
-export function YoutubeShortPlayer({
-  title,
-  thumbnailUrl,
-  fallbackThumbnailUrl,
-  embedUrl,
-}: {
+type FacadePlayerProps = {
   title: string
   thumbnailUrl: string
   fallbackThumbnailUrl: string
   embedUrl: string
-}) {
+  frameClassName: string
+  posterWidth: number
+  posterHeight: number
+}
+
+/**
+ * Facade player. The iframe is created on click, so the page does not
+ * download a YouTube player on first paint. The poster is one image.
+ * Shorts stay 9:16. Long-form stays 16:9. Neither frame is reused for the other shape.
+ */
+function YoutubeFacadePlayer({
+  title,
+  thumbnailUrl,
+  fallbackThumbnailUrl,
+  embedUrl,
+  frameClassName,
+  posterWidth,
+  posterHeight,
+}: FacadePlayerProps) {
   const [playing, setPlaying] = useState(false)
   const warm = () => preconnect("https://www.youtube-nocookie.com")
 
   return (
-    <div
-      className="relative aspect-[9/16] w-full max-w-[17.5rem] overflow-hidden rounded-[4px] border border-hairline-strong bg-cream"
-    >
+    <div className={frameClassName}>
       {playing ? (
         <iframe
           className="absolute inset-0 h-full w-full"
@@ -54,8 +61,8 @@ export function YoutubeShortPlayer({
           <img
             src={thumbnailUrl}
             alt=""
-            width={1080}
-            height={1920}
+            width={posterWidth}
+            height={posterHeight}
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover"
@@ -77,5 +84,36 @@ export function YoutubeShortPlayer({
         </button>
       )}
     </div>
+  )
+}
+
+export type YoutubePlayerProps = {
+  title: string
+  thumbnailUrl: string
+  fallbackThumbnailUrl: string
+  embedUrl: string
+}
+
+/** 9:16 Short. Do not pass a landscape video here. */
+export function YoutubeShortPlayer(props: YoutubePlayerProps) {
+  return (
+    <YoutubeFacadePlayer
+      {...props}
+      frameClassName="relative aspect-[9/16] w-full max-w-[17.5rem] overflow-hidden rounded-[4px] border border-hairline-strong bg-cream"
+      posterWidth={1080}
+      posterHeight={1920}
+    />
+  )
+}
+
+/** 16:9 long-form. Do not pass a Short here. */
+export function YoutubeLongformPlayer(props: YoutubePlayerProps) {
+  return (
+    <YoutubeFacadePlayer
+      {...props}
+      frameClassName="relative aspect-[16/9] w-full overflow-hidden rounded-[4px] border border-hairline-strong bg-cream"
+      posterWidth={1280}
+      posterHeight={720}
+    />
   )
 }

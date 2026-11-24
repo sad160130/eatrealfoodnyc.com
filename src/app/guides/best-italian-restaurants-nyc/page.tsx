@@ -8,6 +8,8 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import YoutubeLongformEmbed from "@/components/youtube-longform-embed"
+import { bestItalianLongformVideo } from "@/data/youtube-longform"
 import {
   BEST_ITALIAN_DESCRIPTION,
   BEST_ITALIAN_FAQS,
@@ -73,6 +75,9 @@ export default function BestItalianRestaurantsNyc() {
       <div className="mx-auto max-w-4xl px-6 py-16">
         <GuideTOC
           items={[
+            ...(bestItalianLongformVideo
+              ? [{ href: "#video-walkthrough", label: "Video walkthrough" }]
+              : []),
             { href: "#the-list", label: "The top 10" },
             { href: "#how-we-picked-them", label: "How we picked them" },
             { href: "#which-one-fits-whom", label: "Which one fits whom" },
@@ -114,6 +119,8 @@ export default function BestItalianRestaurantsNyc() {
             hubs.
           </p>
         </section>
+
+        <YoutubeLongformEmbed video={bestItalianLongformVideo} />
 
         <section id="the-list" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
