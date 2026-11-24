@@ -17,14 +17,14 @@ import { extractJsonLd, validateJsonLd, validateVisibleHtml } from "../lib/valid
 
 const rows = rawRows as YoutubeShortRow[]
 
-assert.equal(rows.length, 67, "the checked-in map has one row per Short")
-assert.equal(youtubeShortRowCount(), 67)
-assert.equal(listYoutubeShorts().length, 67, "every row becomes one listing embed")
+assert.equal(rows.length, 68, "the checked-in map has one row per Short")
+assert.equal(youtubeShortRowCount(), 68)
+assert.equal(listYoutubeShorts().length, 68, "every row becomes one listing embed")
 
 const slugs = new Set(rows.map((row) => row.restaurant_slug))
 const ids = new Set(rows.map((row) => row.video_id))
-assert.equal(slugs.size, 67, "slugs are unique, so a listing renders at most one Short")
-assert.equal(ids.size, 67, "video ids are unique")
+assert.equal(slugs.size, 68, "slugs are unique, so a listing renders at most one Short")
+assert.equal(ids.size, 68, "video ids are unique")
 
 for (const row of rows) {
   const short = getYoutubeShort(row.restaurant_slug)
@@ -57,6 +57,14 @@ for (const row of rows) {
 assert.equal(getYoutubeShort("djondjon")?.videoId, "ANqOrqlgg0E")
 assert.equal(getYoutubeShort("dirt-candy")?.videoId, "pvkyueRt9-M")
 assert.equal(getYoutubeShort("enzos-of-arthur-avenue")?.videoId, "S3s7eNR2HlE")
+assert.equal(getYoutubeShort("awash")?.videoId, "Vj5uupbvyPs")
+assert.equal(
+  getYoutubeShort("awash")?.title,
+  "Awash Cobble Hill: Is a Score of 13 Still Grade A? #nycfoodguide"
+)
+assert.equal(getYoutubeShort("awash")?.uploadDate, "2026-11-24")
+assert.equal(getYoutubeShort("awash")?.duration, "PT32S")
+assert.equal(getYoutubeShort("awash")?.embedUrl, "https://www.youtube-nocookie.com/embed/Vj5uupbvyPs")
 assert.equal(getYoutubeShort("not-a-restaurant"), null)
 assert.equal(isoDuration(24), "PT24S")
 assert.equal(isoDuration(60), "PT1M")
@@ -161,6 +169,24 @@ assert.equal(dirtNodes[0].name, "Dirt Candy NYC Review | Grade A Vegetarian Rest
 assert.equal(dirtNodes[0].uploadDate, "2026-11-23")
 assert.equal(dirtNodes[0].duration, "PT24S")
 assert.deepEqual(validateJsonLd(dirtNodes, ["VideoObject"]), [])
+
+const awash = renderShort("awash", "Awash", "2026-09-16")
+assert.equal(awash.includes("<iframe"), false, "Awash first paint has no YouTube iframe")
+assert.equal((awash.match(/data-video-id=/g) ?? []).length, 1)
+assert.ok(awash.includes('data-video-id="Vj5uupbvyPs"'))
+assert.ok(awash.includes("https://www.youtube.com/shorts/Vj5uupbvyPs"))
+assert.ok(awash.includes("September 16, 2026"))
+assert.ok(awash.includes("A grade is a sanitary score, not a taste score."))
+assert.ok(awash.includes("Watch this Short on YouTube"))
+const awashNodes = extractJsonLd(awash)
+assert.equal(awashNodes.length, 1)
+assert.equal(awashNodes[0]["@type"], "VideoObject")
+assert.equal(awashNodes[0].name, "Awash Cobble Hill: Is a Score of 13 Still Grade A? #nycfoodguide")
+assert.equal(awashNodes[0].uploadDate, "2026-11-24")
+assert.equal(awashNodes[0].duration, "PT32S")
+assert.equal(awashNodes[0].embedUrl, "https://www.youtube-nocookie.com/embed/Vj5uupbvyPs")
+assert.equal(JSON.stringify(awashNodes).includes("viewCount"), false)
+assert.deepEqual(validateJsonLd(awashNodes, ["VideoObject"]), [])
 
 assert.equal(renderShort("no-such-restaurant", "Nowhere", "1/2/2026"), "")
 const undated = renderShort("djondjon", "DJONDJON", null)

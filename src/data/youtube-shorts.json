@@ -1003,5 +1003,20 @@
     "restaurant_page": "https://www.eatrealfoodnyc.com/restaurants/sozai-japanese-restaurant-izakaya-ramen",
     "embed_priority": 20,
     "notes": ""
+  },
+  {
+    "video_id": "Vj5uupbvyPs",
+    "youtube_url": "https://www.youtube.com/shorts/Vj5uupbvyPs",
+    "title": "Awash Cobble Hill: Is a Score of 13 Still Grade A? #nycfoodguide",
+    "upload_date": "20261124",
+    "duration_sec": 32,
+    "view_count_snapshot": 1,
+    "like_count_snapshot": null,
+    "comment_count_snapshot": 1,
+    "series": "grade-a-daily",
+    "restaurant_slug": "awash",
+    "restaurant_page": "https://www.eatrealfoodnyc.com/restaurants/awash",
+    "embed_priority": 1,
+    "notes": "Format B, question hook. Added after PR #64. comment_count 1 is the pinned comment. Proof Desk VERIFIED."
   }
 ]
