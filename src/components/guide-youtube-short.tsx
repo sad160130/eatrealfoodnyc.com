@@ -11,17 +11,24 @@ export default function GuideYoutubeShort({
   restaurantName,
   inspectionDateIso,
   inspectionDateLabel,
+  publicTitle,
 }: {
   slug: string
   restaurantName: string
   inspectionDateIso: string
   inspectionDateLabel: string
+  /** Replaces the Short title in the caption and VideoObject name on this page. */
+  publicTitle?: string
 }) {
   const short = getYoutubeShort(slug)
   if (!short) return null
 
   const listingUrl = getCanonicalUrl(`/restaurants/${slug}`)
-  const schema = buildYoutubeShortVideoObject(short, listingUrl)
+  const visibleTitle = publicTitle ?? short.title
+  const schema = buildYoutubeShortVideoObject(
+    publicTitle ? { ...short, title: publicTitle } : short,
+    listingUrl
+  )
   const linkStyle = {
     color: "var(--color-jade)",
     textDecoration: "underline",
@@ -31,13 +38,13 @@ export default function GuideYoutubeShort({
   return (
     <figure className="mt-6" data-video-id={short.videoId}>
       <YoutubeShortPlayer
-        title={short.title}
+        title={visibleTitle}
         thumbnailUrl={short.thumbnailUrl}
         fallbackThumbnailUrl={short.fallbackThumbnailUrl}
         embedUrl={`${short.embedUrl}?autoplay=1&rel=0&playsinline=1`}
       />
       <figcaption className="mt-4 space-y-2 text-sm leading-relaxed text-gray-700">
-        <p>{short.title}</p>
+        <p>{visibleTitle}</p>
         <p>
           Latest NYC DOHMH inspection date on this record:{" "}
           <time dateTime={inspectionDateIso}>{inspectionDateLabel}</time>.

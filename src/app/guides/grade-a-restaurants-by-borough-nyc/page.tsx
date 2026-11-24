@@ -26,13 +26,112 @@ import {
   camisUrl,
   currentGradeARestaurants,
   faqPageSchema,
+  itemListSchema,
   neighborhoodHref,
   organizationSchema,
   restaurantHref,
+  ungradedRestaurants,
+  type CheckedRestaurant,
 } from "@/data/grade-a-restaurants-by-borough-nyc"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("grade-a-restaurants-by-borough-nyc")!
+
+function KitchenEntry({ restaurant }: { restaurant: CheckedRestaurant }) {
+  const ungraded = !restaurant.currentGradeA
+  return (
+    <li id={restaurant.slug} className="scroll-mt-24">
+      <p className="eyebrow">
+        {restaurant.placeLabel}
+        {" · "}
+        {ungraded
+          ? `Latest inspection not yet graded · ${restaurant.latestDateLabel} · score ${restaurant.latestScore}`
+          : `Grade ${restaurant.latestGrade} · ${restaurant.latestScore} points · ${restaurant.violationCount} violations`}
+      </p>
+      <h3 className="mt-2 text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+        <Link href={restaurantHref(restaurant.slug)} className="hover:text-jade">
+          {restaurant.name}
+        </Link>
+      </h3>
+      <p className="mt-2 text-base leading-relaxed text-gray-700">{restaurant.honestLine}</p>
+      <p className="mt-4 text-base leading-relaxed text-gray-700">{restaurant.body}</p>
+      <p className="mt-4 text-sm leading-relaxed text-gray-600">
+        {restaurant.currentGradeA ? (
+          <>
+            Official record: Grade {restaurant.latestGrade}, score {restaurant.latestScore},{" "}
+            {restaurant.violationCount} violations, {restaurant.latestDateLabel} ({restaurant.inspectionType}
+            ). The listing stores the same grade, score, and date.
+          </>
+        ) : (
+          <>
+            Latest NYC Open Data ({DOHMH_DATASET_ID}) inspection: {restaurant.latestDateLabel}, score{" "}
+            {restaurant.latestScore}, {restaurant.violationCount} violations, no letter ({restaurant.inspectionType}
+            ).
+          </>
+        )}{" "}
+        Address: {restaurant.address}. CAMIS {restaurant.camis}
+        {restaurant.officialDba !== restaurant.name.toUpperCase() ? `, filed as ${restaurant.officialDba}` : ""}.{" "}
+        <a href={camisUrl(restaurant.camis)} className="font-semibold text-jade hover:text-forest">
+          City restaurant detail
+        </a>
+        . See the{" "}
+        <Link href={restaurantHref(restaurant.slug)} className="font-semibold text-jade hover:text-forest">
+          Eat Real Food NYC listing
+        </Link>
+        , other{" "}
+        <Link
+          href={neighborhoodHref(restaurant.borough, restaurant.neighborhood)}
+          className="font-semibold text-jade hover:text-forest"
+        >
+          healthy restaurants in {restaurant.neighborhood}
+        </Link>
+        , and the{" "}
+        <Link href={boroughHref(restaurant.borough)} className="font-semibold text-jade hover:text-forest">
+          {restaurant.borough} healthy restaurants
+        </Link>{" "}
+        hub.
+        {restaurant.dietaryTags.includes("vegan") ? (
+          <>
+            {" "}
+            The listing carries the vegan tag, so it also appears with{" "}
+            <Link href="/healthy-restaurants/vegan" className="font-semibold text-jade hover:text-forest">
+              vegan restaurants in NYC
+            </Link>
+            .
+          </>
+        ) : null}
+        {restaurant.dietaryTags.includes("vegetarian") ? (
+          <>
+            {" "}
+            The listing carries the vegetarian tag, so it also appears with{" "}
+            <Link href="/healthy-restaurants/vegetarian" className="font-semibold text-jade hover:text-forest">
+              vegetarian restaurants in NYC
+            </Link>
+            .
+          </>
+        ) : null}
+        {restaurant.slug === "city-island-lobster-house" ? (
+          <>
+            {" "}
+            Seafood listings are also covered in{" "}
+            <Link href="/guides/seafood-healthy-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              healthy seafood restaurants in NYC
+            </Link>
+            .
+          </>
+        ) : null}
+      </p>
+      <GuideYoutubeShort
+        slug={restaurant.slug}
+        restaurantName={restaurant.name}
+        inspectionDateIso={restaurant.latestDate}
+        inspectionDateLabel={restaurant.latestDateLabel}
+        publicTitle={ungraded ? `${restaurant.name} YouTube Short` : undefined}
+      />
+      <ClaimListing restaurantSlug={restaurant.slug} restaurantName={restaurant.name} showBadge={restaurant.currentGradeA} />
+    </li>
+  )
+}
 
 export const metadata: Metadata = {
   title: GRADE_A_BOROUGH_TITLE,
@@ -50,19 +149,25 @@ export const metadata: Metadata = {
 
 export default function GradeARestaurantsByBoroughNyc() {
   const matches = currentGradeARestaurants()
+  const ungraded = ungradedRestaurants()
 
   return (
     <GuideLayout guide={guide}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleSchema(siteUrl), faqPageSchema(), organizationSchema(siteUrl)]),
+          __html: JSON.stringify([
+            articleSchema(siteUrl),
+            itemListSchema(siteUrl),
+            faqPageSchema(),
+            organizationSchema(siteUrl),
+          ]),
         }}
       />
 
       <GuideHero
         guide={guide}
-        subtitle="Five recent YouTube Shorts, checked against the live directory and the latest NYC Health Department inspection. Three latest inspections are a Grade A and match the listing. Two are not."
+        subtitle="Five recent YouTube Shorts, checked against the live directory and the latest NYC Health Department inspection. Three latest inspections are a Grade A and match the listing. Two latest inspections are not yet graded."
         stats={[
           { label: "Kitchens checked", stat: String(GRADE_A_BOROUGH_RESTAURANTS.length) },
           { label: "Current Grade A matches", stat: String(matches.length) },
@@ -75,9 +180,15 @@ export default function GradeARestaurantsByBoroughNyc() {
         <GuideTOC
           items={[
             { href: "#what-we-checked", label: "What we checked" },
-            ...GRADE_A_BOROUGH_RESTAURANTS.map((restaurant) => ({
+            { href: "#grade-a-matches", label: "Grade A matches" },
+            ...matches.map((restaurant) => ({
               href: `#${restaurant.slug}`,
-              label: restaurant.currentGradeA ? restaurant.name : `${restaurant.name} (not current Grade A)`,
+              label: restaurant.name,
+            })),
+            { href: "#not-yet-graded", label: "Latest inspection not yet graded" },
+            ...ungraded.map((restaurant) => ({
+              href: `#${restaurant.slug}`,
+              label: restaurant.name,
             })),
             { href: "#how-we-checked", label: "How we checked" },
             { href: "#faq", label: "FAQ" },
@@ -127,112 +238,28 @@ export default function GradeARestaurantsByBoroughNyc() {
           </p>
         </section>
 
-        <section id="the-kitchens" className="mb-16 scroll-mt-24">
+        <section id="grade-a-matches" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            One kitchen in each borough
+            Grade A matches
           </h2>
           <ol className="space-y-14">
-            {GRADE_A_BOROUGH_RESTAURANTS.map((restaurant) => (
-              <li key={restaurant.slug} id={restaurant.slug} className="scroll-mt-24">
-                <p className="eyebrow">
-                  {restaurant.borough}
-                  {" · "}
-                  {restaurant.currentGradeA
-                    ? `Grade ${restaurant.latestGrade} · ${restaurant.latestScore} points · ${restaurant.violationCount} violations`
-                    : `Latest inspection is not a Grade A · ${restaurant.latestScore} points · no letter`}
-                </p>
-                <h3 className="mt-2 text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                  <Link href={restaurantHref(restaurant.slug)} className="hover:text-jade">
-                    {restaurant.name}
-                  </Link>
-                </h3>
-                <p className="mt-2 text-base leading-relaxed text-gray-700">{restaurant.honestLine}</p>
-                <p className="mt-4 text-base leading-relaxed text-gray-700">{restaurant.body}</p>
-                <p className="mt-4 text-sm leading-relaxed text-gray-600">
-                  {restaurant.currentGradeA ? (
-                    <>
-                      Official record: Grade {restaurant.latestGrade}, score {restaurant.latestScore},{" "}
-                      {restaurant.violationCount} violations, {restaurant.latestDateLabel} ({restaurant.inspectionType}
-                      ). The listing stores the same grade, score, and date.
-                    </>
-                  ) : (
-                    <>
-                      Listing on file: Grade {restaurant.listingGrade}, score {restaurant.listingScore},{" "}
-                      {restaurant.listingDateLabel}. Latest city inspection: no letter, score {restaurant.latestScore},{" "}
-                      {restaurant.violationCount} violations, {restaurant.latestDateLabel} ({restaurant.inspectionType}
-                      ).
-                    </>
-                  )}{" "}
-                  Address: {restaurant.address}. CAMIS {restaurant.camis}
-                  {restaurant.officialDba !== restaurant.name.toUpperCase()
-                    ? `, filed as ${restaurant.officialDba}`
-                    : ""}
-                  .{" "}
-                  <a href={camisUrl(restaurant.camis)} className="font-semibold text-jade hover:text-forest">
-                    City restaurant detail
-                  </a>
-                  . See the{" "}
-                  <Link href={restaurantHref(restaurant.slug)} className="font-semibold text-jade hover:text-forest">
-                    Eat Real Food NYC listing
-                  </Link>
-                  , other{" "}
-                  <Link
-                    href={neighborhoodHref(restaurant.borough, restaurant.neighborhood)}
-                    className="font-semibold text-jade hover:text-forest"
-                  >
-                    healthy restaurants in {restaurant.neighborhood}
-                  </Link>
-                  , and the{" "}
-                  <Link href={boroughHref(restaurant.borough)} className="font-semibold text-jade hover:text-forest">
-                    {restaurant.borough} healthy restaurants
-                  </Link>{" "}
-                  hub.
-                  {restaurant.dietaryTags.includes("vegan") ? (
-                    <>
-                      {" "}
-                      The listing carries the vegan tag, so it also appears with{" "}
-                      <Link href="/healthy-restaurants/vegan" className="font-semibold text-jade hover:text-forest">
-                        vegan restaurants in NYC
-                      </Link>
-                      .
-                    </>
-                  ) : null}
-                  {restaurant.dietaryTags.includes("vegetarian") ? (
-                    <>
-                      {" "}
-                      The listing carries the vegetarian tag, so it also appears with{" "}
-                      <Link href="/healthy-restaurants/vegetarian" className="font-semibold text-jade hover:text-forest">
-                        vegetarian restaurants in NYC
-                      </Link>
-                      .
-                    </>
-                  ) : null}
-                  {restaurant.slug === "city-island-lobster-house" ? (
-                    <>
-                      {" "}
-                      Seafood listings are also covered in{" "}
-                      <Link
-                        href="/guides/seafood-healthy-restaurants-nyc"
-                        className="font-semibold text-jade hover:text-forest"
-                      >
-                        healthy seafood restaurants in NYC
-                      </Link>
-                      .
-                    </>
-                  ) : null}
-                </p>
-                <GuideYoutubeShort
-                  slug={restaurant.slug}
-                  restaurantName={restaurant.name}
-                  inspectionDateIso={restaurant.latestDate}
-                  inspectionDateLabel={restaurant.latestDateLabel}
-                />
-                <ClaimListing
-                  restaurantSlug={restaurant.slug}
-                  restaurantName={restaurant.name}
-                  showBadge={restaurant.currentGradeA}
-                />
-              </li>
+            {matches.map((restaurant) => (
+              <KitchenEntry key={restaurant.slug} restaurant={restaurant} />
+            ))}
+          </ol>
+        </section>
+
+        <section id="not-yet-graded" className="mb-16 scroll-mt-24">
+          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            Latest inspection not yet graded
+          </h2>
+          <p className="mb-8 text-base leading-relaxed text-gray-700">
+            NYC Open Data dataset {DOHMH_DATASET_ID} records a latest inspection for each kitchen below. The grade
+            field on that row is blank. The date and score shown here are that row, checked on {GRADE_A_BOROUGH_VERIFIED_ON}.
+          </p>
+          <ol className="space-y-14">
+            {ungraded.map((restaurant) => (
+              <KitchenEntry key={restaurant.slug} restaurant={restaurant} />
             ))}
           </ol>
         </section>
