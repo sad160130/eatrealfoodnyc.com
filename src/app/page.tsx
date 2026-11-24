@@ -10,8 +10,9 @@ import RestaurantCard from "@/components/restaurant-card"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
-import DirectoryAsOf from "@/components/directory-as-of"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { homeHeroCopy } from "@/lib/home-hero"
+import HomeHeroCta from "@/components/home-hero-cta"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { fitDescription, homeTitle } from "@/lib/seo-titles"
 import { skipImageOptimizer } from "@/lib/photo-src"
@@ -139,124 +140,82 @@ export default async function HomePage() {
     withPartnerStatus(hiddenGemRows),
   ])
   const totalCount = counts.restaurants
+  const hero = homeHeroCopy({
+    published: counts.restaurants,
+    gradeA: counts.gradeA,
+    latestInspectionLabel: snapshot.latestInspectionLabel,
+  })
   const journalPicks = editorsPicks.filter((restaurant) => isDirectoryEligible(restaurant)).slice(0, 8)
   const featuredGem = hiddenGems.filter((restaurant) => isDirectoryEligible(restaurant))[0] ?? journalPicks[1] ?? null
 
   return (
     <>
-      {/* ─── HERO ─── Type-led, cream-on-cream. Restraint balances the
-           placard signature that fires on every restaurant card below. */}
+      {/* ─── HERO ─── One Grade A action. The letter plaque is the inspection
+           card; search, map, and catering stay as text links under it. */}
       <section
-        className="relative px-6 pb-20 pt-16 md:pt-24"
+        aria-labelledby="home-hero-heading"
+        className="relative px-6 pb-12 pt-8 md:pb-16 md:pt-14"
         style={{ backgroundColor: "var(--color-cream)" }}
       >
         <div className="mx-auto max-w-6xl">
-          {/* Eyebrow — live moat proof, pulled from real DB counts */}
-          <p className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="tabular">{totalCount.toLocaleString()} published listings</span>
-            <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
-            <span className="tabular">{counts.letterGraded.toLocaleString()} with an A, B, or C</span>
-            <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
-            <DirectoryAsOf />
-          </p>
-
-          {/* Display headline — the thesis. The phrasing foregrounds the
-              proprietary moat (DOHMH grading) rather than generic adjectives. */}
-          <h1 className="display-1 mt-8 max-w-[18ch]">
-            Healthy restaurants,<br />
-            graded by the city.
-          </h1>
-
-          {/* Dek — diet filters, then the live letter-grade split. */}
-          <p className="dek mt-6 max-w-[58ch]">
-            Vegan, halal, gluten-free, kosher and more — filtered by neighborhood.{" "}
-            {counts.letterGraded.toLocaleString()} of {totalCount.toLocaleString()} published
-            listings have a matched NYC Department of Health grade of A, B, or C.{" "}
-            {(totalCount - counts.letterGraded).toLocaleString()} do not.{" "}
-            <Link
-              href="/guides/nyc-health-grades-explained"
-              className="font-medium underline underline-offset-4 hover:text-jade"
-              style={{ color: "var(--color-jade)", textDecorationThickness: "1px" }}
-            >
-              How grades work</Link>.
-          </p>
-
-          {/* Search form — single row, hairline borders, no rounded-full pill */}
-          <form
-            action="/search"
-            method="get"
-            role="search"
-            aria-label="Find healthy restaurants in NYC"
-            className="mt-10 flex w-full max-w-2xl flex-col gap-2 sm:flex-row sm:gap-0"
-          >
-            <input
-              name="q"
-              type="search"
-              placeholder="Restaurant, cuisine, or dish"
-              aria-label="Search restaurants"
-              className="h-14 flex-1 rounded-md border bg-white px-5 text-base outline-none transition-colors placeholder:text-gray-400 focus:border-jade sm:rounded-r-none sm:border-r-0"
-              style={{ borderColor: "var(--hairline-strong)" }}
-            />
-            <input
-              name="neighborhood"
-              type="text"
-              placeholder="Neighborhood"
-              aria-label="Filter by neighborhood"
-              className="h-14 flex-1 rounded-md border bg-white px-5 text-base outline-none transition-colors placeholder:text-gray-400 focus:border-jade sm:rounded-none sm:border-x-0"
-              style={{ borderColor: "var(--hairline-strong)" }}
-            />
-            <button
-              type="submit"
-              className="h-14 rounded-md bg-forest px-8 text-sm font-semibold uppercase tracking-wider text-cream transition-colors hover:bg-jade sm:rounded-l-none"
-            >
-              Search
-            </button>
-          </form>
-          <p className="mt-4 text-sm">
-            <Link href="/catering" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
-              Request catering
-            </Link>
-          </p>
-          <div className="mt-4">
-            <HolidayCateringBanner />
+          <div className="flex items-center gap-4">
+            {hero.showGradeMark ? (
+              <span className="plaque shrink-0" aria-hidden="true">A</span>
+            ) : null}
+            <p className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
+              {hero.showGradeMark ? (
+                <>
+                  <span className="tabular">{counts.gradeA.toLocaleString("en-US")} Grade A</span>
+                  <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+                </>
+              ) : null}
+              <span className="tabular">{totalCount.toLocaleString("en-US")} published listings</span>
+            </p>
           </div>
 
-          {/* Quick filter callouts — initial-letter cards. The "A." card is a mini
-              placard echoing the per-restaurant grade signature on every card below. */}
-          <nav
-            aria-label="Quick filters"
-            className="mt-10 grid w-full max-w-2xl grid-cols-2 gap-3 md:grid-cols-4"
-          >
-            <Link href="/search?open=true" className="callout">
-              <span className="callout-initial">
-                O<span style={{ color: "var(--color-muted)" }}>.</span>
-              </span>
-              <span className="callout-label">Open right now</span>
-              <span className="callout-pulse" aria-hidden="true" />
-            </Link>
-            <Link href="/near-me" className="callout">
-              <span className="callout-initial">
-                N<span style={{ color: "var(--color-muted)" }}>.</span>
-              </span>
-              <span className="callout-label">Near me</span>
-            </Link>
-            <Link href="/healthy-restaurants/grade-a" className="callout">
-              <span className="callout-initial">
-                A<span style={{ color: "var(--color-muted)" }}>.</span>
-              </span>
-              <span className="callout-label">Grade A only</span>
-            </Link>
-            <Link href="/map" className="callout">
-              <span className="callout-initial">
-                M<span style={{ color: "var(--color-muted)" }}>.</span>
-              </span>
-              <span className="callout-label">Map view</span>
-            </Link>
+          <h1 id="home-hero-heading" className="display-1 mt-6 max-w-[26ch] md:mt-8">
+            {hero.headingLead}
+            <br />
+            {hero.headingRest}
+          </h1>
+
+          <p className="dek mt-5 max-w-[42rem]">
+            {hero.subhead}
+          </p>
+
+          <div className="mt-8">
+            <HomeHeroCta href={hero.ctaHref}>{hero.ctaLabel}</HomeHeroCta>
+          </div>
+
+          <nav aria-label="Other ways to browse" className="mt-5">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              {[
+                { href: "/search", label: "Search" },
+                { href: "/search?open=true", label: "Open now" },
+                { href: "/near-me", label: "Near me" },
+                { href: "/map", label: "Map" },
+                { href: "/guides/nyc-health-grades-explained", label: "How grades work" },
+                { href: "/catering", label: "Request catering" },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="font-medium underline underline-offset-4 hover:text-forest"
+                    style={{ color: "var(--color-jade)", textDecorationThickness: "1px" }}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
+
+          <div className="mt-4 max-w-2xl">
+            <HolidayCateringBanner variant="line" />
+          </div>
         </div>
 
-        {/* Hairline divider closing the hero */}
-        <div className="mx-auto mt-20 max-w-6xl border-t border-hairline" />
+        <div className="mx-auto mt-12 max-w-6xl border-t border-hairline md:mt-16" />
       </section>
 
       {/* ─── DATA REPORT FEATURE BANNER ─── */}
