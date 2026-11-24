@@ -14,11 +14,13 @@ import {
   boroughHref,
   currentGradeARestaurants,
   faqPageSchema,
+  itemListSchema,
   neighborhoodHref,
   organizationSchema,
   pageInternalHrefs,
   wordCount,
 } from "../data/grade-a-restaurants-by-borough-nyc"
+import { getGuideBySlug, getRelatedGuides } from "../config/guides"
 
 assert.equal(GRADE_A_BOROUGH_TITLE, "Grade A Restaurants by Borough: 3 NYC Matches (2026)")
 assert.ok(GRADE_A_BOROUGH_TITLE.length <= TITLE_MAX, String(GRADE_A_BOROUGH_TITLE.length))
@@ -75,6 +77,21 @@ assert.equal(neighborhoodHref("Staten Island", "Stapleton"), "/nyc/staten-island
 assert.equal(neighborhoodHref("Bronx", "Throgs Neck"), "/nyc/bronx/throgs-neck/healthy-restaurants")
 assert.equal(boroughHref("Queens"), "/nyc/queens/healthy-restaurants")
 
+const cityIsland = GRADE_A_BOROUGH_RESTAURANTS.find((row) => row.slug === "city-island-lobster-house")
+assert.ok(cityIsland)
+assert.equal(cityIsland.placeLabel, "City Island, Bronx")
+assert.equal(cityIsland.neighborhood, "Throgs Neck")
+assert.match(cityIsland.body, /City Island, Bronx/)
+assert.match(cityIsland.body, /Throgs Neck/)
+assert.doesNotMatch(GRADE_A_BOROUGH_DESCRIPTION, /Ali'|Pho Hoang|\(2027\)/)
+assert.doesNotMatch(GRADE_A_BOROUGH_TITLE, /\(2027\)/)
+
+const ungradedCopy = GRADE_A_BOROUGH_RESTAURANTS.filter((row) => !row.currentGradeA)
+for (const restaurant of ungradedCopy) {
+  assert.doesNotMatch(restaurant.honestLine, /Grade A/)
+  assert.equal(restaurant.latestGrade, null)
+}
+
 assert.equal(GRADE_A_BOROUGH_FAQS.length, 5)
 assert.ok(pageInternalHrefs().includes("/restaurants/dirt-candy"))
 assert.ok(pageInternalHrefs().includes("/nyc/brooklyn/bedford-stuyvesant/healthy-restaurants"))
@@ -84,14 +101,29 @@ const siteUrl = "https://www.eatrealfoodnyc.com"
 const article = articleSchema(siteUrl)
 const faqs = faqPageSchema()
 const org = organizationSchema(siteUrl)
+const itemList = itemListSchema(siteUrl)
 assert.equal(article["@type"], "Article")
 assert.equal(article.headline, GRADE_A_BOROUGH_TITLE)
+assert.doesNotMatch(article.headline, /\(2027\)/)
+assert.doesNotMatch(article.description, /Ali'|Pho Hoang|\(2027\)/)
 assert.equal(faqs["@type"], "FAQPage")
 assert.equal(faqs.mainEntity.length, 5)
 assert.equal(org["@type"], "Organization")
 assert.equal(org.name, "Eat Real Food NYC")
 assert.equal("aggregateRating" in org, false)
 assert.equal("review" in org, false)
+assert.equal(itemList["@type"], "ItemList")
+assert.equal(itemList.numberOfItems, 3)
+assert.deepEqual(
+  itemList.itemListElement.map((item) => item.name),
+  ["Dirt Candy", "City Island Lobster House", "Lakruwana Restaurant"]
+)
+const itemListJson = JSON.stringify(itemList)
+assert.doesNotMatch(itemListJson, /Ali'|Pho Hoang|Throgs Neck|\(2027\)/)
+const ungradedFaq = faqs.mainEntity.find((item) => item.name.includes("Ali's Trinbago"))
+assert.ok(ungradedFaq)
+assert.doesNotMatch(ungradedFaq.name, /Grade A/)
+assert.doesNotMatch(ungradedFaq.acceptedAnswer.text, /Grade A/)
 
 const pageSource = readFileSync(
   new URL("../app/guides/grade-a-restaurants-by-borough-nyc/page.tsx", import.meta.url),
@@ -104,7 +136,23 @@ assert.match(pageSource, /organizationSchema/)
 assert.match(pageSource, /ClaimListing/)
 assert.match(pageSource, /GuideYoutubeShort/)
 assert.match(pageSource, /nyc-health-grades-explained/)
+assert.match(pageSource, /Latest inspection not yet graded/)
+assert.match(pageSource, /itemListSchema/)
+assert.match(pageSource, /placeLabel/)
+assert.match(pageSource, /publicTitle/)
 assert.doesNotMatch(pageSource, /viewCount|view_count|aggregateRating/)
+assert.doesNotMatch(pageSource, /\(2027\)/)
+assert.doesNotMatch(pageSource, /not current Grade A/)
+
+const guideRecord = getGuideBySlug("grade-a-restaurants-by-borough-nyc")
+assert.ok(guideRecord)
+assert.equal(guideRecord.title, GRADE_A_BOROUGH_TITLE)
+assert.doesNotMatch(guideRecord.title, /\(2027\)/)
+assert.doesNotMatch(guideRecord.description, /\(2027\)/)
+for (const related of getRelatedGuides(guideRecord.slug)) {
+  assert.doesNotMatch(related.shortTitle, /\(2027\)/)
+  assert.doesNotMatch(related.description, /\(2027\)/)
+}
 
 const embed = readFileSync(new URL("../components/guide-youtube-short.tsx", import.meta.url), "utf8")
 assert.match(embed, /YoutubeShortPlayer/)

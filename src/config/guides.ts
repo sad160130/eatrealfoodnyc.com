@@ -311,7 +311,7 @@ export const GUIDES: GuideArticle[] = [
     metaTitle: "Grade A Restaurants by Borough: 3 NYC Matches (2026)",
     shortTitle: "Grade A by Borough",
     description:
-      "Grade A restaurants by borough in NYC, verified November 24, 2026. Three latest DOHMH inspections are Grade A. Two of the five kitchens we checked are not.",
+      "Grade A restaurants by borough in NYC, verified November 24, 2026. Three latest DOHMH inspections are Grade A and match the listing.",
     category: "Health & Safety",
     emoji: "A",
     readTime: "9 min read",
