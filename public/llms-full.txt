@@ -58,6 +58,8 @@ https://www.eatrealfoodnyc.com/healthy-restaurants/nut-free
 https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
   Five Shorts checked on 2026-11-24. Three latest DOHMH inspections are Grade A and match the listing. Two are not.
 https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
+https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
+  Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
 https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process
 https://www.eatrealfoodnyc.com/guides/vegan-nyc-borough-guide

@@ -495,6 +495,7 @@ export const BEST_ITALIAN_RELATED_HREFS = [
   "/guides/nyc-health-grades-explained",
   "/guides/nyc-restaurant-inspection-process",
   "/guides/best-healthy-neighborhoods-nyc",
+  "/guides/best-pizza-restaurants-nyc",
   "/guides/hidden-gem-restaurants-nyc",
   "/healthy-restaurants/grade-a",
   "/nyc/manhattan/healthy-restaurants",
