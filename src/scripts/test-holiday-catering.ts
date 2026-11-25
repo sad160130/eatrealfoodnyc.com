@@ -9,10 +9,15 @@ import {
   HOLIDAY_CATERING_SOURCE,
   HOLIDAY_CATERING_TITLE,
   HOLIDAY_GROUP_ORDER_HEADING,
+  HOLIDAY_HERO_CAVEAT,
+  HOLIDAY_HERO_CTA_LABEL,
+  HOLIDAY_HERO_FORM_ID,
+  HOLIDAY_HERO_HEADING,
   formatGoogleRating,
   groupGradeAForHoliday,
   holidayCateringDescription,
   holidayCateringTitleFits,
+  holidayHeroCopy,
   type HolidayCateringRestaurant,
 } from "../lib/holiday-catering"
 
@@ -125,14 +130,81 @@ function source(path: string): string {
   return readFileSync(path, "utf8")
 }
 
+const hero = holidayHeroCopy({
+  gradeA: 1227,
+  boroughs: ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"],
+  latestInspectionLabel: "November 18, 2026",
+})
+assert.equal(hero.heading, HOLIDAY_HERO_HEADING)
+assert.equal(hero.heading, "Holiday party catering NYC from a Grade A kitchen")
+assert.equal(hero.heading.toLowerCase().includes("holiday party catering nyc"), true)
+assert.equal(hero.subhead.toLowerCase().includes("holiday party catering nyc"), false)
+assert.equal(
+  hero.subhead,
+  "1,227 published listings hold a NYC Department of Health Grade A. Listed below by borough: Manhattan, Brooklyn, Queens, the Bronx, and Staten Island. The newest inspection date on a published listing is November 18, 2026. The request is free, and you can include vegan, vegetarian, gluten-free, kosher, halal, or nut-free needs."
+)
+assert.equal(hero.ctaLabel, HOLIDAY_HERO_CTA_LABEL)
+assert.equal(hero.ctaLabel, "Send a free catering request")
+assert.equal(hero.caveat, HOLIDAY_HERO_CAVEAT)
+assert.match(hero.caveat, /No prices/)
+assert.match(hero.caveat, /No booking/)
+assert.match(hero.caveat, /decides whether it caters/)
+const heroText = `${hero.heading} ${hero.subhead} ${hero.caveat}`
+assert.equal(heroText.includes("$"), false)
+assert.equal(/will cater|offers catering|reply within|guarantee|hours/i.test(heroText), false)
+
+const one = holidayHeroCopy({
+  gradeA: 1,
+  boroughs: ["Brooklyn"],
+  latestInspectionLabel: null,
+})
+assert.equal(
+  one.subhead,
+  "1 published listing holds a NYC Department of Health Grade A. Listed below by borough: Brooklyn. The request is free, and you can include vegan, vegetarian, gluten-free, kosher, halal, or nut-free needs."
+)
+assert.equal(one.subhead.includes("newest inspection"), false)
+
+const noBoroughs = holidayHeroCopy({
+  gradeA: 4,
+  boroughs: ["  ", "Bronx", "Bronx"],
+  latestInspectionLabel: "November 18, 2026",
+})
+assert.match(noBoroughs.subhead, /Listed below by borough: the Bronx\./)
+assert.equal(noBoroughs.subhead.split("the Bronx").length - 1, 1)
+
+const none = holidayHeroCopy({ gradeA: 0, boroughs: ["Manhattan"], latestInspectionLabel: null })
+assert.equal(none.heading, HOLIDAY_HERO_HEADING)
+assert.equal(none.subhead.includes("0"), false)
+assert.equal(none.subhead.includes("Manhattan"), false)
+assert.equal(none.subhead.includes("Grade A"), false)
+assert.equal(
+  none.subhead,
+  "The request is free, and you can include vegan, vegetarian, gluten-free, kosher, halal, or nut-free needs."
+)
+
 const page = source("src/app/catering/holiday-party-catering-nyc/page.tsx")
-assert.match(page, /Holiday party catering in NYC/)
+assert.match(page, /holidayHeroCopy/)
+assert.match(page, /hero\.heading/)
+assert.match(page, /hero\.subhead/)
+assert.match(page, /hero\.caveat/)
+assert.match(page, /HolidayHeroCta/)
+assert.equal(page.split("<HolidayHeroCta").length - 1, 1)
+assert.equal(page.split("<h1").length - 1, 1)
+assert.match(page, /HOLIDAY_HERO_FORM_ID/)
+assert.match(page, /href=\{"#" \+ HOLIDAY_HERO_FORM_ID\}/)
+assert.equal(page.includes("Holiday party catering in NYC"), false)
+assert.equal(page.includes("This page does not list prices"), false)
 assert.match(page, /FAQSection/)
 assert.match(page, /BreadcrumbJsonLd/)
 assert.match(page, /HOLIDAY_CATERING_SOURCE/)
 assert.equal(page.split("<CateringForm").length - 1, 2)
 assert.equal(page.includes("$"), false)
 assert.match(page, /is_published: true|GRADE_A_WHERE/)
+
+const cta = source("src/components/holiday-hero-cta.tsx")
+assert.match(cta, /track\("catering_hero_cta_click"\)/)
+assert.equal(cta.split("track(").length - 1, 1)
+assert.equal(HOLIDAY_HERO_FORM_ID, "holiday-catering-request")
 
 const catering = source("src/app/catering/page.tsx")
 assert.match(catering, /HolidayCateringBanner/)
