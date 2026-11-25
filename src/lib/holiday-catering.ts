@@ -14,6 +14,84 @@ export const HOLIDAY_GROUP_ORDER_HEADING = "Grade A restaurants for group orders
 export const HOLIDAY_NEIGHBORHOODS_PER_BOROUGH = 3
 export const HOLIDAY_RESTAURANTS_PER_NEIGHBORHOOD = 4
 
+/** In-page form the hero button scrolls to. */
+export const HOLIDAY_HERO_FORM_ID = "holiday-catering-request"
+export const HOLIDAY_HERO_HEADING = "Holiday party catering NYC from a Grade A kitchen"
+export const HOLIDAY_HERO_CTA_LABEL = "Send a free catering request"
+export const HOLIDAY_HERO_CAVEAT = "No prices. No booking. A restaurant decides whether it caters."
+
+const HOLIDAY_DIETARY_NEEDS = "vegan, vegetarian, gluten-free, kosher, halal, or nut-free"
+
+export interface HolidayHeroCopyInput {
+  /** Published operational listings whose stored grade is A. Same count as the homepage. */
+  gradeA: number
+  /** Boroughs of the Grade A restaurants this page lists, in display order. */
+  boroughs: string[]
+  /** Long date from the directory snapshot, or null when no inspection date is on file. */
+  latestInspectionLabel: string | null
+}
+
+export interface HolidayHeroCopy {
+  heading: string
+  subhead: string
+  ctaLabel: string
+  caveat: string
+}
+
+function speakBorough(name: string): string {
+  return name === "Bronx" ? "the Bronx" : name
+}
+
+function joinSeries(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? ""
+  if (items.length === 2) return `${items[0]} and ${items[1]}`
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`
+}
+
+function listedBoroughs(boroughs: string[]): string[] {
+  const names: string[] = []
+  const seen = new Set<string>()
+  for (const borough of boroughs) {
+    const trimmed = borough.trim()
+    if (!trimmed || seen.has(trimmed)) continue
+    seen.add(trimmed)
+    names.push(speakBorough(trimmed))
+  }
+  return names
+}
+
+/**
+ * Hero copy for the holiday catering page.
+ * Counts, boroughs, and the inspection date are passed in from queries the
+ * page already renders. A missing date is omitted. A zero Grade A count does
+ * not claim one exists. Nothing here says a restaurant will cater, quotes a
+ * price, or promises a reply time.
+ */
+export function holidayHeroCopy(input: HolidayHeroCopyInput): HolidayHeroCopy {
+  const parts: string[] = []
+  const gradeA = Number.isInteger(input.gradeA) ? input.gradeA : 0
+  if (gradeA > 0) {
+    const noun = gradeA === 1 ? "published listing holds" : "published listings hold"
+    parts.push(
+      `${gradeA.toLocaleString("en-US")} ${noun} a NYC Department of Health Grade A.`
+    )
+    const boroughs = listedBoroughs(input.boroughs)
+    if (boroughs.length > 0) {
+      parts.push(`Listed below by borough: ${joinSeries(boroughs)}.`)
+    }
+  }
+  if (input.latestInspectionLabel) {
+    parts.push(`The newest inspection date on a published listing is ${input.latestInspectionLabel}.`)
+  }
+  parts.push(`The request is free, and you can include ${HOLIDAY_DIETARY_NEEDS} needs.`)
+  return {
+    heading: HOLIDAY_HERO_HEADING,
+    subhead: parts.join(" "),
+    ctaLabel: HOLIDAY_HERO_CTA_LABEL,
+    caveat: HOLIDAY_HERO_CAVEAT,
+  }
+}
+
 const BOROUGH_ORDER = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
 /** Keyword stays first. pageMeta appends the brand because this has no pipe. */
