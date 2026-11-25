@@ -22,6 +22,11 @@ import {
   neighborhoodTitle,
   renderedTitleLength,
   restaurantMetaDescription,
+  clipListingTitle,
+  dietHubTitle,
+  gradeAPageDescription,
+  gradeAPagedTitle,
+  restaurantListingTitle,
   restaurantTitle,
   withBrand,
 } from "../lib/seo-titles"
@@ -218,6 +223,50 @@ for (const label of ["Gluten-Free", "Vegetarian"]) {
     }
   }
 }
+
+const emptyDiet = dietHubTitle("Keto", 0, 0, 2026)
+assert.ok(!emptyDiet.includes("0 Listed"), emptyDiet)
+assert.ok(!emptyDiet.includes("0 Grade A"), emptyDiet)
+assert.ok(emptyDiet.length <= TITLE_MAX, emptyDiet)
+
+const listedDiet = dietHubTitle("Vegan", 80, 40, 2026)
+assert.ok(listedDiet.includes("80 Listed"), listedDiet)
+assert.ok(listedDiet.includes("40 Grade A"), listedDiet)
+
+const manhattanPage = gradeAPagedTitle("Manhattan", 2)
+assert.match(manhattanPage, /Page 2/)
+assert.ok(manhattanPage.length <= TITLE_MAX, `${manhattanPage.length}: ${manhattanPage}`)
+const islandPage = gradeAPagedTitle("Staten Island", 13)
+assert.match(islandPage, /Page 13/)
+assert.ok(islandPage.length <= TITLE_MAX, islandPage)
+const longPlace = gradeAPagedTitle("A Very Long Neighborhood Name That Keeps Going", 4)
+assert.match(longPlace, /Page 4/)
+assert.ok(longPlace.length <= TITLE_MAX, longPlace)
+
+const pageDesc = gradeAPageDescription({ total: 400, place: "Manhattan", page: 2, pages: 13 })
+assert.match(pageDesc, /Page 2 of 13\./)
+assert.ok(pageDesc.length <= DESCRIPTION_MAX, pageDesc)
+const firstDesc = gradeAPageDescription({ total: 400, place: "Manhattan", page: 1, pages: 13 })
+assert.ok(!firstDesc.includes("Page 1"), firstDesc)
+
+const tapName = "TAP Brazilian Café – 100% Gluten-Free | Tapioca Sandwiches & Açaí | Astoria – NYC"
+const tapTitle = restaurantListingTitle({
+  name: tapName,
+  neighborhood: "Astoria",
+  borough: "Queens",
+  grade: "B",
+  inspectionDate: "7/22/2025",
+  type: "Cafe",
+  snapshot: new Date("2026-11-25T00:00:00Z"),
+})
+assert.ok(tapTitle.length <= TITLE_MAX, `${tapTitle.length}: ${tapTitle}`)
+assert.ok(tapTitle.startsWith("TAP Brazilian"), tapTitle)
+assert.equal(clipListingTitle(tapTitle), tapTitle)
+const clippedName = clipListingTitle(tapName)
+assert.ok(tapName.startsWith(clippedName), clippedName)
+assert.ok(clippedName.length <= TITLE_MAX, clippedName)
+const nextChar = tapName[clippedName.length]
+if (nextChar) assert.ok(nextChar === " " || nextChar === "|", `cut mid-word: ${clippedName}`)
 
 console.log("seo title tests passed")
 for (const guide of GUIDES) {

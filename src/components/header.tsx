@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useSavedRestaurants } from "@/hooks/use-saved-restaurants"
+import type { DietLink } from "@/lib/diet-hub-index"
 
 const BOROUGHS = [
   { label: "Manhattan", slug: "manhattan" },
@@ -10,21 +11,6 @@ const BOROUGHS = [
   { label: "Queens", slug: "queens" },
   { label: "Bronx", slug: "bronx" },
   { label: "Staten Island", slug: "staten-island" },
-]
-
-const DIETS = [
-  { label: "Vegan", tag: "vegan" },
-  { label: "Vegetarian", tag: "vegetarian" },
-  { label: "Gluten-Free", tag: "gluten-free" },
-  { label: "Halal", tag: "halal" },
-  { label: "Kosher", tag: "kosher" },
-  { label: "Dairy-Free", tag: "dairy-free" },
-  { label: "Keto", tag: "keto" },
-  { label: "Paleo", tag: "paleo" },
-  { label: "Whole Foods", tag: "whole-foods" },
-  { label: "Low Calorie", tag: "low-calorie" },
-  { label: "Raw Food", tag: "raw-food" },
-  { label: "Nut-Free", tag: "nut-free" },
 ]
 
 const GUIDE_LINKS = [
@@ -59,7 +45,7 @@ const ABOUT_LINKS = [
 
 type DropdownKey = "boroughs" | "dietary" | "guides" | "data" | "about" | null
 
-export default function Header() {
+export default function Header({ diets }: { diets: DietLink[] }) {
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
@@ -152,9 +138,9 @@ export default function Header() {
             onClick={() => setOpenDropdown(openDropdown === "dietary" ? null : "dietary")}
             width="w-80"
           >
-            <DropdownEyebrow>Twelve canonical tags</DropdownEyebrow>
+            <DropdownEyebrow>Dietary tags</DropdownEyebrow>
             <ul role="list" className="grid grid-cols-2">
-              {DIETS.map((d) => (
+              {diets.map((d) => (
                 <DropdownItem
                   key={d.tag}
                   href={`/healthy-restaurants/${d.tag}`}
@@ -328,9 +314,9 @@ export default function Header() {
             </MobileLink>
           </MobileSection>
 
-          <MobileSection label="Twelve dietary tags">
+          <MobileSection label="Dietary tags">
             <div className="grid grid-cols-2">
-              {DIETS.map((d) => (
+              {diets.map((d) => (
                 <MobileLink
                   key={d.tag}
                   href={`/healthy-restaurants/${d.tag}`}

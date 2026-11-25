@@ -4,6 +4,8 @@ import { getCanonicalUrl } from "@/config/seo"
 import { pageMeta } from "@/lib/page-meta"
 import AboutThisData from "@/components/about-this-data"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { dohmhRefreshSentence } from "@/lib/dohmh-cadence"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { restaurants } = await getPublishedDirectoryCounts()
@@ -14,7 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default function OurDataPage() {
+export default async function OurDataPage() {
+  const snapshot = await getDirectorySnapshot()
+  const newest = snapshot.latestInspectionLabel
+  const gradeCopy = `${dohmhRefreshSentence()}${newest ? ` The newest inspection date on a published listing is ${newest}.` : ""} Each listing shows the inspection date on the matched record. New listings are published weekly.`
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
       <script
@@ -138,8 +143,8 @@ export default function OurDataPage() {
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="space-y-4">
               {[
-                { frequency: "On refresh", item: "NYC DOHMH inspection grades and scores are updated when we run the inspection refresh script against the NYC Open Data portal. Each listing shows the inspection date on the matched record. New listings are published weekly." },
-                { frequency: "Monthly", item: "Google Maps ratings, review counts, and business status (open/closed) are updated monthly to keep our listings current." },
+                { frequency: "Daily", item: gradeCopy },
+                { frequency: "Periodically", item: "Google Maps ratings, review counts, and business status (open/closed) are updated periodically." },
                 { frequency: "Editorial", item: "Dietary tags are reviewed editorially before they are applied. A tag is added only when the restaurant identifies with that diet." },
                 { frequency: "Ongoing", item: "User-submitted corrections are reviewed within 48 hours and applied to the database if verified." },
               ].map((item) => (

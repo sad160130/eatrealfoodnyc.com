@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
-import { buildPipeTitle } from "@/lib/seo-titles"
+import { buildPipeTitle, gradeAPageDescription, gradeAPagedTitle } from "@/lib/seo-titles"
 import { buildHubItemList } from "@/lib/schema"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import RestaurantCard from "@/components/restaurant-card"
@@ -56,9 +56,15 @@ export async function gradeAMetadata(scope: GradeAScope) {
   if (scope.page > 1 && (scope.page > gradeAPageCount(total) || total < (scope.boroughName ? GRADE_A_MIN : 1))) {
     return { title: "Not Found" }
   }
-  const benefit = scope.page > 1 ? `Page ${scope.page}` : total > 0 ? `${total.toLocaleString("en-US")} listed` : null
-  const title = buildPipeTitle(keyword(scope), benefit)
-  const description = `${total.toLocaleString("en-US")} published restaurants in ${placeLabel(scope)} hold a NYC DOHMH Grade A. Grades come from the city's inspection dataset.`
+  const pages = gradeAPageCount(total)
+  const benefit = scope.page > 1 ? null : total > 0 ? `${total.toLocaleString("en-US")} listed` : null
+  const title = scope.page > 1 ? gradeAPagedTitle(placeLabel(scope), scope.page) : buildPipeTitle(keyword(scope), benefit)
+  const description = gradeAPageDescription({
+    total,
+    place: placeLabel(scope),
+    page: scope.page,
+    pages,
+  })
   return pageMeta({ path: pathFor(scope), title, description })
 }
 

@@ -7,6 +7,7 @@ import Footer from "@/components/footer"
 import ComparisonTray from "@/components/comparison-tray"
 import { SEO_CONFIG } from "@/config/seo"
 import SiteSchema from "@/components/site-schema"
+import { loadNavDietTags } from "@/lib/diet-hub-index"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -79,7 +80,8 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const diets = await loadNavDietTags()
   return (
     <html lang="en" className={dmSans.variable}>
       <head>
@@ -114,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <SiteSchema />
-        <Header />
+        <Header diets={diets} />
         <main id="main-content" role="main" tabIndex={-1} className="pt-16">
           {children}
         </main>

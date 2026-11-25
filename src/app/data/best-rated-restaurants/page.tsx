@@ -1,12 +1,21 @@
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { getCanonicalUrl } from "@/config/seo"
+import { prisma } from "@/lib/db"
+import { getBuiltNeighborhoodHubs } from "@/lib/neighborhood-hubs"
+import { getIndexableDietTags } from "@/lib/diet-hubs"
+import {
+  dietHubHref,
+  neighborhoodHubHref,
+  restaurantHref,
+  type LinkIndex,
+} from "@/lib/published-links"
 import AboutThisData from "@/components/about-this-data"
 import {
   parseDietaryTags,
   formatDietaryTag,
-  neighborhoodToSlug,
   boroughToSlug,
 } from "@/lib/utils"
 import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants"
@@ -72,21 +81,36 @@ function GradeChip({ grade }: { grade: string | null }) {
   )
 }
 
-function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
+function MaybeLink({
+  href,
+  className,
+  children,
+  ariaLabel,
+}: {
+  href: string | null
+  className?: string
+  children: ReactNode
+  ariaLabel?: string
+}) {
+  if (!href) return <span className={className}>{children}</span>
+  return (
+    <Link href={href} className={className} aria-label={ariaLabel}>
+      {children}
+    </Link>
+  )
+}
+
+function FeaturedCard({ r, rank, links }: { r: RestaurantRow; rank?: number; links: LinkIndex }) {
   const tags = parseDietaryTags(r.dietary_tags).slice(0, 2)
-  const hoodSlug = r.neighborhood ? neighborhoodToSlug(r.neighborhood) : null
-  const boroughSlug = r.borough ? boroughToSlug(r.borough) : null
+  const listing = restaurantHref(r.slug, links)
+  const hub = neighborhoodHubHref(r.borough, r.neighborhood, links)
 
   return (
     <article
       aria-label={`${r.name} — rated ${r.rating} out of 5 stars`}
       className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
     >
-      <Link
-        href={`/restaurants/${r.slug}`}
-        className="block"
-        aria-label={`View ${r.name}`}
-      >
+      <MaybeLink href={listing} className="block" ariaLabel={`View ${r.name}`}>
         <div className="relative h-44 flex-shrink-0 bg-gradient-to-br from-amber/10 to-sage/10">
           {r.photo ? (
             <Image
@@ -116,25 +140,22 @@ function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
             </div>
           )}
         </div>
-      </Link>
+      </MaybeLink>
 
       <div className="p-4">
         <h3
           className="text-base font-bold text-forest transition-colors group-hover:text-jade"
           style={{ fontFamily: "Georgia, serif" }}
         >
-          <Link href={`/restaurants/${r.slug}`}>{r.name}</Link>
+          <MaybeLink href={listing}>{r.name}</MaybeLink>
         </h3>
         <p className="mt-0.5 text-xs" style={{ color: "var(--color-muted)" }}>
-          {r.neighborhood && r.borough && hoodSlug && boroughSlug ? (
-            <Link
-              href={`/nyc/${boroughSlug}/${hoodSlug}/healthy-restaurants`}
-              className="hover:text-jade"
-            >
+          {hub && r.neighborhood && r.borough ? (
+            <Link href={hub} className="hover:text-jade">
               {r.neighborhood}, {r.borough}
             </Link>
           ) : (
-            r.borough ?? "New York City"
+            [r.neighborhood, r.borough].filter(Boolean).join(", ") || "New York City"
           )}
         </p>
 
@@ -172,7 +193,20 @@ function FeaturedCard({ r, rank }: { r: RestaurantRow; rank?: number }) {
 }
 
 export default async function BestRatedRestaurantsPage() {
-  const live = await getDirectorySnapshot()
+  const [live, slugRows, hubs, diets] = await Promise.all([
+    getDirectorySnapshot(),
+    prisma.restaurant.findMany({
+      where: { is_published: true },
+      select: { slug: true },
+    }),
+    getBuiltNeighborhoodHubs(),
+    getIndexableDietTags(),
+  ])
+  const links: LinkIndex = {
+    slugs: new Set(slugRows.map((row) => row.slug)),
+    hubs,
+    diets: new Set(diets.map((diet) => diet.tag)),
+  }
   const dateModified = live.lastPublishLabel ?? bestRatedData.reportDate
   const boroughOrder = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
@@ -437,12 +471,12 @@ export default async function BestRatedRestaurantsPage() {
                       >
                         Top-rated in {borough}:
                       </p>
-                      <Link
-                        href={`/restaurants/${b.topRestaurant.slug}`}
+                      <MaybeLink
+                        href={restaurantHref(b.topRestaurant.slug, links)}
                         className="text-sm font-semibold text-jade transition-colors hover:text-forest"
                       >
                         {b.topRestaurant.name}
-                      </Link>
+                      </MaybeLink>
                       <p className="text-xs" style={{ color: "var(--color-muted)" }}>
                         ★ {b.topRestaurant.rating} · {b.topRestaurant.reviews?.toLocaleString()} reviews
                         {b.topRestaurant.neighborhood ? ` · ${b.topRestaurant.neighborhood}` : ""}
@@ -489,7 +523,7 @@ export default async function BestRatedRestaurantsPage() {
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {featured.map((r, i) => (
-                  <FeaturedCard key={r.slug} r={r} rank={i + 1} />
+                  <FeaturedCard key={r.slug} r={r} rank={i + 1} links={links} />
                 ))}
               </div>
             </section>
@@ -513,12 +547,10 @@ export default async function BestRatedRestaurantsPage() {
             <ol className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {byNeighborhood.map((n, i) => {
                 if (!n.borough || !n.neighborhood) return null
-                return (
-                  <li key={`${n.neighborhood}-${n.borough}`}>
-                    <Link
-                      href={`/nyc/${boroughToSlug(n.borough)}/${neighborhoodToSlug(n.neighborhood)}/healthy-restaurants`}
-                      className="group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
-                    >
+                const hub = neighborhoodHubHref(n.borough, n.neighborhood, links)
+                const rowClass = "group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
+                const body = (
+                  <>
                       <div className="flex items-center gap-3">
                         <span
                           className={`w-6 text-sm font-bold ${i < 3 ? "text-amber-500" : ""}`}
@@ -543,7 +575,15 @@ export default async function BestRatedRestaurantsPage() {
                           best-rated
                         </p>
                       </div>
-                    </Link>
+                  </>
+                )
+                return (
+                  <li key={`${n.neighborhood}-${n.borough}`}>
+                    {hub ? (
+                      <Link href={hub} className={rowClass}>{body}</Link>
+                    ) : (
+                      <div className={rowClass}>{body}</div>
+                    )}
                   </li>
                 )
               })}
@@ -600,12 +640,12 @@ export default async function BestRatedRestaurantsPage() {
                       }`}
                     >
                       <th scope="row" className="col-span-5 text-left font-normal">
-                        <Link
-                          href={`/restaurants/${r.slug}`}
+                        <MaybeLink
+                          href={restaurantHref(r.slug, links)}
                           className="text-sm font-semibold text-forest transition-colors hover:text-jade"
                         >
                           {r.name}
-                        </Link>
+                        </MaybeLink>
                         <p className="text-xs font-bold text-amber-600">
                           <span aria-hidden="true">★</span> 5.0 perfect
                         </p>
@@ -649,12 +689,11 @@ export default async function BestRatedRestaurantsPage() {
               {summary.eliteCount} restaurants pass this bar.
             </p>
             <ol className="space-y-3">
-              {eliteList.map((r, i) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/restaurants/${r.slug}`}
-                    className="group flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
-                  >
+              {eliteList.map((r, i) => {
+                const href = restaurantHref(r.slug, links)
+                const rowClass = "group flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-amber/30 hover:shadow-md"
+                const body = (
+                  <>
                     <div className="flex items-center gap-3">
                       <span
                         className={`w-6 text-sm font-bold ${i < 3 ? "text-amber-500" : ""}`}
@@ -684,9 +723,14 @@ export default async function BestRatedRestaurantsPage() {
                       </span>
                       <GradeChip grade={r.inspection_grade} />
                     </div>
-                  </Link>
-                </li>
-              ))}
+                  </>
+                )
+                return (
+                  <li key={r.slug}>
+                    {href ? <Link href={href} className={rowClass}>{body}</Link> : <div className={rowClass}>{body}</div>}
+                  </li>
+                )
+              })}
             </ol>
           </section>
         )}
@@ -705,20 +749,25 @@ export default async function BestRatedRestaurantsPage() {
               How many qualifying restaurants carry each dietary certification.
             </p>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-              {byTag.map((t) => (
-                <Link
-                  key={t.tag}
-                  href={`/healthy-restaurants/${t.tag}`}
-                  className="group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-sage/30"
-                >
-                  <p className="text-sm font-semibold capitalize text-forest transition-colors group-hover:text-jade">
-                    {t.tag.replace("-", " ")}
-                  </p>
-                  <span className="text-sm font-bold text-amber-500">
-                    <span aria-hidden="true">⭐</span> {t.count}
-                  </span>
-                </Link>
-              ))}
+              {byTag.map((t) => {
+                const href = dietHubHref(t.tag, links)
+                const rowClass = "group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-sage/30"
+                const body = (
+                  <>
+                    <p className="text-sm font-semibold capitalize text-forest transition-colors group-hover:text-jade">
+                      {t.tag.replace("-", " ")}
+                    </p>
+                    <span className="text-sm font-bold text-amber-500">
+                      <span aria-hidden="true">⭐</span> {t.count}
+                    </span>
+                  </>
+                )
+                return href ? (
+                  <Link key={t.tag} href={href} className={rowClass}>{body}</Link>
+                ) : (
+                  <div key={t.tag} className={rowClass}>{body}</div>
+                )
+              })}
             </div>
           </section>
         )}

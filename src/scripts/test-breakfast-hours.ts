@@ -173,7 +173,7 @@ assert.match(page, /buildHubItemList/)
 assert.match(page, /FAQSchema/)
 assert.doesNotMatch(page, /Why healthy breakfast matters|organic ingredients|near me/i)
 assert.match(grades, /href: "\/guides\/healthy-breakfast-nyc", label: "healthy breakfast in NYC"/)
-assert.match(readFileSync(new URL("../../public/llms.txt", import.meta.url), "utf8"), /guides\/healthy-breakfast-nyc/)
+assert.match(readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8"), /guides\/healthy-breakfast-nyc/)
 assert.match(readFileSync(new URL("../../src/app/sitemap.ts", import.meta.url), "utf8"), /guide\.updatedDate \?\? guide\.publishedDate/)
 
 console.log("breakfast hours tests passed")

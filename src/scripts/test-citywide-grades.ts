@@ -71,7 +71,7 @@ assert.match(page, /Citywide NYC restaurant grades/)
 assert.match(page, /not the directory counts/)
 assert.match(page, /CITYWIDE_RESTAURANT_GRADES/)
 
-const llms = readFileSync(new URL("../../public/llms.txt", import.meta.url), "utf8")
+const llms = readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8")
 assert.match(llms, /NYC Restaurant Grades Explained/)
 assert.match(llms, /pulled 2026-11-25/)
 assert.match(llms, /2026-11-23/)

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { prisma } from "@/lib/db"
-import { DIET_CONFIG } from "@/config/dietary-tags"
+import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { boroughToSlug, formatDietaryTag, neighborhoodToSlug } from "@/lib/utils"
 import { getBuiltNeighborhoodHubs, hasBuiltHub } from "@/lib/neighborhood-hubs"
 
@@ -54,7 +54,7 @@ export default async function GradeHubLinks() {
     return [{ name: group.neighborhood, borough: group.borough, count: group._count.id, href }]
   }).slice(0, 6)
 
-  const taggedDiets = diets.filter((diet) => diet.count > 0)
+  const taggedDiets = diets.filter((diet) => diet.count >= COMBO_MIN_RESTAURANTS)
 
   return (
     <section className="mb-16" id="look-up-by-borough">

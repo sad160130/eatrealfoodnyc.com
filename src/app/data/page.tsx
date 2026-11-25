@@ -1,22 +1,26 @@
+import Link from "next/link"
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
-import { buildPipeTitle } from "@/lib/seo-titles"
 import { DATA_SAMPLE_LIMIT, dohmhSourceLine, presentSampleFact } from "@/lib/data-sample"
 import { loadNewestInspectionLabel } from "@/lib/data-sample-query"
 import { HIGH_SCORE } from "@/lib/compliance-csv"
 import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
+import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { gradeABoroughPath } from "@/lib/grade-a"
+import { DATA_WEEKLY_TITLE, dataWeeklyFaqs } from "@/lib/money-pages"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import DataProductCta, { DataHeroCta } from "@/components/data-product-cta"
 import DataSampleForm from "@/components/data-sample-form"
+import FAQSchema from "@/components/faq-schema"
 import { DATA_PRODUCT, DOHMH_DATASET } from "@/config/data-product"
 
 export const revalidate = 86400
 
-const title = buildPipeTitle(DATA_PRODUCT.name, null)
+const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
 export const metadata = pageMeta({
   path: "/data",
-  title,
+  title: DATA_WEEKLY_TITLE,
   description:
     "A Monday email with two CSVs: NYC inspection leads and new openings. $79 a month or $790 a year. Built from DOHMH dataset 43nn-pn8j.",
 })
@@ -36,7 +40,7 @@ export default async function DataProductPage({
 }) {
   const { subscribed } = await searchParams
   const purchaseConfirmed = subscribed === "1"
-  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionLabel] =
+  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionLabel, counts] =
     await Promise.all([
     prisma.restaurant.count({ where: { inspection_grade: { in: ["Z", "P"] } } }),
     prisma.restaurant.count({ where: { inspection_score: { gte: HIGH_SCORE } } }),
@@ -70,7 +74,9 @@ export default async function DataProductPage({
       take: 3,
     }),
     loadNewestInspectionLabel(),
+    getPublishedDirectoryCounts(),
   ])
+  const faqs = dataWeeklyFaqs()
 
   const rows: SampleRow[] = [
     ...pendingRows.map((row) => toSample(row, "Grade pending")),
@@ -81,12 +87,17 @@ export default async function DataProductPage({
   return (
     <div style={{ backgroundColor: "var(--color-cream)" }}>
       <BreadcrumbJsonLd items={[{ name: "Data", path: "/data" }]} />
+      <FAQSchema faqs={faqs} />
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
         <div className="mx-auto max-w-3xl px-6 pb-8 pt-8 sm:pb-10 sm:pt-10">
           <p className="eyebrow">{DATA_PRODUCT.name}</p>
           <h1 className="display-2 mt-3">Reach NYC restaurants the week they need help.</h1>
           <p className="dek mt-4">
             Every Monday, get a CSV of restaurants with Grade Pending, high scores, or closed status, plus new openings not yet inspected.
+          </p>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+            The public directory lists {counts.restaurants.toLocaleString("en-US")} published listings, {counts.gradeA.toLocaleString("en-US")} with Grade A.
+            {newestInspectionLabel ? ` Rows as of ${newestInspectionLabel}.` : ""}
           </p>
           {purchaseConfirmed ? (
             <p
@@ -191,6 +202,51 @@ export default async function DataProductPage({
           </a>
           . This extract was modified: names are redacted, addresses are removed, rows are filtered to this directory, and Z and P are labeled Grade Pending rather than printed as letters.
         </p>
+
+        <nav aria-label="Related directory pages" className="mt-12">
+          <h2 className="h2-serif">Related pages</h2>
+          <ul className="mt-4 space-y-2 text-base leading-relaxed">
+            <li>
+              <Link href="/about/our-data" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                How the directory sources inspection data
+              </Link>
+            </li>
+            <li>
+              <Link href="/guides/nyc-health-grades-explained" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                NYC health grades explained
+              </Link>
+            </li>
+            <li>
+              <Link href="/data/nyc-restaurant-health-grade-report" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                NYC restaurant health grade report
+              </Link>
+            </li>
+            <li>
+              <Link href="/data/best-rated-restaurants" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                Best-rated restaurants
+              </Link>
+            </li>
+            {BOROUGHS.map((borough) => (
+              <li key={borough}>
+                <Link href={gradeABoroughPath(borough)} className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                  Grade A restaurants in {borough}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <section className="mt-12" aria-labelledby="data-faq">
+          <h2 id="data-faq" className="h2-serif">Questions about the email</h2>
+          <div className="mt-6 space-y-6">
+            {faqs.map((faq) => (
+              <div key={faq.question}>
+                <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{faq.question}</h3>
+                <p className="mt-2 text-base leading-relaxed">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </article>
     </div>
   )

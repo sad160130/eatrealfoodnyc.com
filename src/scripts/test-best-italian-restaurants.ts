@@ -130,7 +130,7 @@ assert.match(guides, /best-italian-restaurants-nyc/)
 assert.match(guides, /Best Italian Restaurants in NYC: Top 10 Ranked/)
 assert.doesNotMatch(guides, /\(2027\)/)
 
-const llms = readFileSync(new URL("../../public/llms.txt", import.meta.url), "utf8")
+const llms = readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8")
 assert.match(llms, /guides\/best-italian-restaurants-nyc/)
 assert.match(llms, /43nn-pn8j/)
 assert.match(llms, /Best Italian Restaurants in NYC: Top 10 Ranked/)

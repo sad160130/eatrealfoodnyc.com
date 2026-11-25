@@ -219,7 +219,7 @@ assert.match(form, /name="source"/)
 assert.match(source("src/app/page.tsx"), /HolidayCateringBanner/)
 assert.match(source("src/app/guides/nyc-health-grades-explained/page.tsx"), /\/catering\/holiday-party-catering-nyc/)
 assert.match(source("src/app/sitemap.ts"), /HOLIDAY_CATERING_PATH/)
-assert.match(source("public/llms.txt"), /https:\/\/www\.eatrealfoodnyc\.com\/catering\/holiday-party-catering-nyc/)
+assert.match(source("src/lib/llms-txt.ts"), /https:\/\/www\.eatrealfoodnyc\.com\/catering\/holiday-party-catering-nyc/)
 assert.match(source("public/llms-full.txt"), /https:\/\/www\.eatrealfoodnyc\.com\/catering\/holiday-party-catering-nyc/)
 assert.match(source("src/app/actions/catering.ts"), /source_path: recordedPath/)
 

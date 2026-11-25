@@ -170,7 +170,7 @@ const links = readFileSync(new URL("../lib/internal-links.ts", import.meta.url),
 assert.match(links, /grade A restaurants by borough in NYC/)
 assert.match(links, /\/guides\/grade-a-restaurants-by-borough-nyc/)
 
-const llms = readFileSync(new URL("../../public/llms.txt", import.meta.url), "utf8")
+const llms = readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8")
 assert.match(llms, /guides\/grade-a-restaurants-by-borough-nyc/)
 const llmsFull = readFileSync(new URL("../../public/llms-full.txt", import.meta.url), "utf8")
 assert.match(llmsFull, /guides\/grade-a-restaurants-by-borough-nyc/)

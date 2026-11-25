@@ -80,6 +80,27 @@ export function renderedTitleLength(inner: string): number {
   return withBrand(inner).length
 }
 
+/**
+ * Keep a restaurant title at or under `max` characters.
+ * A " | " inside the name is a suffix: drop whole suffixes before cutting a word.
+ */
+export function clipListingTitle(text: string, max = TITLE_MAX): string {
+  const cleaned = text.replace(/\s+/g, " ").trim()
+  if (cleaned.length <= max) return cleaned
+  const parts = cleaned.split(" | ")
+  let kept = ""
+  for (const part of parts) {
+    const next = kept ? `${kept} | ${part}` : part
+    if (next.length > max) break
+    kept = next
+  }
+  if (kept && kept.length <= max && kept.length < cleaned.length) return kept
+  const slice = cleaned.slice(0, max)
+  const space = slice.lastIndexOf(" ")
+  const base = (space > 12 ? slice.slice(0, space) : slice).trimEnd()
+  return base.replace(/[\s|–—-]+$/u, "").trim()
+}
+
 /** Clip on a word boundary and add an ellipsis when the text is too long. */
 export function clipText(text: string, max: number): string {
   const cleaned = text.replace(/\s+/g, " ").trim()
@@ -285,29 +306,30 @@ export function restaurantListingTitle(input: {
   const recent = inspectionIsRecent(input.inspectionDate, input.snapshot)
   const hood = input.neighborhood
   const borough = input.borough
-  if (grade) {
-    return fitTitle(
-      [
-        recent && month && hood ? `${input.name}, ${hood} | Grade ${grade}, ${month}` : null,
-        hood ? `${input.name}, ${hood} | NYC Grade ${grade}` : null,
-        hood ? `${input.name}, ${hood} | Grade ${grade}` : null,
-        borough ? `${input.name} | NYC Grade ${grade}, ${borough}` : null,
-        `${input.name} | Grade ${grade}`,
-        input.name,
-      ],
-      { allowBrand: false }
-    )
-  }
   const cuisine = cuisineLabel(input.type, input.name)
-  return fitTitle(
-    [
-      cuisine && hood && borough ? `${input.name} | ${cuisine} in ${hood}, ${borough}` : null,
-      cuisine && hood ? `${input.name} | ${cuisine} in ${hood}` : null,
-      hood ? `${input.name}, ${hood}` : null,
-      input.name,
-    ],
-    { allowBrand: false }
-  )
+  const shortName = clipListingTitle(input.name)
+  const titled = grade
+    ? fitTitle(
+        [
+          recent && month && hood ? `${shortName}, ${hood} | Grade ${grade}, ${month}` : null,
+          hood ? `${shortName}, ${hood} | NYC Grade ${grade}` : null,
+          hood ? `${shortName}, ${hood} | Grade ${grade}` : null,
+          borough ? `${shortName} | NYC Grade ${grade}, ${borough}` : null,
+          `${shortName} | Grade ${grade}`,
+          shortName,
+        ],
+        { allowBrand: false, max: TITLE_MAX, cap: TITLE_MAX }
+      )
+    : fitTitle(
+        [
+          cuisine && hood && borough ? `${shortName} | ${cuisine} in ${hood}, ${borough}` : null,
+          cuisine && hood ? `${shortName} | ${cuisine} in ${hood}` : null,
+          hood ? `${shortName}, ${hood}` : null,
+          shortName,
+        ],
+        { allowBrand: false, max: TITLE_MAX, cap: TITLE_MAX }
+      )
+  return clipListingTitle(titled)
 }
 
 function cuisineLabel(type: string | null, name: string): string | null {
@@ -504,25 +526,67 @@ export function boroughHubTitle(borough: string, gradeA: number, year: number): 
 }
 
 export function dietHubTitle(label: string, count: number, gradeA: number, year: number): string {
+  const bits = [
+    count > 0 ? `${count.toLocaleString("en-US")} Listed` : null,
+    gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null,
+  ].filter(Boolean)
+  const benefit = bits.join(", ")
   return fitTitle(
     [
-      ` ${label} Restaurants NYC ${year} | ${count.toLocaleString("en-US")} Listed, ${gradeA.toLocaleString("en-US")} Grade A`.trim(),
-      gradeA > 0 ? `${label} Restaurants NYC ${year} | ${gradeA.toLocaleString("en-US")} Grade A` : null,
-      gradeA > 0 ? `${label} Restaurants NYC | ${gradeA.toLocaleString("en-US")} Grade A` : null,
+      benefit ? `${label} Restaurants NYC ${year} | ${benefit}` : null,
+      benefit ? `${label} Restaurants NYC | ${benefit}` : null,
+      `${label} Restaurants NYC ${year}`,
       `${label} Restaurants NYC`,
     ],
     { allowBrand: false }
   )
 }
 
+/** Paginated Grade A title. Includes "| Page N" and stays within 60 characters. */
+export function gradeAPagedTitle(place: string, page: number): string {
+  const pageLabel = `Page ${page}`
+  const brand = BRAND_NAME
+  const candidates = [
+    `Grade A Restaurants in ${place}`,
+    `Grade A in ${place}`,
+    `${place} Grade A`,
+    "Grade A Restaurants",
+    "Grade A",
+  ]
+  for (const keyword of candidates) {
+    const full = `${keyword} | ${pageLabel} | ${brand}`
+    if (full.length <= TITLE_MAX) return full
+  }
+  return `Grade A | ${pageLabel}`
+}
+
+export function gradeAPageDescription(input: {
+  total: number
+  place: string
+  page: number
+  pages: number
+}): string {
+  const lead = `${input.total.toLocaleString("en-US")} published restaurants in ${input.place} hold a NYC DOHMH Grade A.`
+  const source = "Grades come from the city's inspection dataset."
+  const pageBit = input.page > 1 ? `Page ${input.page} of ${input.pages}.` : ""
+  const full = [lead, source, pageBit].filter(Boolean).join(" ")
+  if (full.length <= DESCRIPTION_MAX) return full
+  const shorter = [lead, pageBit].filter(Boolean).join(" ")
+  if (shorter.length <= DESCRIPTION_MAX) return shorter
+  return pageBit || lead
+}
+
 export function dietBoroughHubTitle(label: string, borough: string, count: number, gradeA: number, year: number): string {
-  const listed = `${count.toLocaleString("en-US")} Listed, ${gradeA.toLocaleString("en-US")} Grade A`
+  const bits = [
+    count > 0 ? `${count.toLocaleString("en-US")} Listed` : null,
+    gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null,
+  ].filter(Boolean)
+  const listed = bits.join(", ")
   return fitTitle(
     [
-      `${label} Restaurants in ${borough} ${year} | ${listed}`,
-      `${label} Restaurants in ${borough} | ${listed}`,
-      `${label} in ${borough} | ${listed}`,
-      gradeA > 0 ? `${label} Restaurants in ${borough} | ${gradeA.toLocaleString("en-US")} Grade A` : null,
+      listed ? `${label} Restaurants in ${borough} ${year} | ${listed}` : null,
+      listed ? `${label} Restaurants in ${borough} | ${listed}` : null,
+      listed ? `${label} in ${borough} | ${listed}` : null,
       `${label} Restaurants in ${borough}`,
     ],
     { allowBrand: false }
