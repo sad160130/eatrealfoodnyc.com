@@ -1,3 +1,4 @@
+import { unstable_rethrow } from "next/navigation"
 import { COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 
 export interface DietLink {
@@ -28,4 +29,44 @@ export function dietHubIsIndexable(count: number): boolean {
 
 export function indexableDietLinks(counts: Record<string, number>): DietLink[] {
   return DIET_NAV.filter((diet) => dietHubIsIndexable(counts[diet.tag] ?? 0))
+}
+
+/**
+ * Hubs that were indexable on the Nov 25 preview. Used only when the live
+ * count query fails, so the header and footer still render.
+ */
+export const FALLBACK_INDEXABLE_DIET_TAGS = [
+  "vegan",
+  "vegetarian",
+  "gluten-free",
+  "halal",
+  "kosher",
+  "dairy-free",
+  "whole-foods",
+  "low-calorie",
+] as const
+
+export const FALLBACK_INDEXABLE_DIETS: DietLink[] = DIET_NAV.filter((diet) =>
+  (FALLBACK_INDEXABLE_DIET_TAGS as readonly string[]).includes(diet.tag)
+)
+
+async function defaultDietLoader(): Promise<DietLink[]> {
+  const { getIndexableDietTags } = await import("@/lib/diet-hubs")
+  return getIndexableDietTags()
+}
+
+/** Nav diets. A database error falls back instead of failing the layout. */
+export async function loadNavDietTags(
+  load: () => Promise<DietLink[]> = defaultDietLoader
+): Promise<DietLink[]> {
+  try {
+    return await load()
+  } catch (error) {
+    unstable_rethrow(error)
+    const name = error instanceof Error ? error.name : "Error"
+    const raw = error instanceof Error ? error.message : ""
+    const message = raw.replace(/[a-z][a-z0-9+.-]*:\/\/\S+/gi, "[redacted]").slice(0, 160)
+    console.error(`Diet hub nav unavailable (${name}${message ? `: ${message}` : ""})`)
+    return FALLBACK_INDEXABLE_DIETS
+  }
 }

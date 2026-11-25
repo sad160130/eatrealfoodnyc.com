@@ -2,7 +2,7 @@ import Link from "next/link"
 import { unstable_rethrow } from "next/navigation"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
-import { getIndexableDietTags } from "@/lib/diet-hubs"
+import { loadNavDietTags } from "@/lib/diet-hub-index"
 import { shortenRevalidate } from "@/lib/db-fallback"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
@@ -58,7 +58,7 @@ async function loadFooterCounts(): Promise<{ listed: string; neighborhoods: stri
 }
 
 export default async function Footer() {
-  const [counts, diets] = await Promise.all([loadFooterCounts(), getIndexableDietTags()])
+  const [counts, diets] = await Promise.all([loadFooterCounts(), loadNavDietTags()])
 
   return (
     <footer
