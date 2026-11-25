@@ -16,6 +16,7 @@ import {
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
 import bestRatedReport from "@/data/best-rated-restaurants"
+import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import { parseInspectionDate } from "@/lib/inspection-dates"
 import {
@@ -57,6 +58,9 @@ export function editorialPaths(): string[] {
     ...GUIDES.map((guide) => `/guides/${guide.slug}`),
     "/data/nyc-restaurant-health-grade-report",
     "/data/best-rated-restaurants",
+    "/data/nyc-restaurant-score-13-cliff",
+    "/data/not-yet-inspected-restaurants-nyc",
+    `/data/nyc-restaurant-closures-${closuresReport.latestMonth}`,
   ]
 }
 
@@ -222,6 +226,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       0.9,
       "monthly",
       asDate(bestRatedReport.generatedAt)
+    ),
+    entry(siteUrl, "/data/nyc-restaurant-score-13-cliff", 0.9, "monthly", asDate("2026-11-25")),
+    entry(siteUrl, "/data/not-yet-inspected-restaurants-nyc", 0.9, "monthly", asDate("2026-11-25")),
+    entry(
+      siteUrl,
+      `/data/nyc-restaurant-closures-${closuresReport.latestMonth}`,
+      0.9,
+      "monthly",
+      asDate("2026-11-25")
     ),
   ]
 
