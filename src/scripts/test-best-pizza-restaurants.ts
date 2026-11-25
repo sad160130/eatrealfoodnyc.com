@@ -151,7 +151,7 @@ assert.doesNotMatch(guides, /\(2027\)/)
 const sitemap = readFileSync(new URL("../app/sitemap.ts", import.meta.url), "utf8")
 assert.match(sitemap, /GUIDES\.map/)
 
-const llms = readFileSync(new URL("../../public/llms.txt", import.meta.url), "utf8")
+const llms = readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8")
 assert.match(llms, /guides\/best-pizza-restaurants-nyc/)
 assert.match(llms, /43nn-pn8j/)
 assert.match(llms, /2026-11-22/)

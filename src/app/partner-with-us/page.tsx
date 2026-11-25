@@ -3,6 +3,9 @@ import { Suspense } from "react"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import { getPublishedDirectoryCounts, getPublishedHubNeighborhoodNames } from "@/lib/directory-stats"
+import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { partnerFaqs, PARTNER_TITLE } from "@/lib/money-pages"
+import FAQSchema from "@/components/faq-schema"
 import { PARTNER_INQUIRY_EMAIL, PARTNER_INQUIRY_PATH } from "@/config/contact"
 import PartnerLabel from "@/components/partner-label"
 import PartnerTierCards, { PartnerInquiryCards } from "@/components/partner-tier-cards"
@@ -13,7 +16,7 @@ import { PartnerPurchaseNotice, PartnerReferralLine } from "@/components/partner
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = {
-  title: "Partner with Us — Eat Real Food NYC",
+  title: { absolute: PARTNER_TITLE },
   description:
     "A listing, a claim, and a Grade A badge are free. Paid Partner placements are optional and never change a grade or a ranking.",
   alternates: { canonical: getCanonicalUrl("/partner-with-us") },
@@ -70,10 +73,12 @@ const FAQ = [
 ]
 
 export default async function PartnerWithUsPage() {
-  const [counts, neighborhoodNames] = await Promise.all([
+  const [counts, neighborhoodNames, snapshot] = await Promise.all([
     getPublishedDirectoryCounts(),
     getPublishedHubNeighborhoodNames(),
+    getDirectorySnapshot(),
   ])
+  const focusedFaqs = partnerFaqs()
   const [featured, spotlight, neighborhoodSponsor] = PARTNER_TIERS
 
   return (
@@ -93,6 +98,9 @@ export default async function PartnerWithUsPage() {
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
             Your listing is free. Claim it, add your free Grade A badge, then upgrade to a labeled placement only if you want more visibility.
           </p>
+          {snapshot.latestInspectionLabel ? (
+            <p className="mt-4 text-sm text-white/60">Updated {snapshot.latestInspectionLabel}.</p>
+          ) : null}
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <ClaimListingCta
               source="partner_hero"
@@ -306,12 +314,19 @@ export default async function PartnerWithUsPage() {
         </section>
 
         <section className="mb-16">
+          <FAQSchema faqs={focusedFaqs} />
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-sage">FAQ</p>
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Questions restaurants ask
           </h2>
           <div className="space-y-4">
-            {FAQ.map((item) => (
+            {focusedFaqs.map((item) => (
+              <div key={item.question} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{item.question}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-gray-700">{item.answer}</p>
+              </div>
+            ))}
+            {FAQ.filter((item) => !/pay to be listed|raise my grade|guarantee traffic|diners know I paid/i.test(item.q)).map((item) => (
               <div key={item.q} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{item.q}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-gray-700">{item.a}</p>

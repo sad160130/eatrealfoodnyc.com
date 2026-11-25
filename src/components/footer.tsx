@@ -2,14 +2,10 @@ import Link from "next/link"
 import { unstable_rethrow } from "next/navigation"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { getIndexableDietTags } from "@/lib/diet-hubs"
 import { shortenRevalidate } from "@/lib/db-fallback"
 
 const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
-
-const DIETS = [
-  "Vegan", "Vegetarian", "Gluten-Free", "Halal", "Kosher", "Dairy-Free",
-  "Keto", "Paleo", "Whole Foods", "Low Calorie", "Raw Food", "Nut-Free",
-]
 
 const COMPANY = [
   { label: "About", href: "/about" },
@@ -62,7 +58,7 @@ async function loadFooterCounts(): Promise<{ listed: string; neighborhoods: stri
 }
 
 export default async function Footer() {
-  const counts = await loadFooterCounts()
+  const [counts, diets] = await Promise.all([loadFooterCounts(), getIndexableDietTags()])
 
   return (
     <footer
@@ -192,9 +188,9 @@ export default async function Footer() {
           </FooterCol>
 
           <FooterCol label="Dietary">
-            {DIETS.map((d) => (
-              <FooterLink key={d} href={`/healthy-restaurants/${d.toLowerCase().replace(/ /g, "-")}`}>
-                {d}
+            {diets.map((diet) => (
+              <FooterLink key={diet.tag} href={`/healthy-restaurants/${diet.tag}`}>
+                {diet.label}
               </FooterLink>
             ))}
           </FooterCol>

@@ -15,6 +15,10 @@ import { homeHeroCopy } from "@/lib/home-hero"
 import HomeHeroCta from "@/components/home-hero-cta"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { fitDescription, homeTitle } from "@/lib/seo-titles"
+import { getIndexableDietTags } from "@/lib/diet-hubs"
+import { homeFaqs } from "@/lib/money-pages"
+import FAQSchema from "@/components/faq-schema"
+import { buildBreadcrumbList } from "@/lib/schema"
 import { skipImageOptimizer } from "@/lib/photo-src"
 import HolidayCateringBanner from "@/components/holiday-catering-banner"
 
@@ -100,7 +104,7 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [counts, editorPickRows, hiddenGemRows, snapshot, neighborhoodGroups] = await Promise.all([
+  const [counts, editorPickRows, hiddenGemRows, snapshot, indexableDiets, neighborhoodGroups] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.findMany({
       where: {
@@ -119,6 +123,7 @@ export default async function HomePage() {
       take: 4,
     }),
     getDirectorySnapshot(),
+    getIndexableDietTags(),
     prisma.restaurant.groupBy({
       by: ["borough", "neighborhood"],
       where: {
@@ -145,11 +150,20 @@ export default async function HomePage() {
     gradeA: counts.gradeA,
     latestInspectionLabel: snapshot.latestInspectionLabel,
   })
+  const dietTags = new Set(indexableDiets.map((diet) => diet.tag))
+  const visibleDiets = ALL_DIETS.filter((diet) => dietTags.has(diet.tag))
+  const faqs = homeFaqs()
   const journalPicks = editorsPicks.filter((restaurant) => isDirectoryEligible(restaurant)).slice(0, 8)
   const featuredGem = hiddenGems.filter((restaurant) => isDirectoryEligible(restaurant))[0] ?? journalPicks[1] ?? null
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildBreadcrumbList([{ name: "Eat Real Food NYC", path: "/" }])),
+        }}
+      />
       {/* ─── HERO ─── One Grade A action. The letter plaque is the inspection
            card; search, map, and catering stay as text links under it. */}
       <section
@@ -334,7 +348,7 @@ export default async function HomePage() {
             >
               <p className="eyebrow">Filter by diet</p>
               <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                {ALL_DIETS.map((diet) => (
+                {visibleDiets.map((diet) => (
                   <Link
                     key={diet.tag}
                     href={`/healthy-restaurants/${diet.tag}`}
@@ -680,6 +694,29 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="border-t px-6 py-16" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
+        <div className="mx-auto max-w-3xl">
+          <FAQSchema faqs={faqs} />
+          <p className="eyebrow">FAQ</p>
+          <h2 className="h2-serif mt-2">Questions about this directory</h2>
+          {snapshot.latestInspectionLabel ? (
+            <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+              Updated {snapshot.latestInspectionLabel}.
+            </p>
+          ) : null}
+          <div className="mt-8 space-y-6">
+            {faqs.map((faq) => (
+              <div key={faq.question}>
+                <h3 className="text-lg font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>{faq.question}</h3>
+                <p className="mt-2 text-base leading-relaxed" style={{ color: "var(--color-text)" }}>
+                  <LinkedAnswer text={faq.answer} />
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="border-t px-6 py-16" style={{ borderColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
         <div className="mx-auto max-w-7xl">
           <NewsletterSignup />
@@ -691,6 +728,27 @@ export default async function HomePage() {
 }
 
 /* ─── Internal pieces ─── */
+
+function LinkedAnswer({ text }: { text: string }) {
+  const parts = text.split(/(\/guides\/[a-z0-9-]+|\/about\/[a-z0-9-]+)/)
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.startsWith("/") ? (
+          <Link key={index} href={part} className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+            {part === "/guides/nyc-health-grades-explained"
+              ? "the grades guide"
+              : part === "/about/our-data"
+                ? "how this directory sources grades"
+                : part}
+          </Link>
+        ) : (
+          <span key={index}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
 
 function Stat({ number, label }: { number: string; label: string }) {
   return (
