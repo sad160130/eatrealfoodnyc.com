@@ -11,7 +11,7 @@ export const DOHMH_EXPLICIT_NAME_FIXES = [
 ] as const
 
 export const RECONCILE_PAGE_SIZE = 1_000
-export const RECONCILE_WRITE_BATCH = 50
+export const RECONCILE_WRITE_CONCURRENCY = 5
 const RECONCILE_PAGE_CAP = 40
 
 export const RESTAURANT_RECONCILE_COLUMNS = [
@@ -78,8 +78,9 @@ export function restaurantReadQuery(offset: number, limit = RECONCILE_PAGE_SIZE)
   return `restaurants?select=${RESTAURANT_RECONCILE_COLUMNS.join(",")}&order=id.asc&limit=${limit}&offset=${offset}`
 }
 
-export function restaurantWriteQuery(): string {
-  return "restaurants?on_conflict=id"
+export function restaurantPatchQuery(id: number): string {
+  if (!Number.isInteger(id)) throw new Error("invalid restaurant id")
+  return `restaurants?id=eq.${id}`
 }
 
 export function redactSecrets(message: string, secrets: Array<string | undefined>): string {
@@ -210,6 +211,7 @@ export function reconcileSummary(input: {
     `Matched: ${input.inspection.matched}`,
     `Unmatched: ${input.inspection.unmatched}`,
     `Ambiguous matches skipped: ${input.inspection.skippedAmbiguous}`,
+    `Name conflicts skipped: ${input.inspection.skippedNameConflict}`,
     `Name-only matches skipped: ${input.inspection.skippedNameOnly}`,
     `Older inspections skipped: ${input.inspection.skippedOlder}`,
     `Unchanged: ${input.inspection.unchanged}`,
@@ -220,6 +222,12 @@ export function reconcileSummary(input: {
     `Explicit name fixes already applied: ${input.nameFixes.alreadyApplied}`,
     `Explicit name fixes skipped: ${input.nameFixes.skipped}`,
   ]
+  if (input.inspection.nameConflictSample.length > 0) {
+    lines.push("Name conflict sample:")
+    for (const sample of input.inspection.nameConflictSample) {
+      lines.push(`  ${sample.id} ${sample.listingName} -> city ${sample.cityName} (CAMIS ${sample.camis})`)
+    }
+  }
   if (input.inspection.nameMismatchSample.length > 0) {
     lines.push("Name mismatch sample:")
     for (const sample of input.inspection.nameMismatchSample) {
@@ -267,7 +275,7 @@ function restHeaders(key: string, write: boolean): Record<string, string> {
   }
   if (write) {
     headers["content-type"] = "application/json"
-    headers.prefer = "resolution=merge-duplicates,return=minimal"
+    headers.prefer = "return=minimal"
   }
   return headers
 }
@@ -320,28 +328,35 @@ export async function loadRestaurantsFromRest(options: {
 }
 
 /**
- * Batched upsert of only the columns in each object. `updated_at` is left
- * alone: it is the publish clock, not the inspection date.
+ * One PATCH per restaurant, a few at a time. The body is only the columns
+ * that change, so a name fix cannot clear a grade and a grade fix cannot
+ * insert a row. `updated_at` is left alone: it is the publish clock.
  */
 export async function applyRestaurantRestWrites(options: {
   baseUrl: string
   key: string
   writes: RestaurantRestWrite[]
   fetchImpl?: typeof fetch
-  batchSize?: number
+  concurrency?: number
 }): Promise<number> {
-  const batchSize = options.batchSize ?? RECONCILE_WRITE_BATCH
+  const concurrency = options.concurrency ?? RECONCILE_WRITE_CONCURRENCY
+  if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 20) throw new Error("invalid concurrency")
   const fetchImpl = options.fetchImpl ?? fetch
   const root = restRoot(options.baseUrl)
   let written = 0
-  for (let offset = 0; offset < options.writes.length; offset += batchSize) {
-    const batch = options.writes.slice(offset, offset + batchSize)
-    const response = await fetchImpl(`${root}/rest/v1/${restaurantWriteQuery()}`, {
-      method: "POST",
-      headers: restHeaders(options.key, true),
-      body: JSON.stringify(batch),
-    })
-    if (!response.ok) throw new Error(`Supabase REST write failed (${response.status}) after ${written} rows`)
+  for (let offset = 0; offset < options.writes.length; offset += concurrency) {
+    const batch = options.writes.slice(offset, offset + concurrency)
+    await Promise.all(
+      batch.map(async (write) => {
+        const { id, ...payload } = write
+        const response = await fetchImpl(`${root}/rest/v1/${restaurantPatchQuery(id)}`, {
+          method: "PATCH",
+          headers: restHeaders(options.key, true),
+          body: JSON.stringify(payload),
+        })
+        if (!response.ok) throw new Error(`Supabase REST write failed (${response.status}) after ${written} rows`)
+      })
+    )
     written += batch.length
   }
   return written

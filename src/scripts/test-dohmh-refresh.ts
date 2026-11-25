@@ -4,6 +4,7 @@ import { latestInspectionDate, parseInspectionDate } from "../lib/inspection-dat
 import {
   addressKeyFromDohmh,
   addressKeyFromListing,
+  inspectionNamesAgree,
   latestGradedInspection,
   namesLooselyMatch,
   planInspectionUpdates,
@@ -22,7 +23,7 @@ import {
   planExplicitNameFixes,
   reconcileSummary,
   redactSecrets,
-  restaurantWriteQuery,
+  restaurantPatchQuery,
   type DirectoryRestaurantRow,
 } from "../lib/dohmh-reconcile"
 import {
@@ -455,6 +456,8 @@ const dryResponse = await handleDohmhRefreshCron(
       skippedNameOnly: 0,
       skippedOlder: 0,
       skippedAmbiguous: 0,
+      skippedNameConflict: 0,
+      nameConflictSample: [],
       unchanged: 0,
       nameMismatches: 0,
       nameMismatchSample: [],
@@ -500,6 +503,8 @@ const updatedBody = {
   skippedNameOnly: 0,
   skippedOlder: 0,
   skippedAmbiguous: 0,
+  skippedNameConflict: 0,
+  nameConflictSample: [],
   unchanged: 1,
   nameMismatches: 0,
   nameMismatchSample: [],
@@ -663,7 +668,7 @@ assert(
     missingGrade.writes[0].matchedBy === "zip-building" &&
     missingGrade.writes[0].toGrade === "A" &&
     missingGrade.writes[0].toScore === 12,
-  "a blank grade is filled from the same building and ZIP when the first token matches"
+  "a blank grade is filled from the same building and ZIP when the names agree"
 )
 assert(missingGrade.nameMismatches === 1, "Halal Havn versus HALAL HEAVEN is logged and not renamed by the planner")
 
@@ -698,7 +703,10 @@ const ambiguous = planInspectionUpdates(
     }),
   ]
 )
-assert(ambiguous.writes.length === 0 && ambiguous.skippedAmbiguous === 1, "two CAMIS at the same building and ZIP are skipped")
+assert(
+  ambiguous.writes.length === 0 && ambiguous.skippedNameConflict === 1,
+  "two different cafes at the same building are a name conflict, not a write"
+)
 
 const zipName = planInspectionUpdates(
   [listing({
@@ -880,7 +888,10 @@ const rhkRefresh = await runDohmhRefresh({
     return 1
   },
 })
-assert(!renamed && rhkRefresh.plannedUpdates === 0 && rhkRefresh.nameMismatches === 1, "the cron logs the Red Hook name mismatch and does not write it")
+assert(
+  !renamed && rhkRefresh.plannedUpdates === 0 && rhkRefresh.skippedNameConflict === 1,
+  "the cron skips rhk marketplace as a name conflict and does not write the grade"
+)
 
 function directoryRow(overrides: Partial<DirectoryRestaurantRow> & Pick<DirectoryRestaurantRow, "id" | "slug" | "name">): DirectoryRestaurantRow {
   return {
@@ -967,7 +978,7 @@ const summary = reconcileSummary({
 assert(summary.includes("Red Hook Kitchenette") && summary.includes("dry run"), "the dry-run summary lists the rename and says it will not write")
 assert(!summary.includes(secret), "the summary has no place to print a key")
 assert(redactSecrets(`failed ${secret} https://example.com/secret`, [secret]) === "failed [redacted] [redacted]", "errors redact the key and any URL")
-assert(restaurantWriteQuery() === "restaurants?on_conflict=id", "writes upsert on id and do not put the key in the URL")
+assert(restaurantPatchQuery(8752) === "restaurants?id=eq.8752", "a write patches one restaurant id and does not put the key in the URL")
 const backup = buildGradeBackup({
   generatedAt: "2026-11-25T00:00:00.000Z",
   since: "2022-11-20",
@@ -1004,6 +1015,71 @@ const loaded = await loadRestaurantsFromRest({
 assert(loaded.length === 1 && loaded[0].inspection_score === 4, "a string score from REST is stored as a number")
 assert(parseRestaurantRestRow({ id: "nope" }) === null, "a REST row without an id is skipped")
 
+const passingNames: Array<[string, string]> = [
+  ["Kesté Pizza e Vino", "KESTE"],
+  ["Añejo", "ANEJO"],
+  ["Rezdôra", "REZDORA"],
+  ["12 Chairs Cafe", "TWELVE CHAIRS"],
+  ["Mazzat", "MAZZAT"],
+  ["Hook & Reel Cajun Seafood & Bar", "HOOK & REEL"],
+  ['Chick It Out " Khao Man Gai"', "CHICK IT OUT"],
+]
+for (const [listingName, cityName] of passingNames) {
+  assert(inspectionNamesAgree(listingName, cityName), `${listingName} agrees with ${cityName}`)
+}
+assert(!inspectionNamesAgree("rhk marketplace", "RED HOOK KITCHENETTE"), "rhk marketplace does not agree with Red Hook Kitchenette")
+
+function sameAddressConflict(listingName: string, cityName: string, fromDate: string, toIso: string, replaceOlder = false) {
+  const address = "10 Main St, New York, NY 10001"
+  return planInspectionUpdates(
+    [listing({
+      id: 11,
+      name: listingName,
+      address,
+      inspection_grade: "A",
+      inspection_score: 5,
+      inspection_date: fromDate,
+    })],
+    [snapshot({
+      camis: "99",
+      name: cityName,
+      grade: "A",
+      score: 8,
+      inspectionDate: toIso,
+      addressKey: addressKeyFromListing(address),
+    })],
+    { replaceOlder }
+  )
+}
+
+const wrongVenues: Array<[string, string]> = [
+  ["Chelsea Juice", "LA BIANCA PIZZERIA"],
+  ["Westway Diner", "TROOP WINGS"],
+  ["Breads Bakery", "NESPRESSO"],
+  ["Green Cafe", "BROAD NOSH BAGELS"],
+  ["Healthy Corner", "BELLA DONNA PIZZERIA"],
+  ["Shahs Halal Food Norwood", "SUBWAY"],
+  ["The Meatball Shop Hell's Kitchen", "BLUESTONE LANE"],
+  ["Ci Siamo", "MIDNIGHT THEATRE"],
+  ["Smoothie Central", "BAGEL BOSS"],
+  ["Tea and Milk", "BANH MI SHACK"],
+  ["Farmers Fridge Jamaica", "ANDY'S"],
+]
+for (const [listingName, cityName] of wrongVenues) {
+  const plan = sameAddressConflict(listingName, cityName, "5/7/2025", "2026-11-10")
+  assert(
+    plan.writes.length === 0 && plan.skippedNameConflict === 1,
+    `${listingName} is not written from ${cityName}`
+  )
+}
+const tamar = sameAddressConflict("Tamar Juice Bar", "CHICKEN FEASTIN", "9/22/2025", "2025-07-16", true)
+assert(
+  tamar.writes.length === 0 && tamar.skippedNameConflict === 1,
+  "tamar juice bar does not take an older date from CHICKEN FEASTIN"
+)
+const kesteWrite = sameAddressConflict("Kesté Pizza e Vino", "KESTE", "1/1/2024", "2026-06-01")
+assert(kesteWrite.writes.length === 1 && kesteWrite.writes[0].toDate === "6/1/2026", "Kesté Pizza e Vino is written from KESTE")
+
 let writeUrls: string[] = []
 try {
   await applyRestaurantRestWrites({
@@ -1012,10 +1088,13 @@ try {
     writes: [{ id: 8752, name: "Red Hook Kitchenette" }],
     fetchImpl: async (input, init) => {
       writeUrls.push(String(input))
+      assert(init?.method === "PATCH", "a name fix is a PATCH")
+      assert(String(input).endsWith("/rest/v1/restaurants?id=eq.8752"), "the PATCH targets that restaurant id")
       assert(!String(input).includes(secret), "the write URL does not include the key")
-      assert(new Headers(init?.headers).get("prefer")?.includes("merge-duplicates") === true, "writes merge on conflict")
+      assert(!String(input).includes("on_conflict"), "the write is not an upsert")
+      assert(new Headers(init?.headers).get("prefer") === "return=minimal", "the PATCH asks PostgREST to return nothing")
       const body = JSON.parse(String(init?.body))
-      assert(body[0].name === "Red Hook Kitchenette" && !("inspection_grade" in body[0]), "a name-only batch does not send grade columns")
+      assert(body.name === "Red Hook Kitchenette" && !("inspection_grade" in body), "a name-only patch does not send grade columns")
       return new Response(secret, { status: 503 })
     },
   })
@@ -1023,7 +1102,32 @@ try {
 } catch (error) {
   assert(error instanceof Error && error.message.includes("503") && !error.message.includes(secret), "a REST failure reports the status and not the key")
 }
-assert(writeUrls.length === 1, "a failed write is not retried inside the batch helper")
+assert(writeUrls.length === 1, "a failed patch is not retried")
+
+let inFlight = 0
+let maxInFlight = 0
+let releaseWrites: () => void = () => {}
+const gate = new Promise<void>((resolve) => {
+  releaseWrites = resolve
+})
+const concurrent = applyRestaurantRestWrites({
+  baseUrl: "https://example.supabase.co",
+  key: secret,
+  concurrency: 5,
+  writes: [1, 2, 3, 4, 5, 6].map((id) => ({ id, inspection_grade: "A" as string | null, inspection_score: 1, inspection_date: "1/1/2026" })),
+  fetchImpl: async () => {
+    inFlight += 1
+    maxInFlight = Math.max(maxInFlight, inFlight)
+    await gate
+    inFlight -= 1
+    return new Response(null, { status: 204 })
+  },
+})
+await new Promise((resolve) => setTimeout(resolve, 20))
+assert(maxInFlight === 5 && inFlight === 5, "patches run at most five at a time")
+releaseWrites()
+assert((await concurrent) === 6, "every patch is sent once the earlier ones finish")
+assert(maxInFlight === 5, "the sixth patch waits for a free slot")
 
 console.log("\nDOHMH refresh tests passed")
 }

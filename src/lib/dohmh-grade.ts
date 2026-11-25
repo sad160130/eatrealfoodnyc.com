@@ -107,6 +107,9 @@ export interface InspectionPlan {
   skippedNameOnly: number
   skippedOlder: number
   skippedAmbiguous: number
+  /** Location matched, but the listing name and the city DBA are different businesses. */
+  skippedNameConflict: number
+  nameConflictSample: NameMismatchSample[]
   unchanged: number
   /** Confident matches whose display name differs from the city DBA. Not renamed. */
   nameMismatches: number
@@ -252,10 +255,99 @@ export function namesLooselyMatch(a: string, b: string): boolean {
   return nameTokenOverlap(a, b) >= NAME_OVERLAP_MIN
 }
 
-function namesExact(a: string, b: string): boolean {
-  const left = normalizePlaceName(a)
-  const right = normalizePlaceName(b)
-  return left.length > 0 && left === right
+const GENERIC_NAME_TOKENS = new Set([
+  "restaurant",
+  "restaurants",
+  "cafe",
+  "cafes",
+  "bar",
+  "bars",
+  "grill",
+  "grills",
+  "kitchen",
+  "kitchens",
+  "pizza",
+  "pizzeria",
+  "deli",
+  "delis",
+  "the",
+  "and",
+  "nyc",
+  "ny",
+  "inc",
+  "llc",
+  "ltd",
+  "corp",
+  "co",
+])
+
+const NUMBER_WORDS: Record<string, string> = {
+  zero: "0",
+  one: "1",
+  two: "2",
+  three: "3",
+  four: "4",
+  five: "5",
+  six: "6",
+  seven: "7",
+  eight: "8",
+  nine: "9",
+  ten: "10",
+  eleven: "11",
+  twelve: "12",
+  thirteen: "13",
+  fourteen: "14",
+  fifteen: "15",
+  sixteen: "16",
+  seventeen: "17",
+  eighteen: "18",
+  nineteen: "19",
+  twenty: "20",
+  thirty: "30",
+  forty: "40",
+  fifty: "50",
+  sixty: "60",
+  seventy: "70",
+  eighty: "80",
+  ninety: "90",
+}
+
+const NAME_AGREE_MIN = 0.5
+
+/**
+ * Tokens used to decide that a shared address is the same restaurant.
+ * Accents are folded, punctuation is dropped, generic words are ignored,
+ * and number words become digits.
+ */
+export function inspectionNameTokens(value: string): string[] {
+  const seen = new Set<string>()
+  const tokens: string[] = []
+  for (const raw of placeNameTokens(value)) {
+    const token = NUMBER_WORDS[raw] ?? raw
+    if (token.length < 2 || GENERIC_NAME_TOKENS.has(token) || seen.has(token)) continue
+    seen.add(token)
+    tokens.push(token)
+  }
+  return tokens
+}
+
+/**
+ * Same venue, not merely the same building. Passes when one significant
+ * name contains the other, or the share of shared tokens over the shorter
+ * name is at least 0.5. "Kesté Pizza e Vino" agrees with "KESTE".
+ * "Chelsea Juice" does not agree with "LA BIANCA PIZZERIA".
+ */
+export function inspectionNamesAgree(a: string, b: string): boolean {
+  const left = inspectionNameTokens(a)
+  const right = inspectionNameTokens(b)
+  if (left.length === 0 || right.length === 0) return false
+  const leftSquash = left.join("")
+  const rightSquash = right.join("")
+  if (leftSquash.includes(rightSquash) || rightSquash.includes(leftSquash)) return true
+  const rightSet = new Set(right)
+  let shared = 0
+  for (const token of left) if (rightSet.has(token)) shared += 1
+  return shared / Math.min(left.length, right.length) >= NAME_AGREE_MIN
 }
 
 export function isGradedCode(value: string | null | undefined): value is GradedCode {
@@ -310,6 +402,7 @@ interface GradeIndexes {
 type SnapshotChoice =
   | { kind: "match"; snapshot: GradeSnapshot; matchedBy: GradeMatchMethod }
   | { kind: "ambiguous" }
+  | { kind: "name-conflict"; snapshot: GradeSnapshot }
   | { kind: "none" }
 
 function pushIndex(map: Map<string, GradeSnapshot[]>, key: string, snapshot: GradeSnapshot) {
@@ -362,16 +455,14 @@ function sameBorough(snapshot: GradeSnapshot, borough: string | null): boolean {
 }
 
 /**
- * Address key first. A single CAMIS at that key is the match even when the
- * display name differs from the DBA.
+ * Address key first. A shared building is not enough: the listing name and
+ * the city DBA have to agree, or the row is a name conflict and is not written.
+ * Several CAMIS that agree are ambiguous.
  *
- * Otherwise a guarded secondary match: same ZIP and building number, plus a
- * loose name match, or same ZIP and the exact normalized name. More than one
- * CAMIS on that rule is ambiguous and is not a match. A borough is required
- * to agree when both sides have one.
- *
- * Name plus borough, with no ZIP agreement, is recorded as name-only so the
- * caller can skip the write.
+ * Otherwise same ZIP and building number, plus that same name check, or same
+ * ZIP and the exact normalized name. A borough has to agree when both sides
+ * have one. Name plus borough, with no ZIP agreement, is name-only and is
+ * not written.
  */
 function chooseSnapshot(restaurant: RestaurantGradeTarget, indexes: GradeIndexes): SnapshotChoice {
   const addressKey = addressKeyFromListing(restaurant.address)
@@ -381,11 +472,11 @@ function chooseSnapshot(restaurant: RestaurantGradeTarget, indexes: GradeIndexes
     (addressKey ? indexes.byAddress.get(addressKey) ?? [] : []).filter((snapshot) => sameBorough(snapshot, borough))
   )
 
-  if (addressHits.length === 1) return { kind: "match", snapshot: addressHits[0], matchedBy: "address" }
-  if (addressHits.length > 1) {
-    const named = addressHits.filter((snapshot) => namesLooselyMatch(restaurant.name, snapshot.name))
+  if (addressHits.length > 0) {
+    const named = addressHits.filter((snapshot) => inspectionNamesAgree(restaurant.name, snapshot.name))
     if (named.length === 1) return { kind: "match", snapshot: named[0], matchedBy: "address" }
-    return { kind: "ambiguous" }
+    if (named.length > 1) return { kind: "ambiguous" }
+    return { kind: "name-conflict", snapshot: addressHits[0] }
   }
 
   const secondary = new Map<string, { snapshot: GradeSnapshot; matchedBy: InspectionMatchMethod }>()
@@ -394,6 +485,7 @@ function chooseSnapshot(restaurant: RestaurantGradeTarget, indexes: GradeIndexes
     if (!current || matchedBy === "zip-building") secondary.set(snapshot.camis, { snapshot, matchedBy })
   }
 
+  let rejectedBuilding: GradeSnapshot | null = null
   if (location) {
     const buildingHits = uniqueByCamis(
       (indexes.byZipBuilding.get(`${location.building}|${location.zip}`) ?? []).filter((snapshot) =>
@@ -401,14 +493,17 @@ function chooseSnapshot(restaurant: RestaurantGradeTarget, indexes: GradeIndexes
       )
     )
     for (const snapshot of buildingHits) {
-      if (namesLooselyMatch(restaurant.name, snapshot.name)) add(snapshot, "zip-building")
+      if (inspectionNamesAgree(restaurant.name, snapshot.name)) add(snapshot, "zip-building")
+      else rejectedBuilding ??= snapshot
     }
     const exactName = normalizePlaceName(restaurant.name)
     if (exactName) {
       const nameHits = uniqueByCamis(
         (indexes.byZipName.get(`${exactName}|${location.zip}`) ?? []).filter((snapshot) => sameBorough(snapshot, borough))
       )
-      for (const snapshot of nameHits) add(snapshot, "zip-name")
+      for (const snapshot of nameHits) {
+        if (inspectionNamesAgree(restaurant.name, snapshot.name)) add(snapshot, "zip-name")
+      }
     }
   }
 
@@ -417,6 +512,7 @@ function chooseSnapshot(restaurant: RestaurantGradeTarget, indexes: GradeIndexes
     return { kind: "match", snapshot: only.snapshot, matchedBy: only.matchedBy }
   }
   if (secondary.size > 1) return { kind: "ambiguous" }
+  if (rejectedBuilding) return { kind: "name-conflict", snapshot: rejectedBuilding }
 
   const nameHits = borough
     ? uniqueByCamis(indexes.byName.get(`${normalizePlaceName(restaurant.name)}|${borough}`) ?? [])
@@ -467,15 +563,18 @@ function canonicalStoredDate(isoDate: string): string | null {
 /**
  * Rows to write onto existing restaurants.
  *
- * Address is the primary write key. A same-ZIP building plus a loose name,
- * or a same-ZIP exact name, may also write. More than one CAMIS on that
- * rule is skipped. Name plus borough alone never writes.
+ * Address is the primary write key. A same-ZIP building, or a same-ZIP exact
+ * name, may also write. The listing name and the city DBA have to agree
+ * before any of those are written. A shared address with a different business
+ * is `skippedNameConflict`. More than one agreeing CAMIS is skipped. Name
+ * plus borough alone never writes.
  *
- * A fetched inspection older than the stored calendar day is skipped unless
- * `replaceOlder` is set. The daily full lookback sets it, because the fetched
- * row is the city's latest graded inspection. Same values write nothing, so
- * a second run is a no-op. Dates are compared as calendar days, not as
- * M/D/YYYY text. Display names are never changed here; mismatches are counted.
+ * A fetched inspection older than the stored calendar day is written only
+ * when `replaceOlder` is set and the name check passed. The daily full
+ * lookback sets `replaceOlder`, because the fetched row is the city's latest
+ * graded inspection for that venue. Same values write nothing, so a second
+ * run is a no-op. Dates are compared as calendar days, not as M/D/YYYY text.
+ * Display names are never changed here.
  */
 export function planInspectionUpdates(
   restaurants: InspectionTarget[],
@@ -487,13 +586,27 @@ export function planInspectionUpdates(
   const writes: InspectionWrite[] = []
   const nameOnlySample: InspectionPlan["nameOnlySample"] = []
   const nameMismatchSample: NameMismatchSample[] = []
+  const nameConflictSample: NameMismatchSample[] = []
   let matched = 0
   let unmatched = 0
   let skippedNameOnly = 0
   let skippedOlder = 0
   let skippedAmbiguous = 0
+  let skippedNameConflict = 0
   let unchanged = 0
   let nameMismatches = 0
+
+  const recordNameConflict = (restaurant: InspectionTarget, snapshot: GradeSnapshot) => {
+    skippedNameConflict += 1
+    if (nameConflictSample.length < NAME_MISMATCH_SAMPLE) {
+      nameConflictSample.push({
+        id: restaurant.id,
+        listingName: restaurant.name,
+        cityName: snapshot.name,
+        camis: snapshot.camis,
+      })
+    }
+  }
 
   for (const restaurant of restaurants) {
     const chosen = chooseSnapshot(restaurant, indexes)
@@ -501,8 +614,17 @@ export function planInspectionUpdates(
       skippedAmbiguous += 1
       continue
     }
+    if (chosen.kind === "name-conflict") {
+      recordNameConflict(restaurant, chosen.snapshot)
+      continue
+    }
     if (chosen.kind !== "match") {
       unmatched += 1
+      continue
+    }
+    const nameOk = inspectionNamesAgree(restaurant.name, chosen.snapshot.name)
+    if (chosen.matchedBy !== "name" && !nameOk) {
+      recordNameConflict(restaurant, chosen.snapshot)
       continue
     }
     matched += 1
@@ -541,6 +663,10 @@ export function planInspectionUpdates(
       continue
     }
     const stored = parseInspectionDate(restaurant.inspection_date)
+    if (stored && incoming.getTime() < stored.getTime() && !nameOk) {
+      recordNameConflict(restaurant, chosen.snapshot)
+      continue
+    }
     if (!replaceOlder && stored && incoming.getTime() < stored.getTime()) {
       skippedOlder += 1
       continue
@@ -575,6 +701,8 @@ export function planInspectionUpdates(
     skippedNameOnly,
     skippedOlder,
     skippedAmbiguous,
+    skippedNameConflict,
+    nameConflictSample,
     unchanged,
     nameMismatches,
     nameMismatchSample,

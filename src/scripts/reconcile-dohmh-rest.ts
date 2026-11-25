@@ -8,8 +8,8 @@
  *   NEXT_PUBLIC_SUPABASE_URL
  *   SUPABASE_SERVICE_ROLE_KEY
  *
- * Dry-run by default. --apply writes in batches after saving
- * data/grade-backup-YYYY-MM-DD.json. That file is local. Do not commit it.
+ * Dry-run by default. --apply PATCHes each changed row, five at a time, after
+ * saving data/grade-backup-YYYY-MM-DD.json. That file is local. Do not commit it.
  * The only rename is rhk-marketplace (id 8752) to "Red Hook Kitchenette".
  * The slug stays. Other name mismatches are printed and left alone.
  *

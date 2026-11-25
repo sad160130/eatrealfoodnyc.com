@@ -249,6 +249,13 @@ export interface DohmhRefreshResult {
   skippedNameOnly: number
   skippedOlder: number
   skippedAmbiguous: number
+  skippedNameConflict: number
+  nameConflictSample: Array<{
+    id: number
+    listingName: string
+    cityName: string
+    camis: string
+  }>
   unchanged: number
   nameMismatches: number
   nameMismatchSample: Array<{
@@ -261,9 +268,10 @@ export interface DohmhRefreshResult {
 
 /**
  * Full-lookback refresh. Does not insert restaurants and does not rename
- * them. The fetched latest graded inspection replaces an older stored date.
- * A second call with the same city rows and the same stored grades writes
- * nothing. `?dry=1` plans the writes and does not apply them.
+ * them. The fetched latest graded inspection replaces an older stored date
+ * only when the listing name and the city DBA agree. A second call with the
+ * same city rows and the same stored grades writes nothing. `?dry=1` plans
+ * the writes and does not apply them.
  */
 export async function runDohmhRefresh(options: {
   dry: boolean
@@ -291,6 +299,8 @@ export async function runDohmhRefresh(options: {
     skippedNameOnly: plan.skippedNameOnly,
     skippedOlder: plan.skippedOlder,
     skippedAmbiguous: plan.skippedAmbiguous,
+    skippedNameConflict: plan.skippedNameConflict,
+    nameConflictSample: plan.nameConflictSample,
     unchanged: plan.unchanged,
     nameMismatches: plan.nameMismatches,
     nameMismatchSample: plan.nameMismatchSample,

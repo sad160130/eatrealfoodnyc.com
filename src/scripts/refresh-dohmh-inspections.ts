@@ -89,6 +89,7 @@ async function main() {
   console.log(`Grade letter would change: ${gradeChanges.length}`)
   console.log(`Name-only matches skipped: ${plan.skippedNameOnly}`)
   console.log(`Ambiguous matches skipped: ${plan.skippedAmbiguous}`)
+  console.log(`Name conflicts skipped: ${plan.skippedNameConflict}`)
   console.log(`Name mismatches (not renamed): ${plan.nameMismatches}`)
   console.log("CAMIS matches: 0 (restaurants has no CAMIS column)")
   const byId = new Map(restaurants.map((row) => [row.id, row]))
