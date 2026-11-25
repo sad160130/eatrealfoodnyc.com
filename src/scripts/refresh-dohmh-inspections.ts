@@ -7,15 +7,16 @@
  * and a Google Maps marketing name often does not equal the DOHMH DBA, so
  * address is the first match key.
  *
- * Dry-run by default. --apply writes only address matches (building, street,
- * zip, and borough when both sides have one). Name-only matches are skipped.
+ * Dry-run by default. --apply writes address matches and guarded same-ZIP
+ * matches (building plus a loose name, or the exact normalized name).
+ * Name-only matches are skipped. Ambiguous matches are skipped.
  * The restaurants table has no CAMIS column, so there is no CAMIS join.
  * A grade that stays the same still updates when the inspection date or
  * score changed. This full lookback trusts the fetched latest even when
- * that calendar day is older than the stored text. The daily cron does not:
- * it only reads the last 14 days and will not replace a newer stored date.
- * Before any write, the previous grade fields are saved to
- * data/grade-backup-2026-11-15.json.
+ * that calendar day is older than the stored text. The daily cron does the
+ * same pull. Prefer src/scripts/reconcile-dohmh-rest.ts on a machine that
+ * does not have DATABASE_URL. Before any write, the previous grade fields
+ * are saved to data/grade-backup-2026-11-15.json.
  *
  *   npx tsx src/scripts/refresh-dohmh-inspections.ts
  *   npx tsx src/scripts/refresh-dohmh-inspections.ts --since=2024-01-01
@@ -28,6 +29,7 @@ import { planInspectionUpdates } from "../lib/dohmh-grade"
 import {
   DOHMH_SCRIPT_MAX_ROWS,
   DOHMH_SCRIPT_PAGE_SIZE,
+  dohmhLookbackStart,
   fetchDohmhInspections,
   snapshotsFromInspections,
 } from "../lib/dohmh-refresh"
@@ -41,9 +43,7 @@ const { prisma } = require("../lib/db") as { prisma: import("@prisma/client").Pr
 function sinceDate(): string {
   const arg = process.argv.find((value) => value.startsWith("--since="))
   if (arg) return arg.slice("--since=".length)
-  const date = new Date()
-  date.setUTCFullYear(date.getUTCFullYear() - 4)
-  return date.toISOString().slice(0, 10)
+  return dohmhLookbackStart()
 }
 
 async function main() {
@@ -70,8 +70,9 @@ async function main() {
       token: process.env.DOHMH_APP_TOKEN,
       pageSize: DOHMH_SCRIPT_PAGE_SIZE,
       maxRows: DOHMH_SCRIPT_MAX_ROWS,
+      grouped: true,
       onPage: ({ offset, pageRows }) => {
-        console.log(`Fetched ${pageRows} graded rows (offset ${offset})`)
+        console.log(`Fetched ${pageRows} grouped rows (offset ${offset})`)
       },
     }),
   ])
@@ -87,6 +88,8 @@ async function main() {
   console.log(`Address rows to write: ${plan.writes.length}`)
   console.log(`Grade letter would change: ${gradeChanges.length}`)
   console.log(`Name-only matches skipped: ${plan.skippedNameOnly}`)
+  console.log(`Ambiguous matches skipped: ${plan.skippedAmbiguous}`)
+  console.log(`Name mismatches (not renamed): ${plan.nameMismatches}`)
   console.log("CAMIS matches: 0 (restaurants has no CAMIS column)")
   const byId = new Map(restaurants.map((row) => [row.id, row]))
   const interesting = plan.writes.filter((write) =>
