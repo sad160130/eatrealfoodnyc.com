@@ -38,6 +38,11 @@ assert.doesNotMatch(text, /healthy-restaurants\/keto/)
 assert.doesNotMatch(text, /healthy-restaurants\/paleo/)
 assert.doesNotMatch(text, /healthy-restaurants\/raw-food/)
 assert.match(text, /guides\/nyc-health-grades-explained/)
+assert.match(text, /Record date November 13, 2026/)
+assert.match(text, /90\.2% of 23,992 letter-graded restaurants hold an A/)
+assert.match(text, /Best-rated restaurants \(May 2026 snapshot\)/)
+assert.match(text, /613 operational restaurants rated 4\.5 or higher/)
+
 assert.match(text, /catering\/holiday-party-catering-nyc/)
 assert.equal(text.includes("\n\n## What this site is"), true)
 

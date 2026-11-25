@@ -98,14 +98,14 @@ export default function ComparePageClient() {
             <span>Compare Neighborhoods</span>
           </div>
 
-          <h1
+          <h2
             className="text-4xl font-bold text-forest md:text-5xl"
             style={{ fontFamily: "Georgia, serif" }}
           >
             Neighborhood Health
             <br />
             Comparison
-          </h1>
+          </h2>
           <p className="mt-4 max-w-2xl text-lg" style={{ color: "var(--color-muted)" }}>
             Every NYC neighborhood ranked by health inspection grades, average restaurant ratings,
             dietary diversity, and hidden gem density. Updated from live NYC Health Department data.

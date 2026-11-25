@@ -38,19 +38,19 @@ export default function MapPageClient() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden pt-16">
+    <div className="flex h-[calc(100vh-4rem)] min-h-[32rem] overflow-hidden border-t" style={{ borderColor: "var(--hairline)" }}>
       {/* LEFT PANEL — Filter sidebar (desktop only) */}
       <aside className="hidden w-80 flex-shrink-0 flex-col overflow-y-auto border-r border-gray-100 bg-white md:flex">
         {/* Header */}
         <div className="border-b border-gray-100 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1
+              <h2
                 className="text-xl font-bold text-forest"
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 NYC Health Map
-              </h1>
+              </h2>
               <p className="mt-1 text-xs" style={{ color: "var(--color-muted)" }}>
                 Color-coded by inspection grade
               </p>
