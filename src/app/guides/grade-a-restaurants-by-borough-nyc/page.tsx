@@ -202,9 +202,9 @@ export default function GradeARestaurantsByBoroughNyc() {
             <a href={DOHMH_DATASET_URL} className="font-semibold text-jade hover:text-forest">
               NYC Department of Health and Mental Hygiene Restaurant Inspection Results
             </a>{" "}
-            (dataset {DOHMH_DATASET_ID}). The rules for the 0 to 13, 14 to 27, and 28-or-more bands are in{" "}
+            (dataset {DOHMH_DATASET_ID}).             The rules for the 0 to 13, 14 to 27, and 28-or-more bands are in our guide to{" "}
             <Link href="/guides/nyc-health-grades-explained" className="font-semibold text-jade hover:text-forest">
-              NYC health grades explained
+              NYC restaurant grades
             </Link>
             . The same match rule, applied to a ranked Italian list, is on{" "}
             <Link href="/guides/best-italian-restaurants-nyc" className="font-semibold text-jade hover:text-forest">

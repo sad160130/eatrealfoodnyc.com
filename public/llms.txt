@@ -68,7 +68,9 @@ Grade A Restaurants by Borough: 3 NYC Matches (2026):
   2026-11-24. Three latest DOHMH inspections are Grade A and match the
   listing. Ali's Trinbago Roti Shop and Pho Hoang are not in that count:
   their latest inspections have no letter.
-NYC Health Grades Explained: https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+NYC Restaurant Grades Explained: A, B, C, and Grade Pending:
+  https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+  NYC restaurant grades mean A for 0–13 points, B for 14–27 on a reinspection, and C for 28 or more. Citywide counts are from DOHMH dataset 43nn-pn8j, pulled 2026-11-25. The newest inspection_date in that file was 2026-11-23.
 Healthy breakfast in NYC: https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
   Published restaurants open by 8 AM on weekdays. Grade A counts come from the NYC DOHMH inspection on each listing.
 Holiday party catering: https://www.eatrealfoodnyc.com/catering/holiday-party-catering-nyc

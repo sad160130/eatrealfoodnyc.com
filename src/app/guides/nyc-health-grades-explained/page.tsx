@@ -14,7 +14,9 @@ import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import GradeHubLinks from "@/components/grade-hub-links"
 import { pageMeta } from "@/lib/page-meta"
 import { healthGradesGuideDescription, healthGradesGuideTitle } from "@/lib/seo-titles"
-import { HEALTH_GRADE_FAQS } from "@/content/health-grade-faqs"
+import { HEALTH_GRADE_FAQS, HEALTH_GRADES_LEDE } from "@/content/health-grade-faqs"
+import { CITYWIDE_RESTAURANT_GRADES } from "@/data/citywide-restaurant-grades"
+import { percentOneDecimal } from "@/lib/citywide-grades"
 import { ClaimListingCta, InspectionLeadsCta } from "@/components/product-ctas"
 import DataSampleForm from "@/components/data-sample-form"
 
@@ -22,15 +24,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.
 const guide = getGuideBySlug("nyc-health-grades-explained")!
 
 export async function generateMetadata(): Promise<Metadata> {
-  const stats = await getLiveGuideStats()
   const meta = pageMeta({
     path: "/guides/nyc-health-grades-explained",
-    title: healthGradesGuideTitle(stats.letters.A),
-    description: healthGradesGuideDescription({
-      gradeA: stats.letters.A,
-      gradeB: stats.letters.B,
-      gradeC: stats.letters.C,
-    }),
+    title: healthGradesGuideTitle(),
+    description: healthGradesGuideDescription(),
     type: "article",
     brand: false,
   })
@@ -46,12 +43,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function NYCHealthGradesGuide() {
   const stats = await getLiveGuideStats()
-  const title = healthGradesGuideTitle(stats.letters.A)
-  const description = healthGradesGuideDescription({
-    gradeA: stats.letters.A,
-    gradeB: stats.letters.B,
-    gradeC: stats.letters.C,
-  })
+  const description = healthGradesGuideDescription()
+  const citywide = CITYWIDE_RESTAURANT_GRADES
   const grades = stats.grades
   const count = (value: number) => value.toLocaleString("en-US")
   const graded = stats.global.totalWithGrade
@@ -73,12 +66,12 @@ export default async function NYCHealthGradesGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: title,
+            headline: guide.title,
             description,
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",
-            ...(stats.grades.latestInspectionIso ? { dateModified: stats.grades.latestInspectionIso } : {}),
+            dateModified: citywide.pulledOn,
             mainEntityOfPage: {
               "@type": "WebPage",
               "@id": `${siteUrl}/guides/nyc-health-grades-explained`,
@@ -89,12 +82,8 @@ export default async function NYCHealthGradesGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="A is 0–13 points, B is 14–27 on a reinspection, and C is 28 or more. Grade Pending and a Z in the city data are not letter grades."
-        note={
-          grades.latestInspectionLabel
-            ? `Last updated ${grades.latestInspectionLabel}. That is the newest inspection date on a published listing.`
-            : null
-        }
+        subtitle={HEALTH_GRADES_LEDE}
+        note={`Last updated ${citywide.pulledOnLabel}. Directory figures on this page are published listings. The citywide section is the DOHMH inspection file.`}
         stats={[
           { stat: count(grades.published), label: "Published listings" },
           { stat: `${grades.gradeAShareOfPublished}%`, label: "Grade A of published listings" },
@@ -114,6 +103,7 @@ export default async function NYCHealthGradesGuide() {
             { href: "#grade-pending", label: "What Grade Pending means" },
             { href: "#grade-z", label: "What Z means in the inspection data" },
             { href: "#how-scoring-works", label: "How the scoring works" },
+            { href: "#citywide-file", label: "Citywide grades in the DOHMH file" },
             { href: "#look-up-by-borough", label: "Look up a grade by borough" },
             { href: "#what-is-a-health-grade", label: "What is a NYC restaurant health grade?" },
             { href: "#grade-breakdown", label: "Grade A, B, and C — what each means" },
@@ -226,9 +216,11 @@ export default async function NYCHealthGradesGuide() {
           >
             <p className="eyebrow" style={{ color: "var(--color-jade)" }}>For vendors</p>
             <p className="mt-2 text-sm leading-relaxed">
+              Sell to restaurants?{" "}
               <InspectionLeadsCta source="grades_guide">
-                Sell to NYC restaurants? Get weekly inspection leads
-              </InspectionLeadsCta>
+                NYC Restaurant Compliance Weekly
+              </InspectionLeadsCta>{" "}
+              is the Monday file of inspection leads.
             </p>
             <DataSampleForm source="grades_guide" variant="compact" embedded idPrefix="grades-sample" />
           </aside>
@@ -248,6 +240,87 @@ export default async function NYCHealthGradesGuide() {
           sourceNote="Counts are published listings in this directory. Grade A share is Grade A divided by published listings in that borough, not the citywide inspection rate. Each grade is the latest matched NYC DOHMH record."
           variant="green"
         />
+
+        <section id="citywide-file" className="mb-16 scroll-mt-24">
+          <h2 className="mb-4 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+            Citywide NYC restaurant grades
+          </h2>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            This section is the citywide DOHMH file, dataset {citywide.datasetId}, pulled on {citywide.pulledOnLabel}. It is not the directory counts above. For each CAMIS, the letter is the newest inspection whose grade is A, B, or C. {count(citywide.a)} are A ({percentOneDecimal(citywide.a, citywide.letterGraded)}), {count(citywide.b)} are B ({percentOneDecimal(citywide.b, citywide.letterGraded)}), and {count(citywide.c)} are C ({percentOneDecimal(citywide.c, citywide.letterGraded)}), out of {count(citywide.letterGraded)} establishments. {citywide.letterTies === 0 ? "None had two different letters on that date." : `${count(citywide.letterTies)} had two different letters on that date and are left out of these counts.`} {count(citywide.boroughUnassigned)} have no single borough on the row, so the borough table sums to {count(citywide.letterGraded - citywide.boroughUnassigned)}.
+          </p>
+          <p className="mb-6 text-lg leading-relaxed text-gray-700">
+            Separately, {count(citywide.pending)} establishments have a newest inspection row of grade Z or P: {count(citywide.pendingZ)} are Z and {count(citywide.pendingP)} are P. A blank grade on the same date as Z or P still counts as that code. {citywide.pendingAmbiguous > 0 ? `${count(citywide.pendingAmbiguous)} had more than one grade code on the newest date and are not in that pending count. ` : ""}A restaurant can be in the letter counts and in this pending count when a newer row is Grade Pending. The newest inspection_date in the file is {citywide.newestInspectionLabel}.
+          </p>
+          <div className="my-6 overflow-x-auto border" style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}>
+            <table className="w-full text-sm">
+              <caption className="sr-only">Citywide count and share of latest A, B, and C grades in the DOHMH file</caption>
+              <thead>
+                <tr style={{ color: "var(--color-muted)" }}>
+                  <th className="px-4 py-3 text-left font-medium">Latest letter</th>
+                  <th className="px-4 py-3 text-right font-medium">Establishments</th>
+                  <th className="px-4 py-3 text-right font-medium">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(
+                  [
+                    ["A", citywide.a],
+                    ["B", citywide.b],
+                    ["C", citywide.c],
+                  ] as const
+                ).map((row) => (
+                  <tr key={row[0]} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+                    <td className="px-4 py-3 font-bold text-jade" style={{ fontFamily: "Georgia, serif" }}>{row[0]}</td>
+                    <td className="px-4 py-3 text-right tabular font-semibold text-forest">{count(row[1])}</td>
+                    <td className="px-4 py-3 text-right tabular text-forest">{percentOneDecimal(row[1], citywide.letterGraded)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="my-6 overflow-x-auto border" style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}>
+            <table className="w-full text-sm">
+              <caption className="sr-only">Grade A share by borough in the citywide DOHMH file</caption>
+              <thead>
+                <tr style={{ color: "var(--color-muted)" }}>
+                  <th className="px-4 py-3 text-left font-medium">Borough</th>
+                  <th className="px-4 py-3 text-right font-medium">Grade A</th>
+                  <th className="px-4 py-3 text-right font-medium">Latest letter</th>
+                  <th className="px-4 py-3 text-right font-medium">Grade A share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {citywide.boroughs.map((borough) => (
+                  <tr key={borough.borough} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+                    <td className="px-4 py-3 font-semibold text-forest">{borough.borough}</td>
+                    <td className="px-4 py-3 text-right tabular text-forest">{count(borough.a)}</td>
+                    <td className="px-4 py-3 text-right tabular text-forest">{count(borough.letterGraded)}</td>
+                    <td className="px-4 py-3 text-right tabular font-semibold text-forest">{percentOneDecimal(borough.a, borough.letterGraded)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm leading-relaxed text-gray-600">
+            Source:{" "}
+            <a href={citywide.datasetUrl} className="font-semibold text-jade hover:text-forest" target="_blank" rel="noopener noreferrer">
+              NYC Open Data dataset {citywide.datasetId}
+            </a>
+            , pulled {citywide.pulledOnLabel} ({citywide.timezone}). A separate check of five kitchens is in{" "}
+            <Link href="/guides/grade-a-restaurants-by-borough-nyc" className="font-semibold text-jade hover:text-forest">
+              Grade A restaurants by borough
+            </Link>
+            . The same letter rules rank{" "}
+            <Link href="/guides/best-pizza-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              best pizza restaurants in NYC
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/best-italian-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              best Italian restaurants in NYC
+            </Link>
+            .
+          </p>
+        </section>
 
         <div className="-mt-4 mb-8 rounded-xl border border-forest/10 bg-forest/5 px-5 py-4">
           <p className="text-sm text-gray-700">
