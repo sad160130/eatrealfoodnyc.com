@@ -8,6 +8,7 @@ import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import { getBreakfastGuideData, type BreakfastBorough, type BreakfastGuideData } from "@/lib/breakfast-guide"
 import { pageMeta } from "@/lib/page-meta"
 import { breakfastGuideDescription, breakfastGuideTitle } from "@/lib/seo-titles"
@@ -253,6 +254,9 @@ export default async function HealthyBreakfastGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          An early opening time is not an inspection result. The share of letter-graded restaurants that hold an A is in the
+        </GuideReportNote>
         <section id="faq" className="mb-16 scroll-mt-24">
           <h2 className="h2-serif">Frequently asked questions</h2>
           <div className="mt-8 overflow-hidden rounded-2xl border border-gray-100 bg-white">

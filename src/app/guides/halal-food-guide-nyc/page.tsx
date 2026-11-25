@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
@@ -347,6 +348,9 @@ export default async function HalalFoodGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          A halal sign describes sourcing. The letter in the window describes the inspection. Citywide Grade A shares are in the
+        </GuideReportNote>
         <GuideCTA
           heading="Browse every halal restaurant in NYC"
           body="Search 524 halal-friendly restaurants across all five boroughs. Filter by neighborhood, cuisine, health grade, and price range."

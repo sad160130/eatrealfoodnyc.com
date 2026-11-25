@@ -13,6 +13,7 @@ import DataProductCta, { DataHeroCta } from "@/components/data-product-cta"
 import DataSampleForm from "@/components/data-sample-form"
 import FAQSchema from "@/components/faq-schema"
 import { DATA_PRODUCT, DOHMH_DATASET } from "@/config/data-product"
+import { dataPageIndex } from "@/lib/data-pages"
 
 export const revalidate = 86400
 
@@ -202,6 +203,20 @@ export default async function DataProductPage({
           </a>
           . This extract was modified: names are redacted, addresses are removed, rows are filtered to this directory, and Z and P are labeled Grade Pending rather than printed as letters.
         </p>
+
+        <nav aria-label="Data pages" className="mt-12">
+          <h2 className="h2-serif">Data pages</h2>
+          <ul className="mt-4 space-y-4 text-base leading-relaxed">
+            {dataPageIndex().map((page) => (
+              <li key={page.href}>
+                <Link href={page.href} className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                  {page.title}
+                </Link>
+                <p className="mt-1 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>{page.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <nav aria-label="Related directory pages" className="mt-12">
           <h2 className="h2-serif">Related pages</h2>

@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { prisma } from "@/lib/db"
 import { getPublishedDirectoryCounts, PUBLISHED_LISTING_WHERE } from "@/lib/directory-stats"
@@ -300,6 +301,9 @@ export default async function HiddenGemsGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          Hidden-gem status uses ratings and review counts. The inspection letter is a separate record, and the distribution of those letters is in the
+        </GuideReportNote>
         <GuideCTA
           heading="Discover NYC's hidden gems"
           body={`Browse ${hiddenGemCount} hidden gem restaurants across all five boroughs. High ratings, low review counts, and waiting to be discovered by you.`}

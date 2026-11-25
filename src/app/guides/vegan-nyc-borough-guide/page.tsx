@@ -11,6 +11,7 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import GuideReportNote from "@/components/guide-report-note"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("vegan-nyc-borough-guide")!
@@ -178,6 +179,10 @@ export default async function VeganNYCGuide() {
             ))}
           </div>
         </section>
+
+        <GuideReportNote>
+          Vegan kitchens are scored on the same inspection point system as every other restaurant in the city. Borough and neighborhood Grade A shares are in the
+        </GuideReportNote>
 
         <section id="faq" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>Frequently asked questions</h2>

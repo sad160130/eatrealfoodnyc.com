@@ -352,7 +352,12 @@ export default async function NYCHealthGradesGuide() {
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
             Every restaurant, food cart, and food service establishment that is open to the public
             in New York City is required to be inspected and to post its grade card in a window
-            visible from the street. This has been the law since 2010.
+            visible from the street. This has been the law since 2010. The visit itself, from the
+            first inspection through a reinspection, is the{" "}
+            <Link href="/guides/nyc-restaurant-inspection-process" className="font-semibold text-jade hover:text-forest">
+              NYC restaurant inspection process
+            </Link>
+            .
           </p>
 
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
@@ -730,7 +735,7 @@ export default async function NYCHealthGradesGuide() {
                 { href: "/restaurants/787-coffee-mott", label: "787 Coffee in Mott Haven — Grade A coffee shop" },
                 { href: "/restaurants/marthas-country-bakery-astoria", label: "Martha's Country Bakery in Astoria — Grade A bakery" },
                 { href: "/restaurants/gan-hoo-bbq", label: "GAN-HOO BBQ in Flushing — Grade A barbecue restaurant" },
-                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A cafe" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Rosebank — Grade A cafe" },
               ],
             },
             {

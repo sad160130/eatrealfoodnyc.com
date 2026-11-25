@@ -227,7 +227,7 @@ export default async function InspectionProcessGuide() {
                 { href: "/restaurants/787-coffee-mott", label: "787 Coffee in Mott Haven — Grade A" },
                 { href: "/restaurants/the-common", label: "The Common in Bay Ridge — Grade A" },
                 { href: "/restaurants/marthas-country-bakery-astoria", label: "Martha's Country Bakery in Astoria — Grade A" },
-                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Rosebank — Grade A" },
               ],
             },
             {

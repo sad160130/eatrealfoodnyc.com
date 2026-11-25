@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
@@ -282,6 +283,9 @@ export default async function BudgetHealthyGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          A lower check does not change how the Health Department scores a kitchen. The citywide Grade A share and the borough breakdown are in the
+        </GuideReportNote>
         <GuideCTA
           heading="Find affordable healthy restaurants"
           body="Search over 8,800 healthy restaurants across all five NYC boroughs. Filter by price, cuisine, dietary need, and neighborhood to find your perfect budget-friendly meal."

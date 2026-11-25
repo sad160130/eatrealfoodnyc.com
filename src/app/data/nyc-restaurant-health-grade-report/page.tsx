@@ -106,7 +106,7 @@ export default function InspectionReportPage() {
           </p>
         </div>
 
-        <h2 className="h2-serif mt-12">Latest letter grade by borough</h2>
+        <h2 id="boroughs" className="h2-serif mt-12 scroll-mt-24">Latest letter grade by borough</h2>
         <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
           One latest A, B, or C per CAMIS. A grade date is used when it exists; otherwise the most recent inspection that carries a letter.
         </p>
@@ -114,12 +114,13 @@ export default function InspectionReportPage() {
           caption="Latest letter grade by borough"
           headers={["Borough", "Letter-graded", "A", "A share", "B", "C"]}
           rows={R.boroughs.map((row) => [row.name, fmt(row.letterGraded), fmt(row.a), row.share ?? "—", fmt(row.b), fmt(row.c)])}
+          rowIds={R.boroughs.map((row) => BOROUGH_ANCHOR[row.name] ?? undefined)}
         />
         <p className="mt-3 text-sm">
           Citywide: {fmt(R.gradeA)} A, {fmt(R.gradeB)} B, and {fmt(R.gradeC)} C, out of {fmt(R.letterGraded)} letter-graded restaurants. Another {fmt(R.statusGrades)} restaurants have a status code rather than a letter: {fmt(R.notYetGraded)} N (not yet graded) and {fmt(R.gradePending)} Z (grade pending).
         </p>
 
-        <h2 className="h2-serif mt-12">Neighborhoods with at least 80 letter-graded restaurants</h2>
+        <h2 id="neighborhoods" className="h2-serif mt-12 scroll-mt-24">Neighborhoods with at least 80 letter-graded restaurants</h2>
         <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
           {R.neighborhoods.length} Neighborhood Tabulation Areas have at least 80 letter-graded restaurants. Names are the 2010 NTA names, which do not always match everyday names. North Side-South Side, for example, is the 2010 name for Williamsburg.
         </p>
@@ -129,7 +130,7 @@ export default function InspectionReportPage() {
           rows={R.neighborhoods.map((row) => [row.name, row.code, fmt(row.a), fmt(row.letterGraded), row.share])}
         />
 
-        <h2 className="h2-serif mt-12">Closures, September 1–November 10</h2>
+        <h2 id="closures" className="h2-serif mt-12 scroll-mt-24">Closures, September 1–November 10</h2>
         <p className="mt-3 text-base leading-relaxed">
           An event is a unique combination of CAMIS, inspection date, and closure action. The actions counted are “Establishment Closed by DOHMH…” and “Establishment re-closed by DOHMH.” A same-day closure and re-closure counts as two events. This fall: {R.closures.restaurants} restaurants and {R.closures.events} events. The same dates in 2025, as they still appear in today’s active file: {R.closures.priorRestaurants} restaurants and {R.closures.priorEvents} events.
         </p>
@@ -145,7 +146,7 @@ export default function InspectionReportPage() {
           Year to date through {R.inspectionCutoff}: {R.closures.ytd2026Restaurants} unique still-active restaurants with at least one closure event ({R.closures.ytd2026Events} events). The current file still shows {R.closures.year2025Restaurants} such restaurants for all of 2025 ({R.closures.year2025Events} events). Use that year comparison only with the active-file caveat above.
         </p>
 
-        <h2 className="h2-serif mt-12">Not yet inspected</h2>
+        <h2 id="not-yet-inspected" className="h2-serif mt-12 scroll-mt-24">Not yet inspected</h2>
         <p className="mt-3 text-base leading-relaxed">
           {fmt(R.uninspected)} establishments ({R.uninspectedShare} of {fmt(R.establishments)}) have an inspection date of January 1, 1900. The city’s data dictionary uses that date for a new establishment that has not yet been inspected. Some of those records may have a permit and may not have opened yet.
         </p>
@@ -155,7 +156,7 @@ export default function InspectionReportPage() {
           rows={R.boroughs.map((row) => [row.name, fmt(row.uninspected)])}
         />
 
-        <h2 className="h2-serif mt-12">City cuisine labels</h2>
+        <h2 id="cuisine-labels" className="h2-serif mt-12 scroll-mt-24">City cuisine labels</h2>
         <p className="mt-3 text-base leading-relaxed">
           These seven cuisine_description values are the city’s labels, not Eat Real Food NYC dietary tags, and they are not a nutrition grade: {R.cuisines.labels.join("; ")}. Among letter-graded restaurants with one of those labels, {fmt(R.cuisines.gradeA)} of {fmt(R.cuisines.letterGraded)} ({R.cuisines.share}) currently hold a Grade A.
         </p>
@@ -169,11 +170,19 @@ export default function InspectionReportPage() {
             The same records are in <a href={R.datasetUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>NYC Open Data dataset {R.datasetId}</a>. Eat Real Food NYC joins a matched grade onto published healthy-dining listings. A grade is a food-safety score, not a claim that a restaurant is healthy.
           </p>
           <p>
-            <Link href="/guides/nyc-health-grades-explained" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>How grades work</Link>
+            <Link href="/guides/nyc-health-grades-explained" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>NYC health grades explained</Link>
+            {" · "}
+            <Link href="/guides/grade-a-restaurants-by-borough-nyc" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Grade A restaurants by borough</Link>
+            {" · "}
+            <Link href="/guides/nyc-restaurant-inspection-process" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>NYC restaurant inspection process</Link>
             {" · "}
             <Link href="/healthy-restaurants/grade-a" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Grade A restaurants in the directory</Link>
             {" · "}
             <Link href="/nyc/queens/healthy-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Healthy restaurants in Queens</Link>
+            {" · "}
+            <Link href="/data/best-rated-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>best-rated restaurants</Link>
+            {" · "}
+            <Link href="/press" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>press</Link>
           </p>
           <p className="text-sm">
             <InspectionLeadsCta source="inspection_report">
@@ -214,11 +223,19 @@ export default function InspectionReportPage() {
   )
 }
 
+const BOROUGH_ANCHOR: Record<string, string> = {
+  Manhattan: "manhattan",
+  Brooklyn: "brooklyn",
+  Queens: "queens",
+  Bronx: "bronx",
+  "Staten Island": "staten-island",
+}
+
 function fmt(n: number) {
   return n.toLocaleString("en-US")
 }
 
-function Table({ caption, headers, rows }: { caption: string; headers: string[]; rows: string[][] }) {
+function Table({ caption, headers, rows, rowIds }: { caption: string; headers: string[]; rows: string[][]; rowIds?: Array<string | undefined> }) {
   return (
     <div className="mt-4 overflow-x-auto border" style={{ borderColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>
       <table className="w-full text-left text-sm">
@@ -231,8 +248,8 @@ function Table({ caption, headers, rows }: { caption: string; headers: string[];
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.join("|")} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+          {rows.map((row, rowIndex) => (
+            <tr id={rowIds?.[rowIndex]} key={row.join("|")} className="scroll-mt-24 border-t" style={{ borderColor: "var(--hairline)" }}>
               {row.map((cell, index) => (
                 <td key={`${cell}-${index}`} className="px-3 py-2 tabular">{cell}</td>
               ))}

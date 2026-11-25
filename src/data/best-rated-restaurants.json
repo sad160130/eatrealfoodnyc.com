@@ -505,7 +505,7 @@
       {
         "name": "Mello Bistro",
         "slug": "mello-bistro",
-        "neighborhood": "Stapleton",
+        "neighborhood": "Rosebank",
         "borough": "Staten Island",
         "type": "Bistro",
         "rating": 5,
@@ -901,7 +901,7 @@
     {
       "name": "Mello Bistro",
       "slug": "mello-bistro",
-      "neighborhood": "Stapleton",
+      "neighborhood": "Rosebank",
       "borough": "Staten Island",
       "type": "Bistro",
       "rating": 5,

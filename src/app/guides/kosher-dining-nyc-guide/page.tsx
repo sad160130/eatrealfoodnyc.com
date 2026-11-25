@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
@@ -271,6 +272,9 @@ export default async function KosherGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          Kosher certification and the inspection letter come from different authorities. Letter-grade counts by borough and neighborhood are in the
+        </GuideReportNote>
         <GuideCTA
           heading="Browse every kosher restaurant in NYC"
           body="Search 195 kosher restaurants across NYC. Filter by neighborhood, cuisine type, certification, health grade, and price range."

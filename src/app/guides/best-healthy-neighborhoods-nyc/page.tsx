@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
@@ -332,6 +333,9 @@ export default async function HealthyNeighborhoodsGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          This ranking uses the directory&apos;s published listings. Neighborhood Tabulation Areas with at least 80 letter-graded restaurants are counted in the
+        </GuideReportNote>
         <GuideCTA
           heading="Compare every NYC neighborhood"
           body={`Use our interactive comparison tool to rank ${neighborhoods.toLocaleString("en-US")} ${neighborhoods === 1 ? "neighborhood" : "neighborhoods"} across all five boroughs by the metrics that matter to you: restaurant density, ratings, health scores, and dietary diversity.`}

@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -454,6 +455,9 @@ export default async function SeafoodGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          For raw fish, the inspection letter is the food-safety record to read first. Citywide and borough letter counts are in the
+        </GuideReportNote>
         <GuideCTA
           heading="Find healthy seafood restaurants in NYC"
           body="Browse our directory of Grade A-certified NYC restaurants and filter by whole foods, halal, kosher, or gluten-free to find the right seafood spot for you."

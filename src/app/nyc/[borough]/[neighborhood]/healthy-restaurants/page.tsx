@@ -27,6 +27,7 @@ import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
 import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 import NeighborhoodSponsorSlot from "@/components/neighborhood-sponsor-slot"
+import { NeighborhoodGradeContext } from "@/components/inspection-context"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -218,6 +219,7 @@ export default async function NeighborhoodPage({
               ? `None of the ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} has a matched NYC DOHMH letter grade.`
               : `${restaurants.filter((row) => row.inspection_grade === "A").length.toLocaleString("en-US")} of ${gradedCount.toLocaleString("en-US")} graded restaurants in ${neighborhoodName} hold Grade A. The share is among graded listings, not every published row.`}
           </p>
+          <NeighborhoodGradeContext neighborhood={neighborhoodName} borough={boroughName} />
           <h2 className="h2-serif mt-8">Which diets are tagged in {neighborhoodName}?</h2>
           <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
             {taggedCount === 0

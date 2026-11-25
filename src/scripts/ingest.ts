@@ -4,6 +4,7 @@ import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { correctRosebankListing } from "../lib/rosebank";
 
 config({ path: path.join(__dirname, "..", "..", ".env.local") });
 
@@ -53,11 +54,17 @@ async function main() {
       batch.map(async (row) => {
         try {
           const priceRange = parseInt_(row.price_range);
+          const place = correctRosebankListing({
+            address: row.address,
+            borough: emptyToNull(row.borough),
+            neighborhood: emptyToNull(row.neighborhood),
+            description: emptyToNull(row.description),
+          });
           const data = {
             name: row.name,
             type: emptyToNull(row.type),
-            borough: emptyToNull(row.borough),
-            neighborhood: emptyToNull(row.neighborhood),
+            borough: place.borough,
+            neighborhood: place.neighborhood,
             address: row.address,
             street: emptyToNull(row.street),
             city: emptyToNull(row.city),
@@ -71,7 +78,7 @@ async function main() {
             inspection_grade: emptyToNull(row.inspection_grade),
             inspection_date: emptyToNull(row.inspection_date),
             inspection_score: parseInt_(row.inspection_score),
-            description: emptyToNull(row.description),
+            description: place.description,
             phone: emptyToNull(row.phone),
             website: emptyToNull(row.website),
             working_hours: emptyToNull(row.working_hours),

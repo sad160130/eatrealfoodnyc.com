@@ -32,6 +32,7 @@ import { getReviewsForRestaurant } from "@/lib/reviews"
 import { buildRestaurantSchema, PUBLISHER_REF } from "@/lib/schema"
 import AccuracyFeedback from "@/components/accuracy-feedback"
 import InspectionRecord from "@/components/inspection-record"
+import { InspectionContext } from "@/components/inspection-context"
 import YoutubeShortEmbed from "@/components/youtube-short-embed"
 import OfficialGradeLink from "@/components/official-grade-link"
 import { getCanonicalUrl } from "@/config/seo"
@@ -561,6 +562,13 @@ export default async function RestaurantPage({
                         <span aria-hidden="true">→</span>
                       </Link>
                     </p>
+                    <InspectionContext
+                      neighborhood={restaurant.neighborhood}
+                      borough={restaurant.borough}
+                      type={restaurant.type}
+                      dietaryTags={restaurant.dietary_tags}
+                      workingHours={restaurant.working_hours}
+                    />
                   </div>
                 </div>
               </section>

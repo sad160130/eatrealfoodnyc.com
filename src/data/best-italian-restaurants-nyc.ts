@@ -327,7 +327,7 @@ export const BEST_ITALIAN_RESTAURANTS: RankedItalianRestaurant[] = [
     slug: "don-cheech",
     camis: "50122723",
     borough: "Staten Island",
-    neighborhood: "Stapleton",
+    neighborhood: "Rosebank",
     address: "1271 Bay St, Staten Island, NY 10305",
     grade: "A",
     score: 11,
@@ -336,8 +336,8 @@ export const BEST_ITALIAN_RESTAURANTS: RankedItalianRestaurant[] = [
     inspectionDateLabel: "November 21, 2025",
     inspectionType: "Cycle Inspection / Initial Inspection",
     honestLine:
-      "A Stapleton, Staten Island Italian restaurant at 1271 Bay Street with a Grade A, 11 points, and 2 violations from November 21, 2025.",
-    body: "Don Cheech is listed at 1271 Bay Street in Stapleton, Staten Island, the only Staten Island kitchen in this top 10. On November 21, 2025, an initial cycle inspection scored 11 points and recorded 2 violations: a critical 04L finding for evidence of mice or live mice, and a non-critical 08A finding about harborage or conditions conducive to pests. The published Grade A, score, and date match that inspection. It ties San Marzano at 11 points and 2 violations and ranks ninth because the inspection is slightly older. A Grade A at 11 points can still include a critical pest finding. Readers who want the official detail can open the CAMIS record.",
+      "A Rosebank, Staten Island Italian restaurant at 1271 Bay Street with a Grade A, 11 points, and 2 violations from November 21, 2025.",
+    body: "Don Cheech is listed at 1271 Bay Street in Rosebank, Staten Island, the only Staten Island kitchen in this top 10. On November 21, 2025, an initial cycle inspection scored 11 points and recorded 2 violations: a critical 04L finding for evidence of mice or live mice, and a non-critical 08A finding about harborage or conditions conducive to pests. The published Grade A, score, and date match that inspection. It ties San Marzano at 11 points and 2 violations and ranks ninth because the inspection is slightly older. A Grade A at 11 points can still include a critical pest finding. Readers who want the official detail can open the CAMIS record.",
     violations: [
       {
         code: "08A",
@@ -414,7 +414,7 @@ export const BEST_ITALIAN_VIDEO_CHAPTERS: Array<{
   { timestamp: "6:02", label: "#6 Evelina, Clinton Hill", href: "#evelina" },
   { timestamp: "6:44", label: "#7 Olive Garden, East New York", href: "#olive-garden-italian-restaurant-east" },
   { timestamp: "7:27", label: "#8 San Marzano, East Village", href: "#san-marzano" },
-  { timestamp: "7:59", label: "#9 Don Cheech, Stapleton", href: "#don-cheech" },
+  { timestamp: "7:59", label: "#9 Don Cheech, Rosebank", href: "#don-cheech" },
   { timestamp: "8:36", label: "#10 Scalini Fedeli, Tribeca", href: "#scalini-fedeli" },
   { timestamp: "9:15", label: "How to use this list", href: "#which-one-fits-whom" },
 ]
@@ -453,7 +453,7 @@ export const BEST_ITALIAN_FITS: FitGroup[] = [
   },
   {
     heading: "If you are in Staten Island or Tribeca",
-    body: "Don Cheech in Stapleton is the Staten Island entry, with a Grade A at 11 points from November 21, 2025. Scalini Fedeli at 165 Duane Street in Tribeca also has a Grade A at 11 points; its latest matching inspection is December 18, 2024, the oldest date on this list.",
+    body: "Don Cheech in Rosebank is the Staten Island entry, with a Grade A at 11 points from November 21, 2025. Scalini Fedeli at 165 Duane Street in Tribeca also has a Grade A at 11 points; its latest matching inspection is December 18, 2024, the oldest date on this list.",
     slugs: ["don-cheech", "scalini-fedeli"],
   },
 ]
@@ -482,7 +482,7 @@ export const BEST_ITALIAN_FAQS: Array<{ question: string; answer: string }> = [
   {
     question: "Are there Grade A Italian restaurants in Brooklyn and Staten Island?",
     answer:
-      "Yes. This top 10 includes Panzerotti Bites in Cobble Hill, Forma Pasta Factory in Greenpoint, Evelina in Clinton Hill, and the Olive Garden at 505 Gateway Drive in East New York, all in Brooklyn, plus Don Cheech in Stapleton, Staten Island. Each holds a current Grade A that matches the latest city inspection. Our directory also has Italian listings in Queens and the Bronx, but none of those passed both the match test and this top-10 cut.",
+      "Yes. This top 10 includes Panzerotti Bites in Cobble Hill, Forma Pasta Factory in Greenpoint, Evelina in Clinton Hill, and the Olive Garden at 505 Gateway Drive in East New York, all in Brooklyn, plus Don Cheech in Rosebank, Staten Island. Each holds a current Grade A that matches the latest city inspection. Our directory also has Italian listings in Queens and the Bronx, but none of those passed both the match test and this top-10 cut.",
   },
   {
     question: "How current is this Best Italian restaurants in NYC list?",

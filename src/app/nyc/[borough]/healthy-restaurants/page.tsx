@@ -27,6 +27,7 @@ import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
 import { presentGrade } from "@/lib/grade-display"
 import NewsletterSignup from "@/components/newsletter-signup"
+import { BoroughGradeContext } from "@/components/inspection-context"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -218,6 +219,7 @@ export default async function BoroughPage({
           {boroughParagraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)} className="dek mt-4" style={{ maxWidth: "62ch" }}>{paragraph}</p>
           ))}
+          <BoroughGradeContext borough={boroughName} />
 
           {/* Inline stats — mid-dot separators, tabular nums, no pipes */}
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">

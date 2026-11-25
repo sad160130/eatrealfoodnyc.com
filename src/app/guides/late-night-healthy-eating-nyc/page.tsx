@@ -8,6 +8,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
@@ -301,7 +302,7 @@ export default async function LateNightGuide() {
                 { href: "/restaurants/power-bowls", label: "Power Bowls in the Financial District — Grade A" },
                 { href: "/restaurants/gan-hoo-bbq", label: "GAN-HOO BBQ in Flushing — Grade A" },
                 { href: "/restaurants/la-sova", label: "La Sova in Kensington — Grade A" },
-                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Stapleton — Grade A" },
+                { href: "/restaurants/bloom-cafe", label: "Bloom Cafe in Rosebank — Grade A" },
               ],
             },
           ]}
@@ -323,6 +324,9 @@ export default async function LateNightGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          Closing time does not change the inspection rules. The citywide Grade A share, and which boroughs sit above or below it, is in the
+        </GuideReportNote>
         <GuideCTA
           heading="Browse listings by borough"
           body="Open a borough hub and check the hours on the restaurant page. The grade on the listing is the NYC inspection record we have stored."

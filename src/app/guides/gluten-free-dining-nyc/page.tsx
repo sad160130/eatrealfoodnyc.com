@@ -9,6 +9,7 @@ import GuideHero from "@/components/guide-hero"
 import GuideTOC from "@/components/guide-toc"
 import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
+import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 
@@ -274,6 +275,9 @@ export default async function GlutenFreeGuide() {
           </div>
         </section>
 
+        <GuideReportNote>
+          A gluten-free menu and an inspection letter answer different questions. Citywide Grade A shares by borough and neighborhood are in the
+        </GuideReportNote>
         <GuideCTA
           heading="Find verified gluten-free restaurants"
           body="Browse 47 verified gluten-free restaurants across NYC, including 15 with dedicated kitchens. Filter by neighborhood, cuisine, and health grade."
