@@ -12,6 +12,8 @@ import {
   dietCtrDescription,
   dietCtrTitle,
   dietTitle,
+  HEALTH_GRADES_GUIDE_DESCRIPTION,
+  HEALTH_GRADES_GUIDE_TITLE,
   healthGradesGuideDescription,
   healthGradesGuideTitle,
   hubMetaDescription,
@@ -192,16 +194,18 @@ for (const neighborhoods of hoods) {
     else assert.ok(lateTitle.length <= TITLE_MAX, lateTitle)
   }
 }
-for (const gradeA of counts) {
-  for (const gradeB of counts) {
-    for (const gradeC of [0, 1, 28, 280, 1816]) {
-      const title = healthGradesGuideTitle(gradeA)
-      const description = healthGradesGuideDescription({ gradeA, gradeB, gradeC })
-      if (gradeA > 0) expectCtr("grades", title, description)
-      else assert.ok(title.length <= TITLE_MAX && description.length >= 140 && description.length <= 155, `${title} / ${description}`)
-    }
-  }
-}
+const gradesTitle = healthGradesGuideTitle()
+const gradesDescription = healthGradesGuideDescription()
+assert.equal(gradesTitle, HEALTH_GRADES_GUIDE_TITLE)
+assert.ok(gradesTitle.startsWith("NYC Restaurant Grades"), gradesTitle)
+assert.ok(gradesTitle.length <= TITLE_MAX, `${gradesTitle.length}: ${gradesTitle}`)
+assert.equal(gradesDescription, HEALTH_GRADES_GUIDE_DESCRIPTION)
+assert.equal(gradesDescription.split(".").filter(Boolean).length, 1, gradesDescription)
+assert.match(gradesDescription, /0–13/)
+assert.match(gradesDescription, /14–27/)
+assert.match(gradesDescription, /28 or more/)
+assert.match(gradesDescription, /official NYC DOHMH/)
+assert.ok(gradesDescription.length <= 160, `${gradesDescription.length}: ${gradesDescription}`)
 for (const label of ["Gluten-Free", "Vegetarian"]) {
   for (const count of counts) {
     for (const gradeA of counts) {

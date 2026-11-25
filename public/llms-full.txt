@@ -61,6 +61,7 @@ https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
 https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
   Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
+  NYC restaurant grades: A is 0–13, B is 14–27 on a reinspection, C is 28 or more. Citywide DOHMH file pulled 2026-11-25. Newest inspection_date 2026-11-23.
 https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process
 https://www.eatrealfoodnyc.com/guides/vegan-nyc-borough-guide
 https://www.eatrealfoodnyc.com/guides/halal-food-guide-nyc

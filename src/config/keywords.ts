@@ -5,6 +5,7 @@ export const YEAR = "2026"
 /** One target query per guide that is built around a single keyword. */
 export const GUIDE_KEYWORDS = {
   "grade-a-restaurants-by-borough-nyc": "grade a restaurants by borough nyc",
+  "nyc-health-grades-explained": "nyc restaurant grades",
 } as const
 
 export const BOROUGH_KEYWORDS: Record<string, {

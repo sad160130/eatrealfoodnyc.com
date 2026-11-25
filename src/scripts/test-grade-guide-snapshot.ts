@@ -1,5 +1,8 @@
 import assert from "node:assert/strict"
-import { HEALTH_GRADE_FAQS } from "../content/health-grade-faqs"
+import { readFileSync } from "node:fs"
+import { getGuideBySlug } from "../config/guides"
+import { HEALTH_GRADE_FAQS, HEALTH_GRADES_LEDE } from "../content/health-grade-faqs"
+import { HEALTH_GRADES_GUIDE_TITLE } from "../lib/seo-titles"
 import { summarizePublishedGrades } from "../lib/grade-guide-snapshot"
 
 const snapshot = summarizePublishedGrades([
@@ -37,16 +40,47 @@ assert.equal(empty.gradeAShareOfPublished, 0)
 assert.equal(empty.latestInspectionIso, null)
 assert.equal(empty.latestInspectionLabel, null)
 
-assert.ok(HEALTH_GRADE_FAQS.length >= 5 && HEALTH_GRADE_FAQS.length <= 7, "grades guide keeps 5–7 FAQs")
+assert.equal(HEALTH_GRADE_FAQS.length, 10, "grades guide keeps the original FAQs and adds three")
 const questions = HEALTH_GRADE_FAQS.map((faq) => faq.question)
+assert.equal(new Set(questions).size, questions.length, "FAQ questions are not duplicated")
 for (const expected of [
   "What does Grade Pending mean in NYC?",
   "How often are NYC restaurants inspected?",
   "What score is a C in NYC?",
   "Can a restaurant post a different grade?",
+  "What do NYC restaurant grades mean?",
+  "How do I look up a NYC restaurant's grade?",
+  "Which NYC borough has the highest share of Grade A restaurants?",
 ]) {
   assert.ok(questions.includes(expected), expected)
 }
+const lookup = HEALTH_GRADE_FAQS.find((faq) => faq.question === "How do I look up a NYC restaurant's grade?")
+assert.match(lookup?.answer ?? "", /ABCEats/)
+assert.match(lookup?.answer ?? "", /43nn-pn8j/)
+const boroughFaq = HEALTH_GRADE_FAQS.find((faq) => faq.question.startsWith("Which NYC borough"))
+assert.match(boroughFaq?.answer ?? "", /Manhattan has the highest share/)
+assert.match(boroughFaq?.answer ?? "", /90\.8%/)
+assert.match(boroughFaq?.answer ?? "", /not the published listings/)
+assert.match(boroughFaq?.answer ?? "", /November 25, 2026/)
+const ledeWords = HEALTH_GRADES_LEDE.trim().split(/\s+/)
+assert.ok(ledeWords.length >= 40 && ledeWords.length <= 60, `lede is ${ledeWords.length} words`)
+assert.equal(HEALTH_GRADES_LEDE.match(/NYC restaurant grades/g)?.length, 1)
+const guide = getGuideBySlug("nyc-health-grades-explained")
+assert.ok(guide)
+assert.ok(guide.title.startsWith("NYC Restaurant Grades"), guide.title)
+assert.equal(guide.metaTitle, HEALTH_GRADES_GUIDE_TITLE)
+assert.equal(guide.updatedDate, "2026-11-25")
+const page = readFileSync(new URL("../app/guides/nyc-health-grades-explained/page.tsx", import.meta.url), "utf8")
+for (const href of [
+  "/guides/grade-a-restaurants-by-borough-nyc",
+  "/guides/best-pizza-restaurants-nyc",
+  "/guides/best-italian-restaurants-nyc",
+  "/data/nyc-restaurant-health-grade-report",
+]) {
+  assert.ok(page.includes(href), href)
+}
+assert.match(page, /dateModified: citywide\.pulledOn/)
+assert.match(page, /NYC Restaurant Compliance Weekly/)
 for (const faq of HEALTH_GRADE_FAQS) {
   assert.ok(faq.answer.length > 40, faq.question)
 }

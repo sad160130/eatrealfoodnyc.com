@@ -98,7 +98,7 @@ export default function BestItalianRestaurantsNyc() {
             </a>{" "}
             (dataset {DOHMH_DATASET_ID}). For the rules behind A, B, C, and Grade Pending, see{" "}
             <Link href="/guides/nyc-health-grades-explained" className="font-semibold text-jade hover:text-forest">
-              NYC health grades explained
+              NYC restaurant grades
             </Link>{" "}
             and{" "}
             <Link href="/guides/nyc-restaurant-inspection-process" className="font-semibold text-jade hover:text-forest">

@@ -1,4 +1,4 @@
-import { GUIDE_DESCRIPTIONS, guideTitle } from "@/lib/seo-titles"
+import { GUIDE_DESCRIPTIONS, HEALTH_GRADES_GUIDE_TITLE, guideTitle } from "@/lib/seo-titles"
 
 export interface GuideArticle {
   slug: string
@@ -30,16 +30,17 @@ export const GUIDE_CATEGORIES = [
 export const GUIDES: GuideArticle[] = [
   {
     slug: "nyc-health-grades-explained",
-    title: "NYC Restaurant Health Grades Explained — A to C, What They Really Mean",
-    metaTitle: guideTitle("nyc-health-grades-explained", "NYC Restaurant Grades"),
+    title: "NYC Restaurant Grades Explained: A, B, C, and Grade Pending",
+    metaTitle: HEALTH_GRADES_GUIDE_TITLE,
     shortTitle: "NYC Health Grades Explained",
-    description: "NYC restaurant grades: A is 0–13 points, B is 14–27, and C is 28 or more. What Grade Pending and a Z in the DOHMH data mean.",
+    description: GUIDE_DESCRIPTIONS["nyc-health-grades-explained"],
     category: "Health & Safety",
     emoji: "🏥",
     readTime: "8 min read",
     featured: true,
     publishedDate: "2026-01-15",
-    keywords: ["nyc restaurant health grade", "nyc health inspection grade", "restaurant grade nyc"],
+    updatedDate: "2026-11-25",
+    keywords: ["nyc restaurant grades", "nyc restaurant health grade", "restaurant grade nyc"],
     relatedGuides: ["nyc-restaurant-inspection-process", "hidden-gem-restaurants-nyc", "best-healthy-neighborhoods-nyc"],
     relatedHubPages: [
       { label: "Browse Grade A restaurants", href: "/healthy-restaurants/grade-a" },

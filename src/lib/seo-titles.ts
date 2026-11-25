@@ -235,7 +235,6 @@ export function restaurantMetaDescription(input: {
 
 /** Guide title inners. Benefit phrases state what the page actually explains. */
 export const GUIDE_TITLE_PARTS: Record<string, { keyword: string; benefit: string }> = {
-  "nyc-health-grades-explained": { keyword: "NYC Restaurant Grades", benefit: "A, B, and C" },
   "nyc-restaurant-inspection-process": { keyword: "NYC Inspections", benefit: "How a Visit Works" },
   "vegan-nyc-borough-guide": { keyword: "Vegan Restaurants NYC", benefit: "By Borough" },
   "halal-food-guide-nyc": { keyword: "Halal Restaurants NYC", benefit: "Five Boroughs" },
@@ -396,12 +395,10 @@ export function lateNightGuideTitle(neighborhoods: number): string {
   )
 }
 
-export function healthGradesGuideTitle(gradeA: number): string {
-  const benefit = gradeA > 0 ? `${formatCount(gradeA)} Grade A` : null
-  return fitTitle(
-    [benefit ? `NYC Health Grades Explained | ${benefit}` : null, "NYC Health Grades Explained"],
-    { allowBrand: false },
-  )
+export const HEALTH_GRADES_GUIDE_TITLE = "NYC Restaurant Grades Explained: A, B, C and Pending (2026)"
+
+export function healthGradesGuideTitle(): string {
+  return fitTitle([HEALTH_GRADES_GUIDE_TITLE, "NYC Restaurant Grades"], { allowBrand: false })
 }
 
 export function dietCtrTitle(label: string, gradeA: number, count: number): string {
@@ -434,11 +431,11 @@ export function lateNightGuideDescription(input: { restaurants: number; neighbor
   )
 }
 
-export function healthGradesGuideDescription(input: { gradeA: number; gradeB: number; gradeC: number }): string {
-  const verb = input.gradeA === 1 ? "holds" : "hold"
-  return fitCtrBand(
-    `NYC health grades explained: ${formatCount(input.gradeA)} ${verb} Grade A, ${formatCount(input.gradeB)} Grade B, and ${formatCount(input.gradeC)} Grade C. A is 0\u201313 points on the official NYC DOHMH score. The card is posted.`,
-  )
+export const HEALTH_GRADES_GUIDE_DESCRIPTION =
+  "NYC restaurant grades mean A for 0\u201313 points, B for 14\u201327 on a reinspection, and C for 28 or more on the official NYC DOHMH score."
+
+export function healthGradesGuideDescription(): string {
+  return HEALTH_GRADES_GUIDE_DESCRIPTION
 }
 
 export function dietCtrDescription(label: string, count: number, gradeA: number): string {
@@ -533,8 +530,7 @@ export function dietBoroughHubTitle(label: string, borough: string, count: numbe
 }
 
 export const GUIDE_DESCRIPTIONS: Record<string, string> = {
-  "nyc-health-grades-explained":
-    "NYC restaurant grades: A is 0–13 points, B is 14–27, and C is 28 or more. What Grade Pending and a Z in the DOHMH data mean.",
+  "nyc-health-grades-explained": HEALTH_GRADES_GUIDE_DESCRIPTION,
   "nyc-restaurant-inspection-process":
     "NYC inspects restaurants at least once a year. Under 14 points is a Grade A. A first-visit score of 14 or more is ungraded until reinspection.",
   "vegan-nyc-borough-guide":
