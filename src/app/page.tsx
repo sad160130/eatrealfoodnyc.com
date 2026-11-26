@@ -22,6 +22,7 @@ import { buildBreadcrumbList } from "@/lib/schema"
 import { skipImageOptimizer } from "@/lib/photo-src"
 import HolidayCateringBanner from "@/components/holiday-catering-banner"
 import { UpdatedWebPage } from "@/components/updated-webpage"
+import { pausedSlugs } from "@/config/listing-overrides"
 
 export async function generateMetadata(): Promise<Metadata> {
   const [counts, snapshot] = await Promise.all([
@@ -113,13 +114,14 @@ export default async function HomePage() {
         photo: { not: null },
         rating: { gte: 4.5 },
         reviews: { gte: 200 },
+        slug: { notIn: pausedSlugs() },
       },
       // Rating and review count only. partner_status must not change this order.
       orderBy: [{ rating: "desc" }, { reviews: "desc" }],
       take: 40,
     }),
     prisma.restaurant.findMany({
-      where: { business_status: "OPERATIONAL", is_published: true, is_hidden_gem: true, photo: { not: null } },
+      where: { business_status: "OPERATIONAL", is_published: true, is_hidden_gem: true, photo: { not: null }, slug: { notIn: pausedSlugs() } },
       orderBy: { rating: "desc" },
       take: 4,
     }),

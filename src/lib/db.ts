@@ -6,6 +6,7 @@ import { isTransientConnectionError, withConnectionRetry } from "@/lib/connectio
 import { errorLabel } from "@/lib/db-fallback"
 import { UnsupportedFallbackError } from "@/lib/fallback-engine"
 import { canFallback, fallbackQuery } from "@/lib/rest-snapshot"
+import { withClosedListingsExcluded } from "@/lib/listing-overrides"
 
 /**
  * One client per function instance. `globalThis` is shared even when the
@@ -136,13 +137,14 @@ function createPrismaClient() {
   return base.$extends({
     query: {
       async $allOperations({ model, operation, args, query }) {
+        const nextArgs = model === "Restaurant" ? withClosedListingsExcluded(operation, args) : args
         try {
           if (forcedOutage()) throw simulatedOutage()
-          return await withConnectionRetry(() => query(args))
+          return await withConnectionRetry(() => query(nextArgs))
         } catch (error) {
           if (!isTransientConnectionError(error) || !canFallback(model, operation)) throw error
           try {
-            const value = await fallbackQuery(model as string, operation, args as Record<string, unknown> | undefined)
+            const value = await fallbackQuery(model as string, operation, nextArgs as Record<string, unknown> | undefined)
             console.error(`[db-degraded] ${model}.${operation} answered from Supabase REST (${errorLabel(error)})`)
             return value as never
           } catch (fallbackError) {

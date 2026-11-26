@@ -1,3 +1,5 @@
+import { isExcludedFromRankedLists } from "@/config/listing-overrides"
+
 /**
  * Curated Top-N modules on diet, borough, neighborhood, and diet+borough hubs.
  *
@@ -18,6 +20,7 @@
  */
 
 export interface TopPickListing {
+  slug?: string | null
   inspection_grade?: string | null
   rating?: number | null
   reviews?: number | null
@@ -51,6 +54,7 @@ export function selectTopPicks<T extends TopPickListing>(
   const preferred: T[] = []
   const fallback: T[] = []
   for (const listing of listings) {
+    if (isExcludedFromRankedLists(listing.slug)) continue
     if (letterGrade(listing.inspection_grade) === "C") continue
     if (isPreferred(listing)) preferred.push(listing)
     else fallback.push(listing)
