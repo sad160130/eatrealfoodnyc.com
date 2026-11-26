@@ -3,6 +3,8 @@
 # Companion to https://www.eatrealfoodnyc.com/llms.txt
 # Last updated: 2026-11-26
 
+Founders: Sanket Desai and Rohan Kadam
+
 This file lists the public, indexable documents. It does not list individual
 restaurant URLs. Those live in the sitemap, which also carries each URL's
 lastmod:

@@ -46,7 +46,7 @@ export default async function AboutPage() {
             Finding a truly healthy restaurant in New York City — one you could trust
             for both food quality and food safety — required stitching together five
             different apps, reading hundreds of reviews, and still feeling unsure. He
-            decided to fix that.
+            decided to fix that. Sanket Desai is a co-founder of Eat Real Food NYC, with Rohan Kadam.
           </p>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default async function AboutPage() {
             {[
               { href: "/about/our-data", title: "Our Data & Methodology", desc: "How we source, verify, and maintain the restaurant data.", icon: "📊" },
               { href: "/about/editorial-standards", title: "Editorial Standards", desc: "The principles guiding how we curate and present information.", icon: "📋" },
-              { href: "/about/team", title: "Meet the Team", desc: "Meet Rohan Kadam, the founder behind Eat Real Food NYC.", icon: "👋" },
+              { href: "/about/team", title: "Meet the Team", desc: "Meet co-founders Sanket Desai and Rohan Kadam.", icon: "👋" },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="group rounded-2xl border border-gray-100 bg-white p-5 transition-all hover:border-sage/30 hover:shadow-md">
                 <span className="text-3xl">{item.icon}</span>
