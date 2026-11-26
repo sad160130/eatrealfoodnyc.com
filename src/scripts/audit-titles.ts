@@ -50,7 +50,7 @@ check(
 
 const longest = await prisma.restaurant.findMany({
   where: { is_published: true },
-  select: { name: true, neighborhood: true, borough: true, inspection_grade: true, inspection_date: true, type: true },
+  select: { name: true, neighborhood: true, borough: true, inspection_grade: true, inspection_date: true, type: true, rating: true, reviews: true },
   orderBy: { name: "asc" },
 })
 const top = [...longest].sort((a, b) => b.name.length - a.name.length).slice(0, 20)
@@ -65,6 +65,8 @@ for (const row of top) {
       inspectionDate: row.inspection_date,
       type: row.type,
       snapshot,
+      rating: row.rating,
+      reviews: row.reviews,
     })
   )
 }
