@@ -1,3 +1,8 @@
+import {
+  ETHIOPIAN_DESCRIPTION,
+  ETHIOPIAN_SHORT_TITLE,
+  ETHIOPIAN_TITLE,
+} from "@/data/ethiopian-restaurants-nyc"
 import { GUIDE_DESCRIPTIONS, HEALTH_GRADES_GUIDE_TITLE, guideTitle } from "@/lib/seo-titles"
 
 export interface GuideArticle {
@@ -41,7 +46,12 @@ export const GUIDES: GuideArticle[] = [
     publishedDate: "2026-01-15",
     updatedDate: "2026-11-25",
     keywords: ["nyc restaurant grades", "nyc restaurant health grade", "restaurant grade nyc"],
-    relatedGuides: ["nyc-restaurant-inspection-process", "hidden-gem-restaurants-nyc", "best-healthy-neighborhoods-nyc"],
+    relatedGuides: [
+      "nyc-restaurant-inspection-process",
+      "ethiopian-restaurants-nyc",
+      "hidden-gem-restaurants-nyc",
+      "best-healthy-neighborhoods-nyc",
+    ],
     relatedHubPages: [
       { label: "Browse Grade A restaurants", href: "/healthy-restaurants/grade-a" },
       { label: "View health grade map", href: "/map" },
@@ -368,6 +378,33 @@ export const GUIDES: GuideArticle[] = [
       { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
       { label: "Bronx healthy restaurants", href: "/nyc/bronx/healthy-restaurants" },
       { label: "Staten Island healthy restaurants", href: "/nyc/staten-island/healthy-restaurants" },
+    ],
+  },
+  {
+    slug: "ethiopian-restaurants-nyc",
+    title: ETHIOPIAN_TITLE,
+    metaTitle: ETHIOPIAN_TITLE,
+    shortTitle: ETHIOPIAN_SHORT_TITLE,
+    description: ETHIOPIAN_DESCRIPTION,
+    category: "Health & Safety",
+    emoji: "A",
+    readTime: "6 min read",
+    featured: false,
+    publishedDate: "2026-11-26",
+    updatedDate: "2026-11-26",
+    keywords: ["Ethiopian restaurants NYC"],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "nyc-restaurant-inspection-process",
+      "grade-a-restaurants-by-borough-nyc",
+    ],
+    relatedHubPages: [
+      { label: "NYC restaurant grades", href: "/guides/nyc-health-grades-explained" },
+      { label: "The score 13 cliff", href: "/data/nyc-restaurant-score-13-cliff" },
+      { label: "NYC restaurant health grade report", href: "/data/nyc-restaurant-health-grade-report" },
+      { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
+      { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
+      { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
     ],
   },
 ]

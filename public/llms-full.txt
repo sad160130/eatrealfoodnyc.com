@@ -64,6 +64,8 @@ https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
   Best Italian Restaurants in NYC (2026): Top 10 Ranked. Inspection scores matched to dataset 43nn-pn8j. Re-checked 2026-11-24.
 https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
   Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
+https://www.eatrealfoodnyc.com/guides/ethiopian-restaurants-nyc
+  19 Ethiopian restaurants in the NYC inspection file. 13 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000, newest inspection_date 2026-11-23.
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
   NYC restaurant grades: A is 0–13, B is 14–27 on a reinspection, C is 28 or more. Citywide DOHMH file pulled 2026-11-25. Newest inspection_date 2026-11-23.
 https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process

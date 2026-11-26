@@ -213,6 +213,7 @@ export default async function HomePage() {
                 { href: "/data", label: "Inspection data" },
                 { href: "/guides/best-italian-restaurants-nyc", label: "Best Italian, 2026" },
                 { href: "/guides/best-pizza-restaurants-nyc", label: "Best pizza, 2026" },
+                { href: "/guides/ethiopian-restaurants-nyc", label: "Ethiopian restaurants NYC" },
                 { href: "/guides/grade-a-restaurants-by-borough-nyc", label: "Grade A by borough" },
                 { href: "/catering", label: "Request catering" },
               ].map((item) => (

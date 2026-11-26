@@ -28,6 +28,7 @@ const TOOLS = [
   { label: "NYC Health Grades Explained", href: "/guides/nyc-health-grades-explained" },
   { label: "Best Italian, 2026", href: "/guides/best-italian-restaurants-nyc" },
   { label: "Best Pizza, 2026", href: "/guides/best-pizza-restaurants-nyc" },
+  { label: "Ethiopian Restaurants NYC", href: "/guides/ethiopian-restaurants-nyc" },
   { label: "Grade A by Borough", href: "/guides/grade-a-restaurants-by-borough-nyc" },
   { label: "Best-Rated Restaurants", href: "/data/best-rated-restaurants" },
   { label: "Interactive Map", href: "/map" },

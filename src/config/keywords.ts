@@ -6,6 +6,7 @@ export const YEAR = "2026"
 export const GUIDE_KEYWORDS = {
   "grade-a-restaurants-by-borough-nyc": "grade a restaurants by borough nyc",
   "nyc-health-grades-explained": "nyc restaurant grades",
+  "ethiopian-restaurants-nyc": "Ethiopian restaurants NYC",
 } as const
 
 export const BOROUGH_KEYWORDS: Record<string, {

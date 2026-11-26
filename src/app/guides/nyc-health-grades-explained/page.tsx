@@ -326,6 +326,10 @@ export default async function NYCHealthGradesGuide() {
             <Link href="/guides/best-italian-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
               best Italian restaurants in NYC
             </Link>
+            . The same file, limited to cuisine description Ethiopian, is on{" "}
+            <Link href="/guides/ethiopian-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+              Ethiopian restaurants NYC
+            </Link>
             .
           </p>
         </section>
@@ -750,6 +754,7 @@ export default async function NYCHealthGradesGuide() {
               title: "Related pages",
               links: [
                 { href: "/guides/healthy-breakfast-nyc", label: "healthy breakfast in NYC" },
+                { href: "/guides/ethiopian-restaurants-nyc", label: "Ethiopian restaurants NYC" },
                 { href: "/catering/holiday-party-catering-nyc", label: "Holiday party catering in NYC from Grade A restaurants" },
                 { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
                 { href: "/data", label: "NYC Restaurant Compliance Weekly" },
