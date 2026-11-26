@@ -18,7 +18,7 @@ import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighbor
 import bestRatedReport from "@/data/best-rated-restaurants"
 import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
-import { parseInspectionDate } from "@/lib/inspection-dates"
+import { listingStamp, latestStamp } from "@/lib/listing-stamp"
 import { omitFromSitemap } from "@/lib/sitemap-policy"
 import {
   NEWSLETTER_INDEX_MIN_GRADE_A,
@@ -34,22 +34,25 @@ const BOROUGHS = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"] a
  * Editorial pages don't have a row timestamp. These are the last dates the
  * copy itself was revised, not the clock at build time.
  */
+/**
+ * Last git commit date of each static source file (`git log -1 --format=%cs`).
+ * Catering and partner are omitted: their visible Updated line is the newest
+ * inspection date, and the sitemap uses that same date below.
+ */
 const STATIC_LASTMOD: Record<string, string> = {
-  "/about": "2026-03-01",
-  "/about/editorial-standards": "2026-11-16",
-  "/about/team": "2026-03-01",
-  "/contact": "2026-03-01",
-  "/press": "2026-03-01",
-  "/privacy": "2026-03-01",
-  "/terms": "2026-03-01",
-  "/map": "2026-04-01",
-  "/nyc/compare": "2026-04-01",
-  "/guides": "2026-02-15",
+  "/about": "2026-11-26",
+  "/about/editorial-standards": "2026-11-26",
+  "/about/team": "2026-11-26",
+  "/contact": "2026-11-15",
+  "/press": "2026-11-15",
+  "/privacy": "2026-11-15",
+  "/terms": "2026-11-15",
+  "/map": "2026-11-26",
+  "/nyc/compare": "2026-11-25",
+  "/guides": "2026-11-15",
   "/newsletter": "2026-11-19",
   "/newsletter/issues": "2026-11-19",
   "/about/our-data": "2026-11-25",
-  "/catering": "2026-11-25",
-  "/partner-with-us": "2026-11-25",
 }
 
 export function editorialPaths(): string[] {
@@ -70,17 +73,11 @@ function asDate(value: string | Date | null | undefined): Date | undefined {
 }
 
 function rowFreshness(row: { updated_at: Date; inspection_date: string | null }): Date | undefined {
-  return latest([row.updated_at, parseInspectionDate(row.inspection_date) ?? undefined])
+  return listingStamp(row)
 }
 
 function latest(dates: Array<Date | undefined>): Date | undefined {
-  let max = 0
-  for (const date of dates) {
-    if (!date) continue
-    const time = date.getTime()
-    if (time > max) max = time
-  }
-  return max > 0 ? new Date(max) : undefined
+  return latestStamp(dates)
 }
 
 function entry(
@@ -107,17 +104,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       slug: true,
       updated_at: true,
       inspection_date: true,
+      inspection_grade: true,
       borough: true,
       neighborhood: true,
       dietary_tags: true,
     },
   })
 
-  const directoryUpdated = latest(restaurants.map((row) => rowFreshness(row))) ?? new Date()
+  const directoryUpdated = latest(restaurants.map((row) => rowFreshness(row)))
 
   const staticPages = [
     entry(siteUrl, "/", 1, "daily", directoryUpdated),
     entry(siteUrl, "/data", 0.8, "weekly", directoryUpdated),
+    entry(siteUrl, "/catering", 0.6, "weekly", directoryUpdated),
+    entry(siteUrl, "/partner-with-us", 0.6, "monthly", directoryUpdated),
     ...Object.entries(STATIC_LASTMOD).map(([path, date]) =>
       entry(siteUrl, path, path.startsWith("/about") ? 0.7 : path === "/guides" || path === "/data" ? 0.8 : path === "/nyc/compare" ? 0.8 : path === "/map" ? 0.75 : 0.5, path === "/map" || path === "/nyc/compare" || path === "/data" ? "weekly" : "monthly", asDate(date))
     ),
@@ -137,13 +137,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const byBorough = new Map<string, Date[]>()
   const byNeighborhood = new Map<string, { borough: string; neighborhood: string; dates: Date[]; count: number }>()
   const byCombo = new Map<string, { borough: string; tag: string; dates: Date[]; count: number }>()
+  const byHoodDiet = new Map<string, Date[]>()
+  const gradeACity: Date[] = []
+  const gradeAByBorough = new Map<string, Date[]>()
+  const gradeAByHood = new Map<string, Date[]>()
 
   for (const row of restaurants) {
+    const moment = rowFreshness(row)
     const tags = (row.dietary_tags ?? "").split("|").map((tag) => tag.trim()).filter(Boolean)
     for (const tag of tags) {
       if (!DIET_TYPES.includes(tag)) continue
       const dates = byDiet.get(tag) ?? []
-      const moment = rowFreshness(row)
       if (moment) dates.push(moment)
       byDiet.set(tag, dates)
       if (row.borough) {
@@ -153,11 +157,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         combo.count += 1
         byCombo.set(key, combo)
       }
+      if (row.borough && row.neighborhood && moment) {
+        const hoodKey = `${row.borough}::${row.neighborhood}::${tag}`
+        const hoodDates = byHoodDiet.get(hoodKey) ?? []
+        hoodDates.push(moment)
+        byHoodDiet.set(hoodKey, hoodDates)
+      }
+    }
+    if (row.inspection_grade?.trim().toUpperCase() === "A" && moment) {
+      gradeACity.push(moment)
+      if (row.borough) {
+        const slug = boroughToSlug(row.borough)
+        const dates = gradeAByBorough.get(slug) ?? []
+        dates.push(moment)
+        gradeAByBorough.set(slug, dates)
+        if (row.neighborhood) {
+          const hoodKey = `${slug}::${neighborhoodToSlug(row.neighborhood)}`
+          const hoodDates = gradeAByHood.get(hoodKey) ?? []
+          hoodDates.push(moment)
+          gradeAByHood.set(hoodKey, hoodDates)
+        }
+      }
     }
     if (row.borough) {
       const slug = boroughToSlug(row.borough)
       const dates = byBorough.get(slug) ?? []
-      const moment = rowFreshness(row)
       if (moment) dates.push(moment)
       byBorough.set(slug, dates)
     }
@@ -169,7 +193,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         dates: [],
         count: 0,
       }
-      const moment = rowFreshness(row)
       if (moment) hood.dates.push(moment)
       hood.count += 1
       byNeighborhood.set(key, hood)
@@ -184,7 +207,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const boroughPages = BOROUGHS.map((borough) =>
-    entry(siteUrl, `/nyc/${borough}/healthy-restaurants`, 0.9, "weekly", latest(byBorough.get(borough) ?? []) ?? directoryUpdated)
+    entry(siteUrl, `/nyc/${borough}/healthy-restaurants`, 0.9, "weekly", latest(byBorough.get(borough) ?? []))
   )
 
   const neighborhoodPages = [...byNeighborhood.values()]
@@ -195,7 +218,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         `/nyc/${boroughToSlug(hood.borough)}/${neighborhoodToSlug(hood.neighborhood)}/healthy-restaurants`,
         0.85,
         "weekly",
-        latest(hood.dates) ?? directoryUpdated
+        latest(hood.dates)
       )
     )
 
@@ -238,7 +261,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const restaurantPages = restaurants.map((row) =>
-    entry(siteUrl, `/restaurants/${row.slug}`, 0.8, "monthly", row.updated_at)
+    entry(siteUrl, `/restaurants/${row.slug}`, 0.8, "monthly", rowFreshness(row))
   )
 
   const indexPages = [...byNeighborhood.values()].flatMap((hood) => {
@@ -259,11 +282,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const gradeANeighborhoods = await gradeANeighborhoodCounts()
   const gradeAPages = [
     ...Array.from({ length: gradeAPageCount(gradeATotal) }, (_, index) =>
-      entry(siteUrl, gradeACityPath(index + 1), index === 0 ? 0.95 : 0.5, "weekly", directoryUpdated)
+      entry(siteUrl, gradeACityPath(index + 1), index === 0 ? 0.95 : 0.5, "weekly", latest(gradeACity))
     ),
     ...gradeABoroughs.flatMap((row) =>
       Array.from({ length: gradeAPageCount(row.count) }, (_, index) =>
-        entry(siteUrl, gradeABoroughPath(row.borough, index + 1), index === 0 ? 0.9 : 0.5, "weekly", directoryUpdated)
+        entry(siteUrl, gradeABoroughPath(row.borough, index + 1), index === 0 ? 0.9 : 0.5, "weekly", latest(gradeAByBorough.get(boroughToSlug(row.borough)) ?? []))
       )
     ),
     ...gradeANeighborhoods.flatMap((row) =>
@@ -273,7 +296,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           gradeANeighborhoodPath(row.borough, row.neighborhood, index + 1),
           index === 0 ? 0.85 : 0.5,
           "weekly",
-          directoryUpdated
+          latest(gradeAByHood.get(`${boroughToSlug(row.borough)}::${neighborhoodToSlug(row.neighborhood)}`) ?? [])
         )
       )
     ),
@@ -311,7 +334,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       neighborhoodDietPath(combo.borough, combo.neighborhood, combo.tag),
       0.85,
       "weekly",
-      directoryUpdated
+      latest(byHoodDiet.get(`${combo.borough}::${combo.neighborhood}::${combo.tag}`) ?? [])
     )
   )
 

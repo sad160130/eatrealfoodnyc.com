@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
@@ -62,7 +63,7 @@ export default async function BudgetHealthyGuide() {
             "@type": "Article",
             headline: guide.title,
             description: guide.description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+            author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
             dateModified: guide.publishedDate,

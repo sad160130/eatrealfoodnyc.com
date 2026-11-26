@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 /**
  * Grade A restaurants by borough, checked on 2026-11-24 (America/New_York).
  * Listing fields came from the live restaurants table. Latest inspections came
@@ -388,7 +389,7 @@ export function articleSchema(siteUrl: string) {
     description: GRADE_A_BOROUGH_DESCRIPTION,
     datePublished: GRADE_A_BOROUGH_PUBLISHED,
     dateModified: GRADE_A_BOROUGH_PUBLISHED,
-    author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+    author: guideAuthors(),
     publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl, logo: `${siteUrl}/logo.png` },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   }

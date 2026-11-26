@@ -26,6 +26,17 @@ export default async function AboutPage() {
           __html: JSON.stringify({ "@context": "https://schema.org", ...ORGANIZATION_SCHEMA }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            url: "https://www.eatrealfoodnyc.com/about",
+            dateModified: "2026-11-26",
+          }),
+        }}
+      />
 
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
@@ -85,7 +96,11 @@ export default async function AboutPage() {
             At the same time, the platforms people actually use to find restaurants — Yelp, Google Maps, TripAdvisor — are built around reviews and paid promotion. The health-conscious diner who needs to know whether a restaurant is genuinely halal-certified, operates a gluten-free kitchen, or has maintained a Grade A health inspection for the past two years has no good tool designed for them.
           </p>
           <p className="text-lg leading-relaxed text-gray-700">
-            Eat Real Food NYC is that tool. We built it by pulling the NYC Health Department inspection database directly, enriching it with verified dietary information, and layering in a neighborhood-level curation system that surfaces the best healthy restaurants in every corner of the city — not the most promoted ones.
+            Eat Real Food NYC is that tool. We built it by pulling the NYC Health Department inspection database directly, enriching it with verified dietary information, and layering in a neighborhood-level curation system that surfaces the best healthy restaurants in every corner of the city — not the most promoted ones. The source file is the{" "}
+            <Link href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j" className="font-semibold text-jade hover:text-forest">
+              DOHMH New York City Restaurant Inspection Results
+            </Link>
+            .
           </p>
         </section>
 

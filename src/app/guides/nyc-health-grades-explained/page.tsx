@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
@@ -68,7 +69,7 @@ export default async function NYCHealthGradesGuide() {
             "@type": "Article",
             headline: guide.title,
             description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+            author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: "2026-01-15",
             dateModified: citywide.pulledOn,
@@ -178,7 +179,11 @@ export default async function NYCHealthGradesGuide() {
             How the scoring works
           </h2>
           <p className="mb-6 text-lg leading-relaxed text-gray-700">
-            Inspectors assign points for sanitary violations. Fewer points is a better grade. The letter cutoffs are in Health Code Chapter 23. A B or a C is issued on the reinspection, not on the first visit of the cycle. Z and P are Grade Pending codes in the city dataset, not letters in the window.
+            Inspectors assign points for sanitary violations. Fewer points is a better grade. The letter cutoffs are in Health Code Chapter 23. A B or a C is issued on the reinspection, not on the first visit of the cycle. Z and P are Grade Pending codes in the city dataset, not letters in the window. The Health Department explains A, B, C, and Grade Pending on its{" "}
+            <Link href="https://www.nyc.gov/site/doh/business/food-operators/letter-grading-for-restaurants.page" className="font-semibold text-jade hover:text-forest">
+              letter-grading page
+            </Link>
+            .
           </p>
           <div className="my-6 overflow-hidden border" style={{ borderColor: "var(--hairline)", borderRadius: "4px", backgroundColor: "#fff" }}>
             <table className="w-full text-sm">

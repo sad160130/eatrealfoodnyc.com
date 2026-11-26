@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
@@ -83,7 +84,7 @@ export default async function HealthyNeighborhoodsGuide() {
             "@type": "Article",
             headline: guide.title,
             description: guide.description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+            author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
             dateModified: guide.updatedDate ?? guide.publishedDate,
@@ -94,7 +95,7 @@ export default async function HealthyNeighborhoodsGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="Data-driven rankings of NYC neighborhoods for healthy dining across all five boroughs."
+        subtitle={`Neighborhoods with at least 10 published listings are ranked by the share whose matched NYC DOHMH grade is A. This count covers ${restaurants.toLocaleString("en-US")} published restaurants.`}
         stats={[
           { label: "Neighborhoods", stat: neighborhoods.toLocaleString("en-US") },
           { label: "Boroughs", stat: "5" },

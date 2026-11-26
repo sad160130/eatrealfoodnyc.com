@@ -7,6 +7,8 @@ import {
   siteGraph,
   stateCode,
 } from "../lib/schema"
+import { guideAuthors } from "../lib/founders"
+import { removedListingDestination } from "../lib/removed-listings"
 import { stripReviewMarkup } from "../lib/review-text"
 import { extractJsonLd, validateJsonLd, validateVisibleHtml } from "../lib/validate-jsonld"
 
@@ -57,12 +59,22 @@ assert.deepEqual(
   validateJsonLd([{ "@type": "Dataset", name: "Hub", description: "Hub rows.", url: "https://www.eatrealfoodnyc.com/nyc/manhattan/healthy-restaurants", license: "https://creativecommons.org/licenses/by/4.0/", creator: { "@type": "Organization", name: "Eat Real Food NYC" }, isBasedOn: basedOn }], ["Dataset"]),
   []
 )
-assert.deepEqual(siteGraph()["@graph"][0].founder, [
-  { "@type": "Person", name: "Snket Desai" },
-  { "@type": "Person", name: "Rohan Kadam" },
-])
-assert.equal("sameAs" in siteGraph()["@graph"][0].founder[0], false)
-assert.equal("sameAs" in siteGraph()["@graph"][0].founder[1], false)
+const founders = siteGraph()["@graph"][0].founder
+assert.equal(founders[0].name, "Snket Desai")
+assert.equal(founders[1].name, "Rohan Kadam")
+assert.equal(founders[0].jobTitle, "Co-founder")
+assert.equal(founders[1].jobTitle, "Co-founder")
+assert.equal(founders[0].url, "https://www.eatrealfoodnyc.com/about/team")
+assert.equal("sameAs" in founders[0], false)
+assert.equal(founders[1].sameAs, "https://www.linkedin.com/in/rohan-kadam-176922204")
+const authors = guideAuthors()
+assert.equal(authors[0].name, "Snket Desai")
+assert.equal(authors[1].name, "Rohan Kadam")
+assert.equal("sameAs" in authors[0], false)
+assert.equal("sameAs" in authors[1], false)
+assert.equal(removedListingDestination({ borough: "Queens" }), "/nyc/queens/healthy-restaurants")
+assert.equal(removedListingDestination({ borough: "Queens", neighborhood: "Flushing" }), "/nyc/queens/flushing/healthy-restaurants")
+assert.equal(removedListingDestination({ borough: "" }), null)
 
 const unrated = buildRestaurantSchema({
   name: "No Reviews",

@@ -163,6 +163,53 @@ export default async function HealthyBreakfastGuide() {
           ]}
         />
 
+        <section id="how-many-grade-a" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">How many NYC restaurants open by 8 AM hold Grade A?</h2>
+          <p className="mt-4 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>
+            {countPhrase(data.gradeA, "published restaurant opens", "published restaurants open")} by 8 AM on weekdays and {data.gradeA === 1 ? "holds" : "hold"} Grade A. {countPhrase(data.earlyOpeners, "published listing opens", "published listings open")} that early in total.
+          </p>
+        </section>
+        <section id="which-borough" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">Which borough has the most Grade A restaurants open by 8 AM?</h2>
+          <p className="mt-4 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>{mostBoroughAnswer(data.boroughs)}</p>
+          <div className="mt-6 overflow-x-auto border" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
+            <table className="w-full text-left text-sm">
+              <caption className="sr-only">Grade A restaurants open by 8 AM on weekdays, by borough</caption>
+              <thead>
+                <tr style={{ color: "var(--color-muted)" }}>
+                  <th className="px-4 py-3 font-medium">Borough</th>
+                  <th className="px-4 py-3 font-medium">Open by 8 AM</th>
+                  <th className="px-4 py-3 font-medium">Grade A</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.boroughs.map((borough) => (
+                  <tr key={borough.borough} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+                    <td className="px-4 py-3">
+                      <Link href={borough.href} className={linkClass}>{borough.borough}</Link>
+                    </td>
+                    <td className="px-4 py-3 tabular">{borough.earlyOpeners.toLocaleString("en-US")}</td>
+                    <td className="px-4 py-3 tabular">{borough.gradeA.toLocaleString("en-US")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section id="what-counts" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">What time counts as open for breakfast?</h2>
+          <p className="mt-4 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>
+            Open by 8:00 AM means the stored hours cover 8:00 AM on Monday, Tuesday, Wednesday, Thursday, and Friday. A restaurant that opens at 6:00 AM and closes at 7:00 AM is not included. Open 24 hours is included.
+          </p>
+        </section>
+        <section id="what-grade-a-means" className="mb-16 scroll-mt-24">
+          <h2 className="h2-serif">What does Grade A mean on a breakfast listing?</h2>
+          <p className="mt-4 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>
+            {gradeExplanation}{" "}
+            <Link href={gradeHref} className={linkClass}>NYC health grades explained</Link> covers how the city scores A, B, and C.
+          </p>
+        </section>
+
         <section id="by-borough" className="mb-16 scroll-mt-24">
           <h2 className="h2-serif">Grade A breakfast spots by borough</h2>
           <p className="dek mt-4">
