@@ -16,6 +16,7 @@ import { DIET_CONFIG } from "@/config/dietary-tags"
 import { BOROUGH_NAMES, type BoroughGradeStats, type NeighborhoodGradeRow, getLiveGuideStats } from "@/lib/live-guide-stats"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
+import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("best-healthy-neighborhoods-nyc")!
@@ -52,8 +53,11 @@ const GUIDE_FAQS = [
 ]
 
 export default async function HealthyNeighborhoodsGuide() {
-  const { restaurants, neighborhoods } = await getPublishedDirectoryCounts()
-  const stats = await getLiveGuideStats()
+  const [{ restaurants, neighborhoods }, stats, hubs] = await Promise.all([
+    getPublishedDirectoryCounts(),
+    getLiveGuideStats(),
+    getBuiltNeighborhoodHubs(),
+  ])
   const boroughRank = BOROUGH_NAMES.map((name) => ({ name, ...stats.global.boroughs[name] })).sort(
     (a, b) => b.rate - a.rate || b.total - a.total
   )
@@ -249,7 +253,7 @@ export default async function HealthyNeighborhoodsGuide() {
             A dietary tag is applied only when a restaurant identifies that way or has substantial dedicated menu coverage. The lines below are the neighborhood with the most published listings for each tag that has at least one tagged restaurant. They are counts, not a claim that the neighborhood covers every diet.
           </p>
           <ul className="space-y-3 text-lg leading-relaxed text-gray-700">
-            {dietLeaders(stats).map((row) => (
+            {dietLeaders(stats, hubs).map((row) => (
               <li key={row.tag}>
                 <Link href={`/healthy-restaurants/${row.tag}`} className="font-semibold text-jade hover:text-forest">
                   {row.label}
@@ -387,7 +391,7 @@ function BoroughGradeBlock({
   )
 }
 
-function dietLeaders(stats: Awaited<ReturnType<typeof getLiveGuideStats>>) {
+function dietLeaders(stats: Awaited<ReturnType<typeof getLiveGuideStats>>, hubs: Set<string>) {
   return Object.keys(DIET_CONFIG)
     .flatMap((tag) => {
       const top = stats.dietary.topNeighborhoodsByTag[tag]?.[0]
@@ -400,7 +404,9 @@ function dietLeaders(stats: Awaited<ReturnType<typeof getLiveGuideStats>>) {
         neighborhood: top.neighborhood,
         borough: top.borough,
         count: top.count,
-        href: `/nyc/${boroughToSlug(top.borough)}/${neighborhoodToSlug(top.neighborhood)}/healthy-restaurants`,
+        href: hubs.has(hubKey(top.borough, top.neighborhood))
+          ? `/nyc/${boroughToSlug(top.borough)}/${neighborhoodToSlug(top.neighborhood)}/healthy-restaurants`
+          : `/nyc/${boroughToSlug(top.borough)}/healthy-restaurants`,
       }]
     })
     .sort((a, b) => b.count - a.count)

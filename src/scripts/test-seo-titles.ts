@@ -202,7 +202,7 @@ for (const neighborhoods of hoods) {
 const gradesTitle = healthGradesGuideTitle()
 const gradesDescription = healthGradesGuideDescription()
 assert.equal(gradesTitle, HEALTH_GRADES_GUIDE_TITLE)
-assert.ok(gradesTitle.startsWith("NYC Restaurant Grades"), gradesTitle)
+assert.ok(gradesTitle.startsWith("What Does a C Rating Mean"), gradesTitle)
 assert.ok(gradesTitle.length <= TITLE_MAX, `${gradesTitle.length}: ${gradesTitle}`)
 assert.equal(gradesDescription, HEALTH_GRADES_GUIDE_DESCRIPTION)
 assert.equal(gradesDescription.split(".").filter(Boolean).length, 1, gradesDescription)

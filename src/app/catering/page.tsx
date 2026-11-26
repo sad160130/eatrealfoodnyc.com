@@ -12,6 +12,7 @@ import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import CateringForm from "@/components/catering-form"
 import FAQSchema from "@/components/faq-schema"
 import HolidayCateringBanner from "@/components/holiday-catering-banner"
+import { UpdatedWebPage } from "@/components/updated-webpage"
 
 export const revalidate = 86400
 
@@ -62,10 +63,13 @@ export default async function CateringPage({
           <p className="mt-4 text-base leading-relaxed" style={{ color: "var(--color-text)" }}>
             {CATERING_INTRO}
           </p>
-          {snapshot.latestInspectionLabel ? (
-            <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
-              Updated {snapshot.latestInspectionLabel}.
-            </p>
+          {snapshot.latestInspectionAt ? (
+            <>
+              <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+                Updated {snapshot.latestInspectionLabel}.
+              </p>
+              <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/catering" hideLabel />
+            </>
           ) : null}
           <p className="dek mt-4 hidden md:block">
             Share the date, the headcount, where it should be delivered, and any dietary needs. We save the request and may pass it to restaurants. This form does not take payment.

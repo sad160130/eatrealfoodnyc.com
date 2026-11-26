@@ -417,7 +417,7 @@ export function lateNightGuideTitle(neighborhoods: number): string {
   )
 }
 
-export const HEALTH_GRADES_GUIDE_TITLE = "NYC Restaurant Grades: What B and C Mean (2026)"
+export const HEALTH_GRADES_GUIDE_TITLE = "What Does a C Rating Mean? NYC Grades"
 
 export function healthGradesGuideTitle(): string {
   return fitTitle([HEALTH_GRADES_GUIDE_TITLE, "NYC Restaurant Grades"], { allowBrand: false })
@@ -444,6 +444,12 @@ export function breakfastGuideDescription(input: { earlyOpeners: number; gradeA:
   )
 }
 
+export function lateNightGuideLede(input: { restaurants: number; neighborhoods: number }): string {
+  const rest = input.restaurants === 1 ? "published restaurant listing" : "published restaurant listings"
+  const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
+  return `Late-night healthy eating in NYC means a meal after 10 pm. This directory has ${input.restaurants.toLocaleString("en-US")} ${rest} across ${input.neighborhoods.toLocaleString("en-US")} ${hood}, and those listings store working hours plus a matched NYC DOHMH grade when one is on file. The hours field is what shows whether a place is open after 10 pm. Grade A is under 14 points on the inspection. This guide does not invent a late-night menu or a restaurant that is not in the published set.`
+}
+
 export function lateNightGuideDescription(input: { restaurants: number; neighborhoods: number }): string {
   const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
   const rest = input.restaurants === 1 ? "listing" : "listings"
@@ -454,7 +460,7 @@ export function lateNightGuideDescription(input: { restaurants: number; neighbor
 }
 
 export const HEALTH_GRADES_GUIDE_DESCRIPTION =
-  "What does a B/C rating mean? NYC restaurant grades are A for 0\u201313 points, B for 14\u201327 on a reinspection, and C for 28 or more on the official NYC DOHMH score."
+  "What does a C rating mean for NYC restaurant grades? A is 0\u201313 points, B is 14\u201327 on a reinspection, and C is 28 or more on the official NYC DOHMH score."
 
 export function healthGradesGuideDescription(): string {
   return HEALTH_GRADES_GUIDE_DESCRIPTION

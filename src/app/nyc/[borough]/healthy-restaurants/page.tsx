@@ -28,6 +28,9 @@ import DirectoryAsOf from "@/components/directory-as-of"
 import { presentGrade } from "@/lib/grade-display"
 import NewsletterSignup from "@/components/newsletter-signup"
 import { BoroughGradeContext } from "@/components/inspection-context"
+import { HubRecord } from "@/components/hub-record"
+import { hubStamp } from "@/lib/hub-record"
+import { formatLongDate } from "@/lib/inspection-dates"
 
 export async function generateStaticParams() {
   return ["manhattan", "brooklyn", "queens", "bronx", "staten-island"].map((borough) => ({
@@ -121,13 +124,14 @@ export default async function BoroughPage({
     { label: "Halal", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("halal")).length },
     { label: "Gluten-free", count: restaurants.filter((row) => parseDietaryTags(row.dietary_tags).includes("gluten-free")).length },
   ]
+  const updated = hubStamp(restaurants)
   const boroughParagraphs = placeIntro({
     place: boroughName,
     count: totalCount,
     gradeA: gradeACount,
     gradeB: gradeBCount,
     gradeC: gradeCCount,
-    latestMonth: snapshot.latestInspectionLabel,
+    latestMonth: updated ? formatLongDate(updated) : null,
     diets: dietCounts,
     neighborhoodCount: scorecard.neighborhoods.length,
   })
@@ -210,6 +214,16 @@ export default async function BoroughPage({
           <h1 className="display-1 mt-3">
             Healthy restaurants in {boroughName}
           </h1>
+          <HubRecord
+            place={boroughName}
+            urlPath={`/nyc/${boroughSlug}/healthy-restaurants`}
+            total={totalCount}
+            gradeA={gradeACount}
+            gradeB={gradeBCount}
+            gradeC={gradeCCount}
+            updated={updated}
+            mode="all"
+          />
 
           {boroughParagraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)} className="dek mt-4" style={{ maxWidth: "62ch" }}>{paragraph}</p>

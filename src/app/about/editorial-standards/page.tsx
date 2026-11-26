@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import EditorialPartnershipPolicy from "@/components/editorial-partnership-policy"
 import { pageMeta } from "@/lib/page-meta"
+import { UpdatedWebPage } from "@/components/updated-webpage"
+import { EDITORIAL_VISIBLE_DATE } from "@/lib/visible-dates"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
@@ -38,6 +40,7 @@ export default function EditorialStandardsPage() {
             </a>
             .
           </p>
+          <UpdatedWebPage date={new Date(`${EDITORIAL_VISIBLE_DATE}T00:00:00.000Z`)} urlPath="/about/editorial-standards" labelStyle={{ color: "rgba(255,255,255,0.7)" }} />
         </div>
       </div>
 

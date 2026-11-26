@@ -2,7 +2,9 @@ import Link from "next/link"
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
 import { DATA_SAMPLE_LIMIT, dohmhSourceLine, presentSampleFact } from "@/lib/data-sample"
-import { loadNewestInspectionLabel } from "@/lib/data-sample-query"
+import { loadNewestInspectionAt } from "@/lib/data-sample-query"
+import { formatLongDate } from "@/lib/inspection-dates"
+import { UpdatedWebPage } from "@/components/updated-webpage"
 import { HIGH_SCORE } from "@/lib/compliance-csv"
 import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
@@ -41,7 +43,7 @@ export default async function DataProductPage({
 }) {
   const { subscribed } = await searchParams
   const purchaseConfirmed = subscribed === "1"
-  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionLabel, counts] =
+  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionAt, counts] =
     await Promise.all([
     prisma.restaurant.count({ where: { inspection_grade: { in: ["Z", "P"] } } }),
     prisma.restaurant.count({ where: { inspection_score: { gte: HIGH_SCORE } } }),
@@ -74,9 +76,10 @@ export default async function DataProductPage({
       select: { name: true, borough: true, neighborhood: true, inspection_grade: true, inspection_score: true },
       take: 3,
     }),
-    loadNewestInspectionLabel(),
+    loadNewestInspectionAt(),
     getPublishedDirectoryCounts(),
   ])
+  const newestInspectionLabel = newestInspectionAt ? formatLongDate(newestInspectionAt) : null
   const faqs = dataWeeklyFaqs()
 
   const rows: SampleRow[] = [
@@ -103,6 +106,7 @@ export default async function DataProductPage({
             This database currently has {countLabel(pending, "grade-pending row", "grade-pending rows")}, {countLabel(highScore, "high-score row", "high-score rows")}, and {countLabel(closed, "non-operational row", "non-operational rows")}. Published listings not yet inspected: {countLabel(notInspected, "row", "rows")}. The public directory lists {counts.restaurants.toLocaleString("en-US")} published listings, {counts.gradeA.toLocaleString("en-US")} with Grade A.
             {newestInspectionLabel ? ` Rows as of ${newestInspectionLabel}.` : ""} Source NYC Open Data {DOHMH_DATASET.id}.
           </p>
+          {newestInspectionAt ? <UpdatedWebPage date={newestInspectionAt} urlPath="/data" /> : null}
           {purchaseConfirmed ? (
             <p
               role="status"

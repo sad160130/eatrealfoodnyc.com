@@ -28,6 +28,8 @@ import { buildHubItemList } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 import NeighborhoodSponsorSlot from "@/components/neighborhood-sponsor-slot"
 import { NeighborhoodGradeContext } from "@/components/inspection-context"
+import { HubRecord } from "@/components/hub-record"
+import { hubStamp } from "@/lib/hub-record"
 
 export async function generateStaticParams() {
   const results = await prisma.restaurant.groupBy({
@@ -209,6 +211,16 @@ export default async function NeighborhoodPage({
           <h1 className="display-1 mt-3">
             Healthy restaurants in {neighborhoodName}, {boroughName}
           </h1>
+          <HubRecord
+            place={`${neighborhoodName}, ${boroughName}`}
+            urlPath={`/nyc/${boroughSlug}/${neighborhoodSlug}/healthy-restaurants`}
+            total={restaurants.length}
+            gradeA={restaurants.filter((row) => row.inspection_grade === "A").length}
+            gradeB={restaurants.filter((row) => row.inspection_grade === "B").length}
+            gradeC={restaurants.filter((row) => row.inspection_grade === "C").length}
+            updated={hubStamp(restaurants)}
+            mode="all"
+          />
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
             {capsule}

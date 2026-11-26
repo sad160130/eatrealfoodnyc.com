@@ -14,6 +14,7 @@ import { ClaimListingCta } from "@/components/product-ctas"
 import { PartnerCta } from "@/components/tracked-external-link"
 import { PartnerPurchaseNotice, PartnerReferralLine } from "@/components/partner-query-notes"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { UpdatedWebPage } from "@/components/updated-webpage"
 
 export const metadata: Metadata = {
   title: { absolute: PARTNER_TITLE },
@@ -98,8 +99,11 @@ export default async function PartnerWithUsPage() {
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
             Your listing is free. Claim it, add your free Grade A badge, then upgrade to a labeled placement only if you want more visibility.
           </p>
-          {snapshot.latestInspectionLabel ? (
-            <p className="mt-4 text-sm text-white/60">Updated {snapshot.latestInspectionLabel}.</p>
+          {snapshot.latestInspectionAt ? (
+            <>
+              <p className="mt-4 text-sm text-white/60">Updated {snapshot.latestInspectionLabel}.</p>
+              <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/partner-with-us" hideLabel />
+            </>
           ) : null}
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <ClaimListingCta

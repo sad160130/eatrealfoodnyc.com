@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { pageMeta } from "@/lib/page-meta"
+import { TEAM_PAGE_DATE } from "@/lib/visible-dates"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
@@ -21,7 +22,7 @@ export default function TeamPage() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             url: "https://www.eatrealfoodnyc.com/about/team",
-            dateModified: "2026-11-26",
+            dateModified: TEAM_PAGE_DATE,
           }),
         }}
       />

@@ -14,7 +14,7 @@ import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
 import { pageMeta } from "@/lib/page-meta"
-import { lateNightGuideDescription, lateNightGuideTitle } from "@/lib/seo-titles"
+import { lateNightGuideDescription, lateNightGuideLede, lateNightGuideTitle } from "@/lib/seo-titles"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("late-night-healthy-eating-nyc")!
@@ -84,7 +84,10 @@ export default async function LateNightGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle={description}
+        subtitle={lateNightGuideLede({
+          restaurants: stats.global.totalPublished,
+          neighborhoods: stats.global.totalUniqueNeighborhoods,
+        })}
         stats={[
           { label: "With hours data", stat: "8,710" },
           { label: "Open now filter", stat: "Live" },

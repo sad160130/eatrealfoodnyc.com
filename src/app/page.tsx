@@ -21,6 +21,7 @@ import FAQSchema from "@/components/faq-schema"
 import { buildBreadcrumbList } from "@/lib/schema"
 import { skipImageOptimizer } from "@/lib/photo-src"
 import HolidayCateringBanner from "@/components/holiday-catering-banner"
+import { UpdatedWebPage } from "@/components/updated-webpage"
 
 export async function generateMetadata(): Promise<Metadata> {
   const [counts, snapshot] = await Promise.all([
@@ -721,10 +722,13 @@ export default async function HomePage() {
           <FAQSchema faqs={faqs} />
           <p className="eyebrow">FAQ</p>
           <h2 className="h2-serif mt-2">Questions about this directory</h2>
-          {snapshot.latestInspectionLabel ? (
-            <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
-              Updated {snapshot.latestInspectionLabel}.
-            </p>
+          {snapshot.latestInspectionAt ? (
+            <>
+              <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
+                Updated {snapshot.latestInspectionLabel}.
+              </p>
+              <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/" hideLabel />
+            </>
           ) : null}
           <div className="mt-8 space-y-6">
             {faqs.map((faq) => (

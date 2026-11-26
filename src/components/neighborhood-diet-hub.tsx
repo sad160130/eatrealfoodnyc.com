@@ -14,6 +14,8 @@ import FAQSection from "@/components/faq-section"
 import TopicalBreadcrumb from "@/components/topical-breadcrumb"
 import AboutThisData from "@/components/about-this-data"
 import { formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { HubRecord } from "@/components/hub-record"
+import { hubStamp } from "@/lib/hub-record"
 import {
   dietLabel,
   neighborhoodDietPath,
@@ -140,6 +142,15 @@ export async function NeighborhoodDietHub(input: {
           />
           <p className="eyebrow mt-6">{label} in {input.neighborhoodName}</p>
           <h1 className="display-1 mt-3">{label} restaurants in {input.neighborhoodName}</h1>
+          <HubRecord
+            place={`${input.neighborhoodName}, ${input.boroughName}`}
+            urlPath={path}
+            total={restaurants.length}
+            gradeA={gradeA}
+            updated={hubStamp(restaurants)}
+            mode="diet"
+            dietLabel={label}
+          />
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
             {restaurants.length.toLocaleString("en-US")} published {label.toLowerCase()} restaurants in {input.neighborhoodName}, {input.boroughName}.{" "}
             {gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A

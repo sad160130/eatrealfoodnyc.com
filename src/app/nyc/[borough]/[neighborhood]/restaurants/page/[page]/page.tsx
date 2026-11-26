@@ -6,8 +6,10 @@ import {
   neighborhoodIndexPath,
   pageCount,
   resolveNeighborhood,
+  loadNeighborhoodRoster,
   RESTAURANT_INDEX_PAGE_SIZE,
 } from "@/lib/restaurant-index"
+import { hubStamp } from "@/lib/hub-record"
 import { fitTitle } from "@/lib/seo-titles"
 import NeighborhoodRestaurantList from "@/components/neighborhood-restaurant-list"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
@@ -65,34 +67,25 @@ export default async function NeighborhoodRestaurantsPageN({
   if (!Number.isInteger(pageNumber) || pageNumber < 2) notFound()
   const resolved = await resolveNeighborhood(borough, neighborhood)
   if (!resolved) notFound()
-  const total = await prisma.restaurant.count({
-    where: {
-      is_published: true,
-      borough: resolved.boroughName,
-      neighborhood: resolved.neighborhoodName,
-    },
-  })
+  const roster = await loadNeighborhoodRoster(resolved.boroughName, resolved.neighborhoodName)
+  const total = roster.length
   const pages = pageCount(total)
   if (pageNumber > pages) notFound()
-  const restaurants = await prisma.restaurant.findMany({
-    where: {
-      is_published: true,
-      borough: resolved.boroughName,
-      neighborhood: resolved.neighborhoodName,
-    },
-    select: { name: true, slug: true },
-    orderBy: { name: "asc" },
-    skip: (pageNumber - 1) * RESTAURANT_INDEX_PAGE_SIZE,
-    take: RESTAURANT_INDEX_PAGE_SIZE,
-  })
+  const grade = (letter: string) => roster.filter((row) => row.inspection_grade === letter).length
+  const pageRows = roster.slice((pageNumber - 1) * RESTAURANT_INDEX_PAGE_SIZE, pageNumber * RESTAURANT_INDEX_PAGE_SIZE)
   return (
     <NeighborhoodRestaurantList
       borough={resolved.boroughName}
       neighborhood={resolved.neighborhoodName}
-      restaurants={restaurants}
+      restaurants={pageRows}
       page={pageNumber}
       pages={pages}
       total={total}
+      gradeA={grade("A")}
+      gradeB={grade("B")}
+      gradeC={grade("C")}
+      updated={hubStamp(roster)}
+      listings={pageRows.map((row) => ({ name: row.name, grade: row.inspection_grade }))}
     />
   )
 }

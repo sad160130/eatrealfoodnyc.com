@@ -6,6 +6,7 @@ import AboutThisData from "@/components/about-this-data"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dohmhRefreshSentence } from "@/lib/dohmh-cadence"
+import { UpdatedWebPage } from "@/components/updated-webpage"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { restaurants } = await getPublishedDirectoryCounts()
@@ -58,6 +59,9 @@ export default async function OurDataPage() {
             </a>
             . Here is exactly where our data comes from, how we process it, and how we calculate our Health Score.
           </p>
+          {snapshot.latestInspectionAt ? (
+            <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/about/our-data" labelStyle={{ color: "rgba(255,255,255,0.7)" }} />
+          ) : null}
         </div>
       </div>
 

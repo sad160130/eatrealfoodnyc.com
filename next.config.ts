@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
       // ── ABOUT (1 RD, DR54) ──
       { source: "/about/", destination: "/about", permanent: true },
 
+      // Fordham has no neighborhood hub. The Bronx hub is the live parent page.
+      { source: "/nyc/bronx/fordham/healthy-restaurants", destination: "/nyc/bronx/healthy-restaurants", statusCode: 301 },
+
       // Delisted listings. Borough comes from data/unpublished-2026-11-15.json.
       ...removedListingRedirects(),
 

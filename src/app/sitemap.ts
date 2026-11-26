@@ -19,6 +19,7 @@ import bestRatedReport from "@/data/best-rated-restaurants"
 import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import { listingStamp, latestStamp } from "@/lib/listing-stamp"
+import { TEAM_PAGE_DATE } from "@/lib/visible-dates"
 import { omitFromSitemap } from "@/lib/sitemap-policy"
 import {
   NEWSLETTER_INDEX_MIN_GRADE_A,
@@ -42,7 +43,7 @@ const BOROUGHS = ["manhattan", "brooklyn", "queens", "bronx", "staten-island"] a
 const STATIC_LASTMOD: Record<string, string> = {
   "/about": "2026-11-26",
   "/about/editorial-standards": "2026-11-26",
-  "/about/team": "2026-11-26",
+  "/about/team": TEAM_PAGE_DATE,
   "/contact": "2026-11-15",
   "/press": "2026-11-15",
   "/privacy": "2026-11-15",
