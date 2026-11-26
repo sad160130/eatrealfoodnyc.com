@@ -92,13 +92,16 @@ export default async function DataProductPage({
       <header className="border-b" style={{ borderBottomColor: "var(--hairline)" }}>
         <div className="mx-auto max-w-3xl px-6 pb-8 pt-8 sm:pb-10 sm:pt-10">
           <p className="eyebrow">{DATA_PRODUCT.name}</p>
-          <h1 className="display-2 mt-3">Reach NYC restaurants the week they need help.</h1>
+          <h1 className="display-2 mt-3">The inspection changes before you hear about it.</h1>
           <p className="dek mt-4">
-            Every Monday, get a CSV of restaurants with Grade Pending, high scores, or closed status, plus new openings not yet inspected.
+            A Grade Pending sign, a score at the Grade C line, a closure, or a restaurant that has not been inspected yet is the week a vendor can still help. By the time that restaurant is in a directory roundup, the week is gone.
+          </p>
+          <p className="mt-4 text-base leading-relaxed">
+            {DATA_PRODUCT.name} is the Monday list of those restaurants. ${DATA_PRODUCT.priceMonthlyUsd} a month or ${DATA_PRODUCT.priceYearlyUsd} a year. Each email has two CSVs: inspection leads (Grade Pending, {HIGH_SCORE} or more violation points, or closed) and published listings not yet inspected.
           </p>
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-            The public directory lists {counts.restaurants.toLocaleString("en-US")} published listings, {counts.gradeA.toLocaleString("en-US")} with Grade A.
-            {newestInspectionLabel ? ` Rows as of ${newestInspectionLabel}.` : ""}
+            This database currently has {countLabel(pending, "grade-pending row", "grade-pending rows")}, {countLabel(highScore, "high-score row", "high-score rows")}, and {countLabel(closed, "non-operational row", "non-operational rows")}. Published listings not yet inspected: {countLabel(notInspected, "row", "rows")}. The public directory lists {counts.restaurants.toLocaleString("en-US")} published listings, {counts.gradeA.toLocaleString("en-US")} with Grade A.
+            {newestInspectionLabel ? ` Rows as of ${newestInspectionLabel}.` : ""} Source NYC Open Data {DOHMH_DATASET.id}.
           </p>
           {purchaseConfirmed ? (
             <p
@@ -110,23 +113,7 @@ export default async function DataProductPage({
             </p>
           ) : null}
           <DataHeroCta />
-          <section aria-labelledby="what-you-get" className="mt-8">
-            <h2 id="what-you-get" className="eyebrow">What you get</h2>
-            <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-relaxed sm:text-base">
-              <li>
-                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>Inspection leads CSV: </span>
-                Grade Pending (city codes Z and P), {HIGH_SCORE}+ violation points (the Grade C threshold), or closed status — today {countLabel(pending, "grade-pending row", "grade-pending rows")} and {countLabel(highScore, "high-score row", "high-score rows")}.
-              </li>
-              <li>
-                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>New openings CSV: </span>
-                published listings not yet inspected — today {countLabel(notInspected, "row", "rows")}.
-              </li>
-              <li>
-                <span className="font-semibold" style={{ color: "var(--color-forest)" }}>Fast start: </span>
-                {DATA_SAMPLE_LIMIT} real rows arrive by email right away; paid lists land every Monday; source NYC Open Data {DOHMH_DATASET.id}, refreshed daily.
-              </li>
-            </ul>
-          </section>
+          <DataProductCta />
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-6 pt-8">
@@ -144,7 +131,6 @@ export default async function DataProductPage({
           </a>
           .
         </p>
-        <DataProductCta />
       </div>
       <article className="mx-auto max-w-3xl px-6 py-12">
         <h2 className="h2-serif">What is in the email</h2>

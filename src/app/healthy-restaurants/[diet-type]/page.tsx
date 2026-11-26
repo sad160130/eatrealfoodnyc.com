@@ -21,7 +21,7 @@ import { dietFaqs, dietIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dietCapsule } from "@/lib/answer-capsule"
 import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
-import { buildHubItemList } from "@/lib/schema"
+import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 
 export async function generateStaticParams() {
@@ -181,12 +181,7 @@ export default async function DietTypePage({
     url: `${siteUrl}/healthy-restaurants/${tag}`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
-    isBasedOn: {
-      "@type": "Dataset",
-      name: "DOHMH New York City Restaurant Inspection Results",
-      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-      publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-    },
+    isBasedOn: dohmhInspectionDataset(),
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: "New York City" },
     variableMeasured: [

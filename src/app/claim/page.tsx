@@ -10,6 +10,7 @@ export const metadata = pageMeta({
   path: "/claim",
   title,
   description: "Tell us you operate a listed restaurant and what we should correct. A person reviews every claim. Claiming does not change a grade.",
+  index: false,
 })
 
 export default async function ClaimPage({

@@ -4,6 +4,7 @@ import { getCanonicalUrl } from "@/config/seo"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import { FALL_2026_REPORT as R } from "@/data/fall-2026-inspection-report"
 import { InspectionLeadsCta } from "@/components/product-ctas"
+import { dohmhInspectionDataset } from "@/lib/schema"
 
 const PATH = "/data/nyc-restaurant-health-grade-report"
 const URL = `https://www.eatrealfoodnyc.com${PATH}`
@@ -62,13 +63,7 @@ const dataset = {
   dateModified: "2026-11-15",
   creator: { "@type": "Organization", name: "Eat Real Food NYC", url: "https://www.eatrealfoodnyc.com" },
   license: "https://creativecommons.org/licenses/by/4.0/",
-  isBasedOn: {
-    "@type": "Dataset",
-    name: "DOHMH New York City Restaurant Inspection Results",
-    identifier: R.datasetId,
-    url: R.datasetUrl,
-    publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-  },
+  isBasedOn: dohmhInspectionDataset(R.datasetId),
   distribution: {
     "@type": "DataDownload",
     encodingFormat: "text/csv",

@@ -11,7 +11,7 @@ import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { boroughHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
 import { placeFaqs, placeIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
-import { buildHubItemList } from "@/lib/schema"
+import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import BackToTop from "@/components/back-to-top"
@@ -53,8 +53,8 @@ export async function generateMetadata({
   const title = boroughHubTitle(name, stats.gradeA, year)
   const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const description = fitDescription(
-    [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name}, NYC: ${stats.gradeA.toLocaleString("en-US")} hold a NYC DOHMH Grade A.`],
-    [dataMonth ? `Data as of ${dataMonth}.` : ""].filter(Boolean)
+    [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name} for ${year}. ${stats.gradeA.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`],
+    [dataMonth ? `Matched inspections as of ${dataMonth}.` : ""].filter(Boolean)
   )
   return {
     title: { absolute: title },
@@ -169,12 +169,7 @@ export default async function BoroughPage({
     url: `${siteUrl}/nyc/${boroughSlug}/healthy-restaurants`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
-    isBasedOn: {
-      "@type": "Dataset",
-      name: "DOHMH New York City Restaurant Inspection Results",
-      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-      publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-    },
+    isBasedOn: dohmhInspectionDataset(),
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: `${boroughName}, New York City` },
     variableMeasured: ["Health inspection grade", "Dietary certifications", "Community rating", "Hidden gem status"],

@@ -33,9 +33,12 @@ export interface YoutubeShort {
   title: string
   /** Calendar day, YYYY-MM-DD. The map has no time of day. */
   uploadDate: string
-  durationSec: number
-  /** ISO 8601 duration, derived from duration_sec. */
-  duration: string
+  durationSec?: number
+  /**
+   * ISO 8601 duration, derived from duration_sec.
+   * Omitted when the public video page did not expose a length.
+   */
+  duration?: string
   slug: string
   series: string
   embedPriority: number
@@ -142,8 +145,27 @@ function indexShorts(source: readonly YoutubeShortRow[]): Map<string, YoutubeSho
 
 const bySlug = indexShorts(rows)
 
+/**
+ * Bloom Cafe's Short is not in the checked-in map. Title is the YouTube
+ * oEmbed title. uploadDate is the watch-page dateText "Nov 25, 2026".
+ * The page did not expose a length, so duration is omitted. Thumbnail is
+ * the hqdefault poster named for this embed.
+ */
+const BLOOM_CAFE_SHORT: YoutubeShort = {
+  videoId: "8mRDp2VpGCc",
+  title: "Bloom Cafe Staten Island: What Score 10 Means #nycfoodguide",
+  uploadDate: "2026-11-25",
+  slug: "bloom-cafe",
+  series: "listing",
+  embedPriority: 0,
+  shortUrl: "https://www.youtube.com/shorts/8mRDp2VpGCc",
+  embedUrl: "https://www.youtube-nocookie.com/embed/8mRDp2VpGCc",
+  thumbnailUrl: "https://i.ytimg.com/vi/8mRDp2VpGCc/hqdefault.jpg",
+  fallbackThumbnailUrl: "https://i.ytimg.com/vi/8mRDp2VpGCc/hqdefault.jpg",
+}
+
 export function getYoutubeShort(slug: string): YoutubeShort | null {
-  return bySlug.get(slug) ?? null
+  return bySlug.get(slug) ?? (slug === BLOOM_CAFE_SHORT.slug ? BLOOM_CAFE_SHORT : null)
 }
 
 export function listYoutubeShorts(): readonly YoutubeShort[] {
@@ -167,7 +189,7 @@ export function buildYoutubeShortVideoObject(short: YoutubeShort, listingUrl: st
     name: short.title,
     thumbnailUrl: [short.thumbnailUrl, short.fallbackThumbnailUrl],
     uploadDate: short.uploadDate,
-    duration: short.duration,
+    ...(short.duration ? { duration: short.duration } : {}),
     embedUrl: short.embedUrl,
     url: short.shortUrl,
     mainEntityOfPage: listingUrl,

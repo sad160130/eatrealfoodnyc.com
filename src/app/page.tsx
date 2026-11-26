@@ -35,14 +35,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const extraTags = Math.max(0, snapshot.dietaryTagCount - 3)
   const description = fitDescription(
     [
-      `${counts.restaurants.toLocaleString("en-US")} healthy NYC restaurants in ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods, ${counts.gradeA.toLocaleString("en-US")} with a NYC DOHMH Grade A.`,
+      `${counts.restaurants.toLocaleString("en-US")} healthy restaurants in NYC for ${year}. ${counts.gradeA.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`,
     ],
     [
       extraTags > 0
-        ? `Filter by vegan, halal, gluten-free + ${extraTags} more tags.${dataMonth ? ` Data as of ${dataMonth}.` : ""}`
+        ? `Across ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods. Filter vegan, halal, gluten-free, and ${extraTags} more.${dataMonth ? ` Inspections as of ${dataMonth}.` : ""}`
         : "",
-      `Filter by vegan, halal, gluten-free, and more.${dataMonth ? ` Data as of ${dataMonth}.` : ""}`,
-      dataMonth ? `Data as of ${dataMonth}.` : "",
+      `Across ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods.${dataMonth ? ` Inspections as of ${dataMonth}.` : ""}`,
+      dataMonth ? `Inspections as of ${dataMonth}.` : "",
     ].filter(Boolean)
   )
   return {
@@ -209,6 +209,10 @@ export default async function HomePage() {
                 { href: "/near-me", label: "Near me" },
                 { href: "/map", label: "Map" },
                 { href: "/guides/nyc-health-grades-explained", label: "How grades work" },
+                { href: "/data", label: "Inspection data" },
+                { href: "/guides/best-italian-restaurants-nyc", label: "Best Italian, 2026" },
+                { href: "/guides/best-pizza-restaurants-nyc", label: "Best pizza, 2026" },
+                { href: "/guides/grade-a-restaurants-by-borough-nyc", label: "Grade A by borough" },
                 { href: "/catering", label: "Request catering" },
               ].map((item) => (
                 <li key={item.href}>
@@ -652,8 +656,26 @@ export default async function HomePage() {
               {
                 slug: "best-healthy-neighborhoods-nyc",
                 title: "Best Healthy Neighborhoods NYC",
-                desc: "Data-driven rankings of NYC neighborhoods for healthy dining.",
+                desc: "Neighborhoods with at least 10 published listings, ranked by NYC DOHMH Grade A share.",
                 category: "Neighborhood guides",
+              },
+              {
+                slug: "best-italian-restaurants-nyc",
+                title: "Best Italian Restaurants in NYC (2026)",
+                desc: "Ten open Italian restaurants ranked by official NYC DOHMH inspection score.",
+                category: "Dining guides",
+              },
+              {
+                slug: "best-pizza-restaurants-nyc",
+                title: "Best Pizza Restaurants in NYC (2026)",
+                desc: "Ten published pizza listings ranked by official NYC DOHMH inspection score.",
+                category: "Dining guides",
+              },
+              {
+                slug: "grade-a-restaurants-by-borough-nyc",
+                title: "Grade A Restaurants by Borough",
+                desc: "Five recent kitchens checked against the latest NYC DOHMH inspection. Three match Grade A.",
+                category: "Health & safety",
               },
             ].map((article) => (
               <Link

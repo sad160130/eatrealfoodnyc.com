@@ -9,7 +9,7 @@ import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietBoroughHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
-import { buildHubItemList } from "@/lib/schema"
+import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
 import { ANCHOR_TEXT } from "@/lib/internal-links"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -177,12 +177,7 @@ export default async function DietBoroughPage({
     url: pageUrl,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
-    isBasedOn: {
-      "@type": "Dataset",
-      name: "DOHMH New York City Restaurant Inspection Results",
-      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-      publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-    },
+    isBasedOn: dohmhInspectionDataset(),
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: `${boroughName}, New York City` },
     variableMeasured: [`${config.label} classification`, "Health inspection grade", "Community rating", "Neighborhood"],

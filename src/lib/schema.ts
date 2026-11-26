@@ -23,10 +23,36 @@ export const ORGANIZATION_SCHEMA = {
     "NYC Department of Health restaurant grading",
   ],
   contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
-  sameAs: [
-    "https://www.instagram.com/nyc_healthyeats/",
-    "https://www.youtube.com/@EatRealFoodNYC",
-  ],
+  sameAs: ["https://www.youtube.com/@EatRealFoodNYC"],
+}
+
+/** NYC Open Data terms that cover dataset 43nn-pn8j. */
+export const NYC_OPEN_DATA_TERMS_URL = "https://www.nyc.gov/home/terms-of-use.page"
+
+export const DOHMH_INSPECTION_DATASET_URL =
+  "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j"
+
+const DOHMH_ORG = {
+  "@type": "Organization" as const,
+  name: "NYC Department of Health and Mental Hygiene",
+}
+
+/**
+ * Nested Dataset for isBasedOn. Google's Dataset rich result requires
+ * description, and publisher must be Organization or Person.
+ */
+export function dohmhInspectionDataset(identifier?: string) {
+  return {
+    "@type": "Dataset" as const,
+    name: "DOHMH New York City Restaurant Inspection Results",
+    description:
+      "Restaurant inspection results published by the NYC Department of Health and Mental Hygiene on NYC Open Data, including grades, scores, and violation records.",
+    url: DOHMH_INSPECTION_DATASET_URL,
+    license: NYC_OPEN_DATA_TERMS_URL,
+    creator: DOHMH_ORG,
+    publisher: DOHMH_ORG,
+    ...(identifier ? { identifier } : {}),
+  }
 }
 
 export const WEBSITE_SCHEMA = {

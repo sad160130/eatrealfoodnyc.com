@@ -83,6 +83,31 @@ export function validateJsonLd(
         })
       }
     }
+    if (types.includes("Dataset")) {
+      if (typeof node.name !== "string" || node.name.length === 0) {
+        issues.push({ level: "error", message: "Dataset is missing name" })
+      }
+      if (typeof node.description !== "string" || node.description.length === 0) {
+        issues.push({ level: "error", message: "Dataset is missing description" })
+      }
+      if (typeof node.url !== "string" || !node.url.startsWith("https://")) {
+        issues.push({ level: "error", message: "Dataset is missing url" })
+      }
+      if (typeof node.license !== "string" || !node.license.startsWith("https://")) {
+        issues.push({ level: "warn", message: "Dataset is missing license" })
+      }
+      const creator = node.creator
+      if (!creator || typeof creator !== "object" || (creator as Node)["@type"] !== "Organization") {
+        issues.push({ level: "warn", message: "Dataset creator should be an Organization" })
+      }
+      const publisher = node.publisher
+      if (publisher && typeof publisher === "object") {
+        const publisherType = (publisher as Node)["@type"]
+        if (publisherType !== "Organization" && publisherType !== "Person") {
+          issues.push({ level: "error", message: `Dataset publisher type ${String(publisherType)} is invalid` })
+        }
+      }
+    }
     if (types.includes("VideoObject")) {
       if (typeof node.name !== "string" || node.name.length === 0) {
         issues.push({ level: "error", message: "VideoObject is missing name" })
@@ -97,12 +122,14 @@ export function validateJsonLd(
       if (typeof node.uploadDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(node.uploadDate)) {
         issues.push({ level: "error", message: "VideoObject uploadDate must be a calendar date" })
       }
-      if (
-        typeof node.duration !== "string" ||
-        !/^PT(?:\d+H)?(?:\d+M)?(?:\d+S)?$/.test(node.duration) ||
-        node.duration === "PT"
-      ) {
-        issues.push({ level: "error", message: "VideoObject duration must be an ISO 8601 duration" })
+      if (node.duration != null) {
+        if (
+          typeof node.duration !== "string" ||
+          !/^PT(?:\d+H)?(?:\d+M)?(?:\d+S)?$/.test(node.duration) ||
+          node.duration === "PT"
+        ) {
+          issues.push({ level: "error", message: "VideoObject duration must be an ISO 8601 duration" })
+        }
       }
       if (typeof node.embedUrl !== "string" || !node.embedUrl.startsWith("https://")) {
         issues.push({ level: "error", message: "VideoObject is missing embedUrl" })
@@ -134,6 +161,10 @@ export function validateJsonLd(
     const nested = node.aggregateRating
     if (nested && typeof nested === "object") {
       issues.push(...validateJsonLd([nested as Node], []))
+    }
+    const basedOn = node.isBasedOn
+    if (basedOn && typeof basedOn === "object" && !Array.isArray(basedOn)) {
+      issues.push(...validateJsonLd([basedOn as Node], []))
     }
     const elements = node.itemListElement
     if (Array.isArray(elements)) {

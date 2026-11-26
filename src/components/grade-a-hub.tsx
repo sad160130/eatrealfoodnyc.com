@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { pageMeta } from "@/lib/page-meta"
 import { buildPipeTitle, gradeAPageDescription, gradeAPagedTitle } from "@/lib/seo-titles"
-import { buildHubItemList } from "@/lib/schema"
+import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
@@ -65,7 +65,7 @@ export async function gradeAMetadata(scope: GradeAScope) {
     page: scope.page,
     pages,
   })
-  return pageMeta({ path: pathFor(scope), title, description })
+  return pageMeta({ path: pathFor(scope), title, description, index: scope.page <= 1 })
 }
 
 export async function GradeAHub({ scope }: { scope: GradeAScope }) {
@@ -111,12 +111,7 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
     url: `${siteUrl}${pathFor({ ...scope, page: 1 })}`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
-    isBasedOn: {
-      "@type": "Dataset",
-      name: "DOHMH New York City Restaurant Inspection Results",
-      url: "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-      publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-    },
+    isBasedOn: dohmhInspectionDataset(),
     spatialCoverage: { "@type": "Place", name: place },
     variableMeasured: ["NYC DOHMH inspection grade", "Inspection date"],
   }

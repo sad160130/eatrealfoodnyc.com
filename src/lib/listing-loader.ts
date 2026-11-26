@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db"
 import { DEGRADED_REVALIDATE_SECONDS, errorLabel, restSelect } from "@/lib/db-fallback"
 import { isTransientConnectionError } from "@/lib/connection-retry"
+import { correctCityIslandListing } from "@/lib/city-island"
 import { correctRosebankListing } from "@/lib/rosebank"
 import { RESTAURANT_REST_COLUMNS } from "@/lib/rest-snapshot"
 
@@ -54,11 +55,11 @@ export async function loadListingBySlug(
     ((value: string) => restSelect<RestRow>(listingRestQuery(value), { revalidate: DEGRADED_REVALIDATE_SECONDS }))
   try {
     const row = await primary(slug)
-    return row ? correctRosebankListing(row) : null
+    return row ? correctCityIslandListing(correctRosebankListing(row)) : null
   } catch (error) {
     if (!isTransientConnectionError(error)) throw error
     console.error(`[db-degraded] listing ${slug} read via Supabase REST (${errorLabel(error)})`)
     const rows = await rest(slug)
-    return rows[0] ? correctRosebankListing(restRowToListing(rows[0])) : null
+    return rows[0] ? correctCityIslandListing(correctRosebankListing(restRowToListing(rows[0]))) : null
   }
 }

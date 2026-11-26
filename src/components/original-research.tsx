@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import { FOOD_SAFETY_SENTENCE } from "@/lib/nta-grade-share"
+import { dohmhInspectionDataset } from "@/lib/schema"
 import { dataPageIndex } from "@/lib/data-pages"
 
 const SITE = "https://www.eatrealfoodnyc.com"
@@ -38,13 +39,7 @@ export function researchJsonLd(input: {
       dateModified: input.dateModified,
       creator: { "@type": "Organization", name: "Eat Real Food NYC", url: SITE },
       license: "https://creativecommons.org/licenses/by/4.0/",
-      isBasedOn: {
-        "@type": "Dataset",
-        name: "DOHMH New York City Restaurant Inspection Results",
-        identifier: input.datasetId,
-        url: input.datasetUrl,
-        publisher: { "@type": "GovernmentOrganization", name: "NYC Department of Health and Mental Hygiene" },
-      },
+      isBasedOn: dohmhInspectionDataset(input.datasetId),
       distribution: {
         "@type": "DataDownload",
         encodingFormat: "text/csv",

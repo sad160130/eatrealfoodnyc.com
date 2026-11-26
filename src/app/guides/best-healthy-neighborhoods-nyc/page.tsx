@@ -11,8 +11,10 @@ import GuideCTA from "@/components/guide-cta"
 import AboutThisData from "@/components/about-this-data"
 import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
-import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { DIET_CONFIG } from "@/config/dietary-tags"
+import { BOROUGH_NAMES, type BoroughGradeStats, type NeighborhoodGradeRow, getLiveGuideStats } from "@/lib/live-guide-stats"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("best-healthy-neighborhoods-nyc")!
@@ -32,7 +34,7 @@ const GUIDE_FAQS = [
   },
   {
     question: "Which borough has the healthiest restaurants overall?",
-    answer: "It depends on the metric. Manhattan has the most dedicated health-focused restaurants and the greatest dietary diversity. Queens has the highest average restaurant rating (4.3 stars) and the best value. Brooklyn balances variety and quality. The Bronx and Staten Island have fewer total options but include standout neighborhoods with excellent health scores. Our compare tool lets you weigh the factors that matter most to you.",
+    answer: "On this page, boroughs are compared by the share of published listings whose matched NYC DOHMH grade is A. The paragraph under the ranking method names the borough with the highest share in the current directory.",
   },
   {
     question: "Are health inspection grades a good proxy for food quality?",
@@ -51,14 +53,25 @@ const GUIDE_FAQS = [
 export default async function HealthyNeighborhoodsGuide() {
   const { restaurants, neighborhoods } = await getPublishedDirectoryCounts()
   const stats = await getLiveGuideStats()
-  const faqs = GUIDE_FAQS.map((faq) =>
-    faq.question === "How do you rank neighborhoods for healthy dining?"
-      ? {
-          ...faq,
-          answer: `We use a composite score based on four factors: total number of healthy restaurants, average restaurant rating, average NYC health inspection score, and dietary diversity (how many different dietary categories are represented). Neighborhoods are compared within their borough first, then across the city. Data comes from our directory of ${restaurants.toLocaleString()} published restaurants and live NYC Department of Health inspection records.`,
-        }
-      : faq
+  const boroughRank = BOROUGH_NAMES.map((name) => ({ name, ...stats.global.boroughs[name] })).sort(
+    (a, b) => b.rate - a.rate || b.total - a.total
   )
+  const leadingBorough = boroughRank[0]
+  const faqs = GUIDE_FAQS.map((faq) => {
+    if (faq.question === "How do you rank neighborhoods for healthy dining?") {
+      return {
+        ...faq,
+        answer: `A neighborhood is included when it has at least 10 published listings. The rank is the share of those listings whose matched NYC DOHMH grade is A. This directory currently has ${restaurants.toLocaleString("en-US")} published restaurants across ${neighborhoods.toLocaleString("en-US")} neighborhoods. Grade A is a food-safety grade, not a nutrition score.`,
+      }
+    }
+    if (faq.question === "Which borough has the healthiest restaurants overall?" && leadingBorough) {
+      return {
+        ...faq,
+        answer: `${leadingBorough.name} has the highest Grade A share of published listings right now: ${leadingBorough.rate}% (${leadingBorough.gradeA.toLocaleString("en-US")} of ${leadingBorough.total.toLocaleString("en-US")}). The other boroughs are listed in the sections below with their three highest neighborhood shares. The compare tool shows the same listings with different sort orders.`,
+      }
+    }
+    return faq
+  })
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={faqs} />
@@ -73,7 +86,7 @@ export default async function HealthyNeighborhoodsGuide() {
             author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
-            dateModified: guide.publishedDate,
+            dateModified: guide.updatedDate ?? guide.publishedDate,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/guides/${guide.slug}` },
           }),
         }}
@@ -180,141 +193,99 @@ export default async function HealthyNeighborhoodsGuide() {
             How we rank neighborhoods
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Ranking neighborhoods for healthy dining requires more than just counting restaurants. A neighborhood with 200 restaurants but mediocre health inspection scores and limited dietary options is not necessarily better than a neighborhood with 40 excellent, diverse, and well-inspected establishments. Our ranking methodology accounts for this complexity by using a composite score built from four weighted factors.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The four factors are: restaurant density (number of healthy restaurants per square mile), average customer rating (based on aggregated review data), average{" "}
+            The table above ranks neighborhoods that have at least 10 published listings. The share is Grade A listings divided by published listings in that neighborhood. The letter is the matched{" "}
             <Link href="/guides/nyc-health-grades-explained" className="font-semibold text-jade hover:text-forest">
-              NYC health inspection performance
-            </Link>{" "}
-            (lower violation scores are better), and dietary diversity (how many of the 12 dietary categories are represented). Each factor is normalized on a 0-to-100 scale, and the final score is a weighted average that emphasizes rating and health inspection performance slightly more than raw density.
+              NYC DOHMH grade
+            </Link>
+            , not a score this directory assigns. A neighborhood with fewer than 10 published listings is left off the ranking so a handful of Grade A kitchens cannot sit at 100 percent.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            This approach reveals some surprises. Neighborhoods that are famous for dining — Times Square, for example — often score lower than expected because high volume does not equal high quality. Meanwhile, residential neighborhoods with smaller but carefully curated restaurant scenes can score higher than their reputations suggest. Use our{" "}
+            {leadingBorough
+              ? `${leadingBorough.name} currently has the highest borough Grade A share: ${leadingBorough.rate}% (${leadingBorough.gradeA.toLocaleString("en-US")} of ${leadingBorough.total.toLocaleString("en-US")} published listings). `
+              : ""}
+            The borough sections name the three neighborhoods in each borough with the highest share under that same 10-listing floor. Hidden-gem counts are a separate column: a hidden gem is a published restaurant rated 4.5 or higher with fewer than 200 reviews. Use the{" "}
             <Link href="/nyc/compare" className="font-semibold text-jade hover:text-forest">
               neighborhood comparison tool
             </Link>{" "}
-            to explore the data yourself and adjust the weighting based on what matters most to you.
+            to sort the same listings another way.
           </p>
         </section>
 
-        <section id="top-manhattan" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Top Manhattan neighborhoods
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            <Link href="/nyc/manhattan/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
-              Manhattan
-            </Link>{" "}
-            dominates in sheer density of healthy dining options, and several neighborhoods stand out. The West Village scores consistently high across all four metrics: it has a strong concentration of health-conscious restaurants, excellent average ratings, strong inspection scores, and representation across nearly all 12 dietary categories. The neighborhood&apos;s walkability and concentration of independently owned restaurants contribute to its top ranking.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The Upper West Side is another Manhattan standout, particularly for families and everyday dining. The neighborhood has a mature restaurant scene that balances trendy newcomers with decades-old establishments, and its health inspection average is among the best in the borough. Dietary diversity is excellent, with strong vegan, gluten-free, and kosher representation reflecting the neighborhood&apos;s demographics.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Somewhat surprisingly, the Lower East Side and East Village score highly despite their reputation for nightlife over nutrition. These neighborhoods have seen an influx of health-forward restaurants in recent years — juice bars, plant-based cafes, organic bistros — without losing their existing base of affordable ethnic restaurants. The combination produces both dietary diversity and a wide price range, making these neighborhoods accessible to budget-conscious and high-end diners alike.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Midtown, despite having the highest raw restaurant count, scores lower on average ratings and dietary diversity. The area&apos;s reliance on tourist-oriented and office-lunch-focused restaurants drags down the quality metrics. However, pockets within Midtown — particularly around Koreatown and Murray Hill — offer excellent healthy options that buck the neighborhood&apos;s overall trend.
-          </p>
-        </section>
-
-        <section id="top-brooklyn" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Top Brooklyn neighborhoods
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            <Link href="/nyc/brooklyn/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
-              Brooklyn
-            </Link>{" "}
-            has emerged as NYC&apos;s most dynamic borough for healthy dining, and several neighborhoods compete for the top spot. Park Slope leads on most metrics, combining a dense concentration of health-conscious restaurants with strong inspection scores and excellent dietary diversity. The neighborhood&apos;s family-oriented demographics have driven demand for restaurants that serve both adults and children healthy, appealing food.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Williamsburg scores highest on dietary diversity, reflecting its role as a laboratory for NYC food trends. The neighborhood was among the first to embrace plant-based dining, grain bowls, and functional food concepts, and its restaurant scene continues to innovate. Vegan, raw-food, and whole-foods categories are particularly well-represented. The main drawback is price — Williamsburg&apos;s healthy restaurants tend to charge Manhattan-level prices.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            For value-oriented healthy dining, Brooklyn&apos;s Sunset Park and Bay Ridge neighborhoods deserve attention. Sunset Park&apos;s Chinatown (along 8th Avenue) offers steamed, stir-fried, and soup-based dishes at prices well below the borough average. Bay Ridge&apos;s Middle Eastern restaurant scene provides grilled meats, fresh salads, and hummus-centric meals that are both nutritious and affordable. These neighborhoods may not have the cachet of Williamsburg, but they score well on the metrics that matter.
-          </p>
-        </section>
-
-        <section id="top-queens" className="mb-16 scroll-mt-24">
-          <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Top Queens neighborhoods
-          </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            <Link href="/nyc/queens/healthy-restaurants" className="font-semibold text-jade hover:text-forest">
-              Queens
-            </Link>{" "}
-            is the most ethnically diverse county in the United States, and its restaurant scene reflects this. The borough has the highest average restaurant rating in our directory at 4.3 stars, suggesting that competition among its many immigrant-run restaurants drives quality upward. Three neighborhoods stand out consistently in our rankings.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Flushing is a powerhouse. Its massive Chinatown — the largest in NYC — offers an extraordinary range of Chinese regional cuisines, many of which emphasize steaming, braising, and other health-friendly cooking methods. Beyond Chinese food, Flushing has strong Korean, Malaysian, and South Asian restaurant scenes. The neighborhood&apos;s food courts and hawker-style markets make it possible to assemble a varied, nutritious meal from multiple vendors for under $12.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Jackson Heights is the most culinarily diverse neighborhood in the entire city. Within a few blocks, you can find Tibetan momos, Colombian arepas, Indian chaat, Nepali thali, and Mexican tacos — all prepared by cooks from those traditions. The neighborhood&apos;s healthy dining options span multiple dietary categories, and prices are among the lowest in the five boroughs. For sheer variety and value, Jackson Heights is hard to beat.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Astoria earns its spot through consistency. The neighborhood&apos;s restaurant scene is diverse — Greek, Egyptian, Brazilian, Czech, Japanese — and maintains strong average ratings and inspection scores. Astoria also has an advantage in accessibility, with excellent subway connections that make it an easy trip from Manhattan. It&apos;s the Queens neighborhood that most consistently converts first-time visitors into regulars.
-          </p>
-        </section>
-
+        <BoroughGradeSection
+          id="top-manhattan"
+          heading="Top Manhattan neighborhoods"
+          borough="Manhattan"
+          rows={stats.neighborhoods.topByBorough.Manhattan ?? []}
+          boroughStats={stats.global.boroughs.Manhattan}
+        />
+        <BoroughGradeSection
+          id="top-brooklyn"
+          heading="Top Brooklyn neighborhoods"
+          borough="Brooklyn"
+          rows={stats.neighborhoods.topByBorough.Brooklyn ?? []}
+          boroughStats={stats.global.boroughs.Brooklyn}
+        />
+        <BoroughGradeSection
+          id="top-queens"
+          heading="Top Queens neighborhoods"
+          borough="Queens"
+          rows={stats.neighborhoods.topByBorough.Queens ?? []}
+          boroughStats={stats.global.boroughs.Queens}
+        />
         <section id="bronx-staten-island" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
             Bronx and Staten Island
           </h2>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The Bronx and Staten Island are the two boroughs that most often get overlooked in NYC dining coverage, and both have more to offer than their reputations suggest. The Bronx has pockets of excellent healthy dining, particularly along Arthur Avenue (the city&apos;s real Little Italy, where Italian restaurants use higher-quality ingredients than their tourist-oriented counterparts in Manhattan) and in neighborhoods with growing West African and South Asian communities.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Belmont, centered around Arthur Avenue, scores surprisingly well on health inspection metrics and dietary diversity. The neighborhood&apos;s Italian restaurants emphasize fresh pasta, grilled seafood, and vegetable antipasti — a Mediterranean approach that aligns naturally with healthy eating principles. Prices are moderate, and the quality of ingredients noticeably exceeds what you&apos;ll find at comparably priced Manhattan Italian restaurants.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Staten Island&apos;s healthy dining scene is the smallest of the five boroughs but is growing. The St. George and Tompkinsville neighborhoods near the ferry terminal have seen an influx of new restaurants, including several health-focused concepts. The Sri Lankan restaurant scene along Victory Boulevard is a hidden gem for diners seeking naturally healthy, vegetable-forward cuisine at very affordable prices. For more on lesser-known finds, check our{" "}
-            <Link href="/guides/hidden-gem-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
-              hidden gems guide
-            </Link>.
-          </p>
+          <BoroughGradeBlock borough="Bronx" rows={stats.neighborhoods.topByBorough.Bronx ?? []} boroughStats={stats.global.boroughs.Bronx} />
+          <BoroughGradeBlock borough="Staten Island" rows={stats.neighborhoods.topByBorough["Staten Island"] ?? []} boroughStats={stats.global.boroughs["Staten Island"]} />
         </section>
 
         <section id="dietary-diversity" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Dietary diversity by neighborhood
+            Dietary tags by neighborhood
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Dietary diversity measures how many of the 12 dietary categories in our directory — vegan, vegetarian, gluten-free, keto, paleo, halal, kosher, dairy-free, nut-free, raw-food, whole-foods, and low-calorie — are represented in a given neighborhood. A neighborhood that covers all 12 categories offers something for virtually every diner, regardless of their dietary requirements. This metric is especially important for groups dining together where members have different needs.
+            A dietary tag is applied only when a restaurant identifies that way or has substantial dedicated menu coverage. The lines below are the neighborhood with the most published listings for each tag that has at least one tagged restaurant. They are counts, not a claim that the neighborhood covers every diet.
           </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Manhattan&apos;s West Village, Greenwich Village, and Upper West Side score highest on dietary diversity, each covering 11 or 12 of the 12 categories. Brooklyn&apos;s Williamsburg and Park Slope are close behind. In Queens, Jackson Heights scores well due to its sheer variety of cuisines, though some niche categories like raw-food and keto are underrepresented.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Neighborhoods with lower dietary diversity are not necessarily worse for healthy dining — they may simply specialize. Bay Ridge excels at halal. Williamsburg South is strong on kosher. Flushing dominates whole-foods and low-calorie options through its focus on steamed and braised cooking. The{" "}
-            <Link href="/nyc/compare" className="font-semibold text-jade hover:text-forest">
-              compare tool
-            </Link>{" "}
-            lets you filter neighborhoods by specific dietary categories to find the best match for your needs.
-          </p>
+          <ul className="space-y-3 text-lg leading-relaxed text-gray-700">
+            {dietLeaders(stats).map((row) => (
+              <li key={row.tag}>
+                <Link href={`/healthy-restaurants/${row.tag}`} className="font-semibold text-jade hover:text-forest">
+                  {row.label}
+                </Link>
+                {": "}
+                <Link href={row.href} className="font-semibold text-jade hover:text-forest">
+                  {row.neighborhood}
+                </Link>
+                {`, ${row.borough} — ${row.count.toLocaleString("en-US")} published ${row.count === 1 ? "listing" : "listings"}.`}
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section id="hidden-gem-density" className="mb-16 scroll-mt-24">
           <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-            Hidden gem density
+            Hidden gems
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Hidden gem density — the percentage of a neighborhood&apos;s restaurants that qualify as hidden gems (high ratings, low review counts) — reveals which areas are ripe for culinary discovery. Neighborhoods with high hidden gem density tend to be residential, ethnically diverse, and underserved by food media. They represent the best opportunities for adventurous diners who want to find great food before everyone else does.
+            A hidden gem on this site is a published restaurant rated 4.5 or higher with fewer than 200 reviews. The directory currently flags {stats.hiddenGems.total.toLocaleString("en-US")} of them
+            {stats.hiddenGems.percentWithGradeA > 0 ? `, and ${stats.hiddenGems.percentWithGradeA}% of those hold Grade A` : ""}.
+            {" "}By borough: {gemBoroughSentence(stats.hiddenGems.byBorough)}.
           </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The Bronx leads all boroughs in hidden gem density. Neighborhoods like Kingsbridge, Morris Park, and Pelham Bay have restaurants that consistently earn 4.5+ stars from their (relatively small) customer base but remain virtually unknown outside their immediate communities. Queens neighborhoods like Elmhurst, Corona, and Rego Park also score high on this metric, with immigrant-run restaurants that deliver exceptional quality without the marketing machinery to attract citywide attention.
-          </p>
-          <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            Manhattan and well-trafficked parts of Brooklyn have the lowest hidden gem density, which makes sense — any good restaurant in the West Village or Williamsburg is quickly discovered, reviewed, and publicized. This doesn&apos;t mean there are no hidden gems in these areas, just fewer of them as a proportion of total restaurants. For a deep dive into how we identify hidden gems and why they tend to be excellent, see our{" "}
-            <Link href="/guides/hidden-gem-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
-              hidden gem restaurant guide
-            </Link>. You can also explore the{" "}
-            <Link href="/map" className="font-semibold text-jade hover:text-forest">
-              full map view
-            </Link>{" "}
-            to visualize hidden gem distribution across the city.
-          </p>
+          {stats.neighborhoods.topByHiddenGems.length > 0 ? (
+            <p className="mb-4 text-lg leading-relaxed text-gray-700">
+              The neighborhoods with the most flagged hidden gems are {stats.neighborhoods.topByHiddenGems.slice(0, 5).map((row) => `${row.neighborhood}, ${row.borough} (${row.count})`).join("; ")}.
+              {" "}The rule is explained in the{" "}
+              <Link href="/guides/hidden-gem-restaurants-nyc" className="font-semibold text-jade hover:text-forest">
+                hidden gem restaurant guide
+              </Link>
+              . The{" "}
+              <Link href="/map" className="font-semibold text-jade hover:text-forest">
+                map
+              </Link>{" "}
+              plots the same listings.
+            </p>
+          ) : null}
         </section>
 
         <section id="faq" className="mb-16 scroll-mt-24">
@@ -348,4 +319,93 @@ export default async function HealthyNeighborhoodsGuide() {
         <AboutThisData variant="guide" />
     </GuideLayout>
   )
+}
+
+function BoroughGradeSection({
+  id,
+  heading,
+  borough,
+  rows,
+  boroughStats,
+}: {
+  id: string
+  heading: string
+  borough: string
+  rows: NeighborhoodGradeRow[]
+  boroughStats: BoroughGradeStats | undefined
+}) {
+  return (
+    <section id={id} className="mb-16 scroll-mt-24">
+      <h2 className="mb-6 text-3xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
+        {heading}
+      </h2>
+      <BoroughGradeBlock borough={borough} rows={rows} boroughStats={boroughStats} />
+    </section>
+  )
+}
+
+function BoroughGradeBlock({
+  borough,
+  rows,
+  boroughStats,
+}: {
+  borough: string
+  rows: NeighborhoodGradeRow[]
+  boroughStats: BoroughGradeStats | undefined
+}) {
+  const total = boroughStats?.total ?? 0
+  const gradeA = boroughStats?.gradeA ?? 0
+  const rate = boroughStats?.rate ?? 0
+  return (
+    <div className="mb-8">
+      <p className="mb-4 text-lg leading-relaxed text-gray-700">
+        <Link href={`/nyc/${boroughToSlug(borough)}/healthy-restaurants`} className="font-semibold text-jade hover:text-forest">
+          {borough}
+        </Link>
+        {" "}has {gradeA.toLocaleString("en-US")} Grade A listings out of {total.toLocaleString("en-US")} published ({rate}%).
+        {rows.length > 0
+          ? " The highest neighborhood shares, among places with at least 10 published listings, are below."
+          : " No neighborhood in this borough has 10 published listings yet."}
+      </p>
+      {rows.length > 0 ? (
+        <ul className="space-y-2 text-lg leading-relaxed text-gray-700">
+          {rows.map((row) => (
+            <li key={`${row.borough}-${row.neighborhood}`}>
+              <Link
+                href={`/nyc/${boroughToSlug(row.borough)}/${neighborhoodToSlug(row.neighborhood)}/healthy-restaurants`}
+                className="font-semibold text-jade hover:text-forest"
+              >
+                {row.neighborhood}
+              </Link>
+              {`: ${row.rate}% Grade A (${row.gradeA.toLocaleString("en-US")} of ${row.total.toLocaleString("en-US")} published listings).`}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
+
+function dietLeaders(stats: Awaited<ReturnType<typeof getLiveGuideStats>>) {
+  return Object.keys(DIET_CONFIG)
+    .flatMap((tag) => {
+      const top = stats.dietary.topNeighborhoodsByTag[tag]?.[0]
+      if (!top || top.count < 1) return []
+      const config = DIET_CONFIG[tag as keyof typeof DIET_CONFIG]
+      if (!config) return []
+      return [{
+        tag,
+        label: config.label,
+        neighborhood: top.neighborhood,
+        borough: top.borough,
+        count: top.count,
+        href: `/nyc/${boroughToSlug(top.borough)}/${neighborhoodToSlug(top.neighborhood)}/healthy-restaurants`,
+      }]
+    })
+    .sort((a, b) => b.count - a.count)
+}
+
+function gemBoroughSentence(byBorough: Record<string, number>): string {
+  const parts = BOROUGH_NAMES.map((name) => `${name} ${(byBorough[name] ?? 0).toLocaleString("en-US")}`)
+  return parts.join(", ")
 }
