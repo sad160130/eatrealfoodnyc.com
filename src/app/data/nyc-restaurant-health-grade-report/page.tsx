@@ -183,6 +183,12 @@ export default function InspectionReportPage() {
             <Link href="/data/best-rated-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>best-rated restaurants</Link>
             {" · "}
             <Link href="/press" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>press</Link>
+            {" · "}
+            <Link href="/data/nyc-restaurant-score-13-cliff" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>score 13 cliff</Link>
+            {" · "}
+            <Link href="/data/not-yet-inspected-restaurants-nyc" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>not yet inspected</Link>
+            {" · "}
+            <Link href="/data/nyc-restaurant-closures-2026-11" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>monthly closures</Link>
           </p>
           <p className="text-sm">
             <InspectionLeadsCta source="inspection_report">

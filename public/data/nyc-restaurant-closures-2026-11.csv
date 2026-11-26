@@ -1,0 +1,139 @@
+month,borough,closure_events,unique_restaurants
+2025-01,New York City,43,33
+2025-01,Manhattan,19,15
+2025-01,Brooklyn,10,6
+2025-01,Queens,11,9
+2025-01,Bronx,3,3
+2025-01,Staten Island,0,0
+2025-02,New York City,23,22
+2025-02,Manhattan,6,5
+2025-02,Brooklyn,5,5
+2025-02,Queens,8,8
+2025-02,Bronx,3,3
+2025-02,Staten Island,1,1
+2025-03,New York City,64,51
+2025-03,Manhattan,20,17
+2025-03,Brooklyn,16,12
+2025-03,Queens,22,17
+2025-03,Bronx,6,5
+2025-03,Staten Island,0,0
+2025-04,New York City,35,30
+2025-04,Manhattan,9,7
+2025-04,Brooklyn,11,10
+2025-04,Queens,8,6
+2025-04,Bronx,6,6
+2025-04,Staten Island,0,0
+2025-05,New York City,34,23
+2025-05,Manhattan,9,6
+2025-05,Brooklyn,12,8
+2025-05,Queens,7,5
+2025-05,Bronx,3,2
+2025-05,Staten Island,1,1
+2025-06,New York City,46,37
+2025-06,Manhattan,18,13
+2025-06,Brooklyn,15,14
+2025-06,Queens,10,8
+2025-06,Bronx,3,2
+2025-06,Staten Island,0,0
+2025-07,New York City,53,37
+2025-07,Manhattan,10,6
+2025-07,Brooklyn,23,15
+2025-07,Queens,16,12
+2025-07,Bronx,4,4
+2025-07,Staten Island,0,0
+2025-08,New York City,59,50
+2025-08,Manhattan,16,15
+2025-08,Brooklyn,17,15
+2025-08,Queens,20,14
+2025-08,Bronx,5,5
+2025-08,Staten Island,1,1
+2025-09,New York City,59,49
+2025-09,Manhattan,13,10
+2025-09,Brooklyn,16,15
+2025-09,Queens,22,18
+2025-09,Bronx,7,5
+2025-09,Staten Island,1,1
+2025-10,New York City,59,49
+2025-10,Manhattan,19,16
+2025-10,Brooklyn,18,15
+2025-10,Queens,19,15
+2025-10,Bronx,3,3
+2025-10,Staten Island,0,0
+2025-11,New York City,33,29
+2025-11,Manhattan,9,8
+2025-11,Brooklyn,9,9
+2025-11,Queens,14,11
+2025-11,Bronx,0,0
+2025-11,Staten Island,1,1
+2025-12,New York City,33,28
+2025-12,Manhattan,7,6
+2025-12,Brooklyn,19,16
+2025-12,Queens,6,5
+2025-12,Bronx,1,1
+2025-12,Staten Island,0,0
+2026-01,New York City,37,33
+2026-01,Manhattan,11,11
+2026-01,Brooklyn,7,5
+2026-01,Queens,15,14
+2026-01,Bronx,1,1
+2026-01,Staten Island,3,2
+2026-02,New York City,46,37
+2026-02,Manhattan,13,10
+2026-02,Brooklyn,15,13
+2026-02,Queens,11,8
+2026-02,Bronx,4,4
+2026-02,Staten Island,3,2
+2026-03,New York City,69,59
+2026-03,Manhattan,26,21
+2026-03,Brooklyn,24,20
+2026-03,Queens,13,12
+2026-03,Bronx,3,3
+2026-03,Staten Island,3,3
+2026-04,New York City,69,58
+2026-04,Manhattan,18,15
+2026-04,Brooklyn,34,28
+2026-04,Queens,12,10
+2026-04,Bronx,4,4
+2026-04,Staten Island,1,1
+2026-05,New York City,60,48
+2026-05,Manhattan,14,9
+2026-05,Brooklyn,24,22
+2026-05,Queens,16,12
+2026-05,Bronx,5,4
+2026-05,Staten Island,1,1
+2026-06,New York City,59,48
+2026-06,Manhattan,15,12
+2026-06,Brooklyn,17,15
+2026-06,Queens,20,15
+2026-06,Bronx,6,5
+2026-06,Staten Island,1,1
+2026-07,New York City,71,58
+2026-07,Manhattan,17,14
+2026-07,Brooklyn,16,15
+2026-07,Queens,29,22
+2026-07,Bronx,9,7
+2026-07,Staten Island,0,0
+2026-08,New York City,69,54
+2026-08,Manhattan,29,21
+2026-08,Brooklyn,13,11
+2026-08,Queens,22,17
+2026-08,Bronx,5,5
+2026-08,Staten Island,0,0
+2026-09,New York City,81,61
+2026-09,Manhattan,19,16
+2026-09,Brooklyn,26,19
+2026-09,Queens,31,21
+2026-09,Bronx,5,5
+2026-09,Staten Island,0,0
+2026-10,New York City,66,54
+2026-10,Manhattan,19,14
+2026-10,Brooklyn,25,22
+2026-10,Queens,16,12
+2026-10,Bronx,6,6
+2026-10,Staten Island,0,0
+2026-11,New York City,19,18
+2026-11,Manhattan,4,4
+2026-11,Brooklyn,8,8
+2026-11,Queens,3,2
+2026-11,Bronx,4,4
+2026-11,Staten Island,0,0

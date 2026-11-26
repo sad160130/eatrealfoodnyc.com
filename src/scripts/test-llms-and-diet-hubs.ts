@@ -42,7 +42,11 @@ assert.match(text, /Record date November 13, 2026/)
 assert.match(text, /90\.2% of 23,992 letter-graded restaurants hold an A/)
 assert.match(text, /Best-rated restaurants \(May 2026 snapshot\)/)
 assert.match(text, /613 operational restaurants rated 4\.5 or higher/)
-
+assert.match(text, /data\/nyc-restaurant-score-13-cliff/)
+assert.match(text, /data\/not-yet-inspected-restaurants-nyc/)
+assert.match(text, /data\/nyc-restaurant-closures-2026-11/)
+assert.match(text, /14,731 unique 2026 cycle initial inspections/)
+assert.match(text, /4,084 of 31,581 establishments/)
 assert.match(text, /catering\/holiday-party-catering-nyc/)
 assert.equal(text.includes("\n\n## What this site is"), true)
 

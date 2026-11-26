@@ -1,4 +1,5 @@
 import { dohmhRefreshSentence } from "@/lib/dohmh-cadence"
+import { llmsResearchAddendum } from "@/lib/data-pages"
 
 export interface LlmsFacts {
   published: number
@@ -70,5 +71,9 @@ export function buildLlmsTxt(facts: LlmsFacts): string {
   const marker = "## What this site is"
   const insertAt = withDiets.indexOf(marker)
   if (insertAt < 0) throw new Error("llms.txt template is missing the site description")
-  return `${withDiets.slice(0, insertAt)}${keyFacts(facts)}\n\n${withDiets.slice(insertAt)}`
+  const withFacts = `${withDiets.slice(0, insertAt)}${keyFacts(facts)}\n\n${withDiets.slice(insertAt)}`
+  const catalog = "Full public URL list:"
+  const catalogAt = withFacts.indexOf(catalog)
+  if (catalogAt < 0) throw new Error("llms.txt template is missing the URL list")
+  return `${withFacts.slice(0, catalogAt)}${llmsResearchAddendum()}\n${withFacts.slice(catalogAt)}`
 }

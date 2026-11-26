@@ -85,3 +85,6 @@ public/robots.txt
 *.csv
 !src/**/*.csv
 !public/data/nyc-inspection-fall-2026.csv
+!public/data/nyc-restaurant-score-13-cliff.csv
+!public/data/not-yet-inspected-restaurants-nyc.csv
+!public/data/nyc-restaurant-closures-2026-11.csv
