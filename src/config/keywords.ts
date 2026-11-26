@@ -7,6 +7,8 @@ export const GUIDE_KEYWORDS = {
   "grade-a-restaurants-by-borough-nyc": "grade a restaurants by borough nyc",
   "nyc-health-grades-explained": "nyc restaurant grades",
   "ethiopian-restaurants-nyc": "Ethiopian restaurants NYC",
+  "best-bagels-nyc": "best bagels nyc",
+  "best-restaurants-flushing": "restaurants in flushing",
 } as const
 
 export const BOROUGH_KEYWORDS: Record<string, {

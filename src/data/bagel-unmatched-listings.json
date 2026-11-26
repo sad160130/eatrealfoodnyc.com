@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "bagel-shop",
+    "name": "Bagel Shop",
+    "type": "Bagel shop",
+    "neighborhood": "Yorkville",
+    "borough": "Manhattan"
+  },
+  {
+    "slug": "best-bagel-coffee",
+    "name": "Best Bagel & Coffee",
+    "type": "Bagel shop",
+    "neighborhood": "Midtown",
+    "borough": "Manhattan"
+  },
+  {
+    "slug": "familiars-bagels-coffee",
+    "name": "Familiars Bagels & Coffee",
+    "type": "Coffee shop",
+    "neighborhood": "Bushwick",
+    "borough": "Brooklyn"
+  },
+  {
+    "slug": "grind-the-nyc-coffee-shop-bagel-house",
+    "name": "GRIND THE NYC COFFEE SHOP & BAGEL HOUSE",
+    "type": "Coffee shop",
+    "neighborhood": "Hell's Kitchen",
+    "borough": "Manhattan"
+  },
+  {
+    "slug": "utopia-bagels",
+    "name": "Utopia Bagels",
+    "type": "Bagel shop",
+    "neighborhood": "Whitestone",
+    "borough": "Queens"
+  }
+]

@@ -36,7 +36,7 @@ export function InspectionContext({
   workingHours: string | null
 }) {
   const share = placeGradeShare(neighborhood, borough)
-  const guides = listingGuideLinks({ type, dietaryTags, workingHours })
+  const guides = listingGuideLinks({ type, dietaryTags, workingHours, neighborhood, borough })
   return (
     <div className="mt-3 space-y-2 text-sm" style={{ color: "var(--color-text)", maxWidth: "62ch", lineHeight: 1.55 }}>
       {share ? <ShareSentence share={share} /> : null}
@@ -82,6 +82,14 @@ export function BoroughGradeContext({ borough }: { borough: string }) {
           {top.label}
         </Link>
       </p>
+      {borough === "Queens" ? (
+        <p>
+          <Link href="/guides/best-restaurants-flushing" className={linkClass} style={linkStyle}>
+            Grade A restaurants in Flushing
+          </Link>
+          {" are counted from the latest NYC inspection file for the Flushing NTA."}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -95,9 +103,18 @@ export function NeighborhoodGradeContext({
 }) {
   const share = placeGradeShare(neighborhood, borough)
   if (!share) return null
+  const flushing = neighborhood.trim().toLowerCase() === "flushing" && borough.trim().toLowerCase() === "queens"
   return (
-    <div className="mt-3 text-sm" style={{ color: "var(--color-text)", maxWidth: "62ch", lineHeight: 1.55 }}>
+    <div className="mt-3 space-y-2 text-sm" style={{ color: "var(--color-text)", maxWidth: "62ch", lineHeight: 1.55 }}>
       <ShareSentence share={share} />
+      {flushing ? (
+        <p>
+          <Link href="/guides/best-restaurants-flushing" className={linkClass} style={linkStyle}>
+            Grade A restaurants in Flushing
+          </Link>
+          {" uses the Flushing NTA and the current inspection file."}
+        </p>
+      ) : null}
     </div>
   )
 }

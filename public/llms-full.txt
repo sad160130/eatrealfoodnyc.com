@@ -66,6 +66,10 @@ https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
   Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
 https://www.eatrealfoodnyc.com/guides/ethiopian-restaurants-nyc
   19 Ethiopian restaurants in the NYC inspection file. 13 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000, newest inspection_date 2026-11-23.
+https://www.eatrealfoodnyc.com/guides/best-bagels-nyc
+  402 establishments with cuisine Bagels/Pretzels or bagel in the name. 266 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000.
+https://www.eatrealfoodnyc.com/guides/best-restaurants-flushing
+  Flushing NTA QN22 has the lowest Grade A share of 80 NTAs: 78.1% (345 of 442). Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000.
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
   NYC restaurant grades: A is 0–13, B is 14–27 on a reinspection, C is 28 or more. Citywide DOHMH file pulled 2026-11-25. Newest inspection_date 2026-11-23.
 https://www.eatrealfoodnyc.com/guides/nyc-restaurant-inspection-process

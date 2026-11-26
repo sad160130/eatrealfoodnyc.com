@@ -298,6 +298,11 @@ export default async function HealthyBreakfastGuide() {
             <p>
               A dietary tag is on a listing only when the restaurant identifies that way or has substantial menu coverage. A restaurant without a tag is not labeled healthy by inference.
             </p>
+            <p>
+              Bagel shops are counted on their own page. See{" "}
+              <Link href="/guides/best-bagels-nyc" className={linkClass}>best bagels in NYC</Link>
+              , ranked by the latest inspection grade for city cuisine Bagels/Pretzels or a name containing bagel.
+            </p>
           </div>
         </section>
 

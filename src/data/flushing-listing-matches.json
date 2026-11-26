@@ -1,0 +1,169 @@
+[
+  {
+    "camis": "50146648",
+    "slug": "busy-bee-coffee",
+    "listingName": "Busy Bee Coffee",
+    "type": "Coffee shop",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.9,
+    "reviews": 1010,
+    "tags": []
+  },
+  {
+    "camis": "50093238",
+    "slug": "cheli-flushing",
+    "listingName": "CHELI FLUSHING浙里",
+    "type": "Chinese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.7,
+    "reviews": 1568,
+    "tags": []
+  },
+  {
+    "camis": "50087355",
+    "slug": "chongqing-lao-zao",
+    "listingName": "Chongqing Lao Zao 重慶老灶",
+    "type": "Hot pot restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.6,
+    "reviews": 1818,
+    "tags": []
+  },
+  {
+    "camis": "50122601",
+    "slug": "fish-with-you-sauerkraut-fish",
+    "listingName": "鱼你在一起 （法拉盛） Fish With You | Sauerkraut Fish 酸菜鱼",
+    "type": "Chinese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.8,
+    "reviews": 1730,
+    "tags": []
+  },
+  {
+    "camis": "50106473",
+    "slug": "gan-hoo-bbq",
+    "listingName": "GAN-HOO BBQ",
+    "type": "Barbecue restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.9,
+    "reviews": 5618,
+    "tags": []
+  },
+  {
+    "camis": "50064645",
+    "slug": "gyu-kaku-japanese-bbq-flushing",
+    "listingName": "Gyu-Kaku Japanese BBQ",
+    "type": "Japanese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.7,
+    "reviews": 2271,
+    "tags": []
+  },
+  {
+    "camis": "50106261",
+    "slug": "happy-lamb-hot-pot-flushing",
+    "listingName": "Happy Lamb Hot Pot, Flushing 快乐小羊",
+    "type": "Hot pot restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.4,
+    "reviews": 1742,
+    "tags": []
+  },
+  {
+    "camis": "50124703",
+    "slug": "juqi",
+    "listingName": "JUQI",
+    "type": "Chinese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.5,
+    "reviews": 2360,
+    "tags": []
+  },
+  {
+    "camis": "50166819",
+    "slug": "off-peak-coffee",
+    "listingName": "OFF-PEAK COFFEE",
+    "type": "Coffee shop",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.8,
+    "reviews": 669,
+    "tags": []
+  },
+  {
+    "camis": "50121427",
+    "slug": "pho-hoang",
+    "listingName": "Pho Hoang",
+    "type": "Vietnamese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.5,
+    "reviews": 3303,
+    "tags": []
+  },
+  {
+    "camis": "50139786",
+    "slug": "shanghai-you-garden-flushing",
+    "listingName": "Shanghai You Garden",
+    "type": "Shanghainese restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.3,
+    "reviews": 2452,
+    "tags": []
+  },
+  {
+    "camis": "50154870",
+    "slug": "shoo-loong-kan",
+    "listingName": "Shoo Loong Kan",
+    "type": "Hot pot restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.7,
+    "reviews": 1586,
+    "tags": []
+  },
+  {
+    "camis": "41710788",
+    "slug": "spring-shabu-shabu-flushing",
+    "listingName": "Spring Shabu-Shabu",
+    "type": "Hot pot restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.5,
+    "reviews": 2715,
+    "tags": []
+  },
+  {
+    "camis": "50172067",
+    "slug": "woodam",
+    "listingName": "Woodam",
+    "type": "Korean restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.9,
+    "reviews": 1123,
+    "tags": []
+  },
+  {
+    "camis": "50113722",
+    "slug": "zabiha-burger-fries",
+    "listingName": "Zabiha Burger & Fries",
+    "type": "Hamburger restaurant",
+    "neighborhood": "Flushing",
+    "borough": "Queens",
+    "rating": 4.4,
+    "reviews": 491,
+    "tags": [
+      "halal"
+    ]
+  }
+]

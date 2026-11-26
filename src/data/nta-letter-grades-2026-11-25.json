@@ -1,0 +1,762 @@
+{
+  "datasetId": "43nn-pn8j",
+  "recordDate": "2026-11-25T06:00:23.000",
+  "newestInspectionDate": "2026-11-23",
+  "fileRows": 295389,
+  "pulledOn": "2026-11-26",
+  "bagelWhere": "cuisine_description = 'Bagels/Pretzels' OR upper(dba) like '%BAGEL%'",
+  "flushingNta": "QN22",
+  "method": "One latest A, B, or C per CAMIS. The date is grade_date. A CAMIS with two different letters on that date is excluded. NTAs need at least 80 letter-graded restaurants and a name from the 2010 neighborhood file or the NYC NTA name list.",
+  "letterTiesExcluded": 0,
+  "citywide": {
+    "letterGraded": 24819,
+    "a": 22212,
+    "b": 1971,
+    "c": 636,
+    "share": "89.5%"
+  },
+  "flushing": {
+    "code": "QN22",
+    "name": "Flushing",
+    "a": 345,
+    "b": 61,
+    "c": 36,
+    "letterGraded": 442,
+    "share": "78.1%",
+    "rank": 1,
+    "ntaCount": 80,
+    "tiedForLowest": true,
+    "uniqueLowest": true,
+    "lowest": [
+      {
+        "code": "QN22",
+        "name": "Flushing",
+        "share": "78.1%",
+        "a": 345,
+        "letterGraded": 442
+      }
+    ]
+  },
+  "neighborhoods": [
+    {
+      "code": "QN22",
+      "name": "Flushing",
+      "a": 345,
+      "b": 61,
+      "c": 36,
+      "letterGraded": 442,
+      "share": "78.1%"
+    },
+    {
+      "code": "QN51",
+      "name": "Murray Hill",
+      "a": 132,
+      "b": 26,
+      "c": 10,
+      "letterGraded": 168,
+      "share": "78.6%"
+    },
+    {
+      "code": "QN29",
+      "name": "Elmhurst",
+      "a": 204,
+      "b": 40,
+      "c": 6,
+      "letterGraded": 250,
+      "share": "81.6%"
+    },
+    {
+      "code": "QN54",
+      "name": "Richmond Hill",
+      "a": 97,
+      "b": 14,
+      "c": 7,
+      "letterGraded": 118,
+      "share": "82.2%"
+    },
+    {
+      "code": "QN55",
+      "name": "South Ozone Park",
+      "a": 133,
+      "b": 22,
+      "c": 6,
+      "letterGraded": 161,
+      "share": "82.6%"
+    },
+    {
+      "code": "BK88",
+      "name": "Borough Park",
+      "a": 73,
+      "b": 13,
+      "c": 2,
+      "letterGraded": 88,
+      "share": "83.0%"
+    },
+    {
+      "code": "BX39",
+      "name": "Mott Haven-Port Morris",
+      "a": 88,
+      "b": 13,
+      "c": 5,
+      "letterGraded": 106,
+      "share": "83.0%"
+    },
+    {
+      "code": "QN63",
+      "name": "Woodside",
+      "a": 109,
+      "b": 14,
+      "c": 8,
+      "letterGraded": 131,
+      "share": "83.2%"
+    },
+    {
+      "code": "MN04",
+      "name": "Hamilton Heights",
+      "a": 75,
+      "b": 10,
+      "c": 4,
+      "letterGraded": 89,
+      "share": "84.3%"
+    },
+    {
+      "code": "QN28",
+      "name": "Jackson Heights",
+      "a": 258,
+      "b": 40,
+      "c": 8,
+      "letterGraded": 306,
+      "share": "84.3%"
+    },
+    {
+      "code": "MN11",
+      "name": "Central Harlem South",
+      "a": 76,
+      "b": 11,
+      "c": 3,
+      "letterGraded": 90,
+      "share": "84.4%"
+    },
+    {
+      "code": "QN26",
+      "name": "North Corona",
+      "a": 131,
+      "b": 23,
+      "c": 1,
+      "letterGraded": 155,
+      "share": "84.5%"
+    },
+    {
+      "code": "QN53",
+      "name": "Woodhaven",
+      "a": 83,
+      "b": 11,
+      "c": 4,
+      "letterGraded": 98,
+      "share": "84.7%"
+    },
+    {
+      "code": "MN35",
+      "name": "Washington Heights North",
+      "a": 96,
+      "b": 12,
+      "c": 5,
+      "letterGraded": 113,
+      "share": "85.0%"
+    },
+    {
+      "code": "MN36",
+      "name": "Washington Heights South",
+      "a": 131,
+      "b": 20,
+      "c": 3,
+      "letterGraded": 154,
+      "share": "85.1%"
+    },
+    {
+      "code": "MN09",
+      "name": "Morningside Heights",
+      "a": 134,
+      "b": 19,
+      "c": 4,
+      "letterGraded": 157,
+      "share": "85.4%"
+    },
+    {
+      "code": "MN33",
+      "name": "East Harlem South",
+      "a": 101,
+      "b": 13,
+      "c": 4,
+      "letterGraded": 118,
+      "share": "85.6%"
+    },
+    {
+      "code": "BK34",
+      "name": "Sunset Park East",
+      "a": 244,
+      "b": 33,
+      "c": 7,
+      "letterGraded": 284,
+      "share": "85.9%"
+    },
+    {
+      "code": "BK58",
+      "name": "Flatlands",
+      "a": 77,
+      "b": 12,
+      "c": 0,
+      "letterGraded": 89,
+      "share": "86.5%"
+    },
+    {
+      "code": "QN20",
+      "name": "Ridgewood",
+      "a": 211,
+      "b": 28,
+      "c": 5,
+      "letterGraded": 244,
+      "share": "86.5%"
+    },
+    {
+      "code": "BK68",
+      "name": "Fort Greene",
+      "a": 103,
+      "b": 12,
+      "c": 4,
+      "letterGraded": 119,
+      "share": "86.6%"
+    },
+    {
+      "code": "MN01",
+      "name": "Marble Hill-Inwood",
+      "a": 92,
+      "b": 10,
+      "c": 4,
+      "letterGraded": 106,
+      "share": "86.8%"
+    },
+    {
+      "code": "QN70",
+      "name": "Astoria",
+      "a": 332,
+      "b": 41,
+      "c": 9,
+      "letterGraded": 382,
+      "share": "86.9%"
+    },
+    {
+      "code": "QN61",
+      "name": "Jamaica",
+      "a": 156,
+      "b": 16,
+      "c": 7,
+      "letterGraded": 179,
+      "share": "87.2%"
+    },
+    {
+      "code": "BK77",
+      "name": "Bushwick North",
+      "a": 229,
+      "b": 19,
+      "c": 14,
+      "letterGraded": 262,
+      "share": "87.4%"
+    },
+    {
+      "code": "BK25",
+      "name": "Homecrest",
+      "a": 96,
+      "b": 13,
+      "c": 0,
+      "letterGraded": 109,
+      "share": "88.1%"
+    },
+    {
+      "code": "QN68",
+      "name": "Queensbridge-Ravenswood-Long Island City",
+      "a": 76,
+      "b": 8,
+      "c": 2,
+      "letterGraded": 86,
+      "share": "88.4%"
+    },
+    {
+      "code": "MN27",
+      "name": "Chinatown",
+      "a": 451,
+      "b": 49,
+      "c": 9,
+      "letterGraded": 509,
+      "share": "88.6%"
+    },
+    {
+      "code": "BK28",
+      "name": "Bensonhurst West",
+      "a": 181,
+      "b": 20,
+      "c": 3,
+      "letterGraded": 204,
+      "share": "88.7%"
+    },
+    {
+      "code": "MN22",
+      "name": "East Village",
+      "a": 478,
+      "b": 42,
+      "c": 19,
+      "letterGraded": 539,
+      "share": "88.7%"
+    },
+    {
+      "code": "QN17",
+      "name": "Forest Hills",
+      "a": 174,
+      "b": 17,
+      "c": 5,
+      "letterGraded": 196,
+      "share": "88.8%"
+    },
+    {
+      "code": "BK81",
+      "name": "Brownsville",
+      "a": 72,
+      "b": 5,
+      "c": 4,
+      "letterGraded": 81,
+      "share": "88.9%"
+    },
+    {
+      "code": "QN31",
+      "name": "Hunters Point-Sunnyside-West Maspeth",
+      "a": 361,
+      "b": 32,
+      "c": 13,
+      "letterGraded": 406,
+      "share": "88.9%"
+    },
+    {
+      "code": "QN46",
+      "name": "Bayside-Bayside Hills",
+      "a": 138,
+      "b": 13,
+      "c": 4,
+      "letterGraded": 155,
+      "share": "89.0%"
+    },
+    {
+      "code": "BK90",
+      "name": "East Williamsburg",
+      "a": 162,
+      "b": 15,
+      "c": 5,
+      "letterGraded": 182,
+      "share": "89.0%"
+    },
+    {
+      "code": "MN15",
+      "name": "Clinton",
+      "a": 411,
+      "b": 35,
+      "c": 15,
+      "letterGraded": 461,
+      "share": "89.2%"
+    },
+    {
+      "code": "BK64",
+      "name": "Prospect Heights",
+      "a": 107,
+      "b": 11,
+      "c": 2,
+      "letterGraded": 120,
+      "share": "89.2%"
+    },
+    {
+      "code": "BK60",
+      "name": "Prospect Lefferts Gardens-Wingate",
+      "a": 140,
+      "b": 11,
+      "c": 6,
+      "letterGraded": 157,
+      "share": "89.2%"
+    },
+    {
+      "code": "BX05",
+      "name": "Bedford Park-Fordham North",
+      "a": 76,
+      "b": 8,
+      "c": 1,
+      "letterGraded": 85,
+      "share": "89.4%"
+    },
+    {
+      "code": "BK42",
+      "name": "Flatbush",
+      "a": 154,
+      "b": 13,
+      "c": 5,
+      "letterGraded": 172,
+      "share": "89.5%"
+    },
+    {
+      "code": "BK76",
+      "name": "Greenpoint",
+      "a": 213,
+      "b": 20,
+      "c": 5,
+      "letterGraded": 238,
+      "share": "89.5%"
+    },
+    {
+      "code": "MN28",
+      "name": "Lower East Side",
+      "a": 123,
+      "b": 12,
+      "c": 2,
+      "letterGraded": 137,
+      "share": "89.8%"
+    },
+    {
+      "code": "BK61",
+      "name": "Crown Heights North",
+      "a": 198,
+      "b": 18,
+      "c": 4,
+      "letterGraded": 220,
+      "share": "90.0%"
+    },
+    {
+      "code": "BX29",
+      "name": "Spuyten Duyvil-Kingsbridge",
+      "a": 91,
+      "b": 8,
+      "c": 2,
+      "letterGraded": 101,
+      "share": "90.1%"
+    },
+    {
+      "code": "BK75",
+      "name": "Bedford",
+      "a": 138,
+      "b": 8,
+      "c": 7,
+      "letterGraded": 153,
+      "share": "90.2%"
+    },
+    {
+      "code": "BK50",
+      "name": "Canarsie",
+      "a": 74,
+      "b": 5,
+      "c": 3,
+      "letterGraded": 82,
+      "share": "90.2%"
+    },
+    {
+      "code": "BK69",
+      "name": "Clinton Hill",
+      "a": 111,
+      "b": 11,
+      "c": 1,
+      "letterGraded": 123,
+      "share": "90.2%"
+    },
+    {
+      "code": "BK35",
+      "name": "Stuyvesant Heights",
+      "a": 110,
+      "b": 8,
+      "c": 4,
+      "letterGraded": 122,
+      "share": "90.2%"
+    },
+    {
+      "code": "SI54",
+      "name": "Great Kills",
+      "a": 75,
+      "b": 8,
+      "c": 0,
+      "letterGraded": 83,
+      "share": "90.4%"
+    },
+    {
+      "code": "MN19",
+      "name": "Turtle Bay-East Midtown",
+      "a": 453,
+      "b": 37,
+      "c": 11,
+      "letterGraded": 501,
+      "share": "90.4%"
+    },
+    {
+      "code": "MN32",
+      "name": "Yorkville",
+      "a": 183,
+      "b": 16,
+      "c": 3,
+      "letterGraded": 202,
+      "share": "90.6%"
+    },
+    {
+      "code": "MN34",
+      "name": "East Harlem North",
+      "a": 127,
+      "b": 9,
+      "c": 4,
+      "letterGraded": 140,
+      "share": "90.7%"
+    },
+    {
+      "code": "BK82",
+      "name": "East New York",
+      "a": 108,
+      "b": 11,
+      "c": 0,
+      "letterGraded": 119,
+      "share": "90.8%"
+    },
+    {
+      "code": "MN21",
+      "name": "Gramercy",
+      "a": 190,
+      "b": 11,
+      "c": 8,
+      "letterGraded": 209,
+      "share": "90.9%"
+    },
+    {
+      "code": "BX52",
+      "name": "Schuylerville-Throgs Neck-Edgewater Park",
+      "a": 80,
+      "b": 7,
+      "c": 1,
+      "letterGraded": 88,
+      "share": "90.9%"
+    },
+    {
+      "code": "QN72",
+      "name": "Steinway",
+      "a": 130,
+      "b": 12,
+      "c": 1,
+      "letterGraded": 143,
+      "share": "90.9%"
+    },
+    {
+      "code": "MN31",
+      "name": "Lenox Hill-Roosevelt Island",
+      "a": 238,
+      "b": 15,
+      "c": 7,
+      "letterGraded": 260,
+      "share": "91.5%"
+    },
+    {
+      "code": "MN20",
+      "name": "Murray Hill-Kips Bay",
+      "a": 272,
+      "b": 19,
+      "c": 6,
+      "letterGraded": 297,
+      "share": "91.6%"
+    },
+    {
+      "code": "MN12",
+      "name": "Upper West Side",
+      "a": 314,
+      "b": 22,
+      "c": 6,
+      "letterGraded": 342,
+      "share": "91.8%"
+    },
+    {
+      "code": "MN17",
+      "name": "Midtown-Midtown South",
+      "a": 1600,
+      "b": 107,
+      "c": 31,
+      "letterGraded": 1738,
+      "share": "92.1%"
+    },
+    {
+      "code": "MN24",
+      "name": "SoHo-TriBeCa-Civic Center-Little Italy",
+      "a": 597,
+      "b": 39,
+      "c": 12,
+      "letterGraded": 648,
+      "share": "92.1%"
+    },
+    {
+      "code": "BX63",
+      "name": "West Concourse",
+      "a": 129,
+      "b": 8,
+      "c": 3,
+      "letterGraded": 140,
+      "share": "92.1%"
+    },
+    {
+      "code": "MN23",
+      "name": "West Village",
+      "a": 711,
+      "b": 49,
+      "c": 12,
+      "letterGraded": 772,
+      "share": "92.1%"
+    },
+    {
+      "code": "BK37",
+      "name": "Park Slope-Gowanus",
+      "a": 403,
+      "b": 24,
+      "c": 10,
+      "letterGraded": 437,
+      "share": "92.2%"
+    },
+    {
+      "code": "MN13",
+      "name": "Hudson Yards-Chelsea-Flatiron-Union Square",
+      "a": 779,
+      "b": 52,
+      "c": 12,
+      "letterGraded": 843,
+      "share": "92.4%"
+    },
+    {
+      "code": "BK29",
+      "name": "Bensonhurst East",
+      "a": 99,
+      "b": 8,
+      "c": 0,
+      "letterGraded": 107,
+      "share": "92.5%"
+    },
+    {
+      "code": "MN40",
+      "name": "Upper East Side-Carnegie Hill",
+      "a": 263,
+      "b": 15,
+      "c": 6,
+      "letterGraded": 284,
+      "share": "92.6%"
+    },
+    {
+      "code": "BK32",
+      "name": "Sunset Park West",
+      "a": 168,
+      "b": 9,
+      "c": 4,
+      "letterGraded": 181,
+      "share": "92.8%"
+    },
+    {
+      "code": "BK78",
+      "name": "Bushwick South",
+      "a": 145,
+      "b": 8,
+      "c": 3,
+      "letterGraded": 156,
+      "share": "92.9%"
+    },
+    {
+      "code": "SI45",
+      "name": "New Dorp-Midland Beach",
+      "a": 78,
+      "b": 5,
+      "c": 1,
+      "letterGraded": 84,
+      "share": "92.9%"
+    },
+    {
+      "code": "BK73",
+      "name": "North Side-South Side",
+      "a": 404,
+      "b": 22,
+      "c": 8,
+      "letterGraded": 434,
+      "share": "93.1%"
+    },
+    {
+      "code": "BK31",
+      "name": "Bay Ridge",
+      "a": 247,
+      "b": 12,
+      "c": 6,
+      "letterGraded": 265,
+      "share": "93.2%"
+    },
+    {
+      "code": "BX06",
+      "name": "Belmont",
+      "a": 110,
+      "b": 6,
+      "c": 1,
+      "letterGraded": 117,
+      "share": "94.0%"
+    },
+    {
+      "code": "BX34",
+      "name": "Melrose South-Mott Haven North",
+      "a": 79,
+      "b": 2,
+      "c": 3,
+      "letterGraded": 84,
+      "share": "94.0%"
+    },
+    {
+      "code": "BK38",
+      "name": "DUMBO-Vinegar Hill-Downtown Brooklyn-Boerum Hill",
+      "a": 319,
+      "b": 18,
+      "c": 2,
+      "letterGraded": 339,
+      "share": "94.1%"
+    },
+    {
+      "code": "MN25",
+      "name": "Battery Park City-Lower Manhattan",
+      "a": 442,
+      "b": 16,
+      "c": 10,
+      "letterGraded": 468,
+      "share": "94.4%"
+    },
+    {
+      "code": "BK09",
+      "name": "Brooklyn Heights-Cobble Hill",
+      "a": 104,
+      "b": 6,
+      "c": 0,
+      "letterGraded": 110,
+      "share": "94.5%"
+    },
+    {
+      "code": "BK17",
+      "name": "Sheepshead Bay-Gerritsen Beach-Manhattan Beach",
+      "a": 120,
+      "b": 5,
+      "c": 2,
+      "letterGraded": 127,
+      "share": "94.5%"
+    },
+    {
+      "code": "BK33",
+      "name": "Carroll Gardens-Columbia Street-Red Hook",
+      "a": 162,
+      "b": 5,
+      "c": 3,
+      "letterGraded": 170,
+      "share": "95.3%"
+    },
+    {
+      "code": "MN14",
+      "name": "Lincoln Square",
+      "a": 170,
+      "b": 5,
+      "c": 3,
+      "letterGraded": 178,
+      "share": "95.5%"
+    }
+  ]
+}

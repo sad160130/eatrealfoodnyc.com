@@ -145,4 +145,34 @@ assert.equal(
   false
 )
 
+const bagels = listingGuideLinks({ type: "Bagel shop", dietaryTags: null, workingHours: null })
+assert.equal(bagels[0]?.href, "/guides/best-bagels-nyc")
+assert.equal(bagels[0]?.label, "best bagels in NYC")
+assert.equal(
+  listingGuideLinks({ type: "Bakery", dietaryTags: null, workingHours: null }).some(
+    (link) => link.href === "/guides/best-bagels-nyc"
+  ),
+  false
+)
+
+const flushing = listingGuideLinks({
+  type: "Chinese restaurant",
+  dietaryTags: null,
+  workingHours: null,
+  neighborhood: "Flushing",
+  borough: "Queens",
+})
+assert.equal(flushing[0]?.href, "/guides/best-restaurants-flushing")
+assert.equal(flushing[0]?.label, "Grade A restaurants in Flushing")
+assert.equal(
+  listingGuideLinks({
+    type: "Chinese restaurant",
+    dietaryTags: null,
+    workingHours: null,
+    neighborhood: "Flushing",
+    borough: "Brooklyn",
+  }).some((link) => link.href === "/guides/best-restaurants-flushing"),
+  false
+)
+
 console.log("nta grade share tests passed")

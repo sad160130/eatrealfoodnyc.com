@@ -1,0 +1,154 @@
+[
+  {
+    "camis": "50073395",
+    "slug": "all-american-bagel-barista-ii",
+    "listingName": "All American Bagel & Barista II",
+    "type": "Bagel shop",
+    "neighborhood": "Howard Beach",
+    "borough": "Queens",
+    "rating": 4.3,
+    "reviews": 484,
+    "tags": [
+      "vegetarian"
+    ]
+  },
+  {
+    "camis": "50137568",
+    "slug": "bagel-chef",
+    "listingName": "Bagel Chef",
+    "type": "Bagel shop",
+    "neighborhood": "Rego Park",
+    "borough": "Queens",
+    "rating": 4.8,
+    "reviews": 755,
+    "tags": []
+  },
+  {
+    "camis": "50045022",
+    "slug": "bagel-pub-crown",
+    "listingName": "Bagel Pub",
+    "type": "Bagel shop",
+    "neighborhood": "Crown Heights",
+    "borough": "Brooklyn",
+    "rating": 4.3,
+    "reviews": 1533,
+    "tags": []
+  },
+  {
+    "camis": "50103689",
+    "slug": "bakers-dozen-bagels",
+    "listingName": "Baker’s Dozen Bagels",
+    "type": "Bagel shop",
+    "neighborhood": "Ridgewood",
+    "borough": "Queens",
+    "rating": 4.7,
+    "reviews": 583,
+    "tags": [
+      "vegetarian"
+    ]
+  },
+  {
+    "camis": "50153941",
+    "slug": "broad-nosh-bagels-deli-catering-42nd-street",
+    "listingName": "Broad Nosh Bagels Deli & Catering 42nd Street",
+    "type": "Bagel shop",
+    "neighborhood": "Hell's Kitchen",
+    "borough": "Manhattan",
+    "rating": 4.8,
+    "reviews": 2483,
+    "tags": []
+  },
+  {
+    "camis": "50127418",
+    "slug": "broad-nosh-bagels-deli-catering-58th-street",
+    "listingName": "Broad Nosh Bagels Deli & Catering 58th Street",
+    "type": "Bagel shop",
+    "neighborhood": "Lincoln Square",
+    "borough": "Manhattan",
+    "rating": 4.8,
+    "reviews": 7258,
+    "tags": []
+  },
+  {
+    "camis": "50164814",
+    "slug": "liberty-bagels-midtown",
+    "listingName": "Liberty Bagels Midtown",
+    "type": "Bagel shop",
+    "neighborhood": "Midtown",
+    "borough": "Manhattan",
+    "rating": 4.6,
+    "reviews": 4575,
+    "tags": []
+  },
+  {
+    "camis": "50131655",
+    "slug": "liberty-bagels-wall-street",
+    "listingName": "Liberty Bagels Wall Street",
+    "type": "Bagel shop",
+    "neighborhood": "Financial District",
+    "borough": "Manhattan",
+    "rating": 4.5,
+    "reviews": 2063,
+    "tags": []
+  },
+  {
+    "camis": "50086611",
+    "slug": "modern-bread-and-bagel",
+    "listingName": "Modern Bread and Bagel",
+    "type": "Bakery",
+    "neighborhood": "Upper West Side",
+    "borough": "Manhattan",
+    "rating": 4.3,
+    "reviews": 1683,
+    "tags": []
+  },
+  {
+    "camis": "40544823",
+    "slug": "murrays-bagels",
+    "listingName": "Murray's Bagels",
+    "type": "Bagel shop",
+    "neighborhood": "Greenwich Village",
+    "borough": "Manhattan",
+    "rating": 4.1,
+    "reviews": 2151,
+    "tags": []
+  },
+  {
+    "camis": "50001857",
+    "slug": "sunset-bagels-sunset",
+    "listingName": "Sunset Bagels",
+    "type": "Health food restaurant",
+    "neighborhood": "Sunset Park",
+    "borough": "Brooklyn",
+    "rating": 3.7,
+    "reviews": 876,
+    "tags": [
+      "whole-foods",
+      "low-calorie"
+    ]
+  },
+  {
+    "camis": "41605054",
+    "slug": "tompkins-square-bagels-east-village-bagels",
+    "listingName": "Tompkins Square Bagels | East Village Bagels",
+    "type": "Bagel shop",
+    "neighborhood": "East Village",
+    "borough": "Manhattan",
+    "rating": 4.5,
+    "reviews": 2203,
+    "tags": []
+  },
+  {
+    "camis": "41325638",
+    "slug": "tribeca-bagels",
+    "listingName": "Tribeca Bagels",
+    "type": "Health food restaurant",
+    "neighborhood": "SoHo",
+    "borough": "Manhattan",
+    "rating": 3.9,
+    "reviews": 453,
+    "tags": [
+      "whole-foods"
+    ]
+  }
+]

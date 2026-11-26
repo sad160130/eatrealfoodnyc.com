@@ -1,4 +1,14 @@
 import {
+  BAGEL_DESCRIPTION,
+  BAGEL_SHORT_TITLE,
+  BAGEL_TITLE,
+} from "@/data/best-bagels-nyc"
+import {
+  FLUSHING_DESCRIPTION,
+  FLUSHING_SHORT_TITLE,
+  FLUSHING_TITLE,
+} from "@/data/best-restaurants-flushing"
+import {
   ETHIOPIAN_DESCRIPTION,
   ETHIOPIAN_SHORT_TITLE,
   ETHIOPIAN_TITLE,
@@ -279,6 +289,7 @@ export const GUIDES: GuideArticle[] = [
       "nyc-health-grades-explained",
       "best-healthy-neighborhoods-nyc",
       "vegan-nyc-borough-guide",
+      "best-bagels-nyc",
     ],
     relatedHubPages: [
       { label: "Whole foods restaurants NYC", href: "/healthy-restaurants/whole-foods" },
@@ -405,6 +416,56 @@ export const GUIDES: GuideArticle[] = [
       { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
       { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
       { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
+    ],
+  },
+  {
+    slug: "best-bagels-nyc",
+    title: BAGEL_TITLE,
+    metaTitle: BAGEL_TITLE,
+    shortTitle: BAGEL_SHORT_TITLE,
+    description: BAGEL_DESCRIPTION,
+    category: "Dining Situations",
+    emoji: "A",
+    readTime: "8 min read",
+    featured: false,
+    publishedDate: "2026-11-26",
+    updatedDate: "2026-11-26",
+    keywords: ["best bagels nyc", "best bagels in nyc", "grade a bagel shops nyc"],
+    relatedGuides: [
+      "healthy-breakfast-nyc",
+      "nyc-health-grades-explained",
+      "nyc-restaurant-inspection-process",
+    ],
+    relatedHubPages: [
+      { label: "Healthy breakfast in NYC", href: "/guides/healthy-breakfast-nyc" },
+      { label: "NYC restaurant grades", href: "/guides/nyc-health-grades-explained" },
+      { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
+      { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
+      { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
+    ],
+  },
+  {
+    slug: "best-restaurants-flushing",
+    title: FLUSHING_TITLE,
+    metaTitle: FLUSHING_TITLE,
+    shortTitle: FLUSHING_SHORT_TITLE,
+    description: FLUSHING_DESCRIPTION,
+    category: "Neighborhood Guides",
+    emoji: "A",
+    readTime: "7 min read",
+    featured: false,
+    publishedDate: "2026-11-26",
+    updatedDate: "2026-11-26",
+    keywords: ["restaurants in flushing", "grade a restaurants flushing", "flushing queens restaurants"],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "grade-a-restaurants-by-borough-nyc",
+      "nyc-restaurant-inspection-process",
+    ],
+    relatedHubPages: [
+      { label: "Healthy restaurants in Queens", href: "/nyc/queens/healthy-restaurants" },
+      { label: "Healthy restaurants in Flushing", href: "/nyc/queens/flushing/healthy-restaurants" },
+      { label: "NYC restaurant health grade report", href: "/data/nyc-restaurant-health-grade-report#neighborhoods" },
     ],
   },
 ]
