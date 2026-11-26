@@ -152,6 +152,7 @@ export const GUIDES: GuideArticle[] = [
     readTime: "10 min read",
     featured: true,
     publishedDate: "2026-02-15",
+    updatedDate: "2026-11-26",
     keywords: ["healthiest neighborhoods nyc", "best neighborhoods nyc healthy food", "nyc neighborhood healthy restaurants"],
     relatedGuides: ["nyc-health-grades-explained", "how-eat-healthy-nyc-15-dollars", "vegan-nyc-borough-guide"],
     relatedHubPages: [
@@ -278,8 +279,8 @@ export const GUIDES: GuideArticle[] = [
   },
   {
     slug: "best-italian-restaurants-nyc",
-    title: "Best Italian Restaurants in NYC: Top 10 Ranked",
-    metaTitle: "Best Italian Restaurants in NYC: Top 10 Ranked",
+    title: "Best Italian Restaurants in NYC (2026): Top 10 Ranked",
+    metaTitle: "Best Italian Restaurants in NYC (2026): Top 10 Ranked",
     shortTitle: "Best Italian Restaurants NYC",
     description: "The best Italian restaurants in NYC, ranked by current NYC Health Department Grade A scores and violation counts, verified against official DOHMH Open Data.",
     category: "Dining Situations",

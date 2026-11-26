@@ -261,7 +261,7 @@ export const GUIDE_TITLE_PARTS: Record<string, { keyword: string; benefit: strin
   "halal-food-guide-nyc": { keyword: "Halal Restaurants NYC", benefit: "Five Boroughs" },
   "gluten-free-dining-nyc": { keyword: "Gluten-Free NYC", benefit: "What We Tag" },
   "how-eat-healthy-nyc-15-dollars": { keyword: "Eat Healthy NYC for $15", benefit: "A Guide" },
-  "best-healthy-neighborhoods-nyc": { keyword: "Healthy NYC Neighborhoods", benefit: "Ranked" },
+  "best-healthy-neighborhoods-nyc": { keyword: "Healthy NYC Neighborhoods 2026", benefit: "Ranked" },
   "hidden-gem-restaurants-nyc": { keyword: "Hidden Gems NYC", benefit: "How We Find Them" },
   "kosher-dining-nyc-guide": { keyword: "Kosher Restaurants NYC", benefit: "By Borough" },
   "late-night-healthy-eating-nyc": { keyword: "Late Night Healthy NYC", benefit: "After 10pm" },
@@ -417,7 +417,7 @@ export function lateNightGuideTitle(neighborhoods: number): string {
   )
 }
 
-export const HEALTH_GRADES_GUIDE_TITLE = "NYC Restaurant Grades Explained: A, B, C and Pending (2026)"
+export const HEALTH_GRADES_GUIDE_TITLE = "NYC Restaurant Grades: What B and C Mean (2026)"
 
 export function healthGradesGuideTitle(): string {
   return fitTitle([HEALTH_GRADES_GUIDE_TITLE, "NYC Restaurant Grades"], { allowBrand: false })
@@ -454,7 +454,7 @@ export function lateNightGuideDescription(input: { restaurants: number; neighbor
 }
 
 export const HEALTH_GRADES_GUIDE_DESCRIPTION =
-  "NYC restaurant grades mean A for 0\u201313 points, B for 14\u201327 on a reinspection, and C for 28 or more on the official NYC DOHMH score."
+  "What does a B/C rating mean? NYC restaurant grades are A for 0\u201313 points, B for 14\u201327 on a reinspection, and C for 28 or more on the official NYC DOHMH score."
 
 export function healthGradesGuideDescription(): string {
   return HEALTH_GRADES_GUIDE_DESCRIPTION
@@ -490,10 +490,11 @@ function fitCtrBand(text: string): string {
 }
 
 export function homeTitle(gradeA: number, year: number): string {
+  const count = gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null
   return fitTitle(
     [
-      gradeA > 0 ? `Healthy Restaurants NYC | ${gradeA.toLocaleString("en-US")} Grade A | Eat Real Food NYC` : null,
-      `Healthy Restaurants NYC ${year} | Eat Real Food NYC`,
+      count ? `Healthy Restaurants NYC ${year} | ${count}` : null,
+      `Healthy Restaurants NYC ${year}`,
     ],
     { allowBrand: false }
   )
@@ -517,8 +518,9 @@ export function boroughHubTitle(borough: string, gradeA: number, year: number): 
   const count = gradeA > 0 ? `${gradeA.toLocaleString("en-US")} Grade A` : null
   return fitTitle(
     [
-      count ? `Healthy Restaurants in ${borough} | ${count}` : null,
       count ? `Healthy Restaurants in ${borough} ${year} | ${count}` : null,
+      count ? `Healthy ${borough} Restaurants ${year} | ${count}` : null,
+      `Healthy Restaurants in ${borough} ${year}`,
       `Healthy Restaurants in ${borough}`,
     ],
     { allowBrand: false }
@@ -606,7 +608,7 @@ export const GUIDE_DESCRIPTIONS: Record<string, string> = {
   "how-eat-healthy-nyc-15-dollars":
     "Practical ways to eat in NYC on about $15, using published listings you can filter by neighborhood and diet tag.",
   "best-healthy-neighborhoods-nyc":
-    "How we rank NYC neighborhoods for dining out: published listing counts, Grade A share among graded restaurants, and dietary tags.",
+    "NYC neighborhoods with at least 10 published listings, ranked in 2026 by the share holding a NYC DOHMH Grade A.",
   "hidden-gem-restaurants-nyc":
     "Hidden gems here are restaurants rated 4.5 or higher with fewer than 200 reviews. This page explains that rule.",
   "kosher-dining-nyc-guide":

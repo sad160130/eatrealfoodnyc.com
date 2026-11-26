@@ -19,6 +19,7 @@ import bestRatedReport from "@/data/best-rated-restaurants"
 import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import { parseInspectionDate } from "@/lib/inspection-dates"
+import { omitFromSitemap } from "@/lib/sitemap-policy"
 import {
   NEWSLETTER_INDEX_MIN_GRADE_A,
   archivedIssueDates,
@@ -39,7 +40,6 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/about/team": "2026-03-01",
   "/contact": "2026-03-01",
   "/press": "2026-03-01",
-  "/badge": "2026-11-16",
   "/privacy": "2026-03-01",
   "/terms": "2026-03-01",
   "/map": "2026-04-01",
@@ -50,7 +50,6 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/about/our-data": "2026-11-25",
   "/catering": "2026-11-25",
   "/partner-with-us": "2026-11-25",
-  "/claim": "2026-11-15",
 }
 
 export function editorialPaths(): string[] {
@@ -339,5 +338,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
     ...indexPages,
     ...restaurantPages,
-  ]
+  ].filter((item) => !omitFromSitemap(item.url.replace(siteUrl, "") || "/"))
 }

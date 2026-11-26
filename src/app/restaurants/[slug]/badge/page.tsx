@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: kind === "grade-a"
       ? `Free Grade A badge for ${restaurant.name}. It shows the official NYC grade and updates when the grade does.`
       : `${restaurant.name} is listed on Eat Real Food NYC. This badge does not claim a Grade A.`,
+    index: false,
   })
 }
 

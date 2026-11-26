@@ -207,7 +207,10 @@ export default async function NYCHealthGradesGuide() {
             </table>
           </div>
           <p className="text-lg leading-relaxed text-gray-700">
-            Among {count(grades.published)} published listings, Grade A is {grades.gradeAShareOfPublished}% ({count(grades.A)} of {count(grades.published)}). {count(grades.ungraded)} have no A, B, C, Z, or P on file.{grades.latestInspectionLabel ? ` The newest inspection date on file is ${grades.latestInspectionLabel}.` : ""} These counts are this directory, not the citywide inspection file.
+            Among {count(grades.published)} published listings, Grade A is {grades.gradeAShareOfPublished}% ({count(grades.A)} of {count(grades.published)}). {count(grades.ungraded)} have no A, B, C, Z, or P on file.{grades.latestInspectionLabel ? ` The newest inspection date on file is ${grades.latestInspectionLabel}.` : ""} These counts are this directory, not the citywide inspection file. The Monday file of inspection leads is{" "}
+            <Link href="/data" className="font-semibold text-jade hover:text-forest">NYC Restaurant Compliance Weekly</Link>.
+            A restaurant that wants a labeled placement, which does not change a grade, starts at{" "}
+            <Link href="/partner-with-us" className="font-semibold text-jade hover:text-forest">partner with us</Link>.
           </p>
           <aside
             id="free-sample"
@@ -744,6 +747,8 @@ export default async function NYCHealthGradesGuide() {
                 { href: "/guides/healthy-breakfast-nyc", label: "healthy breakfast in NYC" },
                 { href: "/catering/holiday-party-catering-nyc", label: "Holiday party catering in NYC from Grade A restaurants" },
                 { href: "/guides/nyc-restaurant-inspection-process", label: "How NYC restaurant inspections work" },
+                { href: "/data", label: "NYC Restaurant Compliance Weekly" },
+                { href: "/partner-with-us", label: "Partner with Eat Real Food NYC" },
                 { href: "/data/nyc-restaurant-health-grade-report", label: "Fall 2026 NYC inspection report" },
                 { href: "/healthy-restaurants/low-calorie", label: "Low-calorie restaurants in NYC" },
                 { href: "/healthy-restaurants/vegan", label: "Vegan restaurants in NYC" },

@@ -51,7 +51,7 @@ export async function generateMetadata({
     description: `Page ${pageNumber} of published restaurants in ${resolved.neighborhoodName}, ${resolved.boroughName}.`,
     alternates: { canonical },
     openGraph: { title, url: canonical },
-    robots: { index: true, follow: true },
+    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
   }
 }
 

@@ -59,6 +59,9 @@ const nextConfig: NextConfig = {
       { source: "/restaurants/ton-caf", destination: "/restaurants/ton-cafe", statusCode: 301 },
       { source: "/restaurants/yellow-magnolia-caf", destination: "/restaurants/yellow-magnolia-cafe", statusCode: 301 },
 
+      { source: "/best", destination: "/guides", permanent: true },
+      { source: "/best/", destination: "/guides", permanent: true },
+
       // Paid tiers live on the page outreach emails already use.
       { source: "/partners", destination: "/partner-with-us", statusCode: 301 },
       { source: "/partners/", destination: "/partner-with-us", statusCode: 301 },

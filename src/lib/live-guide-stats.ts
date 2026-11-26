@@ -64,6 +64,8 @@ export interface LiveGuideStats {
     topByGradeA: NeighborhoodGradeRow[]
     bottomByGradeA: NeighborhoodGradeRow[]
     topByHiddenGems: NeighborhoodCountRow[]
+    /** Highest Grade A share in each borough, among neighborhoods with at least 10 published listings. */
+    topByBorough: Record<string, NeighborhoodGradeRow[]>
   }
   hiddenGems: {
     total: number
@@ -194,6 +196,14 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
     topNeighborhoodsByTag[tag] = [...map.values()].sort((a, b) => b.count - a.count).slice(0, 8)
   }
 
+  const topByBorough: Record<string, NeighborhoodGradeRow[]> = {}
+  for (const borough of BOROUGH_NAMES) {
+    topByBorough[borough] = byRate
+      .filter((hood) => hood.borough === borough)
+      .slice(0, 3)
+      .map(({ gems: _gems, ...hood }) => hood)
+  }
+
   const gradeAPercent = percent(counts.gradeA, counts.restaurants)
   const gemNeighborhoods = byGems
     .filter((hood) => hood.gems > 0)
@@ -217,6 +227,7 @@ export const getLiveGuideStats = cache(async (): Promise<LiveGuideStats> => {
       topByGradeA: byRate.slice(0, 10).map(({ gems: _gems, ...hood }) => hood),
       bottomByGradeA: [...byRate].reverse().slice(0, 10).map(({ gems: _gems, ...hood }) => hood),
       topByHiddenGems: gemNeighborhoods,
+      topByBorough,
     },
     hiddenGems: {
       total: counts.hiddenGems,

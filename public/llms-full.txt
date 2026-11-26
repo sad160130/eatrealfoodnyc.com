@@ -1,7 +1,7 @@
 # Eat Real Food NYC — extended agent index
 # https://www.eatrealfoodnyc.com/llms-full.txt
 # Companion to https://www.eatrealfoodnyc.com/llms.txt
-# Last updated: 2026-11-24
+# Last updated: 2026-11-26
 
 This file lists the public, indexable documents. It does not list individual
 restaurant URLs. Those live in the sitemap, which also carries each URL's
@@ -58,6 +58,7 @@ https://www.eatrealfoodnyc.com/healthy-restaurants/nut-free
 https://www.eatrealfoodnyc.com/guides/grade-a-restaurants-by-borough-nyc
   Five Shorts checked on 2026-11-24. Three latest DOHMH inspections are Grade A and match the listing. Two are not.
 https://www.eatrealfoodnyc.com/guides/best-italian-restaurants-nyc
+  Best Italian Restaurants in NYC (2026): Top 10 Ranked. Inspection scores matched to dataset 43nn-pn8j. Re-checked 2026-11-24.
 https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
   Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
 https://www.eatrealfoodnyc.com/guides/nyc-health-grades-explained
@@ -79,6 +80,12 @@ https://www.eatrealfoodnyc.com/guides/healthy-breakfast-nyc
 
 https://www.eatrealfoodnyc.com/data/nyc-restaurant-health-grade-report
 https://www.eatrealfoodnyc.com/data/best-rated-restaurants
+https://www.eatrealfoodnyc.com/data/nyc-restaurant-score-13-cliff
+  Record date November 24, 2026. 14,731 unique 2026 cycle initial inspections with a score.
+https://www.eatrealfoodnyc.com/data/not-yet-inspected-restaurants-nyc
+  Record date November 24, 2026. 4,084 of 31,581 establishments have only the January 1, 1900 placeholder inspection date.
+https://www.eatrealfoodnyc.com/data/nyc-restaurant-closures-2026-11
+  Record date November 24, 2026. November 2026 has 19 closure events and 18 restaurants on the active file. Inspections in the file run through November 23, 2026.
 
 ## Newsletter
 
@@ -90,6 +97,11 @@ today. The sitemap includes that URL when the issue is one of the last 12
 Thursday issues and the week has at least 3 published Grade A listings.
 Other issue URLs stay reachable and are omitted from the sitemap. The email
 edition started in November 2026.
+
+## Partner
+
+https://www.eatrealfoodnyc.com/partner-with-us
+  Optional labeled placements. Payment does not change a grade, a score, a dietary tag, or a ranking.
 
 ## NYC Restaurant Compliance Weekly
 

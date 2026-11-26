@@ -23,7 +23,7 @@ import {
   pageInternalHrefs,
 } from "../data/best-italian-restaurants-nyc"
 
-assert.equal(BEST_ITALIAN_TITLE, "Best Italian Restaurants in NYC: Top 10 Ranked")
+assert.equal(BEST_ITALIAN_TITLE, "Best Italian Restaurants in NYC (2026): Top 10 Ranked")
 assert.doesNotMatch(BEST_ITALIAN_TITLE, /\(2027\)/)
 assert.ok(BEST_ITALIAN_TITLE.length <= TITLE_MAX, BEST_ITALIAN_TITLE.length)
 assert.ok(BEST_ITALIAN_DESCRIPTION.length <= DESCRIPTION_MAX, BEST_ITALIAN_DESCRIPTION.length)
@@ -127,13 +127,13 @@ assert.equal(neighborhoodHref("Staten Island", "Stapleton"), "/nyc/staten-island
 
 const guides = readFileSync(new URL("../config/guides.ts", import.meta.url), "utf8")
 assert.match(guides, /best-italian-restaurants-nyc/)
-assert.match(guides, /Best Italian Restaurants in NYC: Top 10 Ranked/)
+assert.match(guides, /Best Italian Restaurants in NYC \(2026\): Top 10 Ranked/)
 assert.doesNotMatch(guides, /\(2027\)/)
 
 const llms = readFileSync(new URL("../lib/llms-txt.ts", import.meta.url), "utf8")
 assert.match(llms, /guides\/best-italian-restaurants-nyc/)
 assert.match(llms, /43nn-pn8j/)
-assert.match(llms, /Best Italian Restaurants in NYC: Top 10 Ranked/)
+assert.match(llms, /Best Italian Restaurants in NYC \(2026\): Top 10 Ranked/)
 assert.doesNotMatch(llms, /\(2027\)/)
 
 const llmsFull = readFileSync(new URL("../../public/llms-full.txt", import.meta.url), "utf8")

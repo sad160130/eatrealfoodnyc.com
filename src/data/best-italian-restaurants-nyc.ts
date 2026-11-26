@@ -7,7 +7,7 @@
  * are included. Do not invent facts or add restaurants without a fresh match.
  */
 export const BEST_ITALIAN_PATH = "/guides/best-italian-restaurants-nyc"
-export const BEST_ITALIAN_TITLE = "Best Italian Restaurants in NYC: Top 10 Ranked"
+export const BEST_ITALIAN_TITLE = "Best Italian Restaurants in NYC (2026): Top 10 Ranked"
 export const BEST_ITALIAN_SHORT_TITLE = "Best Italian Restaurants NYC"
 export const BEST_ITALIAN_DESCRIPTION =
   "The best Italian restaurants in NYC, ranked by current NYC Health Department Grade A scores and violation counts, verified against official DOHMH Open Data."

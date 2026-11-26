@@ -10,6 +10,7 @@ export const metadata = pageMeta({
   title,
   description:
     "A free badge for a restaurant that currently holds a Grade A. It shows the official NYC grade and updates when the grade does.",
+  index: false,
 })
 
 export default function BadgeIndexPage() {

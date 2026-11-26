@@ -6,7 +6,9 @@ import {
   ntaExtremes,
   placeGradeShare,
 } from "../lib/nta-grade-share"
+import { correctCityIslandListing, isCityIslandAddress } from "../lib/city-island"
 import { correctRosebankListing, isRosebankBayStreet } from "../lib/rosebank"
+import { omitFromSitemap } from "../lib/sitemap-policy"
 
 assert.equal(isRosebankBayStreet("1203 Bay St, Staten Island, NY 10305", "Staten Island"), true)
 assert.equal(isRosebankBayStreet("1372 Bay Street, Staten Island, NY 10305", "Staten Island"), true)
@@ -30,6 +32,31 @@ const lakruwana = correctRosebankListing({
 })
 assert.equal(lakruwana.neighborhood, "Stapleton")
 assert.equal(lakruwana.description, "in Stapleton")
+
+assert.equal(isCityIslandAddress("691 Bridge St, Bronx, NY 10464", "Bronx"), true)
+assert.equal(isCityIslandAddress("100 Main St, Bronx, NY 10465", "Bronx"), false)
+assert.equal(isCityIslandAddress("691 Bridge St, Bronx, NY 10464", "Brooklyn"), false)
+const lobster = correctCityIslandListing({
+  address: "691 Bridge St, Bronx, NY 10464",
+  borough: "Bronx",
+  neighborhood: "Throgs Neck",
+  description: "Seafood in Throgs Neck.",
+})
+assert.equal(lobster.neighborhood, "City Island")
+assert.equal(lobster.description, "Seafood in City Island.")
+const throgs = correctCityIslandListing({
+  address: "100 Main St, Bronx, NY 10465",
+  borough: "Bronx",
+  neighborhood: "Throgs Neck",
+  description: "In Throgs Neck.",
+})
+assert.equal(throgs.neighborhood, "Throgs Neck")
+assert.equal(omitFromSitemap("/claim"), true)
+assert.equal(omitFromSitemap("/badge"), true)
+assert.equal(omitFromSitemap("/restaurants/dirt-candy/badge"), true)
+assert.equal(omitFromSitemap("/healthy-restaurants/grade-a/page/2"), true)
+assert.equal(omitFromSitemap("/healthy-restaurants/grade-a"), false)
+assert.equal(omitFromSitemap("/data"), false)
 
 const east = placeGradeShare("East Village", "Manhattan")
 assert.equal(east?.kind, "nta")

@@ -3,6 +3,7 @@ import {
   buildBreadcrumbList,
   buildHubItemList,
   buildRestaurantSchema,
+  dohmhInspectionDataset,
   siteGraph,
   stateCode,
 } from "../lib/schema"
@@ -44,6 +45,18 @@ assert.equal("review" in restaurant, false)
 assert.ok(restaurant.additionalProperty.some((property) => property.value === "NYC DOHMH Grade A"))
 assert.ok(restaurant.additionalProperty.some((property) => property.value === 9))
 assert.equal(siteGraph()["@graph"][0].name, "Eat Real Food NYC")
+assert.deepEqual(siteGraph()["@graph"][0].sameAs, ["https://www.youtube.com/@EatRealFoodNYC"])
+const basedOn = dohmhInspectionDataset("43nn-pn8j")
+assert.equal(basedOn.description.length > 0, true)
+assert.equal(basedOn.url, "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j")
+assert.equal(basedOn.license, "https://www.nyc.gov/home/terms-of-use.page")
+assert.equal(basedOn.creator["@type"], "Organization")
+assert.equal(basedOn.publisher["@type"], "Organization")
+assert.equal(basedOn.publisher.name, "NYC Department of Health and Mental Hygiene")
+assert.deepEqual(
+  validateJsonLd([{ "@type": "Dataset", name: "Hub", description: "Hub rows.", url: "https://www.eatrealfoodnyc.com/nyc/manhattan/healthy-restaurants", license: "https://creativecommons.org/licenses/by/4.0/", creator: { "@type": "Organization", name: "Eat Real Food NYC" }, isBasedOn: basedOn }], ["Dataset"]),
+  []
+)
 assert.equal("founder" in siteGraph()["@graph"][0], false)
 
 const unrated = buildRestaurantSchema({
