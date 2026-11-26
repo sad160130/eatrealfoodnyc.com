@@ -292,6 +292,21 @@ export function inspectionIsRecent(raw: string | null | undefined, snapshot: Dat
   return monthsBefore(snapshot, date) <= 18
 }
 
+function hasStoredReviews(
+  rating: number | null | undefined,
+  reviews: number | null | undefined
+): reviews is number {
+  return rating != null && rating > 0 && reviews != null && reviews > 0
+}
+
+/** "4.5 stars from 1,515 Google reviews." Uses the stored rating and count only. */
+function googleReviewLead(rating: number, reviews: number): string {
+  const stars = rating.toFixed(1)
+  const starWord = Number(stars) === 1 ? "star" : "stars"
+  const reviewWord = reviews === 1 ? "review" : "reviews"
+  return `${stars} ${starWord} from ${reviews.toLocaleString("en-US")} Google ${reviewWord}.`
+}
+
 export function restaurantListingTitle(input: {
   name: string
   neighborhood: string | null
@@ -300,6 +315,8 @@ export function restaurantListingTitle(input: {
   inspectionDate: string | null
   type: string | null
   snapshot: Date
+  rating?: number | null
+  reviews?: number | null
 }): string {
   const grade = letterGrade(input.grade)
   const month = formatInspectionMonth(input.inspectionDate)
@@ -308,10 +325,29 @@ export function restaurantListingTitle(input: {
   const borough = input.borough
   const cuisine = cuisineLabel(input.type, input.name)
   const shortName = clipListingTitle(input.name)
+  const dated = recent && month ? month : null
+  // Reviews queries are about half of listing impressions. Lead with them
+  // when a Google rating and a review count are stored. Long names fall
+  // through to the same no-Reviews candidates as an unreviewed listing.
+  const reviewCandidates: Array<string | null> = hasStoredReviews(input.rating, input.reviews)
+    ? grade
+      ? [
+          dated ? `${shortName} Reviews & Grade ${grade} (${dated})` : null,
+          hood ? `${shortName} Reviews, ${hood} | Grade ${grade}` : null,
+          dated ? `${shortName} Reviews | Grade ${grade}, ${dated}` : null,
+          `${shortName} Reviews | Grade ${grade}`,
+        ]
+      : [
+          hood ? `${shortName} Reviews, ${hood}` : null,
+          borough ? `${shortName} Reviews, ${borough}` : null,
+          `${shortName} Reviews`,
+        ]
+    : []
   const titled = grade
     ? fitTitle(
         [
-          recent && month && hood ? `${shortName}, ${hood} | Grade ${grade}, ${month}` : null,
+          ...reviewCandidates,
+          dated && hood ? `${shortName}, ${hood} | Grade ${grade}, ${dated}` : null,
           hood ? `${shortName}, ${hood} | NYC Grade ${grade}` : null,
           hood ? `${shortName}, ${hood} | Grade ${grade}` : null,
           borough ? `${shortName} | NYC Grade ${grade}, ${borough}` : null,
@@ -322,6 +358,7 @@ export function restaurantListingTitle(input: {
       )
     : fitTitle(
         [
+          ...reviewCandidates,
           cuisine && hood && borough ? `${shortName} | ${cuisine} in ${hood}, ${borough}` : null,
           cuisine && hood ? `${shortName} | ${cuisine} in ${hood}` : null,
           hood ? `${shortName}, ${hood}` : null,
@@ -359,30 +396,29 @@ export function restaurantListingDescription(input: {
     : formatInspectionMonth(input.inspectionDate)
   const type = input.type?.trim()
   const place = [input.neighborhood, input.borough].filter(Boolean).join(", ")
-  const head: string[] = []
-  if (input.address && input.neighborhood && type) {
-    head.push(`${input.name}: ${type.toLowerCase()} at ${input.address}, ${input.neighborhood}.`)
-  } else if (type && place) {
-    head.push(`${input.name}: ${type} in ${place}.`)
-  } else {
-    head.push(`${input.name}${place ? ` in ${place}` : ""}.`)
-  }
+  const identity = input.address && input.neighborhood && type
+    ? `${input.name}: ${type.toLowerCase()} at ${input.address}, ${input.neighborhood}.`
+    : type && place
+      ? `${input.name}: ${type} in ${place}.`
+      : `${input.name}${place ? ` in ${place}` : ""}.`
+  let gradeSentence: string
   if (grade) {
     const bits = [`NYC DOHMH Grade ${grade}`]
     if (input.score != null) bits.push(`score ${input.score}`)
     if (month) bits.push(`inspected ${month}`)
-    head.push(`${bits.join(", ")}.`)
+    gradeSentence = `${bits.join(", ")}.`
   } else {
-    head.push("No NYC DOHMH letter grade on file yet.")
+    gradeSentence = "No NYC DOHMH letter grade on file yet."
   }
-  const rated = input.rating != null && input.rating > 0 && (input.reviews ?? 0) > 0
+  const rating = input.rating
+  const reviews = input.reviews
+  const rated = rating != null && rating > 0 && reviews != null && reviews > 0
+  // Rating stays first so a long address is what gets dropped at 160 characters.
+  const head = rated
+    ? [googleReviewLead(rating, reviews), gradeSentence, identity]
+    : [identity, gradeSentence]
   const tails: string[] = []
-  if (!grade && rated) {
-    head.push(`Rated ${input.rating!.toFixed(1)}/5 from ${input.reviews} reviews.`)
-  }
-  if (grade && rated) tails.push(`Rated ${input.rating!.toFixed(1)}/5 (${input.reviews} reviews).`)
   if (input.tags.length > 0) tails.push(`Tagged ${input.tags.slice(0, 2).join(", ")}.`)
-  if (grade && rated) tails.push(`Rated ${input.rating!.toFixed(1)}/5.`)
   return fitDescription(head, tails)
 }
 
@@ -530,6 +566,41 @@ export function boroughHubTitle(borough: string, gradeA: number, year: number): 
       `Healthy Restaurants in ${borough}`,
     ],
     { allowBrand: false }
+  )
+}
+
+/**
+ * Manhattan only. Search Console shows "healthy food near me" on this hub.
+ * Other boroughs stay on boroughHubTitle. Grade A is the NYC DOHMH letter.
+ */
+export function manhattanHubTitle(gradeA: number, year: number): string {
+  const count = gradeA > 0 ? formatCount(gradeA) : null
+  const noun = gradeA === 1 ? "Restaurant" : "Restaurants"
+  return fitTitle(
+    [
+      count ? `Healthy Food in Manhattan: ${count} Grade A ${noun} (${year})` : null,
+      count ? `Healthy Food in Manhattan: ${count} Grade A (${year})` : null,
+      count ? `Healthy Food in Manhattan | ${count} Grade A` : null,
+      `Healthy Food in Manhattan ${year}`,
+      "Healthy Food in Manhattan",
+    ],
+    { allowBrand: false }
+  )
+}
+
+export function manhattanHubDescription(input: {
+  count: number
+  gradeA: number
+  latestMonth: string | null
+}): string {
+  const listed = formatCount(input.count)
+  const noun = input.count === 1 ? "restaurant" : "restaurants"
+  const counts = input.gradeA > 0
+    ? `${listed} published ${noun}, ${formatCount(input.gradeA)} with an official NYC DOHMH Grade A.`
+    : `${listed} published ${noun}. An official NYC DOHMH grade is shown when a record is matched.`
+  return fitDescription(
+    ["Find healthy food near you by Manhattan neighborhood.", counts],
+    [input.latestMonth ? `Matched inspections as of ${input.latestMonth}.` : ""]
   )
 }
 

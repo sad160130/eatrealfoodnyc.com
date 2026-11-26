@@ -26,6 +26,10 @@ import {
   dietHubTitle,
   gradeAPageDescription,
   gradeAPagedTitle,
+  boroughHubTitle,
+  manhattanHubDescription,
+  manhattanHubTitle,
+  restaurantListingDescription,
   restaurantListingTitle,
   restaurantTitle,
   withBrand,
@@ -267,6 +271,196 @@ assert.ok(tapName.startsWith(clippedName), clippedName)
 assert.ok(clippedName.length <= TITLE_MAX, clippedName)
 const nextChar = tapName[clippedName.length]
 if (nextChar) assert.ok(nextChar === " " || nextChar === "|", `cut mid-word: ${clippedName}`)
+
+const listingSnapshot = new Date("2026-11-25T00:00:00Z")
+const annapurna = {
+  name: "Annapurna Bhavan",
+  neighborhood: "Murray Hill",
+  borough: "Manhattan",
+  grade: "A",
+  inspectionDate: "11/15/2025",
+  type: "Indian restaurant",
+  snapshot: listingSnapshot,
+}
+const annapurnaBase = restaurantListingTitle(annapurna)
+assert.ok(!annapurnaBase.includes("Reviews"), annapurnaBase)
+assert.ok(annapurnaBase.includes("Grade A"), annapurnaBase)
+assert.equal(
+  restaurantListingTitle({ ...annapurna, rating: null, reviews: 1515 }),
+  annapurnaBase
+)
+assert.equal(
+  restaurantListingTitle({ ...annapurna, rating: 4.5, reviews: 0 }),
+  annapurnaBase
+)
+assert.equal(
+  restaurantListingTitle({ ...annapurna, rating: 0, reviews: 1515 }),
+  annapurnaBase
+)
+const annapurnaReviews = restaurantListingTitle({ ...annapurna, rating: 4.5, reviews: 1515 })
+assert.equal(annapurnaReviews, "Annapurna Bhavan Reviews & Grade A (Nov 2025)")
+assert.ok(annapurnaReviews.length <= TITLE_MAX, annapurnaReviews)
+
+const dirt = restaurantListingTitle({
+  name: "Dirt Candy",
+  neighborhood: "Lower East Side",
+  borough: "Manhattan",
+  grade: "A",
+  inspectionDate: "11/2/2025",
+  type: "Vegetarian restaurant",
+  snapshot: listingSnapshot,
+  rating: 4.6,
+  reviews: 2200,
+})
+assert.equal(dirt, "Dirt Candy Reviews & Grade A (Nov 2025)")
+
+const parma = restaurantListingTitle({
+  name: "Parma Pizzeria & Restaurant",
+  neighborhood: "Upper East Side",
+  borough: "Manhattan",
+  grade: "A",
+  inspectionDate: "8/1/2025",
+  type: "Pizza restaurant",
+  snapshot: listingSnapshot,
+  rating: 4.2,
+  reviews: 85,
+})
+assert.ok(parma.startsWith("Parma Pizzeria & Restaurant Reviews"), parma)
+assert.ok(parma.includes("Grade A"), parma)
+assert.ok(parma.length <= TITLE_MAX, parma)
+
+const staleReviews = restaurantListingTitle({
+  ...annapurna,
+  inspectionDate: "1/15/2020",
+  rating: 4.5,
+  reviews: 1515,
+})
+assert.equal(staleReviews, "Annapurna Bhavan Reviews, Murray Hill | Grade A")
+assert.ok(!staleReviews.includes("2020"), staleReviews)
+
+const longReviewedName = "A".repeat(50)
+const longBase = restaurantListingTitle({
+  name: longReviewedName,
+  neighborhood: "SoHo",
+  borough: "Manhattan",
+  grade: "A",
+  inspectionDate: "11/2/2025",
+  type: "Cafe",
+  snapshot: listingSnapshot,
+})
+const longReviewed = restaurantListingTitle({
+  name: longReviewedName,
+  neighborhood: "SoHo",
+  borough: "Manhattan",
+  grade: "A",
+  inspectionDate: "11/2/2025",
+  type: "Cafe",
+  snapshot: listingSnapshot,
+  rating: 4.5,
+  reviews: 10,
+})
+assert.equal(longReviewed, longBase)
+assert.ok(!longReviewed.includes("Reviews"), longReviewed)
+assert.ok(longReviewed.includes("Grade A"), longReviewed)
+assert.ok(longReviewed.length <= TITLE_MAX, longReviewed)
+
+const ungradedReviews = restaurantListingTitle({
+  name: "Corner Spot",
+  neighborhood: "Astoria",
+  borough: "Queens",
+  grade: null,
+  inspectionDate: null,
+  type: "Cafe",
+  snapshot: listingSnapshot,
+  rating: 4.2,
+  reviews: 40,
+})
+assert.equal(ungradedReviews, "Corner Spot Reviews, Astoria")
+assert.ok(!ungradedReviews.includes("Grade"), ungradedReviews)
+
+const listingDescription = {
+  name: "Annapurna Bhavan",
+  type: "Indian restaurant",
+  address: "10 Main St",
+  neighborhood: "Murray Hill",
+  borough: "Manhattan",
+  grade: "A",
+  score: 9,
+  inspectionDate: "11/15/2025",
+  snapshot: listingSnapshot,
+  tags: ["vegetarian"],
+}
+const reviewedDescription = restaurantListingDescription({
+  ...listingDescription,
+  rating: 4.5,
+  reviews: 1515,
+})
+assert.ok(reviewedDescription.startsWith("4.5 stars from 1,515 Google reviews."), reviewedDescription)
+assert.ok(reviewedDescription.indexOf("4.5 stars") < reviewedDescription.indexOf("NYC DOHMH Grade A"), reviewedDescription)
+assert.ok(reviewedDescription.includes("score 9"), reviewedDescription)
+assert.ok(reviewedDescription.includes("Nov 2025"), reviewedDescription)
+assert.ok(reviewedDescription.length <= DESCRIPTION_MAX, `${reviewedDescription.length}: ${reviewedDescription}`)
+assert.ok(!reviewedDescription.includes("Rated 4.5/5"), reviewedDescription)
+
+const plainDescription = restaurantListingDescription({
+  ...listingDescription,
+  rating: null,
+  reviews: 0,
+})
+assert.ok(plainDescription.startsWith("Annapurna Bhavan:"), plainDescription)
+assert.ok(!plainDescription.toLowerCase().includes("google"), plainDescription)
+assert.ok(!plainDescription.includes("stars"), plainDescription)
+assert.ok(plainDescription.includes("NYC DOHMH Grade A"), plainDescription)
+
+const oneReview = restaurantListingDescription({
+  ...listingDescription,
+  rating: 1,
+  reviews: 1,
+  tags: [],
+})
+assert.ok(oneReview.startsWith("1.0 star from 1 Google review."), oneReview)
+
+assert.equal(
+  manhattanHubTitle(400, 2026),
+  "Healthy Food in Manhattan: 400 Grade A Restaurants (2026)"
+)
+assert.equal(
+  manhattanHubTitle(1, 2026),
+  "Healthy Food in Manhattan: 1 Grade A Restaurant (2026)"
+)
+assert.equal(manhattanHubTitle(0, 2026), "Healthy Food in Manhattan 2026")
+assert.ok(!manhattanHubTitle(0, 2026).includes("Grade"))
+assert.equal(
+  boroughHubTitle("Brooklyn", 200, 2026),
+  "Healthy Restaurants in Brooklyn 2026 | 200 Grade A"
+)
+assert.ok(boroughHubTitle("Manhattan", 300, 2026).startsWith("Healthy Restaurants in Manhattan"))
+assert.ok(!boroughHubTitle("Queens", 80, 2026).startsWith("Healthy Food"))
+
+for (const count of [0, 1, 12, 400, 1929, 8835]) {
+  for (const gradeA of [0, 1, count]) {
+    const title = manhattanHubTitle(gradeA, 2026)
+    assert.ok(title.length <= TITLE_MAX, `${title.length}: ${title}`)
+    assert.ok(title.startsWith("Healthy Food in Manhattan"), title)
+    if (gradeA > 0) {
+      assert.ok(title.includes(gradeA.toLocaleString("en-US")), title)
+      assert.ok(title.includes("Grade A"), title)
+    } else {
+      assert.ok(!title.includes("Grade"), title)
+    }
+    const description = manhattanHubDescription({ count, gradeA, latestMonth: "Nov 2026" })
+    assert.ok(description.startsWith("Find healthy food near you by Manhattan neighborhood."), description)
+    assert.ok(description.includes("Manhattan neighborhood"), description)
+    assert.ok(description.length <= DESCRIPTION_MAX, `${description.length}: ${description}`)
+    assert.ok(description.includes(count.toLocaleString("en-US")), description)
+    if (gradeA > 0) {
+      assert.ok(description.includes(`${gradeA.toLocaleString("en-US")} with an official NYC DOHMH Grade A`), description)
+    } else {
+      assert.ok(!description.includes("Grade A"), description)
+      assert.ok(description.includes("official NYC DOHMH grade is shown"), description)
+    }
+  }
+}
 
 console.log("seo title tests passed")
 for (const guide of GUIDES) {

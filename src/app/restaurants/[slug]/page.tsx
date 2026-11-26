@@ -123,6 +123,8 @@ export async function generateMetadata({
     inspectionDate: restaurant.inspection_date,
     type: restaurant.type,
     snapshot: snapshot.lastPublishAt ?? new Date(),
+    rating: restaurant.rating,
+    reviews: restaurant.reviews,
   })
   const description = restaurantListingDescription({
     name: restaurant.name,

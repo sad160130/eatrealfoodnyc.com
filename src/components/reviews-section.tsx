@@ -70,7 +70,7 @@ export default function ReviewsSection({
       aria-label={`Reviews for ${restaurantName}`}
     >
       <p className="eyebrow">Reviews</p>
-      <h2 className="h2-serif mt-2">What diners say about {restaurantName}</h2>
+      <h2 className="h2-serif mt-2">{restaurantName} reviews</h2>
       <p
         className="mt-2 text-sm"
         style={{ color: "var(--color-muted)" }}
