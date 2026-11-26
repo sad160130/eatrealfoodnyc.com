@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
@@ -45,7 +46,7 @@ export default async function InspectionProcessGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org", "@type": "Article",
             headline: guide.title, description: guide.description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+            author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
             dateModified: guide.publishedDate,
@@ -56,7 +57,7 @@ export default async function InspectionProcessGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="A step-by-step breakdown of how NYC restaurants are inspected, what happens when they fail, and how to read an inspection report."
+        subtitle="The NYC Department of Health and Mental Hygiene inspects restaurants at least once a year. Under 14 points is a Grade A. A first visit that scores 14 or more does not issue a new letter until the reinspection."
         stats={[
           { stat: stats.global.totalPublished.toLocaleString(), label: "Published listings" },
           { stat: "2 chances", label: "To earn a Grade A" },
@@ -66,6 +67,17 @@ export default async function InspectionProcessGuide() {
       />
 
       <div className="mx-auto max-w-4xl px-6 py-16">
+        <p className="mb-8 text-lg leading-relaxed text-gray-700">
+          The Health Department explains A, B, C, and Grade Pending on its{" "}
+          <Link href="https://www.nyc.gov/site/doh/business/food-operators/letter-grading-for-restaurants.page" className="font-semibold text-jade hover:text-forest">
+            letter-grading page
+          </Link>
+          . Inspection records in this directory are matched to the{" "}
+          <Link href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j" className="font-semibold text-jade hover:text-forest">
+            DOHMH restaurant inspection dataset
+          </Link>
+          .
+        </p>
         <GuideTOC items={[
           { href: "#who-inspects", label: "Who conducts NYC restaurant inspections" },
           { href: "#inspection-frequency", label: "How often restaurants are inspected" },

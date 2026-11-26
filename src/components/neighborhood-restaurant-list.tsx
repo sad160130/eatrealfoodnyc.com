@@ -1,7 +1,8 @@
 import Link from "next/link"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 import { neighborhoodIndexPath } from "@/lib/restaurant-index"
-import { boroughToSlug } from "@/lib/utils"
+import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 
 export default function NeighborhoodRestaurantList({
   borough,
@@ -20,6 +21,21 @@ export default function NeighborhoodRestaurantList({
 }) {
   const boroughSlug = boroughToSlug(borough)
   const pageLinks = Array.from({ length: pages }, (_, index) => index + 1)
+  const hubHref = total >= NEIGHBORHOOD_HUB_MIN_RESTAURANTS
+    ? `/nyc/${boroughSlug}/${neighborhoodToSlug(neighborhood)}/healthy-restaurants`
+    : null
+  const faqs = [
+    {
+      question: `How many published restaurants are in ${neighborhood}?`,
+      answer: `${total.toLocaleString("en-US")} published ${total === 1 ? "listing is" : "listings are"} in ${neighborhood}, ${borough}.`,
+    },
+    {
+      question: `Where is the ${neighborhood} healthy-restaurant hub?`,
+      answer: hubHref
+        ? `The ${neighborhood} hub is the page of healthy restaurants in ${neighborhood}. This page is the full name list.`
+        : `${neighborhood} does not have a separate healthy-restaurant hub. This page is the name list for its ${total.toLocaleString("en-US")} published ${total === 1 ? "listing" : "listings"}.`,
+    },
+  ]
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -37,6 +53,16 @@ export default function NeighborhoodRestaurantList({
             {total.toLocaleString("en-US")} published {total === 1 ? "listing" : "listings"}.
             {pages > 1 ? ` Page ${page} of ${pages}.` : ""}
           </p>
+          <h2 className="h2-serif mt-8">How many published restaurants are in {neighborhood}?</h2>
+          <p className="mt-3 text-base leading-relaxed" style={{ color: "var(--color-text)" }}>
+            {faqs[0].answer}{" "}
+            {hubHref ? (
+              <Link href={hubHref} className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                Healthy restaurants in {neighborhood}
+              </Link>
+            ) : null}
+            {hubHref ? " is the neighborhood hub." : ""}
+          </p>
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-6 py-10">
@@ -49,6 +75,29 @@ export default function NeighborhoodRestaurantList({
             </li>
           ))}
         </ul>
+        <section className="mt-12" aria-labelledby="neighborhood-index-faq">
+          <h2 id="neighborhood-index-faq" className="h2-serif">Questions about this list</h2>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faqs.map((faq) => ({
+                  "@type": "Question",
+                  name: faq.question,
+                  acceptedAnswer: { "@type": "Answer", text: faq.answer },
+                })),
+              }),
+            }}
+          />
+          {faqs.map((faq) => (
+            <div key={faq.question} className="mt-6">
+              <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--color-forest)" }}>{faq.question}</h3>
+              <p className="mt-2 text-base leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </section>
         {pages > 1 && (
           <nav className="mt-10 flex flex-wrap gap-3 text-sm" aria-label="Pagination">
             {pageLinks.map((number) => (

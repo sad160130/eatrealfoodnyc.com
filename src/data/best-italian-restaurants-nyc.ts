@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 /**
  * Verified "best Italian restaurants in NYC" ranking.
  * Every grade, score, date, CAMIS, and violation count was checked against
@@ -542,7 +543,7 @@ export function articleSchema(siteUrl: string) {
     description: BEST_ITALIAN_DESCRIPTION,
     datePublished: BEST_ITALIAN_PUBLISHED,
     dateModified: BEST_ITALIAN_MODIFIED,
-    author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+    author: guideAuthors(),
     publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   }

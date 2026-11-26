@@ -14,6 +14,17 @@ export default function TeamPage() {
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
       <BreadcrumbJsonLd items={[{ name: "About", path: "/about" }, { name: "Team", path: "/about/team" }]} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            url: "https://www.eatrealfoodnyc.com/about/team",
+            dateModified: "2026-11-26",
+          }),
+        }}
+      />
       {/* Hero */}
       <div className="bg-forest px-6 py-20">
         <div className="mx-auto max-w-4xl">

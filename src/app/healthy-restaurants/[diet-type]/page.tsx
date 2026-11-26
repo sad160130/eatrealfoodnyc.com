@@ -15,6 +15,8 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import DirectoryAsOf from "@/components/directory-as-of"
+import { formatLongDate } from "@/lib/inspection-dates"
+import { latestStamp, listingStamp } from "@/lib/listing-stamp"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
 import { dietCtrDescription, dietCtrTitle, dietHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
 import { dietFaqs, dietIntro } from "@/lib/hub-copy"
@@ -149,6 +151,7 @@ export default async function DietTypePage({
     getDirectorySnapshot(),
   ])
   const restaurants = selectTopPicks(await withPartnerStatus(restaurantRows), 24)
+  const hubStamp = latestStamp(restaurantRows.map((row) => listingStamp(row)))
   const topHood = neighborhoodBreakdown[0]
   const topNeighborhood = topHood?.neighborhood && topHood.borough
     ? { name: topHood.neighborhood, borough: topHood.borough, count: topHood._count.id }
@@ -196,7 +199,7 @@ export default async function DietTypePage({
       "NYC health inspection grades",
       "healthy restaurants NYC",
     ],
-    ...(snapshot.latestInspectionAt && { dateModified: snapshot.latestInspectionAt.toISOString().slice(0, 10) }),
+    ...(hubStamp && { dateModified: hubStamp.toISOString().slice(0, 10) }),
   }
 
   return (
@@ -220,7 +223,7 @@ export default async function DietTypePage({
             Dietary tag
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              <DirectoryAsOf />
+              {hubStamp ? <span>Listings updated {formatLongDate(hubStamp)}</span> : <DirectoryAsOf />}
             </span>
           </p>
 

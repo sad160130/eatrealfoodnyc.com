@@ -45,6 +45,13 @@ export default function GuideHero({ guide, subtitle, stats, note }: GuideHeroPro
         </p>
 
         {/* Title */}
+        <p className="mt-4 text-sm" style={{ color: "var(--color-text)" }}>
+          By{" "}
+          <Link href="/about/team" className="font-semibold underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+            Snket Desai and Rohan Kadam
+          </Link>
+        </p>
+
         <h1 className="display-1 mt-4">{guide.title}</h1>
 
         {/* Subtitle / lede */}

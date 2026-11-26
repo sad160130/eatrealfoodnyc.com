@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 /**
  * Verified "best pizza restaurants in NYC" ranking.
  * Every grade, score, date, CAMIS, and violation count was checked on
@@ -576,7 +577,7 @@ export function articleSchema(siteUrl: string) {
     description: BEST_PIZZA_DESCRIPTION,
     datePublished: BEST_PIZZA_PUBLISHED,
     dateModified: BEST_PIZZA_PUBLISHED,
-    author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+    author: guideAuthors(),
     publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   }

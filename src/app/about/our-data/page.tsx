@@ -52,8 +52,11 @@ export default async function OurDataPage() {
             <span className="text-sage">Methodology</span>
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Every restaurant in our directory is backed by verifiable public data. Here is exactly
-            where our data comes from, how we process it, and how we calculate our Health Score.
+            Every restaurant in our directory is backed by verifiable public data. Inspection grades come from the{" "}
+            <a href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j" className="underline underline-offset-4">
+              DOHMH New York City Restaurant Inspection Results
+            </a>
+            . Here is exactly where our data comes from, how we process it, and how we calculate our Health Score.
           </p>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import type { RestaurantReview, ReviewsSummary } from "./reviews"
 import { presentGrade } from "@/lib/grade-display"
+import { founderPersons, guideAuthors } from "@/lib/founders"
+import { listingStamp } from "@/lib/listing-stamp"
 import { stripReviewMarkup } from "@/lib/review-text"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
@@ -24,10 +26,7 @@ export const ORGANIZATION_SCHEMA = {
   ],
   contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
   sameAs: ["https://www.youtube.com/@EatRealFoodNYC"],
-  founder: [
-    { "@type": "Person", name: "Snket Desai" },
-    { "@type": "Person", name: "Rohan Kadam" },
-  ],
+  founder: founderPersons(),
 }
 
 /** NYC Open Data terms that cover dataset 43nn-pn8j. */
@@ -158,7 +157,7 @@ export function buildRestaurantSchema(restaurant: {
     servesCuisine: restaurant.type ? [restaurant.type] : ["Healthy food"],
     additionalProperty,
     publisher: PUBLISHER_REF,
-    dateModified: new Date(restaurant.updated_at).toISOString(),
+    dateModified: (listingStamp(restaurant) ?? new Date(restaurant.updated_at)).toISOString(),
   }
 }
 
@@ -220,7 +219,7 @@ export function buildArticleSchema(guide: { title: string; slug: string; descrip
     url: `${SITE_URL}/guides/${guide.slug}`,
     datePublished: guide.publishedDate,
     dateModified: guide.dateModified ?? guide.publishedDate,
-    author: PUBLISHER_REF,
+    author: guideAuthors(),
     publisher: PUBLISHER_REF,
     isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Eat Real Food NYC" },
   }

@@ -32,7 +32,11 @@ export default function EditorialStandardsPage() {
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
             Trust is earned through consistency, not claims. These are the principles that govern
-            every piece of data, every tag, and every recommendation on Eat Real Food NYC.
+            every piece of data, every tag, and every recommendation on Eat Real Food NYC. Inspection grades come from the{" "}
+            <a href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j" className="underline underline-offset-4">
+              DOHMH New York City Restaurant Inspection Results
+            </a>
+            .
           </p>
         </div>
       </div>

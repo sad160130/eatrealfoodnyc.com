@@ -1,3 +1,4 @@
+import { guideAuthors } from "@/lib/founders"
 import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
@@ -64,7 +65,7 @@ export default async function KosherGuide() {
             "@type": "Article",
             headline: guide.title,
             description: guide.description,
-            author: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
+            author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
             dateModified: guide.publishedDate,
@@ -75,7 +76,7 @@ export default async function KosherGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle="Where to find kosher restaurants across NYC, how certification works, and which neighborhoods have the strongest kosher scenes."
+        subtitle={`A kosher tag means the restaurant identifies as kosher or has substantial kosher menu coverage. ${stats.dietary.counts.kosher.toLocaleString("en-US")} published listings carry that tag. The tag is not a certification this directory issues.`}
         stats={[
           { label: "Kosher restaurants", stat: "195" },
           { label: "Manhattan + Brooklyn", stat: "Top boroughs" },
