@@ -62,7 +62,7 @@ export async function loadDataSampleRows(limit = DATA_SAMPLE_LIMIT): Promise<Sam
  * Newest inspection_date in the restaurants table.
  * The column is M/D/YYYY text, so the max is parsed, not string-sorted.
  */
-export async function loadNewestInspectionLabel(): Promise<string | null> {
+export async function loadNewestInspectionAt(): Promise<Date | null> {
   const dated = await prisma.restaurant.findMany({
     where: {
       AND: [{ inspection_date: { not: null } }, { NOT: { inspection_date: "" } }],
@@ -70,6 +70,10 @@ export async function loadNewestInspectionLabel(): Promise<string | null> {
     distinct: ["inspection_date"],
     select: { inspection_date: true },
   })
-  const latest = latestInspectionDate(dated.map((row) => row.inspection_date))
+  return latestInspectionDate(dated.map((row) => row.inspection_date))
+}
+
+export async function loadNewestInspectionLabel(): Promise<string | null> {
+  const latest = await loadNewestInspectionAt()
   return latest ? formatLongDate(latest) : null
 }

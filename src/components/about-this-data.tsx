@@ -236,10 +236,10 @@ export default async function AboutThisData({
       coverage: `${totalRestaurants.toLocaleString()} unique active NYC restaurants across all five boroughs.`,
     },
     {
-      source: "NYC NTA GeoJSON (Neighborhood Tabulation Areas)",
+      source: "NYC 2020 Neighborhood Tabulation Areas (NTAs)",
       icon: "📍",
-      url: "https://data.cityofnewyork.us/City-Government/2010-Neighborhood-Tabulation-Areas-NTAs-/cpf4-rkhq",
-      what: "Official NYC neighborhood boundary polygons used to assign every restaurant to its correct neighborhood.",
+      url: "https://data.cityofnewyork.us/City-Government/2020-Neighborhood-Tabulation-Areas-NTAs-/9nt8-h7nd",
+      what: "Current NYC Open Data neighborhood boundary polygons for the 2020 Neighborhood Tabulation Areas.",
       how: "Point-in-polygon algorithm assigns each restaurant's coordinates to the correct NTA boundary — giving us the official NYC neighborhood name and borough.",
       coverage: `100% of published restaurants have a verified borough and neighborhood (${live.neighborhoods} unique neighborhoods covered).`,
     },

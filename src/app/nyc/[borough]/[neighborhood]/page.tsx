@@ -19,6 +19,8 @@ import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { formatAverageRating, roundAverage } from "@/lib/ratings"
 import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
+import { HubRecord } from "@/components/hub-record"
+import { hubStamp } from "@/lib/hub-record"
 
 // This route serves the diet+borough combo pages, e.g. /nyc/brooklyn/vegan-restaurants.
 // It lives under the [neighborhood] dynamic segment because Next.js requires a single
@@ -209,6 +211,15 @@ export default async function DietBoroughPage({
           <h1 className="display-1 mt-3">
             {config.label} restaurants in {boroughName}
           </h1>
+          <HubRecord
+            place={boroughName}
+            urlPath={`/nyc/${boroughSlug}/${tag}-restaurants`}
+            total={totalCount}
+            gradeA={gradeACount}
+            updated={hubStamp(restaurants)}
+            mode="diet"
+            dietLabel={config.label}
+          />
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
             <span className="tabular font-semibold" style={{ color: "var(--color-forest)" }}>{totalCount.toLocaleString()}</span> {dietLower} {totalCount === 1 ? "restaurant" : "restaurants"} in {boroughName}. {gradeACount.toLocaleString()} hold Grade A. Listings without a letter are not counted as Grade A.

@@ -11,6 +11,14 @@ export interface IndexedRestaurant {
   neighborhood: string
 }
 
+export async function loadNeighborhoodRoster(boroughName: string, neighborhoodName: string) {
+  return prisma.restaurant.findMany({
+    where: { is_published: true, borough: boroughName, neighborhood: neighborhoodName },
+    select: { name: true, slug: true, inspection_grade: true, inspection_date: true, updated_at: true },
+    orderBy: { name: "asc" },
+  })
+}
+
 export async function loadPublishedIndex(): Promise<IndexedRestaurant[]> {
   const rows = await prisma.restaurant.findMany({
     where: {

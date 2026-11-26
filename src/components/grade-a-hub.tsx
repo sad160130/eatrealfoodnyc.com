@@ -22,6 +22,8 @@ import {
   latestGradeAMonth,
 } from "@/lib/grade-a"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
+import { HubRecord } from "@/components/hub-record"
+import { hubStamp } from "@/lib/hub-record"
 
 export interface GradeAScope {
   boroughName?: string
@@ -84,7 +86,7 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
   const pages = gradeAPageCount(total)
   if (scope.page > pages) notFound()
 
-  const [rows, latestMonth, boroughs] = await Promise.all([
+  const [rows, latestMonth, boroughs, dated] = await Promise.all([
     prisma.restaurant.findMany({
       where,
       orderBy: [{ rating: "desc" }, { reviews: "desc" }, { name: "asc" }],
@@ -93,6 +95,10 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
     }),
     latestGradeAMonth({ borough: scope.boroughName, neighborhood: scope.neighborhoodName }),
     scope.boroughName ? Promise.resolve([]) : gradeABoroughCounts(),
+    prisma.restaurant.findMany({
+      where,
+      select: { inspection_date: true, updated_at: true },
+    }),
   ])
   const restaurants = await withPartnerStatus(rows)
   const place = placeLabel(scope)
@@ -152,6 +158,14 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
           <TopicalBreadcrumb items={crumbs} />
           <p className="eyebrow mt-6">NYC DOHMH Grade A</p>
           <h1 className="display-1 mt-3">Grade A restaurants in {place}</h1>
+          <HubRecord
+            place={place}
+            urlPath={pathFor({ ...scope, page: scope.page })}
+            total={total}
+            gradeA={total}
+            updated={hubStamp(dated)}
+            mode="grade-a"
+          />
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
             {total.toLocaleString("en-US")} published restaurants in {place} hold Grade A.
             The grade is the official NYC Department of Health and Mental Hygiene letter on the matched inspection

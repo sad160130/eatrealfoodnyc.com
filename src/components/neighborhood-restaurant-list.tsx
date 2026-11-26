@@ -1,8 +1,10 @@
 import Link from "next/link"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { HubRecord } from "@/components/hub-record"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 import { neighborhoodIndexPath } from "@/lib/restaurant-index"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
+import type { HubListingLine } from "@/lib/hub-record"
 
 export default function NeighborhoodRestaurantList({
   borough,
@@ -11,6 +13,11 @@ export default function NeighborhoodRestaurantList({
   page,
   pages,
   total,
+  gradeA,
+  gradeB,
+  gradeC,
+  updated,
+  listings,
 }: {
   borough: string
   neighborhood: string
@@ -18,6 +25,11 @@ export default function NeighborhoodRestaurantList({
   page: number
   pages: number
   total: number
+  gradeA: number
+  gradeB: number
+  gradeC: number
+  updated: Date | null
+  listings: HubListingLine[]
 }) {
   const boroughSlug = boroughToSlug(borough)
   const pageLinks = Array.from({ length: pages }, (_, index) => index + 1)
@@ -53,6 +65,17 @@ export default function NeighborhoodRestaurantList({
             {total.toLocaleString("en-US")} published {total === 1 ? "listing" : "listings"}.
             {pages > 1 ? ` Page ${page} of ${pages}.` : ""}
           </p>
+          <HubRecord
+            place={`${neighborhood}, ${borough}`}
+            urlPath={neighborhoodIndexPath(borough, neighborhood, page)}
+            total={total}
+            gradeA={gradeA}
+            gradeB={gradeB}
+            gradeC={gradeC}
+            updated={updated}
+            mode="all"
+            listings={listings}
+          />
           <h2 className="h2-serif mt-8">How many published restaurants are in {neighborhood}?</h2>
           <p className="mt-3 text-base leading-relaxed" style={{ color: "var(--color-text)" }}>
             {faqs[0].answer}{" "}
