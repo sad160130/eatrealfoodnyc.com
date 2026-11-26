@@ -21,7 +21,9 @@ export const CLOSED_LISTINGS: readonly ClosedListing[] = [
   {
     slug: "jajaja-mexicana-lower",
     closedOn: "2026-08-30",
-    redirectTo: "/nyc/manhattan/lower-east-side/vegan-restaurants",
+    // The vegan combo was this listing plus four others, so it falls under the
+    // five-listing floor once this slug is closed. The neighborhood hub remains.
+    redirectTo: "/nyc/manhattan/lower-east-side/healthy-restaurants",
   },
 ]
 
