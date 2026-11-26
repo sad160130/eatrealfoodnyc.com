@@ -8,7 +8,7 @@ import { selectTopPicks } from "@/lib/top-picks"
 import { getCanonicalUrl } from "@/config/seo"
 import { BOROUGH_MAP } from "@/config/boroughs"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { boroughHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { boroughHubTitle, fitDescription, manhattanHubDescription, manhattanHubTitle, shortMonth } from "@/lib/seo-titles"
 import { placeFaqs, placeIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
@@ -20,7 +20,7 @@ import ContextualLinks from "@/components/contextual-links"
 import { getBoroughContextualLinks } from "@/lib/internal-links"
 import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 import NeighborhoodScorecard from "@/components/neighborhood-scorecard"
-import { buildNeighborhoodScorecard, scorecardNeighborhoodName } from "@/lib/neighborhood-scorecard"
+import { buildNeighborhoodScorecard, scorecardNeighborhoodName, UNASSIGNED_NEIGHBORHOOD } from "@/lib/neighborhood-scorecard"
 import AboutThisData from "@/components/about-this-data"
 import { withPartnerStatus } from "@/lib/partner-status-db"
 import { averageRating, formatAverageRating, roundAverage } from "@/lib/ratings"
@@ -40,6 +40,9 @@ export async function generateStaticParams() {
 
 export const revalidate = 86400
 
+/** Neighborhood hubs linked from the Manhattan near-me sentence, ranked by published listings. */
+const MANHATTAN_NEAR_ME_LINKS = 4
+
 export async function generateMetadata({
   params,
 }: {
@@ -53,12 +56,15 @@ export async function generateMetadata({
   const canonicalUrl = getCanonicalUrl(`/nyc/${borough}/healthy-restaurants`)
   const snapshot = await getDirectorySnapshot()
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
-  const title = boroughHubTitle(name, stats.gradeA, year)
   const dataMonth = shortMonth(snapshot.latestInspectionAt)
-  const description = fitDescription(
-    [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name} for ${year}. ${stats.gradeA.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`],
-    [dataMonth ? `Matched inspections as of ${dataMonth}.` : ""].filter(Boolean)
-  )
+  const manhattan = name === "Manhattan"
+  const title = manhattan ? manhattanHubTitle(stats.gradeA, year) : boroughHubTitle(name, stats.gradeA, year)
+  const description = manhattan
+    ? manhattanHubDescription({ count: stats.count, gradeA: stats.gradeA, latestMonth: dataMonth })
+    : fitDescription(
+        [`${stats.count.toLocaleString("en-US")} healthy restaurants in ${name} for ${year}. ${stats.gradeA.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`],
+        [dataMonth ? `Matched inspections as of ${dataMonth}.` : ""].filter(Boolean)
+      )
   return {
     title: { absolute: title },
     description,
@@ -68,7 +74,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `Healthy Restaurants in ${name}, NYC` }],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: manhattan ? "Healthy food in Manhattan" : `Healthy Restaurants in ${name}, NYC` }],
     },
     robots: { index: true, follow: true },
   }
@@ -150,6 +156,12 @@ export default async function BoroughPage({
   // should render) but must not be linked — those hub URLs are never built.
   const validHubs = await getBuiltNeighborhoodHubs()
   const hubExists = (hood: string) => validHubs.has(hubKey(boroughName, hood))
+  const nearMeNeighborhoods = boroughName === "Manhattan"
+    ? neighborhoodsSorted
+        .filter(([hood]) => hood !== UNASSIGNED_NEIGHBORHOOD && hubExists(hood))
+        .slice(0, MANHATTAN_NEAR_ME_LINKS)
+        .map(([hood]) => hood)
+    : []
 
   const itemListJsonLd = {
     ...buildHubItemList({
@@ -212,8 +224,13 @@ export default async function BoroughPage({
           </p>
 
           <h1 className="display-1 mt-3">
-            Healthy restaurants in {boroughName}
+            {boroughName === "Manhattan" ? "Healthy food in Manhattan" : `Healthy restaurants in ${boroughName}`}
           </h1>
+          {nearMeNeighborhoods.length > 0 && (
+            <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
+              Find healthy food near you in <NeighborhoodList boroughSlug={boroughSlug} names={nearMeNeighborhoods} />.
+            </p>
+          )}
           <HubRecord
             place={boroughName}
             urlPath={`/nyc/${boroughSlug}/healthy-restaurants`}
@@ -621,6 +638,21 @@ export default async function BoroughPage({
 }
 
 /* ─── Internal pieces ─── */
+
+function NeighborhoodList({ boroughSlug, names }: { boroughSlug: string; names: string[] }) {
+  return names.map((name, index) => (
+    <span key={name}>
+      {index === 0 ? null : index === names.length - 1 ? (names.length === 2 ? " or " : ", or ") : ", "}
+      <Link
+        href={`/nyc/${boroughSlug}/${neighborhoodToSlug(name)}/healthy-restaurants`}
+        className="underline underline-offset-4"
+        style={{ color: "var(--color-jade)" }}
+      >
+        {name}
+      </Link>
+    </span>
+  ))
+}
 
 function StatInline({ label, value }: { label: string; value: string }) {
   return (
