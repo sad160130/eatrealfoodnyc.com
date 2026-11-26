@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/db"
+import { cateringPageIsIndexable } from "@/lib/catering-robots"
 import { pageMeta } from "@/lib/page-meta"
 import { gradeABoroughPath } from "@/lib/grade-a"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
@@ -22,13 +23,12 @@ export async function generateMetadata({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }): Promise<Metadata> {
   const params = await searchParams
-  const hasQuery = Object.keys(params).length > 0
   const meta = pageMeta({
     path: "/catering",
     title: CATERING_TITLE,
     description:
       "Tell us the date, headcount, neighborhood, and dietary needs. We save the request and may share it with restaurants. No payment is collected here.",
-    index: !hasQuery,
+    index: cateringPageIsIndexable(params),
   })
   return meta
 }
