@@ -110,6 +110,17 @@ const pizza = listingGuideLinks({ type: "Pizza restaurant", dietaryTags: "halal"
 assert.ok(pizza.some((link) => link.href === "/guides/best-pizza-restaurants-nyc"))
 assert.ok(pizza.some((link) => link.href === "/guides/halal-food-guide-nyc"))
 
+const ethiopian = listingGuideLinks({
+  type: "Ethiopian restaurant",
+  dietaryTags: "vegetarian",
+  workingHours: null,
+})
+assert.deepEqual(
+  ethiopian.map((link) => link.href),
+  ["/guides/ethiopian-restaurants-nyc"]
+)
+assert.equal(ethiopian[0].label, "Ethiopian restaurants NYC")
+
 assert.equal(
   listingGuideLinks({ type: "Seafood restaurant", dietaryTags: null, workingHours: null })[0].href,
   "/guides/seafood-healthy-restaurants-nyc"

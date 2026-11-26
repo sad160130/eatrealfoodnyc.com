@@ -15,8 +15,8 @@ const TAG_GUIDES: Record<string, GuideLink> = {
 }
 
 /**
- * Cuisine and hours links for a listing. Italian and pizza come from the
- * cuisine type. Seafood, halal, kosher, vegan, and gluten-free come from
+ * Cuisine and hours links for a listing. Italian, pizza, and Ethiopian come
+ * from the cuisine type. Seafood, halal, kosher, vegan, and gluten-free come from
  * tags, with seafood also matched on the cuisine type. Breakfast is a
  * listing open by 8:00 AM on every weekday.
  */
@@ -38,6 +38,9 @@ export function listingGuideLinks(input: {
   }
   if (/\bpizza\b/i.test(type)) {
     add({ href: "/guides/best-pizza-restaurants-nyc", label: "best pizza restaurants in NYC" })
+  }
+  if (/\bethiopian\b/i.test(type)) {
+    add({ href: "/guides/ethiopian-restaurants-nyc", label: "Ethiopian restaurants NYC" })
   }
   if (/\bseafood\b/i.test(type)) add(TAG_GUIDES.seafood)
   const tags = parseDietaryTags(input.dietaryTags)
