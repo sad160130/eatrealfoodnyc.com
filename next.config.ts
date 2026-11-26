@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { removedListingRedirects } from "./src/lib/removed-listings";
+import { closedListingRedirects } from "./src/config/listing-overrides";
 
 const nextConfig: NextConfig = {
   async redirects() {
@@ -24,6 +25,7 @@ const nextConfig: NextConfig = {
 
       // Delisted listings. Borough comes from data/unpublished-2026-11-15.json.
       ...removedListingRedirects(),
+      ...closedListingRedirects(),
 
       // Café lost its é, then the trailing e, on these slugs. 12 Chairs Café
       // in Williamsburg stays 12-chairs-caf: 12-chairs-cafe is a different

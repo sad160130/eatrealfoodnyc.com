@@ -54,6 +54,7 @@ import { nearbyGradeA } from "@/lib/nearby-grade-a"
 import { restaurantFaqs } from "@/lib/restaurant-faq"
 import { formatMonthYear, parseInspectionDate } from "@/lib/inspection-dates"
 import { DirectionsLink, OutboundWebsiteLink } from "@/components/tracked-external-link"
+import { isClosedSlug, pausedNotice } from "@/config/listing-overrides"
 
 export const revalidate = 86400
 export const dynamicParams = true
@@ -109,6 +110,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
+  if (isClosedSlug(slug)) return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
   const restaurant = await getRestaurantBySlug(slug)
   if (!restaurant || !restaurant.is_published) {
     return { title: "Restaurant Not Found", robots: { index: false, follow: false } }
@@ -166,6 +168,8 @@ export default async function RestaurantPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  if (isClosedSlug(slug)) notFound()
+  const pauseNotice = pausedNotice(slug)
   // Fetch restaurant + reviews in parallel — reviews query keys on slug
   // so it doesn't depend on the restaurant fetch resolving first.
   const [restaurant, reviewsSummary] = await Promise.all([
@@ -277,6 +281,15 @@ export default async function RestaurantPage({
                 </span>
               )}
             </h1>
+            {pauseNotice ? (
+              <p
+                className="mt-4 border px-4 py-3 text-base leading-relaxed"
+                style={{ maxWidth: "62ch", borderColor: "var(--hairline)", backgroundColor: "#fff", color: "var(--color-text)" }}
+                role="status"
+              >
+                {pauseNotice}
+              </p>
+            ) : null}
 
             <p className="mt-4 text-base leading-relaxed" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
               {restaurantCapsule({

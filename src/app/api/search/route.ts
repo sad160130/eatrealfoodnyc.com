@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { isRestaurantOpenNow, getDistanceMiles } from "@/lib/utils";
 import { withPartnerStatus } from "@/lib/partner-status-db";
+import { closedSlugs } from "@/config/listing-overrides";
 
 const EXCLUDED_FIELDS = [
   "email",
@@ -134,6 +135,12 @@ async function handleFullTextSearch(params: SearchParams) {
   const conditions: string[] = ["business_status = 'OPERATIONAL'", "is_published = true"];
   const values: unknown[] = [];
   let paramIndex = 1;
+  const closed = closedSlugs();
+  if (closed.length > 0) {
+    conditions.push(`NOT (slug = ANY($${paramIndex}::text[]))`);
+    values.push(closed);
+    paramIndex++;
+  }
 
   // Full-text search condition
   conditions.push(`search_vector @@ plainto_tsquery('english', $${paramIndex})`);
