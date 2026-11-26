@@ -58,7 +58,7 @@ assert.deepEqual(
   []
 )
 assert.deepEqual(siteGraph()["@graph"][0].founder, [
-  { "@type": "Person", name: "Sanket Desai" },
+  { "@type": "Person", name: "Snket Desai" },
   { "@type": "Person", name: "Rohan Kadam" },
 ])
 assert.equal("sameAs" in siteGraph()["@graph"][0].founder[0], false)
