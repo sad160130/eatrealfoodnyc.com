@@ -24,6 +24,10 @@ export const ORGANIZATION_SCHEMA = {
   ],
   contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@eatrealfoodnyc.com" },
   sameAs: ["https://www.youtube.com/@EatRealFoodNYC"],
+  founder: [
+    { "@type": "Person", name: "Sanket Desai" },
+    { "@type": "Person", name: "Rohan Kadam" },
+  ],
 }
 
 /** NYC Open Data terms that cover dataset 43nn-pn8j. */

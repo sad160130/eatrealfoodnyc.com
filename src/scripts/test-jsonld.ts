@@ -57,7 +57,12 @@ assert.deepEqual(
   validateJsonLd([{ "@type": "Dataset", name: "Hub", description: "Hub rows.", url: "https://www.eatrealfoodnyc.com/nyc/manhattan/healthy-restaurants", license: "https://creativecommons.org/licenses/by/4.0/", creator: { "@type": "Organization", name: "Eat Real Food NYC" }, isBasedOn: basedOn }], ["Dataset"]),
   []
 )
-assert.equal("founder" in siteGraph()["@graph"][0], false)
+assert.deepEqual(siteGraph()["@graph"][0].founder, [
+  { "@type": "Person", name: "Sanket Desai" },
+  { "@type": "Person", name: "Rohan Kadam" },
+])
+assert.equal("sameAs" in siteGraph()["@graph"][0].founder[0], false)
+assert.equal("sameAs" in siteGraph()["@graph"][0].founder[1], false)
 
 const unrated = buildRestaurantSchema({
   name: "No Reviews",
