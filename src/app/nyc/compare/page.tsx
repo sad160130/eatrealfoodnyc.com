@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import ComparePageClient from "@/components/compare-page-client"
+import CityGradeBrief from "@/components/city-grade-brief"
+import { ntaExtremes, reportBoroughRows } from "@/lib/nta-grade-share"
 import { pageMeta } from "@/lib/page-meta"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
@@ -22,9 +24,19 @@ export const metadata: Metadata = pageMeta({
 })
 
 export default function ComparePage() {
+  const lowestBorough = [...reportBoroughRows()].sort(
+    (a, b) => Number.parseFloat(a.share) - Number.parseFloat(b.share)
+  )[0]
+  const lowestNta = ntaExtremes(1).lowest[0]
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
       <BreadcrumbJsonLd items={[{ name: "Compare neighborhoods", path: "/nyc/compare" }]} />
+      <div className="mx-auto max-w-3xl px-6 pb-4 pt-10">
+        <CityGradeBrief
+          answer={`${lowestBorough.name} has the lowest borough Grade A share, at ${lowestBorough.share} of letter-graded restaurants, and ${lowestNta.name} is the lowest neighborhood at ${lowestNta.share}.`}
+          howTo="The ranking tool below sorts this directory's published neighborhoods by health score, restaurant count, average rating, Grade A share among our listings, or hidden gems. That score is not the citywide NTA table above. Use the city table to see the Health Department's letter-grade share, then open a borough hub to see the published listings."
+        />
+      </div>
       <ComparePageClient />
 
       <section className="mx-auto max-w-5xl px-6 pb-16">
