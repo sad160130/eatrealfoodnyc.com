@@ -7,7 +7,7 @@ export const metadata: Metadata = pageMeta({
   path: "/about/team",
   title: "Meet the Team",
   description:
-    "Meet co-founders Sanket Desai and Rohan Kadam.",
+    "Meet co-founders Snket Desai and Rohan Kadam.",
 })
 
 export default function TeamPage() {
@@ -29,7 +29,7 @@ export default function TeamPage() {
             Meet the Team
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC is built by co-founders Sanket Desai and Rohan Kadam.
+            Eat Real Food NYC is built by co-founders Snket Desai and Rohan Kadam.
           </p>
         </div>
       </div>
@@ -46,11 +46,11 @@ export default function TeamPage() {
               </div>
               <div className="min-w-64 flex-1">
                 <h2 className="text-2xl font-bold text-forest" style={{ fontFamily: "Georgia, serif" }}>
-                  Sanket Desai
+                  Snket Desai
                 </h2>
                 <p className="mt-1 text-sm font-semibold text-jade">Co-founder</p>
                 <p className="mt-5 leading-relaxed text-gray-700">
-                  Sanket Desai is a co-founder of Eat Real Food NYC.
+                  Snket Desai is a co-founder of Eat Real Food NYC.
                 </p>
               </div>
             </div>

@@ -19,7 +19,7 @@ If the task is editorial without a publish, skip to the relevant section. If the
 
 Eat Real Food NYC (eatrealfoodnyc.com) is NYC's healthy restaurant directory. 8,835 restaurants total, 1,300 currently published, +100 per week via a phased rollout. The moat is proprietary data: NYC DOHMH health inspection grades joined to dietary tagging across 12 canonical tags and 116 neighbourhoods, plus a hidden gem algorithm surfacing restaurants rated 4.5+ with under 200 reviews.
 
-Two co-founders: Sanket Desai (Co-Founder & Editor-in-Chief), Rohan Kadam (Co-Founder & Marketing Lead).
+Two co-founders: Snket Desai (Co-Founder & Editor-in-Chief), Rohan Kadam (Co-Founder & Marketing Lead).
 
 This is a data-first directory, not a review site. We never invent reviews. We display real ratings from Google Maps and link out. Trust is the product.
 

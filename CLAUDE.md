@@ -10,7 +10,7 @@ Purpose: SEO-first directory for healthy restaurants in NYC, ranking on
          across 12 canonical tags and 116 neighbourhoods.
 Target user: Health-conscious NYC diners filtering by diet type, borough,
              neighbourhood, and NYC health inspection grade.
-Founder: Rohan Kadam — sole public founder (see /about + ORGANIZATION_SCHEMA
+Founders: Snket Desai and Rohan Kadam (see /about + ORGANIZATION_SCHEMA
          in src/lib/schema.ts).
 
 ## Stack
