@@ -75,6 +75,16 @@ export const HEALTH_GRADE_FAQS = [
       "Look it up in NYC Open Data dataset 43nn-pn8j at https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j. A published page in this directory also shows the grade, score, and inspection date when a record is matched. The card in the window is the one the restaurant has to post.",
   },
   {
+    question: "How do NYC restaurant inspection grades work?",
+    answer:
+      `${HEALTH_GRADES_LEDE} Grade Pending includes Z or P in the city data. The restaurant posts the card the Department issued.`,
+  },
+  {
+    question: "Where can I check a NYC restaurant's health inspection?",
+    answer:
+      "Start with the official ABCEats lookup at https://a816-health.nyc.gov/ABCEatsRestaurants. The same records are in NYC Open Data dataset 43nn-pn8j at https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j. A published listing on this directory shows the matched grade, score, and inspection date when a record is matched. The card in the window is the one the restaurant has to post.",
+  },
+  {
     question: "Which NYC borough has the highest share of Grade A restaurants?",
     answer: boroughGradeAnswer(),
   },
