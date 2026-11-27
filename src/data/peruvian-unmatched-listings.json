@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "costa-y-mar",
+    "name": "Costa y Mar",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Sunnyside",
+    "borough": "Queens"
+  },
+  {
+    "slug": "flor-de-mayo-restaurant",
+    "name": "Flor de Mayo Restaurant",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Upper West Side",
+    "borough": "Manhattan"
+  },
+  {
+    "slug": "pio-pio-2",
+    "name": "Pio Pio 2",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Jackson Heights",
+    "borough": "Queens"
+  },
+  {
+    "slug": "pio-pio-5-to-go",
+    "name": "Pio Pio 5 To Go",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Jackson Heights",
+    "borough": "Queens"
+  },
+  {
+    "slug": "qoyas-nyc-peruvian-cuisine",
+    "name": "Qoyas NYC- Peruvian Cuisine",
+    "type": "Peruvian restaurant",
+    "neighborhood": "East Village",
+    "borough": "Manhattan"
+  }
+]

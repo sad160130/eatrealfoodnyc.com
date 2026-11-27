@@ -66,6 +66,8 @@ https://www.eatrealfoodnyc.com/guides/best-pizza-restaurants-nyc
   Ten published pizza listings ranked by NYC DOHMH inspection score on 2026-11-24. Dataset 43nn-pn8j, newest inspection_date 2026-11-22.
 https://www.eatrealfoodnyc.com/guides/ethiopian-restaurants-nyc
   19 Ethiopian restaurants in the NYC inspection file. 13 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000, newest inspection_date 2026-11-23.
+https://www.eatrealfoodnyc.com/guides/peruvian-restaurants-nyc
+  106 establishments with cuisine description Peruvian. 53 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-26T06:00:29.000, newest inspection_date 2026-11-24. Inspected count excludes the 1900-01-01 placeholder.
 https://www.eatrealfoodnyc.com/guides/best-bagels-nyc
   402 establishments with cuisine Bagels/Pretzels or bagel in the name. 266 hold a Grade A. Dataset 43nn-pn8j, record_date 2026-11-25T06:00:23.000.
 https://www.eatrealfoodnyc.com/guides/best-restaurants-flushing

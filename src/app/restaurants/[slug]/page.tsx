@@ -581,6 +581,7 @@ export default async function RestaurantPage({
                       neighborhood={restaurant.neighborhood}
                       borough={restaurant.borough}
                       type={restaurant.type}
+                      name={restaurant.name}
                       dietaryTags={restaurant.dietary_tags}
                       workingHours={restaurant.working_hours}
                     />
