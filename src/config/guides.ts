@@ -13,7 +13,7 @@ import {
   ETHIOPIAN_SHORT_TITLE,
   ETHIOPIAN_TITLE,
 } from "@/data/ethiopian-restaurants-nyc"
-import { GUIDE_DESCRIPTIONS, HEALTH_GRADES_GUIDE_TITLE, guideTitle } from "@/lib/seo-titles"
+import { GUIDE_DESCRIPTIONS, HEALTH_GRADES_GUIDE_TITLE, guideTitle, lateNightGuideTitle } from "@/lib/seo-titles"
 
 export interface GuideArticle {
   slug: string
@@ -202,9 +202,9 @@ export const GUIDES: GuideArticle[] = [
   },
   {
     slug: "kosher-dining-nyc-guide",
-    title: "Kosher Dining in NYC — The Complete Borough-by-Borough Guide",
-    metaTitle: guideTitle("kosher-dining-nyc-guide", "Kosher Restaurants NYC"),
-    shortTitle: "Kosher Dining NYC Guide",
+    title: "Kosher Restaurants NYC",
+    metaTitle: "Kosher Restaurants NYC",
+    shortTitle: "Kosher Restaurants NYC",
     description: GUIDE_DESCRIPTIONS["kosher-dining-nyc-guide"],
     category: "Dietary Guides",
     emoji: "✡️",
@@ -214,23 +214,23 @@ export const GUIDES: GuideArticle[] = [
     keywords: ["kosher restaurants nyc", "kosher dining new york city", "best kosher nyc"],
     relatedGuides: ["halal-food-guide-nyc", "nyc-health-grades-explained", "best-healthy-neighborhoods-nyc"],
     relatedHubPages: [
-      { label: "Browse kosher restaurants", href: "/healthy-restaurants/kosher" },
+      { label: "kosher restaurant health grades", href: "/healthy-restaurants/kosher" },
       { label: "Kosher in Manhattan", href: "/nyc/manhattan/healthy-restaurants" },
       { label: "Brooklyn kosher dining", href: "/nyc/brooklyn/healthy-restaurants" },
     ],
   },
   {
     slug: "late-night-healthy-eating-nyc",
-    title: "Late Night Healthy Eating in NYC — Where to Go After 10PM",
-    metaTitle: guideTitle("late-night-healthy-eating-nyc", "Late Night Healthy NYC"),
-    shortTitle: "Late Night Healthy NYC",
-    description: "Late-night healthy food in NYC means eating after 10pm. Browse borough hubs for listings that include hours and the NYC health inspection grade.",
+    title: lateNightGuideTitle(0),
+    metaTitle: lateNightGuideTitle(0),
+    shortTitle: "Healthy Food Open Late in NYC",
+    description: GUIDE_DESCRIPTIONS["late-night-healthy-eating-nyc"],
     category: "Dining Situations",
     emoji: "🌙",
     readTime: "7 min read",
     featured: false,
     publishedDate: "2026-03-01",
-    keywords: ["healthy late night food nyc", "late night healthy restaurants new york", "nyc healthy food open late"],
+    keywords: ["healthy food open late", "healthy restaurants open late", "healthy food places open late", "healthy food open late in nyc"],
     relatedGuides: ["best-healthy-neighborhoods-nyc", "how-eat-healthy-nyc-15-dollars", "hidden-gem-restaurants-nyc"],
     relatedHubPages: [
       { label: "Open right now", href: "/search?open=true" },

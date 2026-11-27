@@ -18,7 +18,7 @@ import DirectoryAsOf from "@/components/directory-as-of"
 import { formatLongDate } from "@/lib/inspection-dates"
 import { latestStamp, listingStamp } from "@/lib/listing-stamp"
 import { gradeStatsFor } from "@/lib/hub-grade-stats"
-import { dietCtrDescription, dietCtrTitle, dietHubTitle, fitDescription, shortMonth } from "@/lib/seo-titles"
+import { dietCtrDescription, dietCtrTitle, dietHubTitle, fitDescription, kosherHealthGradesDescription, kosherHealthGradesTitle, shortMonth } from "@/lib/seo-titles"
 import { dietFaqs, dietIntro } from "@/lib/hub-copy"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { dietCapsule } from "@/lib/answer-capsule"
@@ -59,16 +59,20 @@ export async function generateMetadata({
   const indexable = dietHubIsIndexable(stats.count)
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const ctrDiet = tag === "gluten-free" || tag === "vegetarian"
-  const title = ctrDiet
-    ? dietCtrTitle(config.label, stats.gradeA, stats.count)
-    : dietHubTitle(config.label, stats.count, stats.gradeA, year)
+  const title = tag === "kosher"
+    ? kosherHealthGradesTitle(stats.gradeA, stats.graded)
+    : ctrDiet
+      ? dietCtrTitle(config.label, stats.gradeA, stats.count)
+      : dietHubTitle(config.label, stats.count, stats.gradeA, year)
   const dataMonth = shortMonth(snapshot.latestInspectionAt)
   const split = boroughs
     .filter((row) => row.borough && row._count.id > 0)
     .sort((a, b) => b._count.id - a._count.id)
     .map((row) => `${row.borough} ${row._count.id.toLocaleString("en-US")}`)
     .join(", ")
-  const description = ctrDiet
+  const description = tag === "kosher"
+    ? kosherHealthGradesDescription({ count: stats.count, gradeA: stats.gradeA, graded: stats.graded })
+    : ctrDiet
     ? dietCtrDescription(config.label, stats.count, stats.gradeA)
     : fitDescription(
         [
@@ -88,7 +92,7 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${config.label} Restaurants in NYC` }],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: tag === "kosher" ? title : `${config.label} Restaurants in NYC` }],
     },
     twitter: {
       card: "summary_large_image",
@@ -169,9 +173,14 @@ export default async function DietTypePage({
 
   const roundedAvg = roundAverage(ratingAgg._avg.rating)
 
+  const hubName = tag === "kosher" ? "Kosher Restaurant Health Grades NYC" : `${config.label} Restaurants in NYC`
   const itemListJsonLd = buildHubItemList({
-    name: `${config.label} Restaurants in NYC`,
-    description: `${totalCount} ${config.label.toLowerCase()} restaurants in New York City`,
+    name: hubName,
+    description: tag === "kosher"
+      ? gradeSplit.graded > 0
+        ? `${gradeSplit.gradeA.toLocaleString("en-US")} of ${gradeSplit.graded.toLocaleString("en-US")} graded kosher restaurants hold a NYC DOHMH Grade A`
+        : "No published kosher restaurant has a matched NYC DOHMH letter grade"
+      : `${totalCount} ${config.label.toLowerCase()} restaurants in New York City`,
     siteUrl,
     restaurants: restaurants.slice(0, 10),
   })
@@ -179,8 +188,14 @@ export default async function DietTypePage({
   const datasetJsonLd = {
     "@context": "https://schema.org",
     "@type": "Dataset",
-    name: `${config.label} Restaurants in NYC — ${config.label} Certification & Health Grade Data`,
-    description: `Published ${config.label.toLowerCase()} listings in NYC: ${totalCount} restaurants, with the matched NYC DOHMH grade when one is stored. A tag is not a certification, and a missing grade is not Grade A.`,
+    name: tag === "kosher"
+      ? "Kosher Restaurant Health Grades NYC"
+      : `${config.label} Restaurants in NYC — ${config.label} Certification & Health Grade Data`,
+    description: tag === "kosher"
+      ? gradeSplit.graded > 0
+        ? `Kosher restaurant health grades in NYC: ${gradeSplit.gradeA.toLocaleString("en-US")} of ${gradeSplit.graded.toLocaleString("en-US")} graded published listings hold a NYC DOHMH Grade A. A tag is not a certification, and a missing grade is not Grade A.`
+        : `Kosher restaurant health grades in NYC: ${totalCount.toLocaleString("en-US")} published listings carry the kosher tag. None has a matched NYC DOHMH letter grade. A tag is not a certification.`
+      : `Published ${config.label.toLowerCase()} listings in NYC: ${totalCount} restaurants, with the matched NYC DOHMH grade when one is stored. A tag is not a certification, and a missing grade is not Grade A.`,
     url: `${siteUrl}/healthy-restaurants/${tag}`,
     creator: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
     license: "https://creativecommons.org/licenses/by/4.0/",
@@ -188,17 +203,24 @@ export default async function DietTypePage({
     temporalCoverage: "2024/2026",
     spatialCoverage: { "@type": "Place", name: "New York City" },
     variableMeasured: [
-      `${config.label} certification`,
+      tag === "kosher" ? "Kosher tag" : `${config.label} certification`,
       "Health inspection grade",
       "Community rating",
       "Borough and neighborhood",
     ],
-    keywords: [
-      `${config.label.toLowerCase()} restaurants`,
-      `${config.label.toLowerCase()} NYC`,
-      "NYC health inspection grades",
-      "healthy restaurants NYC",
-    ],
+    keywords: tag === "kosher"
+      ? [
+          "kosher restaurant health grades",
+          "NYC DOHMH grade",
+          "NYC health inspection grades",
+          "healthy restaurants NYC",
+        ]
+      : [
+          `${config.label.toLowerCase()} restaurants`,
+          `${config.label.toLowerCase()} NYC`,
+          "NYC health inspection grades",
+          "healthy restaurants NYC",
+        ],
     ...(hubStamp && { dateModified: hubStamp.toISOString().slice(0, 10) }),
   }
 
@@ -228,8 +250,21 @@ export default async function DietTypePage({
           </p>
 
           <h1 className="display-1 mt-3">
-            {config.label} restaurants in NYC
+            {tag === "kosher" ? kosherHealthGradesTitle(gradeSplit.gradeA, gradeSplit.graded) : `${config.label} restaurants in NYC`}
           </h1>
+          {tag === "kosher" ? (
+            <p className="mt-4 text-lg leading-relaxed" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
+              The dining guide lists{" "}
+              <Link
+                href="/guides/kosher-dining-nyc-guide"
+                className="font-semibold underline underline-offset-2"
+                style={{ color: "var(--color-jade)" }}
+              >
+                kosher restaurants in NYC
+              </Link>
+              {totalCount > 0 ? ` (${totalCount.toLocaleString("en-US")} published)` : ""} by borough. This page is the NYC DOHMH grade breakdown for that set.
+            </p>
+          ) : null}
 
           <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
             {capsule}
@@ -263,7 +298,9 @@ export default async function DietTypePage({
                 color: "var(--color-text)",
               }}
             >
-              {config.whatIs}
+              {tag === "kosher"
+                ? "Kosher restaurants prepare food in accordance with Jewish dietary law, which includes separation of meat and dairy, prohibition of pork and shellfish, and requirements for how meat is slaughtered and prepared. A kosher tag here means the restaurant identifies as kosher or has substantial kosher menu coverage. It is not a certification this directory issues."
+                : config.whatIs}
             </p>
           </aside>
 
@@ -500,7 +537,7 @@ export default async function DietTypePage({
           topNeighborhood: topNeighborhood,
           policy: `We tag a restaurant ${config.label.toLowerCase()} only when it identifies that way or has substantial ${config.label.toLowerCase()} menu coverage. A single dish is not enough, and a missing grade is not a dietary claim.`,
         })}
-        heading={`${config.label} restaurants in NYC`}
+        heading={tag === "kosher" ? "Kosher restaurant health grades in NYC" : `${config.label} restaurants in NYC`}
         subheading="Counts from the published listings."
       />
       <div className="border-t px-6 py-16" style={{ borderTopColor: "var(--hairline)", backgroundColor: "var(--color-cream)" }}>

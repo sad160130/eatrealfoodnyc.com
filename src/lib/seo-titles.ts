@@ -264,7 +264,7 @@ export const GUIDE_TITLE_PARTS: Record<string, { keyword: string; benefit: strin
   "best-healthy-neighborhoods-nyc": { keyword: "Healthy NYC Neighborhoods 2026", benefit: "Ranked" },
   "hidden-gem-restaurants-nyc": { keyword: "Hidden Gems NYC", benefit: "How We Find Them" },
   "kosher-dining-nyc-guide": { keyword: "Kosher Restaurants NYC", benefit: "By Borough" },
-  "late-night-healthy-eating-nyc": { keyword: "Late Night Healthy NYC", benefit: "After 10pm" },
+  "late-night-healthy-eating-nyc": { keyword: "Healthy Food Open Late in NYC", benefit: "After 10pm" },
   "seafood-healthy-restaurants-nyc": { keyword: "Healthy Seafood NYC", benefit: "A Diner's Guide" },
   "healthy-breakfast-nyc": { keyword: "Healthy Breakfast NYC", benefit: "Morning Spots" },
 }
@@ -446,9 +446,13 @@ export function breakfastGuideTitle(gradeA: number): string {
 }
 
 export function lateNightGuideTitle(neighborhoods: number): string {
-  const benefit = neighborhoods > 0 ? `${formatCount(neighborhoods)} ${neighborhoods === 1 ? "Neighborhood" : "Neighborhoods"}` : null
+  const areas = neighborhoods > 0 ? `${formatCount(neighborhoods)} ${neighborhoods === 1 ? "Neighborhood" : "Neighborhoods"}` : null
   return fitTitle(
-    [benefit ? `Late Night Healthy Eating NYC | ${benefit}` : null, "Late Night Healthy Eating NYC"],
+    [
+      "Healthy Food Open Late in NYC: After 10pm",
+      areas ? `Healthy Food Open Late in NYC | ${areas}` : null,
+      "Healthy Food Open Late in NYC",
+    ],
     { allowBrand: false },
   )
 }
@@ -481,18 +485,76 @@ export function breakfastGuideDescription(input: { earlyOpeners: number; gradeA:
 }
 
 export function lateNightGuideLede(input: { restaurants: number; neighborhoods: number }): string {
-  const rest = input.restaurants === 1 ? "published restaurant listing" : "published restaurant listings"
+  const rest = input.restaurants === 1 ? "restaurant listing" : "restaurant listings"
   const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
-  return `Late-night healthy eating in NYC means a meal after 10 pm. This directory has ${input.restaurants.toLocaleString("en-US")} ${rest} across ${input.neighborhoods.toLocaleString("en-US")} ${hood}, and those listings store working hours plus a matched NYC DOHMH grade when one is on file. The hours field is what shows whether a place is open after 10 pm. Grade A is under 14 points on the inspection. This guide does not invent a late-night menu or a restaurant that is not in the published set.`
+  return `Healthy food open late in NYC means a meal after 10pm. This directory publishes ${input.restaurants.toLocaleString("en-US")} ${rest} across ${input.neighborhoods.toLocaleString("en-US")} ${hood}. Working hours on those listings are what show whether a place is open after 10pm, and a matched NYC DOHMH grade is shown when one is on file. Grade A is a score under 14 points. This guide does not add a restaurant that is not in the published set.`
 }
 
 export function lateNightGuideDescription(input: { restaurants: number; neighborhoods: number }): string {
   const hood = input.neighborhoods === 1 ? "neighborhood" : "neighborhoods"
   const rest = input.restaurants === 1 ? "listing" : "listings"
   const verb = input.restaurants === 1 ? "includes" : "include"
-  return fitCtrBand(
-    `Late night healthy eating in NYC means after 10 pm. ${formatCount(input.restaurants)} published ${rest} across ${formatCount(input.neighborhoods)} ${hood} ${verb} hours and an official NYC DOHMH grade.`,
+  const counts = `${formatCount(input.restaurants)} published ${rest} across ${formatCount(input.neighborhoods)} ${hood}`
+  return `Healthy Food Open Late in NYC means after 10pm. ${counts} ${verb} hours and an official NYC DOHMH grade on file.`
+}
+
+/**
+ * Guide keeps the "kosher restaurants nyc" query. The count is the published
+ * kosher tag total the guide already renders. Year is the caller's data year.
+ */
+export function kosherGuideTitle(count: number, year: number): string {
+  const listed = count > 0 ? `${formatCount(count)} Listed by Borough (${year})` : null
+  const short = count > 0 ? `${formatCount(count)} Listed` : null
+  return fitTitle(
+    [
+      listed ? `Kosher Restaurants NYC: ${listed}` : null,
+      short ? `Kosher Restaurants NYC | ${short}` : null,
+      "Kosher Restaurants NYC",
+    ],
+    { allowBrand: false },
   )
+}
+
+export function kosherGuideDescription(count: number): string {
+  const listed = count === 1 ? "listing is" : "listings are"
+  const lead = count > 0
+    ? `Kosher Restaurants NYC: ${formatCount(count)} published ${listed} tagged kosher and listed by borough.`
+    : "Kosher Restaurants NYC: published listings tagged kosher, listed by borough."
+  return fitDescription(
+    [lead],
+    [
+      "The tag is not a certification this directory issues.",
+      "NYC DOHMH grades for these listings are on the health-grades page.",
+    ],
+  )
+}
+
+/**
+ * Kosher dietary hub only. Grade A and graded come from the hub’s existing
+ * letter-grade counts. Other diet hubs stay on dietHubTitle or dietCtrTitle.
+ */
+export function kosherHealthGradesTitle(gradeA: number, graded: number): string {
+  const ratio = graded > 0 ? `${formatCount(gradeA)} of ${formatCount(graded)} Grade A` : null
+  const short = graded > 0 && gradeA > 0 ? `${formatCount(gradeA)} Grade A` : null
+  return fitTitle(
+    [
+      ratio ? `Kosher Restaurant Health Grades NYC: ${ratio}` : null,
+      ratio ? `Kosher Health Grades NYC: ${ratio}` : null,
+      short ? `Kosher Restaurant Health Grades NYC | ${short}` : null,
+      "Kosher Restaurant Health Grades NYC",
+    ],
+    { allowBrand: false },
+  )
+}
+
+export function kosherHealthGradesDescription(input: { count: number; gradeA: number; graded: number }): string {
+  const ratio = input.graded > 0
+    ? `${formatCount(input.gradeA)} of ${formatCount(input.graded)} graded kosher restaurants hold an official NYC DOHMH Grade A.`
+    : "No published kosher restaurant has a matched NYC DOHMH letter grade."
+  const listed = input.count > 0
+    ? `${formatCount(input.count)} published ${input.count === 1 ? "listing carries" : "listings carry"} the kosher tag.`
+    : ""
+  return fitDescription([`Kosher restaurant health grades in NYC. ${ratio}`], [listed])
 }
 
 export const HEALTH_GRADES_GUIDE_DESCRIPTION =
@@ -689,9 +751,9 @@ export const GUIDE_DESCRIPTIONS: Record<string, string> = {
   "hidden-gem-restaurants-nyc":
     "Hidden gems here are restaurants rated 4.5 or higher with fewer than 200 reviews. This page explains that rule.",
   "kosher-dining-nyc-guide":
-    "How this directory tags kosher restaurants in NYC, and what we do not verify about supervision.",
+    "Kosher Restaurants NYC, listed by borough from the published kosher tag. The tag is not a certification this directory issues.",
   "late-night-healthy-eating-nyc":
-    "Late-night healthy food in NYC means eating after 10pm. Browse borough hubs for listings that include hours and the NYC health inspection grade.",
+    "Healthy Food Open Late in NYC means a meal after 10pm. Published listings store working hours and an official NYC DOHMH grade when one is matched.",
   "seafood-healthy-restaurants-nyc":
     "Seafood-focused listings in the NYC directory, with the matched NYC DOHMH grade shown when we have one.",
   "healthy-breakfast-nyc":

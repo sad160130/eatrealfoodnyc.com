@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const GUIDE_FAQS = [
   {
     question: "What time counts as late-night dining in NYC?",
-    answer: "For the purposes of this guide, late-night dining means eating after 10 PM. While many NYC restaurants close between 9 and 10 PM, a significant number remain open until midnight or later, and some operate 24 hours. Our directory includes working hours data for over 8,700 restaurants, letting you filter for what is genuinely open when you need it.",
+    answer: "For this guide, late-night dining means eating after 10pm. Published listings store working hours. The hours on a restaurant page are what show whether it is open after 10pm.",
   },
   {
     question: "Are late-night restaurants less healthy than daytime options?",
@@ -58,6 +58,7 @@ const GUIDE_FAQS = [
 
 export default async function LateNightGuide() {
   const stats = await getLiveGuideStats()
+  const title = lateNightGuideTitle(stats.global.totalUniqueNeighborhoods)
   const description = lateNightGuideDescription({
     restaurants: stats.global.totalPublished,
     neighborhoods: stats.global.totalUniqueNeighborhoods,
@@ -71,7 +72,7 @@ export default async function LateNightGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: guide.title,
+            headline: title,
             description,
             author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
@@ -84,15 +85,16 @@ export default async function LateNightGuide() {
 
       <GuideHero
         guide={guide}
+        heading={title}
         subtitle={lateNightGuideLede({
           restaurants: stats.global.totalPublished,
           neighborhoods: stats.global.totalUniqueNeighborhoods,
         })}
         stats={[
-          { label: "With hours data", stat: "8,710" },
-          { label: "Open now filter", stat: "Live" },
-          { label: "Real-time status", stat: "Yes" },
-          { label: "All 5 boroughs", stat: "Yes" },
+          { label: "Published listings", stat: stats.global.totalPublished.toLocaleString("en-US") },
+          { label: "Neighborhoods", stat: stats.global.totalUniqueNeighborhoods.toLocaleString("en-US") },
+          { label: "After", stat: "10pm" },
+          { label: "Boroughs", stat: String(Object.keys(stats.global.boroughs).length) },
         ]}
       />
 
