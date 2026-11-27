@@ -121,6 +121,36 @@ assert.deepEqual(
 )
 assert.equal(ethiopian[0].label, "Ethiopian restaurants NYC")
 
+const peruvian = listingGuideLinks({
+  type: "Peruvian restaurant",
+  name: "Jora",
+  dietaryTags: null,
+  workingHours: null,
+})
+assert.deepEqual(
+  peruvian.map((link) => link.href),
+  ["/guides/peruvian-restaurants-nyc"]
+)
+assert.equal(peruvian[0].label, "peruvian restaurants nyc")
+assert.equal(
+  listingGuideLinks({
+    type: "Health food restaurant",
+    name: "Brasa Peruvian Kitchen",
+    dietaryTags: "whole-foods|low-calorie",
+    workingHours: null,
+  }).some((link) => link.href === "/guides/peruvian-restaurants-nyc"),
+  true
+)
+assert.equal(
+  listingGuideLinks({
+    type: "Japanese restaurant",
+    name: "Nobu Downtown",
+    dietaryTags: null,
+    workingHours: null,
+  }).some((link) => link.href === "/guides/peruvian-restaurants-nyc"),
+  false
+)
+
 assert.equal(
   listingGuideLinks({ type: "Seafood restaurant", dietaryTags: null, workingHours: null })[0].href,
   "/guides/seafood-healthy-restaurants-nyc"

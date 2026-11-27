@@ -26,17 +26,19 @@ export function InspectionContext({
   neighborhood,
   borough,
   type,
+  name,
   dietaryTags,
   workingHours,
 }: {
   neighborhood: string | null
   borough: string | null
   type: string | null
+  name?: string | null
   dietaryTags: string | null
   workingHours: string | null
 }) {
   const share = placeGradeShare(neighborhood, borough)
-  const guides = listingGuideLinks({ type, dietaryTags, workingHours, neighborhood, borough })
+  const guides = listingGuideLinks({ type, name, dietaryTags, workingHours, neighborhood, borough })
   return (
     <div className="mt-3 space-y-2 text-sm" style={{ color: "var(--color-text)", maxWidth: "62ch", lineHeight: 1.55 }}>
       {share ? <ShareSentence share={share} /> : null}
@@ -83,12 +85,20 @@ export function BoroughGradeContext({ borough }: { borough: string }) {
         </Link>
       </p>
       {borough === "Queens" ? (
-        <p>
-          <Link href="/guides/best-restaurants-flushing" className={linkClass} style={linkStyle}>
-            Grade A restaurants in Flushing
-          </Link>
-          {" are counted from the latest NYC inspection file for the Flushing NTA."}
-        </p>
+        <>
+          <p>
+            <Link href="/guides/best-restaurants-flushing" className={linkClass} style={linkStyle}>
+              Grade A restaurants in Flushing
+            </Link>
+            {" are counted from the latest NYC inspection file for the Flushing NTA."}
+          </p>
+          <p>
+            <Link href="/guides/peruvian-restaurants-nyc" className={linkClass} style={linkStyle}>
+              peruvian restaurants nyc
+            </Link>
+            {" lists every establishment whose city cuisine description contains Peruvian, including Jora in Long Island City."}
+          </p>
+        </>
       ) : null}
     </div>
   )
@@ -104,6 +114,7 @@ export function NeighborhoodGradeContext({
   const share = placeGradeShare(neighborhood, borough)
   if (!share) return null
   const flushing = neighborhood.trim().toLowerCase() === "flushing" && borough.trim().toLowerCase() === "queens"
+  const longIslandCity = neighborhood.trim().toLowerCase() === "long island city" && borough.trim().toLowerCase() === "queens"
   return (
     <div className="mt-3 space-y-2 text-sm" style={{ color: "var(--color-text)", maxWidth: "62ch", lineHeight: 1.55 }}>
       <ShareSentence share={share} />
@@ -113,6 +124,14 @@ export function NeighborhoodGradeContext({
             Grade A restaurants in Flushing
           </Link>
           {" uses the Flushing NTA and the current inspection file."}
+        </p>
+      ) : null}
+      {longIslandCity ? (
+        <p>
+          <Link href="/guides/peruvian-restaurants-nyc" className={linkClass} style={linkStyle}>
+            peruvian restaurants nyc
+          </Link>
+          {" includes Jora and the other Peruvian establishments in the city inspection file."}
         </p>
       ) : null}
     </div>

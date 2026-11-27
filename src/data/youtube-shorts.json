@@ -1018,5 +1018,17 @@
     "restaurant_page": "https://www.eatrealfoodnyc.com/restaurants/awash",
     "embed_priority": 1,
     "notes": "Format B, question hook. Added after PR #64. comment_count 1 is the pinned comment. Proof Desk VERIFIED."
+  },
+  {
+    "video_id": "IO-jklIxngQ",
+    "youtube_url": "https://www.youtube.com/shorts/IO-jklIxngQ",
+    "title": "Grade A Isn't a Perfect Score: Jora Long Island City Scored 9",
+    "upload_date": "20261126",
+    "duration_sec": 36,
+    "series": "grade-a-daily",
+    "restaurant_slug": "jora",
+    "restaurant_page": "https://www.eatrealfoodnyc.com/restaurants/jora",
+    "embed_priority": 1,
+    "notes": "Nov 26, 2026 daily Short. Title, upload date, and 36-second length are from the public watch page."
   }
 ]

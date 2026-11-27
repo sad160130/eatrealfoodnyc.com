@@ -1,0 +1,126 @@
+[
+  {
+    "camis": "50157715",
+    "slug": "brasa-peruvian-kitchen-financial",
+    "listingName": "Brasa Peruvian Kitchen",
+    "type": "Health food restaurant",
+    "neighborhood": "Financial District",
+    "borough": "Manhattan",
+    "rating": 4.7,
+    "reviews": 104,
+    "tags": [
+      "whole-foods",
+      "low-calorie"
+    ]
+  },
+  {
+    "camis": "50159012",
+    "slug": "don-pollo",
+    "listingName": "Don Pollo",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Forest Hills",
+    "borough": "Queens",
+    "rating": 4.7,
+    "reviews": 495,
+    "tags": []
+  },
+  {
+    "camis": "50129879",
+    "slug": "harlemite-peruvian-cuisine",
+    "listingName": "Harlemite Peruvian Cuisine",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Harlem",
+    "borough": "Manhattan",
+    "rating": 4.7,
+    "reviews": 554,
+    "tags": []
+  },
+  {
+    "camis": "50171394",
+    "slug": "inkaico-peruvian-kitchen",
+    "listingName": "INKAICO Peruvian Kitchen",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Fort Greene",
+    "borough": "Brooklyn",
+    "rating": 4.7,
+    "reviews": 204,
+    "tags": []
+  },
+  {
+    "camis": "50164818",
+    "slug": "jora",
+    "listingName": "Jora",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Long Island City",
+    "borough": "Queens",
+    "rating": 4.5,
+    "reviews": 2067,
+    "tags": []
+  },
+  {
+    "camis": "50108113",
+    "slug": "kausa",
+    "listingName": "Kausa",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Hell's Kitchen",
+    "borough": "Manhattan",
+    "rating": 4.5,
+    "reviews": 1567,
+    "tags": []
+  },
+  {
+    "camis": "50093281",
+    "slug": "mission-ceviche",
+    "listingName": "Mission Ceviche",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Upper East Side",
+    "borough": "Manhattan",
+    "rating": 4.6,
+    "reviews": 3893,
+    "tags": []
+  },
+  {
+    "camis": "50150128",
+    "slug": "mission-ceviche-union-square",
+    "listingName": "Mission Ceviche Union Square",
+    "type": "Seafood restaurant",
+    "neighborhood": "Flatiron District",
+    "borough": "Manhattan",
+    "rating": 4.7,
+    "reviews": 1726,
+    "tags": []
+  },
+  {
+    "camis": "41080215",
+    "slug": "pio-pio-4",
+    "listingName": "Pio Pio 4",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Mott Haven",
+    "borough": "Bronx",
+    "rating": 4.2,
+    "reviews": 1975,
+    "tags": []
+  },
+  {
+    "camis": "40914702",
+    "slug": "pio-pio-6",
+    "listingName": "Pio Pio 6",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Upper West Side",
+    "borough": "Manhattan",
+    "rating": 4.3,
+    "reviews": 1793,
+    "tags": []
+  },
+  {
+    "camis": "41624530",
+    "slug": "pio-pio-8",
+    "listingName": "Pio Pio 8",
+    "type": "Peruvian restaurant",
+    "neighborhood": "Hell's Kitchen",
+    "borough": "Manhattan",
+    "rating": 4.4,
+    "reviews": 5266,
+    "tags": []
+  }
+]
