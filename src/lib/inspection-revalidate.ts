@@ -15,6 +15,7 @@ export const INSPECTION_REVALIDATE_PATHS = [
   "/nyc/[borough]/[neighborhood]",
   "/healthy-restaurants",
   "/healthy-restaurants/[diet-type]",
+  "/data",
 ] as const
 
 export function inspectionRefreshPaths(

@@ -4,8 +4,7 @@ import { prisma } from "@/lib/db"
 import { applyInspectionWrites } from "@/lib/dohmh-refresh-db"
 import { inspectionRefreshPaths } from "@/lib/inspection-revalidate"
 import {
-  DOHMH_CRON_MAX_ROWS,
-  DOHMH_CRON_PAGE_SIZE,
+  dohmhCronFetchConfig,
   fetchDohmhInspections,
   runDohmhRefresh,
   type DohmhRefreshResult,
@@ -14,8 +13,9 @@ import {
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 /**
- * Hobby and Pro both allow 300 seconds. The pull is the last 14 days, paged,
- * and writes go out in batches of 50.
+ * Hobby and Pro both allow 300 seconds. The pull is a grouped multi-year
+ * lookback, one row per inspection date, paged at 50,000. Writes go out in
+ * batches of 50.
  */
 export const maxDuration = 300
 
@@ -36,10 +36,7 @@ async function defaultRun(options: { dry: boolean }): Promise<DohmhRefreshResult
     fetchInspections: (since) =>
       fetchDohmhInspections({
         since,
-        token: token || undefined,
-        pageSize: DOHMH_CRON_PAGE_SIZE,
-        maxRows: DOHMH_CRON_MAX_ROWS,
-        recordDate: true,
+        ...dohmhCronFetchConfig(token),
       }),
     loadRestaurants: () => prisma.restaurant.findMany({ select: RESTAURANT_SELECT }),
     applyWrites: applyInspectionWrites,
@@ -74,7 +71,8 @@ export async function handleDohmhRefreshCron(
     console.info(JSON.stringify({ event: "dohmh_refresh", ...result }))
     return Response.json({ ok: true, ...result })
   } catch (error) {
-    const message = error instanceof Error ? error.message : "refresh failed"
+    const raw = error instanceof Error ? error.message : "refresh failed"
+    const message = raw.replace(/[a-z][a-z0-9+.-]*:\/\/\S+/gi, "[redacted]").slice(0, 160)
     console.error(JSON.stringify({ event: "dohmh_refresh_failed", message }))
     return Response.json({ error: "refresh failed" }, { status: 500 })
   }
