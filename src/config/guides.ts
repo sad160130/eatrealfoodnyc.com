@@ -13,6 +13,11 @@ import {
   ETHIOPIAN_SHORT_TITLE,
   ETHIOPIAN_TITLE,
 } from "@/data/ethiopian-restaurants-nyc"
+import {
+  PERUVIAN_DESCRIPTION,
+  PERUVIAN_SHORT_TITLE,
+  PERUVIAN_TITLE,
+} from "@/data/peruvian-restaurants-nyc"
 import { GUIDE_DESCRIPTIONS, HEALTH_GRADES_GUIDE_TITLE, guideTitle } from "@/lib/seo-titles"
 
 export interface GuideArticle {
@@ -416,6 +421,31 @@ export const GUIDES: GuideArticle[] = [
       { label: "Brooklyn healthy restaurants", href: "/nyc/brooklyn/healthy-restaurants" },
       { label: "Manhattan healthy restaurants", href: "/nyc/manhattan/healthy-restaurants" },
       { label: "Queens healthy restaurants", href: "/nyc/queens/healthy-restaurants" },
+    ],
+  },
+  {
+    slug: "peruvian-restaurants-nyc",
+    title: PERUVIAN_TITLE,
+    metaTitle: PERUVIAN_TITLE,
+    shortTitle: PERUVIAN_SHORT_TITLE,
+    description: PERUVIAN_DESCRIPTION,
+    category: "Health & Safety",
+    emoji: "A",
+    readTime: "8 min read",
+    featured: false,
+    publishedDate: "2026-11-27",
+    updatedDate: "2026-11-27",
+    keywords: ["peruvian restaurants nyc"],
+    relatedGuides: [
+      "nyc-health-grades-explained",
+      "nyc-restaurant-inspection-process",
+      "grade-a-restaurants-by-borough-nyc",
+    ],
+    relatedHubPages: [
+      { label: "Healthy restaurants in Queens", href: "/nyc/queens/healthy-restaurants" },
+      { label: "Healthy restaurants in Long Island City", href: "/nyc/queens/long-island-city/healthy-restaurants" },
+      { label: "NYC restaurant grades", href: "/guides/nyc-health-grades-explained" },
+      { label: "NYC restaurant health grade report", href: "/data/nyc-restaurant-health-grade-report" },
     ],
   },
   {

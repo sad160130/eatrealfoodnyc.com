@@ -17,14 +17,14 @@ import { extractJsonLd, validateJsonLd, validateVisibleHtml } from "../lib/valid
 
 const rows = rawRows as YoutubeShortRow[]
 
-assert.equal(rows.length, 68, "the checked-in map has one row per Short")
-assert.equal(youtubeShortRowCount(), 68)
-assert.equal(listYoutubeShorts().length, 68, "every row becomes one listing embed")
+assert.equal(rows.length, 69, "the checked-in map has one row per Short")
+assert.equal(youtubeShortRowCount(), 69)
+assert.equal(listYoutubeShorts().length, 69, "every row becomes one listing embed")
 
 const slugs = new Set(rows.map((row) => row.restaurant_slug))
 const ids = new Set(rows.map((row) => row.video_id))
-assert.equal(slugs.size, 68, "slugs are unique, so a listing renders at most one Short")
-assert.equal(ids.size, 68, "video ids are unique")
+assert.equal(slugs.size, 69, "slugs are unique, so a listing renders at most one Short")
+assert.equal(ids.size, 69, "video ids are unique")
 
 for (const row of rows) {
   const short = getYoutubeShort(row.restaurant_slug)
@@ -66,6 +66,11 @@ assert.equal(
 assert.equal(getYoutubeShort("awash")?.uploadDate, "2026-11-24")
 assert.equal(getYoutubeShort("awash")?.duration, "PT32S")
 assert.equal(getYoutubeShort("awash")?.embedUrl, "https://www.youtube-nocookie.com/embed/Vj5uupbvyPs")
+assert.equal(getYoutubeShort("jora")?.videoId, "IO-jklIxngQ")
+assert.equal(getYoutubeShort("jora")?.title, "Grade A Isn't a Perfect Score: Jora Long Island City Scored 9")
+assert.equal(getYoutubeShort("jora")?.uploadDate, "2026-11-26")
+assert.equal(getYoutubeShort("jora")?.duration, "PT36S")
+assert.equal(getYoutubeShort("jora")?.embedUrl, "https://www.youtube-nocookie.com/embed/IO-jklIxngQ")
 assert.equal(getYoutubeShort("not-a-restaurant"), null)
 const bloom = getYoutubeShort("bloom-cafe")
 assert.equal(bloom?.videoId, "8mRDp2VpGCc")

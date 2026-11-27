@@ -1,0 +1,782 @@
+[
+  {
+    "code": "BK09",
+    "name": "Brooklyn Heights-Cobble Hill"
+  },
+  {
+    "code": "BK17",
+    "name": "Sheepshead Bay-Gerritsen Beach-Manhattan Beach"
+  },
+  {
+    "code": "BK19",
+    "name": "Brighton Beach"
+  },
+  {
+    "code": "BK21",
+    "name": "Seagate-Coney Island"
+  },
+  {
+    "code": "BK23",
+    "name": "West Brighton"
+  },
+  {
+    "code": "BK25",
+    "name": "Homecrest"
+  },
+  {
+    "code": "BK26",
+    "name": "Gravesend"
+  },
+  {
+    "code": "BK27",
+    "name": "Bath Beach"
+  },
+  {
+    "code": "BK28",
+    "name": "Bensonhurst West"
+  },
+  {
+    "code": "BK29",
+    "name": "Bensonhurst East"
+  },
+  {
+    "code": "BK30",
+    "name": "Dyker Heights"
+  },
+  {
+    "code": "BK31",
+    "name": "Bay Ridge"
+  },
+  {
+    "code": "BK32",
+    "name": "Sunset Park West"
+  },
+  {
+    "code": "BK33",
+    "name": "Carroll Gardens-Columbia Street-Red Hook"
+  },
+  {
+    "code": "BK34",
+    "name": "Sunset Park East"
+  },
+  {
+    "code": "BK35",
+    "name": "Stuyvesant Heights"
+  },
+  {
+    "code": "BK37",
+    "name": "Park Slope-Gowanus"
+  },
+  {
+    "code": "BK38",
+    "name": "DUMBO-Vinegar Hill-Downtown Brooklyn-Boerum Hill"
+  },
+  {
+    "code": "BK40",
+    "name": "Windsor Terrace"
+  },
+  {
+    "code": "BK41",
+    "name": "Kensington-Ocean Parkway"
+  },
+  {
+    "code": "BK42",
+    "name": "Flatbush"
+  },
+  {
+    "code": "BK43",
+    "name": "Midwood"
+  },
+  {
+    "code": "BK44",
+    "name": "Madison"
+  },
+  {
+    "code": "BK45",
+    "name": "Georgetown-Marine Park-Bergen Beach-Mill Basin"
+  },
+  {
+    "code": "BK46",
+    "name": "Ocean Parkway South"
+  },
+  {
+    "code": "BK50",
+    "name": "Canarsie"
+  },
+  {
+    "code": "BK58",
+    "name": "Flatlands"
+  },
+  {
+    "code": "BK60",
+    "name": "Prospect Lefferts Gardens-Wingate"
+  },
+  {
+    "code": "BK61",
+    "name": "Crown Heights North"
+  },
+  {
+    "code": "BK63",
+    "name": "Crown Heights South"
+  },
+  {
+    "code": "BK64",
+    "name": "Prospect Heights"
+  },
+  {
+    "code": "BK68",
+    "name": "Fort Greene"
+  },
+  {
+    "code": "BK69",
+    "name": "Clinton Hill"
+  },
+  {
+    "code": "BK72",
+    "name": "Williamsburg"
+  },
+  {
+    "code": "BK73",
+    "name": "North Side-South Side"
+  },
+  {
+    "code": "BK75",
+    "name": "Bedford"
+  },
+  {
+    "code": "BK76",
+    "name": "Greenpoint"
+  },
+  {
+    "code": "BK77",
+    "name": "Bushwick North"
+  },
+  {
+    "code": "BK78",
+    "name": "Bushwick South"
+  },
+  {
+    "code": "BK79",
+    "name": "Ocean Hill"
+  },
+  {
+    "code": "BK81",
+    "name": "Brownsville"
+  },
+  {
+    "code": "BK82",
+    "name": "East New York"
+  },
+  {
+    "code": "BK83",
+    "name": "Cypress Hills-City Line"
+  },
+  {
+    "code": "BK85",
+    "name": "East New York (Pennsylvania Ave)"
+  },
+  {
+    "code": "BK88",
+    "name": "Borough Park"
+  },
+  {
+    "code": "BK90",
+    "name": "East Williamsburg"
+  },
+  {
+    "code": "BK91",
+    "name": "East Flatbush-Farragut"
+  },
+  {
+    "code": "BK93",
+    "name": "Starrett City"
+  },
+  {
+    "code": "BK95",
+    "name": "Erasmus"
+  },
+  {
+    "code": "BK96",
+    "name": "Rugby-Remsen Village"
+  },
+  {
+    "code": "BK99",
+    "name": "park-cemetery-etc-Brooklyn"
+  },
+  {
+    "code": "BX01",
+    "name": "Claremont-Bathgate"
+  },
+  {
+    "code": "BX03",
+    "name": "Eastchester-Edenwald-Baychester"
+  },
+  {
+    "code": "BX05",
+    "name": "Bedford Park-Fordham North"
+  },
+  {
+    "code": "BX06",
+    "name": "Belmont"
+  },
+  {
+    "code": "BX07",
+    "name": "Bronxdale"
+  },
+  {
+    "code": "BX08",
+    "name": "West Farms-Bronx River"
+  },
+  {
+    "code": "BX09",
+    "name": "Soundview-Castle Hill-Clason Point-Harding Park"
+  },
+  {
+    "code": "BX10",
+    "name": "Pelham Bay-Country Club-City Island"
+  },
+  {
+    "code": "BX13",
+    "name": "Co-op City"
+  },
+  {
+    "code": "BX14",
+    "name": "East Concourse-Concourse Village"
+  },
+  {
+    "code": "BX17",
+    "name": "East Tremont"
+  },
+  {
+    "code": "BX22",
+    "name": "North Riverdale-Fieldston-Riverdale"
+  },
+  {
+    "code": "BX26",
+    "name": "Highbridge"
+  },
+  {
+    "code": "BX27",
+    "name": "Hunts Point"
+  },
+  {
+    "code": "BX28",
+    "name": "Van Cortlandt Village"
+  },
+  {
+    "code": "BX29",
+    "name": "Spuyten Duyvil-Kingsbridge"
+  },
+  {
+    "code": "BX30",
+    "name": "Kingsbridge Heights"
+  },
+  {
+    "code": "BX31",
+    "name": "Allerton-Pelham Gardens"
+  },
+  {
+    "code": "BX33",
+    "name": "Longwood"
+  },
+  {
+    "code": "BX34",
+    "name": "Melrose South-Mott Haven North"
+  },
+  {
+    "code": "BX35",
+    "name": "Morrisania-Melrose"
+  },
+  {
+    "code": "BX36",
+    "name": "University Heights-Morris Heights"
+  },
+  {
+    "code": "BX37",
+    "name": "Van Nest-Morris Park-Westchester Square"
+  },
+  {
+    "code": "BX39",
+    "name": "Mott Haven-Port Morris"
+  },
+  {
+    "code": "BX40",
+    "name": "Fordham South"
+  },
+  {
+    "code": "BX41",
+    "name": "Mount Hope"
+  },
+  {
+    "code": "BX43",
+    "name": "Norwood"
+  },
+  {
+    "code": "BX44",
+    "name": "Williamsbridge-Olinville"
+  },
+  {
+    "code": "BX46",
+    "name": "Parkchester"
+  },
+  {
+    "code": "BX49",
+    "name": "Pelham Parkway"
+  },
+  {
+    "code": "BX52",
+    "name": "Schuylerville-Throgs Neck-Edgewater Park"
+  },
+  {
+    "code": "BX55",
+    "name": "Soundview-Bruckner"
+  },
+  {
+    "code": "BX59",
+    "name": "Westchester-Unionport"
+  },
+  {
+    "code": "BX62",
+    "name": "Woodlawn-Wakefield"
+  },
+  {
+    "code": "BX63",
+    "name": "West Concourse"
+  },
+  {
+    "code": "BX75",
+    "name": "Crotona Park East"
+  },
+  {
+    "code": "BX98",
+    "name": "Rikers Island"
+  },
+  {
+    "code": "BX99",
+    "name": "park-cemetery-etc-Bronx"
+  },
+  {
+    "code": "MN01",
+    "name": "Marble Hill-Inwood"
+  },
+  {
+    "code": "MN03",
+    "name": "Central Harlem North-Polo Grounds"
+  },
+  {
+    "code": "MN04",
+    "name": "Hamilton Heights"
+  },
+  {
+    "code": "MN06",
+    "name": "Manhattanville"
+  },
+  {
+    "code": "MN09",
+    "name": "Morningside Heights"
+  },
+  {
+    "code": "MN11",
+    "name": "Central Harlem South"
+  },
+  {
+    "code": "MN12",
+    "name": "Upper West Side"
+  },
+  {
+    "code": "MN13",
+    "name": "Hudson Yards-Chelsea-Flatiron-Union Square"
+  },
+  {
+    "code": "MN14",
+    "name": "Lincoln Square"
+  },
+  {
+    "code": "MN15",
+    "name": "Clinton"
+  },
+  {
+    "code": "MN17",
+    "name": "Midtown-Midtown South"
+  },
+  {
+    "code": "MN19",
+    "name": "Turtle Bay-East Midtown"
+  },
+  {
+    "code": "MN20",
+    "name": "Murray Hill-Kips Bay"
+  },
+  {
+    "code": "MN21",
+    "name": "Gramercy"
+  },
+  {
+    "code": "MN22",
+    "name": "East Village"
+  },
+  {
+    "code": "MN23",
+    "name": "West Village"
+  },
+  {
+    "code": "MN24",
+    "name": "SoHo-TriBeCa-Civic Center-Little Italy"
+  },
+  {
+    "code": "MN25",
+    "name": "Battery Park City-Lower Manhattan"
+  },
+  {
+    "code": "MN27",
+    "name": "Chinatown"
+  },
+  {
+    "code": "MN28",
+    "name": "Lower East Side"
+  },
+  {
+    "code": "MN31",
+    "name": "Lenox Hill-Roosevelt Island"
+  },
+  {
+    "code": "MN32",
+    "name": "Yorkville"
+  },
+  {
+    "code": "MN33",
+    "name": "East Harlem South"
+  },
+  {
+    "code": "MN34",
+    "name": "East Harlem North"
+  },
+  {
+    "code": "MN35",
+    "name": "Washington Heights North"
+  },
+  {
+    "code": "MN36",
+    "name": "Washington Heights South"
+  },
+  {
+    "code": "MN40",
+    "name": "Upper East Side-Carnegie Hill"
+  },
+  {
+    "code": "MN50",
+    "name": "Stuyvesant Town-Cooper Village"
+  },
+  {
+    "code": "MN99",
+    "name": "park-cemetery-etc-Manhattan"
+  },
+  {
+    "code": "QN01",
+    "name": "South Jamaica"
+  },
+  {
+    "code": "QN02",
+    "name": "Springfield Gardens North"
+  },
+  {
+    "code": "QN03",
+    "name": "Springfield Gardens South-Brookville"
+  },
+  {
+    "code": "QN05",
+    "name": "Rosedale"
+  },
+  {
+    "code": "QN06",
+    "name": "Jamaica Estates-Holliswood"
+  },
+  {
+    "code": "QN07",
+    "name": "Hollis"
+  },
+  {
+    "code": "QN08",
+    "name": "St. Albans"
+  },
+  {
+    "code": "QN10",
+    "name": "Breezy Point-Belle Harbor-Rockaway Park-Broad Channel"
+  },
+  {
+    "code": "QN12",
+    "name": "Hammels-Arverne-Edgemere"
+  },
+  {
+    "code": "QN15",
+    "name": "Far Rockaway-Bayswater"
+  },
+  {
+    "code": "QN17",
+    "name": "Forest Hills"
+  },
+  {
+    "code": "QN18",
+    "name": "Rego Park"
+  },
+  {
+    "code": "QN19",
+    "name": "Glendale"
+  },
+  {
+    "code": "QN20",
+    "name": "Ridgewood"
+  },
+  {
+    "code": "QN21",
+    "name": "Middle Village"
+  },
+  {
+    "code": "QN22",
+    "name": "Flushing"
+  },
+  {
+    "code": "QN23",
+    "name": "College Point"
+  },
+  {
+    "code": "QN25",
+    "name": "Corona"
+  },
+  {
+    "code": "QN26",
+    "name": "North Corona"
+  },
+  {
+    "code": "QN27",
+    "name": "East Elmhurst"
+  },
+  {
+    "code": "QN28",
+    "name": "Jackson Heights"
+  },
+  {
+    "code": "QN29",
+    "name": "Elmhurst"
+  },
+  {
+    "code": "QN30",
+    "name": "Maspeth"
+  },
+  {
+    "code": "QN31",
+    "name": "Hunters Point-Sunnyside-West Maspeth"
+  },
+  {
+    "code": "QN33",
+    "name": "Cambria Heights"
+  },
+  {
+    "code": "QN34",
+    "name": "Queens Village"
+  },
+  {
+    "code": "QN35",
+    "name": "Briarwood-Jamaica Hills"
+  },
+  {
+    "code": "QN37",
+    "name": "Kew Gardens Hills"
+  },
+  {
+    "code": "QN38",
+    "name": "Pomonok-Flushing Heights-Hillcrest"
+  },
+  {
+    "code": "QN41",
+    "name": "Fresh Meadows-Utopia"
+  },
+  {
+    "code": "QN42",
+    "name": "Oakland Gardens"
+  },
+  {
+    "code": "QN43",
+    "name": "Bellerose"
+  },
+  {
+    "code": "QN44",
+    "name": "Glen Oaks-Floral Park-New Hyde Park"
+  },
+  {
+    "code": "QN45",
+    "name": "Douglas Manor-Douglaston-Little Neck"
+  },
+  {
+    "code": "QN46",
+    "name": "Bayside-Bayside Hills"
+  },
+  {
+    "code": "QN47",
+    "name": "Ft. Totten-Bay Terrace-Clearview"
+  },
+  {
+    "code": "QN48",
+    "name": "Auburndale"
+  },
+  {
+    "code": "QN49",
+    "name": "Whitestone"
+  },
+  {
+    "code": "QN50",
+    "name": "Elmhurst-Maspeth"
+  },
+  {
+    "code": "QN51",
+    "name": "Murray Hill"
+  },
+  {
+    "code": "QN52",
+    "name": "East Flushing"
+  },
+  {
+    "code": "QN53",
+    "name": "Woodhaven"
+  },
+  {
+    "code": "QN54",
+    "name": "Richmond Hill"
+  },
+  {
+    "code": "QN55",
+    "name": "South Ozone Park"
+  },
+  {
+    "code": "QN56",
+    "name": "Ozone Park"
+  },
+  {
+    "code": "QN57",
+    "name": "Lindenwood-Howard Beach"
+  },
+  {
+    "code": "QN60",
+    "name": "Kew Gardens"
+  },
+  {
+    "code": "QN61",
+    "name": "Jamaica"
+  },
+  {
+    "code": "QN62",
+    "name": "Queensboro Hill"
+  },
+  {
+    "code": "QN63",
+    "name": "Woodside"
+  },
+  {
+    "code": "QN66",
+    "name": "Laurelton"
+  },
+  {
+    "code": "QN68",
+    "name": "Queensbridge-Ravenswood-Long Island City"
+  },
+  {
+    "code": "QN70",
+    "name": "Astoria"
+  },
+  {
+    "code": "QN71",
+    "name": "Old Astoria"
+  },
+  {
+    "code": "QN72",
+    "name": "Steinway"
+  },
+  {
+    "code": "QN76",
+    "name": "Baisley Park"
+  },
+  {
+    "code": "QN98",
+    "name": "Airport"
+  },
+  {
+    "code": "QN99",
+    "name": "park-cemetery-etc-Queens"
+  },
+  {
+    "code": "SI01",
+    "name": "Annadale-Huguenot-Prince's Bay-Eltingville"
+  },
+  {
+    "code": "SI05",
+    "name": "New Springville-Bloomfield-Travis"
+  },
+  {
+    "code": "SI07",
+    "name": "Westerleigh"
+  },
+  {
+    "code": "SI08",
+    "name": "Grymes Hill-Clifton-Fox Hills"
+  },
+  {
+    "code": "SI11",
+    "name": "Charleston-Richmond Valley-Tottenville"
+  },
+  {
+    "code": "SI12",
+    "name": "Mariner's Harbor-Arlington-Port Ivory-Graniteville"
+  },
+  {
+    "code": "SI14",
+    "name": "Grasmere-Arrochar-Ft. Wadsworth"
+  },
+  {
+    "code": "SI22",
+    "name": "West New Brighton-New Brighton-St. George"
+  },
+  {
+    "code": "SI24",
+    "name": "Todt Hill-Emerson Hill-Heartland Village-Lighthouse Hill"
+  },
+  {
+    "code": "SI25",
+    "name": "Oakwood-Oakwood Beach"
+  },
+  {
+    "code": "SI28",
+    "name": "Port Richmond"
+  },
+  {
+    "code": "SI32",
+    "name": "Rossville-Woodrow"
+  },
+  {
+    "code": "SI35",
+    "name": "New Brighton-Silver Lake"
+  },
+  {
+    "code": "SI36",
+    "name": "Old Town-Dongan Hills-South Beach"
+  },
+  {
+    "code": "SI37",
+    "name": "Stapleton-Rosebank"
+  },
+  {
+    "code": "SI45",
+    "name": "New Dorp-Midland Beach"
+  },
+  {
+    "code": "SI48",
+    "name": "Arden Heights"
+  },
+  {
+    "code": "SI54",
+    "name": "Great Kills"
+  },
+  {
+    "code": "SI99",
+    "name": "park-cemetery-etc-Staten Island"
+  }
+]
