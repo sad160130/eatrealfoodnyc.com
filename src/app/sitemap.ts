@@ -201,8 +201,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const dietPages = [
     entry(siteUrl, "/healthy-restaurants", 0.9, "weekly", directoryUpdated),
-    ...DIET_TYPES.filter((tag) => (byDiet.get(tag)?.length ?? 0) >= COMBO_MIN_RESTAURANTS).map((tag) =>
-      entry(siteUrl, `/healthy-restaurants/${tag}`, 0.95, "weekly", latest(byDiet.get(tag) ?? []))
+    ...DIET_TYPES.map((tag) =>
+      entry(
+        siteUrl,
+        `/healthy-restaurants/${tag}`,
+        0.95,
+        "weekly",
+        latest(byDiet.get(tag) ?? []) ?? directoryUpdated
+      )
     ),
   ]
 

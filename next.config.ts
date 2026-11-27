@@ -1,17 +1,25 @@
 import type { NextConfig } from "next";
 import { removedListingRedirects } from "./src/lib/removed-listings";
 import { closedListingRedirects } from "./src/config/listing-overrides";
+import { impression404Redirects } from "./src/lib/impression-404-redirects";
 
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      // ── Non-www → www ──
+      // Apex host → www. The homepage has no trailing slash.
       {
-        source: "/:path*",
+        source: "/",
         has: [{ type: "host", value: "eatrealfoodnyc.com" }],
-        destination: "https://www.eatrealfoodnyc.com/:path*",
-        permanent: true,
+        destination: "https://www.eatrealfoodnyc.com",
+        statusCode: 301,
       },
+      {
+        source: "/:path+",
+        has: [{ type: "host", value: "eatrealfoodnyc.com" }],
+        destination: "https://www.eatrealfoodnyc.com/:path+",
+        statusCode: 301,
+      },
+      ...impression404Redirects(),
 
       // ── NEIGHBORHOOD SLUG FIXES ──
       // Apostrophe bug produced wrong slugs (hell-s-kitchen → hells-kitchen)

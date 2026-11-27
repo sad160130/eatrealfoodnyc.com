@@ -6,11 +6,10 @@ import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 const title = buildPipeTitle("Free Grade A badge", null)
 
 export const metadata = pageMeta({
-  path: "/badge",
+  path: "/",
   title,
   description:
     "A free badge for a restaurant that currently holds a Grade A. It shows the official NYC grade and updates when the grade does.",
-  index: false,
 })
 
 export default function BadgeIndexPage() {

@@ -5,7 +5,6 @@ import { prisma } from "@/lib/db"
 import { boroughToSlug } from "@/lib/utils"
 import { getCanonicalUrl } from "@/config/seo"
 import { DIET_CONFIG, COMBO_MIN_RESTAURANTS } from "@/config/dietary-tags"
-import { dietHubIsIndexable } from "@/lib/diet-hubs"
 import RestaurantCard from "@/components/restaurant-card"
 import FAQSection from "@/components/faq-section"
 import ContextualLinks from "@/components/contextual-links"
@@ -56,7 +55,6 @@ export async function generateMetadata({
       _count: { id: true },
     }),
   ])
-  const indexable = dietHubIsIndexable(stats.count)
   const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
   const ctrDiet = tag === "gluten-free" || tag === "vegetarian"
   const title = tag === "kosher"
@@ -101,9 +99,9 @@ export async function generateMetadata({
       images: ["/opengraph-image"],
     },
     robots: {
-      index: indexable,
+      index: true,
       follow: true,
-      googleBot: { index: indexable, follow: true },
+      googleBot: { index: true, follow: true },
     },
   }
 }
