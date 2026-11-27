@@ -11,7 +11,6 @@ export const FALL_2026_REPORT = {
   datasetId: "43nn-pn8j",
   datasetUrl:
     "https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j",
-  abceatsUrl: "https://a816-health.nyc.gov/ABCEatsRestaurants",
   letterGraded: 23992,
   gradeA: 21646,
   gradeB: 1810,

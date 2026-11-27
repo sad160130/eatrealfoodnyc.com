@@ -159,7 +159,7 @@ export default function InspectionReportPage() {
         <h2 className="h2-serif mt-12">How to check a restaurant’s grade</h2>
         <div className="mt-4 space-y-3 text-base leading-relaxed">
           <p>
-            Use the city’s lookup, <a href={R.abceatsUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>ABCEats</a>, and search by name or address. A is 0–13 points, B is 14–27, and C is 28 or more. N means not yet graded. Z means grade pending.
+            Look up a restaurant in the <a href={R.datasetUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>DOHMH New York City Restaurant Inspection Results</a> on NYC Open Data, and search by name or address. A is 0–13 points, B is 14–27, and C is 28 or more. N means not yet graded. Z means grade pending.
           </p>
           <p>
             The same records are in <a href={R.datasetUrl} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>NYC Open Data dataset {R.datasetId}</a>. Eat Real Food NYC joins a matched grade onto published healthy-dining listings. A grade is a food-safety score, not a claim that a restaurant is healthy.

@@ -19,7 +19,7 @@ import bestRatedReport from "@/data/best-rated-restaurants"
 import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import { listingStamp, latestStamp } from "@/lib/listing-stamp"
-import { TEAM_PAGE_DATE } from "@/lib/visible-dates"
+import { OUR_DATA_PAGE_DATE, TEAM_PAGE_DATE } from "@/lib/visible-dates"
 import { omitFromSitemap } from "@/lib/sitemap-policy"
 import {
   NEWSLETTER_INDEX_MIN_GRADE_A,
@@ -53,7 +53,7 @@ const STATIC_LASTMOD: Record<string, string> = {
   "/guides": "2026-11-15",
   "/newsletter": "2026-11-19",
   "/newsletter/issues": "2026-11-19",
-  "/about/our-data": "2026-11-25",
+  "/about/our-data": OUR_DATA_PAGE_DATE,
 }
 
 export function editorialPaths(): string[] {

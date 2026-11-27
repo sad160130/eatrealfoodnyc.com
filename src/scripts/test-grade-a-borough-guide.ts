@@ -15,6 +15,7 @@ import {
   currentGradeARestaurants,
   faqPageSchema,
   itemListSchema,
+  camisUrl,
   neighborhoodHref,
   organizationSchema,
   pageInternalHrefs,
@@ -31,6 +32,12 @@ assert.equal(GRADE_A_BOROUGH_KEYWORD, "grade a restaurants by borough nyc")
 assert.match(GRADE_A_BOROUGH_DESCRIPTION, /November 24, 2026/)
 
 assert.equal(GRADE_A_BOROUGH_RESTAURANTS.length, 5)
+for (const row of GRADE_A_BOROUGH_RESTAURANTS) {
+  const record = decodeURIComponent(camisUrl(row.camis))
+  assert.match(record, /43nn-pn8j/)
+  assert.match(record, new RegExp(`camis='${row.camis}'`))
+  assert.doesNotMatch(record, /a816-health/)
+}
 assert.equal(currentGradeARestaurants().length, 3)
 assert.deepEqual(
   currentGradeARestaurants().map((row) => row.slug),

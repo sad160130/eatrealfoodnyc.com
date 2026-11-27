@@ -55,8 +55,9 @@ for (const expected of [
   assert.ok(questions.includes(expected), expected)
 }
 const lookup = HEALTH_GRADE_FAQS.find((faq) => faq.question === "How do I look up a NYC restaurant's grade?")
-assert.match(lookup?.answer ?? "", /ABCEats/)
 assert.match(lookup?.answer ?? "", /43nn-pn8j/)
+assert.match(lookup?.answer ?? "", /data\.cityofnewyork\.us\/Health\/DOHMH-New-York-City-Restaurant-Inspection-Results\/43nn-pn8j/)
+assert.doesNotMatch(lookup?.answer ?? "", /a816-health\.nyc\.gov/)
 const boroughFaq = HEALTH_GRADE_FAQS.find((faq) => faq.question.startsWith("Which NYC borough"))
 assert.match(boroughFaq?.answer ?? "", /Manhattan has the highest share/)
 assert.match(boroughFaq?.answer ?? "", /90\.8%/)

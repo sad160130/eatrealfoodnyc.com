@@ -226,11 +226,6 @@ export default async function BoroughPage({
           <h1 className="display-1 mt-3">
             {boroughName === "Manhattan" ? "Healthy food in Manhattan" : `Healthy restaurants in ${boroughName}`}
           </h1>
-          {nearMeNeighborhoods.length > 0 && (
-            <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-              Find healthy food near you in <NeighborhoodList boroughSlug={boroughSlug} names={nearMeNeighborhoods} />.
-            </p>
-          )}
           <HubRecord
             place={boroughName}
             urlPath={`/nyc/${boroughSlug}/healthy-restaurants`}
@@ -245,6 +240,11 @@ export default async function BoroughPage({
           {boroughParagraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)} className="dek mt-4" style={{ maxWidth: "62ch" }}>{paragraph}</p>
           ))}
+          {nearMeNeighborhoods.length > 0 && (
+            <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
+              Find healthy food near you in <NeighborhoodList boroughSlug={boroughSlug} names={nearMeNeighborhoods} />.
+            </p>
+          )}
           <BoroughGradeContext borough={boroughName} />
 
           {/* Inline stats — mid-dot separators, tabular nums, no pipes */}

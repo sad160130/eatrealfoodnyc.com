@@ -72,7 +72,7 @@ export const HEALTH_GRADE_FAQS = [
   {
     question: "How do I look up a NYC restaurant's grade?",
     answer:
-      "Look it up in the city's ABCEats restaurant inspection search at https://a816-health.nyc.gov/ABCEatsRestaurants, or in NYC Open Data dataset 43nn-pn8j at https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j. A published page in this directory also shows the grade, score, and inspection date when a record is matched. The card in the window is the one the restaurant has to post.",
+      "Look it up in NYC Open Data dataset 43nn-pn8j at https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j. A published page in this directory also shows the grade, score, and inspection date when a record is matched. The card in the window is the one the restaurant has to post.",
   },
   {
     question: "Which NYC borough has the highest share of Grade A restaurants?",
