@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { pageMeta } from "@/lib/page-meta"
 import SocialLinks from "@/components/social-links"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMeta({
 export const revalidate = 3600
 
 export default async function PressPage() {
-  const counts = await getPublishedDirectoryCounts()
+  const stats = await getSiteStats()
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -50,8 +50,10 @@ export default async function PressPage() {
           </h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {[
-              { stat: counts.restaurants.toLocaleString(), label: "Published restaurants listed" },
-              { stat: counts.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing" },
+              { stat: stats.publishedListings.toLocaleString(), label: "Published listings" },
+              { stat: stats.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing" },
+              { stat: stats.gradeAListings.toLocaleString(), label: "Grade A among published listings" },
+              { stat: dataAsOfSentence(stats.dataAsOfLabel), label: "Newest inspection date on a published listing" },
               { stat: "5", label: "NYC boroughs covered" },
               { stat: "12", label: "Dietary filters available" },
               { stat: "Free", label: "No cost to use" },

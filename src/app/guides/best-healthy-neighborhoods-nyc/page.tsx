@@ -14,7 +14,7 @@ import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { DIET_CONFIG } from "@/config/dietary-tags"
 import { BOROUGH_NAMES, type BoroughGradeStats, type NeighborhoodGradeRow, getLiveGuideStats } from "@/lib/live-guide-stats"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { getBuiltNeighborhoodHubs, hubKey } from "@/lib/neighborhood-hubs"
 
@@ -53,8 +53,8 @@ const GUIDE_FAQS = [
 ]
 
 export default async function HealthyNeighborhoodsGuide() {
-  const [{ restaurants, neighborhoods }, stats, hubs] = await Promise.all([
-    getPublishedDirectoryCounts(),
+  const [siteStats, stats, hubs] = await Promise.all([
+    getSiteStats(),
     getLiveGuideStats(),
     getBuiltNeighborhoodHubs(),
   ])
@@ -66,7 +66,7 @@ export default async function HealthyNeighborhoodsGuide() {
     if (faq.question === "How do you rank neighborhoods for healthy dining?") {
       return {
         ...faq,
-        answer: `A neighborhood is included when it has at least 10 published listings. The rank is the share of those listings whose matched NYC DOHMH grade is A. This directory currently has ${restaurants.toLocaleString("en-US")} published restaurants across ${neighborhoods.toLocaleString("en-US")} neighborhoods. Grade A is a food-safety grade, not a nutrition score.`,
+        answer: `A neighborhood is included when it has at least 10 published listings. The rank is the share of those listings whose matched NYC DOHMH grade is A. This directory currently has ${siteStats.publishedListings.toLocaleString("en-US")} published listings across ${siteStats.neighborhoods.toLocaleString("en-US")} neighborhoods with a published listing. ${dataAsOfSentence(siteStats.dataAsOfLabel)} Grade A is a food-safety grade, not a nutrition score.`,
       }
     }
     if (faq.question === "Which borough has the healthiest restaurants overall?" && leadingBorough) {
@@ -99,9 +99,9 @@ export default async function HealthyNeighborhoodsGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle={`Neighborhoods with at least 10 published listings are ranked by the share whose matched NYC DOHMH grade is A. This count covers ${restaurants.toLocaleString("en-US")} published restaurants.`}
+        subtitle={`Neighborhoods with at least 10 published listings are ranked by the share whose matched NYC DOHMH grade is A. This count covers ${siteStats.publishedListings.toLocaleString("en-US")} published listings. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`}
         stats={[
-          { label: "Neighborhoods", stat: neighborhoods.toLocaleString("en-US") },
+          { label: "Neighborhoods with a published listing", stat: siteStats.neighborhoods.toLocaleString("en-US") },
           { label: "Boroughs", stat: "5" },
           { label: "Health scores computed", stat: "Yes" },
           { label: "Live DOHMH data", stat: "Yes" },
@@ -124,7 +124,7 @@ export default async function HealthyNeighborhoodsGuide() {
 
         <DataCallout
           heading="NYC Neighborhood Health Rankings — Our Data"
-          intro={`We track healthy dining data across ${stats.global.totalUniqueNeighborhoods} NYC neighborhoods. The rankings below are based on three factors: Grade A certification rate, restaurant count, and hidden gem density. Minimum 10 restaurants required to qualify.`}
+          intro={`Published listings cover ${siteStats.neighborhoods.toLocaleString("en-US")} neighborhoods. The rankings below use the Grade A share among neighborhoods with at least 10 published listings. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`}
           dataPoints={[
             {
               stat: stats.neighborhoods.topByGradeA[0]?.neighborhood ?? "",
@@ -144,12 +144,12 @@ export default async function HealthyNeighborhoodsGuide() {
                 : "Hidden gem data updating",
             },
             {
-              stat: stats.global.totalUniqueNeighborhoods.toString(),
-              label: "NYC neighborhoods tracked",
-              source: "Across all 5 boroughs",
+              stat: siteStats.neighborhoods.toLocaleString("en-US"),
+              label: "Neighborhoods with a published listing",
+              source: dataAsOfSentence(siteStats.dataAsOfLabel),
             },
           ]}
-          sourceNote="Full neighborhood comparison available at eatrealfoodnyc.com/nyc/compare — ranks all tracked neighborhoods by health score, Grade A rate, dietary diversity, and hidden gem count. Each grade is the latest matched NYC DOHMH record."
+          sourceNote={`Neighborhoods with a published listing. ${dataAsOfSentence(siteStats.dataAsOfLabel)} Each grade is the latest matched NYC DOHMH record on that listing, not the complete city file.`}
           variant="forest"
         />
 
@@ -314,7 +314,7 @@ export default async function HealthyNeighborhoodsGuide() {
         </GuideReportNote>
         <GuideCTA
           heading="Compare every NYC neighborhood"
-          body={`Use our interactive comparison tool to rank ${neighborhoods.toLocaleString("en-US")} ${neighborhoods === 1 ? "neighborhood" : "neighborhoods"} across all five boroughs by the metrics that matter to you: restaurant density, ratings, health scores, and dietary diversity.`}
+          body={`Use our interactive comparison tool to rank ${siteStats.neighborhoods.toLocaleString("en-US")} ${siteStats.neighborhoods === 1 ? "neighborhood" : "neighborhoods"} with a published listing. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`}
           primaryLabel="Compare neighborhoods →"
           primaryHref="/nyc/compare"
           secondaryLabel="View map"

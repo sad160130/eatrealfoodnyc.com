@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { unstable_rethrow } from "next/navigation"
 import NewsletterSignup from "@/components/newsletter-signup"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { getSiteStats } from "@/lib/site-stats"
 import { loadNavDietTags } from "@/lib/diet-hub-index"
 import { shortenRevalidate } from "@/lib/db-fallback"
 
@@ -44,10 +44,11 @@ function boroughToSlug(borough: string): string {
 
 async function loadFooterCounts(): Promise<{ listed: string; neighborhoods: string } | null> {
   try {
-    const counts = await getPublishedDirectoryCounts()
+    const stats = await getSiteStats()
+    if (stats.source === "fallback") return null
     return {
-      listed: counts.restaurants.toLocaleString("en-US"),
-      neighborhoods: counts.neighborhoods.toLocaleString("en-US"),
+      listed: stats.publishedListings.toLocaleString("en-US"),
+      neighborhoods: stats.neighborhoods.toLocaleString("en-US"),
     }
   } catch (error) {
     unstable_rethrow(error)
@@ -172,8 +173,8 @@ export default async function Footer() {
             <div className="grid grid-cols-3 gap-8">
               {counts ? (
                 <>
-                  <TrustStat number={counts.listed} label="Restaurants listed" />
-                  <TrustStat number={counts.neighborhoods} label="NYC neighborhoods" />
+                  <TrustStat number={counts.listed} label="Published listings" />
+                  <TrustStat number={counts.neighborhoods} label="Neighborhoods with a published listing" />
                 </>
               ) : null}
               <TrustStat number="A" label="DOHMH source data" plaque />

@@ -1,8 +1,9 @@
 import { cache } from "react"
 import { prisma } from "@/lib/db"
 import { DIET_CONFIG } from "@/config/dietary-tags"
-import { DIRECTORY_SHARED_TTL_MS, getPublishedDirectoryCounts } from "@/lib/directory-stats"
-import { formatLongDate, formatMonthYear, latestInspectionDate } from "@/lib/inspection-dates"
+import { DIRECTORY_SHARED_TTL_MS } from "@/lib/directory-stats"
+import { formatMonthYear } from "@/lib/inspection-dates"
+import { loadLiveSiteStats } from "@/lib/site-stats"
 import { memoizeSuccess } from "@/lib/success-memo"
 
 export interface DirectorySnapshot {
@@ -31,35 +32,29 @@ export interface DirectorySnapshot {
  * data-as-of date.
  */
 async function queryDirectorySnapshot(): Promise<DirectorySnapshot> {
-  const [counts, trackedCount, gradeAAll, lastPublish, inspectionDates] = await Promise.all([
-    getPublishedDirectoryCounts(),
-    prisma.restaurant.count(),
+  const [stats, gradeAAll, lastPublish] = await Promise.all([
+    loadLiveSiteStats(),
     prisma.restaurant.count({ where: { inspection_grade: "A" } }),
     prisma.restaurant.aggregate({
       where: { is_published: true },
       _max: { updated_at: true },
     }),
-    prisma.restaurant.findMany({
-      where: { is_published: true, inspection_date: { not: null } },
-      distinct: ["inspection_date"],
-      select: { inspection_date: true },
-    }),
   ])
 
-  const latest = latestInspectionDate(inspectionDates.map((row) => row.inspection_date))
+  const latest = stats.dataAsOf ? new Date(`${stats.dataAsOf}T00:00:00.000Z`) : null
   const lastPublishAt = lastPublish._max.updated_at
 
   return {
-    trackedCount,
-    publishedCount: counts.restaurants,
-    gradeAPublished: counts.gradeA,
+    trackedCount: stats.restaurantsTracked,
+    publishedCount: stats.publishedListings,
+    gradeAPublished: stats.gradeAListings,
     gradeAAll,
-    neighborhoodCount: counts.neighborhoods,
+    neighborhoodCount: stats.neighborhoods,
     dietaryTagCount: Object.keys(DIET_CONFIG).length,
     lastPublishAt,
     lastPublishLabel: lastPublishAt ? formatMonthYear(lastPublishAt) : null,
     latestInspectionAt: latest,
-    latestInspectionLabel: latest ? formatLongDate(latest) : null,
+    latestInspectionLabel: stats.dataAsOfLabel,
     latestInspectionMonth: latest ? formatMonthYear(latest) : null,
   }
 }

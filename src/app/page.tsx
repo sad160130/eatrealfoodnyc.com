@@ -8,9 +8,9 @@ import EatForYourGoal from "@/components/eat-for-your-goal"
 import SavedPreview from "@/components/saved-preview"
 import RestaurantCard from "@/components/restaurant-card"
 import { withPartnerStatus } from "@/lib/partner-status-db"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
 import { isDirectoryEligible } from "@/config/publishable-types"
-import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { DIET_CONFIG } from "@/config/dietary-tags"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { homeHeroCopy } from "@/lib/home-hero"
 import HomeHeroCta from "@/components/home-hero-cta"
 import NewsletterSignup from "@/components/newsletter-signup"
@@ -25,26 +25,21 @@ import { UpdatedWebPage } from "@/components/updated-webpage"
 import { pausedSlugs } from "@/config/listing-overrides"
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [counts, snapshot] = await Promise.all([
-    getPublishedDirectoryCounts(),
-    getDirectorySnapshot(),
-  ])
-  const year = (snapshot.lastPublishAt ?? new Date()).getUTCFullYear()
-  const title = homeTitle(counts.gradeA, year)
-  const dataMonth = snapshot.latestInspectionAt
-    ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(snapshot.latestInspectionAt)
-    : null
-  const extraTags = Math.max(0, snapshot.dietaryTagCount - 3)
+  const stats = await getSiteStats()
+  const year = stats.dataAsOf ? Number(stats.dataAsOf.slice(0, 4)) : new Date().getUTCFullYear()
+  const title = homeTitle(stats.gradeAListings, year)
+  const dataMonth = stats.dataAsOfLabel
+  const extraTags = Math.max(0, Object.keys(DIET_CONFIG).length - 3)
   const description = fitDescription(
     [
-      `${counts.restaurants.toLocaleString("en-US")} healthy restaurants in NYC for ${year}. ${counts.gradeA.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`,
+      `${stats.publishedListings.toLocaleString("en-US")} published listings in NYC for ${year}. ${stats.gradeAListings.toLocaleString("en-US")} hold an official NYC DOHMH Grade A.`,
     ],
     [
       extraTags > 0
-        ? `Across ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods. Filter vegan, halal, gluten-free, and ${extraTags} more.${dataMonth ? ` Inspections as of ${dataMonth}.` : ""}`
+        ? `Across ${stats.neighborhoods.toLocaleString("en-US")} neighborhoods with a published listing. Filter vegan, halal, gluten-free, and ${extraTags} more.${dataMonth ? ` ${dataAsOfSentence(dataMonth)}` : ""}`
         : "",
-      `Across ${counts.neighborhoods.toLocaleString("en-US")} neighborhoods.${dataMonth ? ` Inspections as of ${dataMonth}.` : ""}`,
-      dataMonth ? `Inspections as of ${dataMonth}.` : "",
+      `Across ${stats.neighborhoods.toLocaleString("en-US")} neighborhoods with a published listing.${dataMonth ? ` ${dataAsOfSentence(dataMonth)}` : ""}`,
+      dataMonth ? dataAsOfSentence(dataMonth) : "",
     ].filter(Boolean)
   )
   return {
@@ -106,8 +101,8 @@ const ALL_DIETS = [
 ]
 
 export default async function HomePage() {
-  const [counts, editorPickRows, hiddenGemRows, snapshot, indexableDiets, neighborhoodGroups] = await Promise.all([
-    getPublishedDirectoryCounts(),
+  const [stats, editorPickRows, hiddenGemRows, indexableDiets, neighborhoodGroups] = await Promise.all([
+    getSiteStats(),
     prisma.restaurant.findMany({
       where: {
         business_status: "OPERATIONAL", is_published: true,
@@ -125,7 +120,6 @@ export default async function HomePage() {
       orderBy: { rating: "desc" },
       take: 4,
     }),
-    getDirectorySnapshot(),
     getIndexableDietTags(),
     prisma.restaurant.groupBy({
       by: ["borough", "neighborhood"],
@@ -147,11 +141,11 @@ export default async function HomePage() {
     withPartnerStatus(editorPickRows),
     withPartnerStatus(hiddenGemRows),
   ])
-  const totalCount = counts.restaurants
+  const totalCount = stats.publishedListings
   const hero = homeHeroCopy({
-    published: counts.restaurants,
-    gradeA: counts.gradeA,
-    latestInspectionLabel: snapshot.latestInspectionLabel,
+    published: stats.publishedListings,
+    gradeA: stats.gradeAListings,
+    latestInspectionLabel: stats.dataAsOfLabel,
   })
   const dietTags = new Set(indexableDiets.map((diet) => diet.tag))
   const visibleDiets = ALL_DIETS.filter((diet) => dietTags.has(diet.tag))
@@ -182,11 +176,13 @@ export default async function HomePage() {
             <p className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
               {hero.showGradeMark ? (
                 <>
-                  <span className="tabular">{counts.gradeA.toLocaleString("en-US")} Grade A</span>
+                  <span className="tabular">{stats.gradeAListings.toLocaleString("en-US")} Grade A listings</span>
                   <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
                 </>
               ) : null}
               <span className="tabular">{totalCount.toLocaleString("en-US")} published listings</span>
+              <span aria-hidden="true" style={{ color: "var(--color-muted)" }}>·</span>
+              <span>{dataAsOfSentence(stats.dataAsOfLabel)}</span>
             </p>
           </div>
 
@@ -556,18 +552,18 @@ export default async function HomePage() {
                 We don&apos;t pay critics, and we don&apos;t sell grades or rankings.
                 A listing shows a NYC Department of Health grade only when it
                 matches an inspection record.{" "}
-                {counts.letterGraded.toLocaleString()} of{" "}
-                {totalCount.toLocaleString()} published listings have an A, B, or C.{" "}
-                {(totalCount - counts.letterGraded).toLocaleString()} do not.
+                {stats.gradedListings.toLocaleString()} of{" "}
+                {totalCount.toLocaleString()} published listings have an A, B, or C ({stats.gradedPercent}%).{" "}
+                {(totalCount - stats.gradedListings).toLocaleString()} do not. {dataAsOfSentence(stats.dataAsOfLabel)}
               </p>
 
               <dl className="mt-12 grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
-                <Stat number={counts.restaurants.toLocaleString()} label="Published listings" />
-                <Stat number={counts.gradeA.toLocaleString()} label="Grade A, published" />
-                <Stat number={counts.neighborhoods.toLocaleString()} label="Neighborhoods with a listing" />
-                <Stat number={counts.hiddenGems.toLocaleString()} label="Hidden gems, published" />
-                <Stat number={String(snapshot.dietaryTagCount)} label="Dietary tags, applied conservatively" />
-                <Stat number={snapshot.lastPublishLabel ?? "—"} label="Last publish" />
+                <Stat number={stats.publishedListings.toLocaleString()} label="Published listings" />
+                <Stat number={stats.restaurantsTracked.toLocaleString()} label="Restaurant rows tracked, including unpublished" />
+                <Stat number={stats.gradeAListings.toLocaleString()} label="Grade A among published listings" />
+                <Stat number={stats.neighborhoods.toLocaleString()} label="Neighborhoods with a published listing" />
+                <Stat number={`${stats.gradedListings.toLocaleString()} (${stats.gradedPercent}%)`} label="Published listings with an A, B, or C" />
+                <Stat number={stats.hiddenGems.toLocaleString()} label="Hidden gems among published listings" />
               </dl>
             </div>
 
@@ -605,9 +601,9 @@ export default async function HomePage() {
                   >
                     DOHMH Open Data joined to conservative dietary tagging.
                     Labeled Partner placements never change a grade or a ranking.
-                    No fabricated reviews, no editorial personas. The full dataset has{" "}
-                    {snapshot.gradeAAll.toLocaleString()} Grade A records, including
-                    restaurants that are not published yet.
+                    No fabricated reviews, no editorial personas. Grade A on this page
+                    counts published listings only, not every inspected restaurant in the city file.
+                    {dataAsOfSentence(stats.dataAsOfLabel)}
                   </p>
                 </div>
                 <Link
@@ -725,12 +721,12 @@ export default async function HomePage() {
           <FAQSchema faqs={faqs} />
           <p className="eyebrow">FAQ</p>
           <h2 className="h2-serif mt-2">Questions about this directory</h2>
-          {snapshot.latestInspectionAt ? (
+          {stats.dataAsOf ? (
             <>
               <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
-                Updated {snapshot.latestInspectionLabel}.
+                {dataAsOfSentence(stats.dataAsOfLabel)}
               </p>
-              <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/" hideLabel />
+              <UpdatedWebPage date={new Date(`${stats.dataAsOf}T00:00:00.000Z`)} urlPath="/" hideLabel />
             </>
           ) : null}
           <div className="mt-8 space-y-6">

@@ -19,15 +19,12 @@ import {
   boroughToSlug,
 } from "@/lib/utils"
 import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants"
-import { formatLongDate } from "@/lib/inspection-dates"
-import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { presentGrade } from "@/lib/grade-display"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
-const snapshotDate = formatLongDate(new Date(bestRatedData.generatedAt))
-
-const PAGE_DESCRIPTION = `${bestRatedData.summary.total} NYC restaurants rated ${bestRatedData.algorithm.qualifyingRating}+ stars across all 5 boroughs. ${bestRatedData.summary.eliteCount} reach our elite ${bestRatedData.algorithm.eliteRating}+ tier. Snapshot generated ${snapshotDate}.`
+const PAGE_DESCRIPTION = `${bestRatedData.summary.total.toLocaleString("en-US")} restaurants in this ranking are rated ${bestRatedData.algorithm.qualifyingRating} or higher from community reviews. That ranking is not the size of the directory. Directory counts on the page are labeled Data as of. Grade A is a food-safety grade, not a health claim.`
 
 export const metadata: Metadata = {
   title: `NYC's Best-Rated Healthy Restaurants 2026 — ${bestRatedData.summary.total} Top-Rated Spots`,
@@ -193,8 +190,8 @@ function FeaturedCard({ r, rank, links }: { r: RestaurantRow; rank?: number; lin
 }
 
 export default async function BestRatedRestaurantsPage() {
-  const [live, slugRows, hubs, diets] = await Promise.all([
-    getDirectorySnapshot(),
+  const [stats, slugRows, hubs, diets] = await Promise.all([
+    getSiteStats(),
     prisma.restaurant.findMany({
       where: { is_published: true },
       select: { slug: true },
@@ -207,7 +204,7 @@ export default async function BestRatedRestaurantsPage() {
     hubs,
     diets: new Set(diets.map((diet) => diet.tag)),
   }
-  const dateModified = live.lastPublishLabel ?? bestRatedData.reportDate
+  const dateModified = stats.dataAsOf ?? bestRatedData.generatedAt.slice(0, 10)
   const boroughOrder = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
 
   const reportJsonLd = {
@@ -304,7 +301,7 @@ export default async function BestRatedRestaurantsPage() {
             <span className="text-white/70">Best-Rated Restaurants</span>
           </nav>
           <span className="mb-4 inline-block rounded-full bg-amber/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
-            <span aria-hidden="true">⭐</span> Original Research — snapshot {snapshotDate}
+            <span aria-hidden="true">⭐</span> Original research — {dataAsOfSentence(stats.dataAsOfLabel)}
           </span>
           <h1
             className="text-4xl font-bold leading-tight text-white md:text-5xl"
@@ -315,13 +312,10 @@ export default async function BestRatedRestaurantsPage() {
             <span className="text-amber">Healthy Restaurants</span>
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
-            {summary.total} NYC restaurants rated {algorithm.qualifyingRating}+ stars across all 5
-            boroughs and {byNeighborhood.length}+ neighborhoods. Ranked by community rating with
-            review-count tiebreakers. This is the {snapshotDate} snapshot.
-          </p>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
-            Live directory today: {live.publishedCount.toLocaleString()} published,{" "}
-            {live.gradeAPublished.toLocaleString()} of them Grade A.
+            {summary.total.toLocaleString("en-US")} restaurants in this ranking are rated {algorithm.qualifyingRating} or higher.
+            The ranking is not the whole directory. The directory has {stats.publishedListings.toLocaleString("en-US")} published listings
+            in {stats.neighborhoods.toLocaleString("en-US")} neighborhoods, and {stats.gradeAListings.toLocaleString("en-US")} of those listings hold Grade A.
+            {" "}{dataAsOfSentence(stats.dataAsOfLabel)}
           </p>
         </div>
       </header>
@@ -408,8 +402,8 @@ export default async function BestRatedRestaurantsPage() {
               style={{ color: "var(--color-muted)" }}
             >
               Ratings are sourced from Google Maps community reviews. Grades and operational status
-              are sourced from the NYC DOHMH Open Data portal. Figures in this report are from the
-              snapshot generated {snapshotDate}, not a live recount of the directory.
+              are sourced from the NYC DOHMH Open Data portal. The ranking tables are this stored
+              4.5-or-higher set. Directory-wide counts above are published listings. {dataAsOfSentence(stats.dataAsOfLabel)}
             </p>
           </div>
         </section>
@@ -827,7 +821,7 @@ export default async function BestRatedRestaurantsPage() {
         </section>
 
         {/* About this data */}
-        <AboutThisData variant="guide" lastRefreshed={snapshotDate} />
+        <AboutThisData variant="guide" lastRefreshed={stats.dataAsOfLabel ?? undefined} />
       </main>
     </div>
   )

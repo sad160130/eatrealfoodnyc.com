@@ -245,7 +245,7 @@ export default async function DietTypePage({
             Dietary tag
             <span aria-hidden="true" className="mx-2" style={{ color: "var(--color-muted)" }}>·</span>
             <span style={{ color: "var(--color-muted)" }}>
-              {hubStamp ? <span>Listings updated {formatLongDate(hubStamp)}</span> : <DirectoryAsOf />}
+              {hubStamp ? <span>Data as of {formatLongDate(hubStamp)}</span> : <DirectoryAsOf />}
             </span>
           </p>
 

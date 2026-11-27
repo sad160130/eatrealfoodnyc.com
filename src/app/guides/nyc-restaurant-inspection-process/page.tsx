@@ -13,6 +13,7 @@ import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("nyc-restaurant-inspection-process")!
@@ -36,7 +37,7 @@ const GUIDE_FAQS = [
 ]
 
 export default async function InspectionProcessGuide() {
-  const stats = await getLiveGuideStats()
+  const [stats, siteStats] = await Promise.all([getLiveGuideStats(), getSiteStats()])
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -91,16 +92,16 @@ export default async function InspectionProcessGuide() {
 
         <DataCallout
           heading="NYC Restaurant Inspection Coverage — Our Data"
-          intro="How does NYC's inspection system translate to what diners actually see? Our directory of active NYC restaurants gives a clear picture of current grade distribution."
+          intro={`How does NYC's inspection system translate to what diners actually see? These figures are published listings. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`}
           dataPoints={[
             {
-              stat: stats.global.totalPublished.toLocaleString(),
-              label: "Active NYC restaurants tracked",
+              stat: siteStats.publishedListings.toLocaleString("en-US"),
+              label: "Published listings",
             },
             {
-              stat: stats.global.totalWithGrade.toLocaleString(),
-              label: "Have a verified DOHMH grade",
-              source: `${stats.global.letterGradePercent}% of published listings have an A, B, or C`,
+              stat: siteStats.gradedListings.toLocaleString("en-US"),
+              label: "Published listings with an A, B, or C",
+              source: `${siteStats.gradedPercent}% of published listings`,
             },
             {
               stat: stats.neighborhoods.topByGradeA[0]?.neighborhood ?? "",
@@ -113,7 +114,7 @@ export default async function InspectionProcessGuide() {
               source: stats.neighborhoods.bottomByGradeA[0]?.neighborhood ?? "",
             },
           ]}
-          sourceNote="Data: Eat Real Food NYC + NYC DOHMH Open Data. Only restaurants with current operational status included."
+          sourceNote={`Published operational listings only. ${dataAsOfSentence(siteStats.dataAsOfLabel)} Grades are matched NYC DOHMH records, not the complete city file.`}
           variant="forest"
         />
 
