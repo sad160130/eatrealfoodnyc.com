@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import FAQSchema from "@/components/faq-schema"
 import FAQItem from "@/components/faq-item"
-import { getCanonicalUrl } from "@/config/seo"
 import { getGuideBySlug } from "@/config/guides"
 import GuideLayout from "@/components/guide-layout"
 import GuideHero from "@/components/guide-hero"
@@ -13,16 +12,29 @@ import AboutThisData from "@/components/about-this-data"
 import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { pageMeta } from "@/lib/page-meta"
+import { kosherGuideDescription, kosherGuideTitle } from "@/lib/seo-titles"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eatrealfoodnyc.com"
 const guide = getGuideBySlug("kosher-dining-nyc-guide")!
 
-export const metadata: Metadata = {
-  title: guide.metaTitle,
-  description: guide.description,
-  alternates: { canonical: getCanonicalUrl(`/guides/${guide.slug}`) },
-  robots: { index: true, follow: true },
-  openGraph: { title: guide.metaTitle, description: guide.description, type: "article", url: `${siteUrl}/guides/${guide.slug}`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: guide.metaTitle }] },
+function listingYear(iso: string | null): number {
+  const year = iso ? Number(iso.slice(0, 4)) : NaN
+  return Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : new Date().getUTCFullYear()
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const stats = await getLiveGuideStats()
+  const count = stats.dietary.counts.kosher ?? 0
+  const title = kosherGuideTitle(count, listingYear(stats.grades.latestInspectionIso))
+  const description = kosherGuideDescription(count)
+  return pageMeta({
+    path: `/guides/${guide.slug}`,
+    title,
+    description,
+    type: "article",
+    brand: false,
+  })
 }
 
 const GUIDE_FAQS = [
@@ -54,6 +66,10 @@ const GUIDE_FAQS = [
 
 export default async function KosherGuide() {
   const stats = await getLiveGuideStats()
+  const count = stats.dietary.counts.kosher ?? 0
+  const title = kosherGuideTitle(count, listingYear(stats.grades.latestInspectionIso))
+  const description = kosherGuideDescription(count)
+  const listed = count === 1 ? "listing is" : "listings are"
   return (
     <GuideLayout guide={guide}>
       <FAQSchema faqs={GUIDE_FAQS} />
@@ -63,8 +79,8 @@ export default async function KosherGuide() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: guide.title,
-            description: guide.description,
+            headline: title,
+            description,
             author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
             datePublished: guide.publishedDate,
@@ -76,16 +92,24 @@ export default async function KosherGuide() {
 
       <GuideHero
         guide={guide}
-        subtitle={`A kosher tag means the restaurant identifies as kosher or has substantial kosher menu coverage. ${stats.dietary.counts.kosher.toLocaleString("en-US")} published listings carry that tag. The tag is not a certification this directory issues.`}
+        heading={title}
+        subtitle={`Kosher Restaurants NYC: ${count.toLocaleString("en-US")} published ${listed} tagged kosher and listed by borough. The tag means the restaurant identifies as kosher or has substantial kosher menu coverage. It is not a certification this directory issues.`}
         stats={[
-          { label: "Kosher restaurants", stat: "195" },
-          { label: "Manhattan + Brooklyn", stat: "Top boroughs" },
-          { label: "Certified + observant", stat: "Mixed" },
-          { label: "Health graded", stat: "Yes" },
+          { label: "Kosher restaurants", stat: count.toLocaleString("en-US") },
+          { label: "Manhattan", stat: (stats.dietary.byBorough["Manhattan"]?.kosher ?? 0).toLocaleString("en-US") },
+          { label: "Brooklyn", stat: (stats.dietary.byBorough["Brooklyn"]?.kosher ?? 0).toLocaleString("en-US") },
+          { label: "Boroughs in the directory", stat: "5" },
         ]}
       />
 
       <div className="mx-auto max-w-4xl px-6 py-16">
+        <p className="mb-10 text-lg leading-relaxed" style={{ color: "var(--color-text)" }}>
+          NYC DOHMH letter grades for these listings are on the{" "}
+          <Link href="/healthy-restaurants/kosher" className="font-semibold text-jade underline underline-offset-2 hover:text-forest">
+            kosher restaurant health grades
+          </Link>{" "}
+          page.
+        </p>
         <GuideTOC
           items={[
             { href: "#what-is-kosher", label: "What is kosher?" },
@@ -101,12 +125,12 @@ export default async function KosherGuide() {
 
         <DataCallout
           heading="Kosher Restaurants in NYC — Directory Data"
-          intro={`Eat Real Food NYC tracks ${stats.dietary.counts["kosher"].toLocaleString()} kosher-certified restaurants across all five NYC boroughs. Every restaurant with a kosher tag holds active certification from a recognised authority — we do not apply this tag based on menu descriptions alone.`}
+          intro={`${count.toLocaleString("en-US")} published ${listed} tagged kosher. Borough counts below use that same published set.`}
           dataPoints={[
             {
               stat: stats.dietary.counts["kosher"].toLocaleString(),
               label: "Kosher restaurants in NYC",
-              source: "Active certification required",
+              source: "Published listings tagged kosher",
             },
             {
               stat: (stats.dietary.byBorough["Manhattan"]?.["kosher"] ?? 0).toLocaleString(),
@@ -124,7 +148,7 @@ export default async function KosherGuide() {
               source: `${stats.dietary.topNeighborhoodsByTag["kosher"]?.[0]?.count ?? 0} kosher restaurants`,
             },
           ]}
-          sourceNote="Kosher certification standard: we tag restaurants only when they hold active kosher certification from a recognised authority such as OU, OK, Star-K, or equivalent. Tags are reviewed editorially before they are applied."
+          sourceNote="A kosher tag is applied when a restaurant identifies as kosher or has substantial kosher menu coverage. It is not a certification this directory issues."
           variant="green"
         />
 
@@ -139,11 +163,11 @@ export default async function KosherGuide() {
             The foundational principles are: only meat from animals with split hooves that chew their cud (beef, lamb, goat — but not pork), only fish with fins and scales (salmon, tuna — but not shellfish, catfish, or swordfish), poultry that is not a bird of prey, and all meat must be slaughtered by a trained shochet using a specific method designed to minimize the animal&apos;s suffering. Blood must be fully drained from the meat before cooking, typically through salting.
           </p>
           <p className="mb-4 text-lg leading-relaxed text-gray-700">
-            The separation of meat and dairy is perhaps the most distinctive kosher requirement. A kosher restaurant that serves meat cannot serve any dairy products — no butter, cheese, cream, or milk — and must use separate dishes, pots, utensils, and washing facilities. Similarly, a dairy kosher restaurant serves no meat. A third category, pareve, includes foods that are neither meat nor dairy (fish, eggs, fruits, vegetables, grains) and can be served with either. Browse all{" "}
+            The separation of meat and dairy is perhaps the most distinctive kosher requirement. A kosher restaurant that serves meat cannot serve any dairy products — no butter, cheese, cream, or milk — and must use separate dishes, pots, utensils, and washing facilities. Similarly, a dairy kosher restaurant serves no meat. A third category, pareve, includes foods that are neither meat nor dairy (fish, eggs, fruits, vegetables, grains)             and can be served with either. NYC DOHMH letters for tagged listings are on the{" "}
             <Link href="/healthy-restaurants/kosher" className="font-semibold text-jade hover:text-forest">
-              kosher restaurants in our directory
+              kosher restaurant health grades
             </Link>{" "}
-            to start exploring.
+            page.
           </p>
         </section>
 
@@ -278,8 +302,8 @@ export default async function KosherGuide() {
         </GuideReportNote>
         <GuideCTA
           heading="Browse every kosher restaurant in NYC"
-          body="Search 195 kosher restaurants across NYC. Filter by neighborhood, cuisine type, certification, health grade, and price range."
-          primaryLabel="Browse kosher →"
+          body={`${count.toLocaleString("en-US")} published kosher restaurants across NYC. Open a listing for its neighborhood and the matched NYC DOHMH grade.`}
+          primaryLabel="See the health grades"
           primaryHref="/healthy-restaurants/kosher"
           secondaryLabel="Manhattan kosher"
           secondaryHref="/nyc/manhattan/healthy-restaurants"

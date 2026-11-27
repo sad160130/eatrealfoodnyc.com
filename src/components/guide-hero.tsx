@@ -4,12 +4,14 @@ import { GuideArticle } from "@/config/guides"
 interface GuideHeroProps {
   guide: GuideArticle
   subtitle: string
+  /** Visible H1 when it must match a count-based title instead of guide.title. */
+  heading?: string
   stats?: Array<{ stat: string; label: string }>
   /** A data-derived line under the lede, such as the newest inspection date. */
   note?: string | null
 }
 
-export default function GuideHero({ guide, subtitle, stats, note }: GuideHeroProps) {
+export default function GuideHero({ guide, subtitle, heading, stats, note }: GuideHeroProps) {
   const publishedLabel = new Date(`${guide.publishedDate}T00:00:00Z`).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -52,7 +54,7 @@ export default function GuideHero({ guide, subtitle, stats, note }: GuideHeroPro
           </Link>
         </p>
 
-        <h1 className="display-1 mt-4">{guide.title}</h1>
+        <h1 className="display-1 mt-4">{heading ?? guide.title}</h1>
 
         {/* Subtitle / lede */}
         <p

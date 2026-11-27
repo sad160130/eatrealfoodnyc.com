@@ -17,6 +17,10 @@ import {
   healthGradesGuideDescription,
   healthGradesGuideTitle,
   hubMetaDescription,
+  kosherGuideDescription,
+  kosherGuideTitle,
+  kosherHealthGradesDescription,
+  kosherHealthGradesTitle,
   lateNightGuideDescription,
   lateNightGuideTitle,
   neighborhoodTitle,
@@ -199,8 +203,13 @@ for (const neighborhoods of hoods) {
   for (const restaurants of counts) {
     const lateTitle = lateNightGuideTitle(neighborhoods)
     const lateDescription = lateNightGuideDescription({ restaurants, neighborhoods })
-    if (neighborhoods > 0 && restaurants > 0) expectCtr("late night", lateTitle, lateDescription)
-    else assert.ok(lateTitle.length <= TITLE_MAX, lateTitle)
+    assert.ok(lateTitle.startsWith("Healthy Food Open Late in NYC"), lateTitle)
+    assert.match(lateTitle, /10pm/)
+    if (neighborhoods > 0 && restaurants > 0) {
+      expectCtr("late night", lateTitle, lateDescription)
+      assert.match(lateDescription, /^Healthy Food Open Late in NYC/)
+      assert.match(lateDescription, /10pm/)
+    } else assert.ok(lateTitle.length <= TITLE_MAX, lateTitle)
   }
 }
 const gradesTitle = healthGradesGuideTitle()
@@ -224,6 +233,41 @@ for (const label of ["Gluten-Free", "Vegetarian"]) {
       if (count > 0) expectCtr(label, title, description)
       else assert.ok(title.length <= TITLE_MAX, title)
       if (gradeA > 0) assert.ok(title.includes("Grade A"), title)
+    }
+  }
+}
+
+for (const count of counts) {
+  const title = kosherGuideTitle(count, 2026)
+  const description = kosherGuideDescription(count)
+  assert.ok(title.startsWith("Kosher Restaurants NYC"), title)
+  assert.ok(title.length <= TITLE_MAX, `${title.length}: ${title}`)
+  assert.ok(description.length <= DESCRIPTION_MAX, `${description.length}: ${description}`)
+  assert.match(description, /^Kosher Restaurants NYC/)
+  if (count > 0) {
+    assert.match(title, /Listed by Borough \(2026\)/)
+    assert.match(description, new RegExp(count.toLocaleString("en-US")))
+  } else {
+    assert.doesNotMatch(title, /0 Listed/)
+  }
+  assert.doesNotMatch(title, /Health Grades/)
+}
+
+for (const gradeA of counts) {
+  for (const graded of counts) {
+    const title = kosherHealthGradesTitle(gradeA, graded)
+    const description = kosherHealthGradesDescription({ count: graded, gradeA, graded })
+    assert.ok(title.length <= TITLE_MAX, `${title.length}: ${title}`)
+    assert.ok(description.length <= DESCRIPTION_MAX, `${description.length}: ${description}`)
+    assert.doesNotMatch(title, /^Kosher Restaurants NYC/)
+    assert.match(description, /^Kosher restaurant health grades/)
+    if (graded > 0) {
+      assert.match(title, /Health Grades/)
+      assert.match(title, /Grade A/)
+      assert.match(title, new RegExp(`${gradeA.toLocaleString("en-US")} of ${graded.toLocaleString("en-US")}`))
+    } else {
+      assert.equal(title, "Kosher Restaurant Health Grades NYC")
+      assert.doesNotMatch(title, /0 of 0/)
     }
   }
 }
