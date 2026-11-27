@@ -10,7 +10,7 @@ export interface DataPageEntry {
   summary: string
 }
 
-const bestRatedSummary = `${bestRated.summary.total.toLocaleString("en-US")} operational restaurants rated 4.5 or higher in the ${bestRated.reportDate} snapshot, ${bestRated.summary.withGradeA.toLocaleString("en-US")} of them with a Grade A. Grade A is a food-safety grade, not a health claim.`
+const bestRatedSummary = `${bestRated.summary.total.toLocaleString("en-US")} restaurants in the stored 4.5-or-higher ranking, ${bestRated.summary.withGradeA.toLocaleString("en-US")} of them with a Grade A on that ranking. This is not the published-listing count. Directory-wide counts are labeled Data as of on the site. Grade A is a food-safety grade, not a health claim.`
 
 /**
  * Public research pages under /data. The product email lives on /data itself.

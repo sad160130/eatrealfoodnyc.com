@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { pageMeta } from "@/lib/page-meta"
-import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { ORGANIZATION_SCHEMA } from "@/lib/schema"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMeta({
 export const revalidate = 3600
 
 export default async function AboutPage() {
-  const counts = await getPublishedDirectoryCounts()
+  const stats = await getSiteStats()
 
   return (
     <div className="min-h-screen pt-16" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -66,10 +66,10 @@ export default async function AboutPage() {
       <div className="border-b border-gray-100 bg-white px-6 py-10">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
           {[
-            { stat: counts.restaurants.toLocaleString(), label: "Published restaurant listings", icon: "🍽️" },
-            { stat: counts.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing", icon: "📍" },
-            { stat: counts.gradeA.toLocaleString(), label: "Grade A among published listings", icon: "⭐" },
-            { stat: counts.hiddenGems.toLocaleString(), label: "Hidden gems among published listings", icon: "💎" },
+            { stat: stats.publishedListings.toLocaleString(), label: "Published listings", icon: "🍽️" },
+            { stat: stats.neighborhoods.toLocaleString(), label: "Neighborhoods with a published listing", icon: "📍" },
+            { stat: stats.gradeAListings.toLocaleString(), label: "Grade A among published listings", icon: "⭐" },
+            { stat: stats.restaurantsTracked.toLocaleString(), label: "Restaurant rows tracked, including unpublished", icon: "🗂️" },
             { stat: "5", label: "NYC boroughs fully covered", icon: "🗺️" },
           ].map((item) => (
             <div key={item.label} className="text-center">
@@ -79,6 +79,9 @@ export default async function AboutPage() {
             </div>
           ))}
         </div>
+        <p className="mx-auto mt-8 max-w-5xl text-center text-sm" style={{ color: "var(--color-muted)" }}>
+          {dataAsOfSentence(stats.dataAsOfLabel)} Published listings are operational restaurants on this site. Restaurant rows tracked include unpublished rows.
+        </p>
       </div>
 
       {/* Main content */}

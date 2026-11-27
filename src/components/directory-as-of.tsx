@@ -1,13 +1,12 @@
-import { getDirectorySnapshot } from "@/lib/directory-snapshot"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 
 export default async function DirectoryAsOf({
   variant = "sentence",
 }: {
-  variant?: "sentence" | "month"
+  variant?: "sentence" | "month" | "date"
 }) {
-  const snapshot = await getDirectorySnapshot()
-  // Same newest inspection date the footer prints in full.
-  const label = snapshot.latestInspectionMonth ?? "date not recorded"
-  if (variant === "month") return <span>{label}</span>
-  return <span>Listings updated {label}</span>
+  const stats = await getSiteStats()
+  const label = stats.dataAsOfLabel ?? "date not on file"
+  if (variant === "month" || variant === "date") return <span>{label}</span>
+  return <span>{dataAsOfSentence(stats.dataAsOfLabel).replace(/\.$/, "")}</span>
 }

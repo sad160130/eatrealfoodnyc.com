@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { prisma } from "@/lib/db"
-import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { getPublishedDirectoryCounts, PUBLISHED_LISTING_WHERE } from "@/lib/directory-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 
 type Variant = "hub" | "guide" | "full"
 
@@ -29,10 +29,10 @@ export default async function AboutThisData({
   borough,
   className = "",
 }: AboutThisDataProps) {
-  const snapshot = lastRefreshed ? null : await getDirectorySnapshot()
+  const siteStats = await getSiteStats()
   const inspectionNote = lastRefreshed
-    ? `Snapshot date: ${lastRefreshed}`
-    : `Newest inspection date on file: ${snapshot?.latestInspectionLabel ?? "not recorded"}`
+    ? `Data as of ${lastRefreshed}.`
+    : dataAsOfSentence(siteStats.dataAsOfLabel)
   const [live, taggedCount] = await Promise.all([
     getPublishedDirectoryCounts(),
     prisma.restaurant.count({
@@ -123,7 +123,6 @@ export default async function AboutThisData({
   // ── GUIDE VARIANT ─────────────────────────────────────────────
   if (variant === "guide") {
     const totalRestaurants = live.restaurants
-    const gradeCoverage = liveGradeCoverage
     const tagCoverage = totalRestaurants > 0 ? Math.round((taggedCount / totalRestaurants) * 100) : 0
     const hiddenGemTotal = live.hiddenGems
 
@@ -153,7 +152,7 @@ export default async function AboutThisData({
                 Maps Platform for New York City food service establishments. Filtered to operational
                 businesses only and deduplicated. Our directory currently covers{" "}
                 <strong className="text-gray-700">
-                  {(restaurantCount ?? totalRestaurants).toLocaleString()} active NYC restaurants
+                  {(restaurantCount ?? totalRestaurants).toLocaleString()} published listings
                 </strong>{" "}
                 across all five boroughs and {live.neighborhoods} neighborhoods.
               </p>
@@ -169,8 +168,8 @@ export default async function AboutThisData({
                   NYC Department of Health and Mental Hygiene Open Data portal
                 </a>
                 . We match inspection records to restaurant listings using name and address.{" "}
-                <strong className="text-gray-700">{gradeCoverage}%</strong> of published listings
-                currently hold Grade A. Updated when the inspection refresh script is run.
+                <strong className="text-gray-700">{siteStats.gradedPercent}%</strong> of published listings
+                currently have an A, B, or C. {siteStats.gradeAListings.toLocaleString("en-US")} of those published listings hold Grade A. {dataAsOfSentence(siteStats.dataAsOfLabel)}
               </p>
               <p>
                 <strong className="text-gray-700">Dietary tags:</strong> Applied conservatively
@@ -233,7 +232,7 @@ export default async function AboutThisData({
       url: null as string | null,
       what: "Restaurant names, addresses, coordinates, phone numbers, websites, business hours, ratings, review counts, and photos.",
       how: "Our restaurant listings are sourced from Google Maps data for NYC food service establishments. We filter to operational businesses and run deduplication.",
-      coverage: `${totalRestaurants.toLocaleString()} unique active NYC restaurants across all five boroughs.`,
+      coverage: `${siteStats.publishedListings.toLocaleString("en-US")} published listings. ${siteStats.restaurantsTracked.toLocaleString("en-US")} restaurant rows are tracked, including unpublished rows. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`,
     },
     {
       source: "NYC 2020 Neighborhood Tabulation Areas (NTAs)",

@@ -15,7 +15,6 @@ import {
   gradeAPageCount,
 } from "@/lib/grade-a"
 import { listNeighborhoodDietCombos, neighborhoodDietPath } from "@/lib/neighborhood-diet"
-import bestRatedReport from "@/data/best-rated-restaurants"
 import closuresReport from "@/data/restaurant-closures.json"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import { listingStamp, latestStamp } from "@/lib/listing-stamp"
@@ -248,7 +247,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "/data/best-rated-restaurants",
       0.9,
       "monthly",
-      asDate(bestRatedReport.generatedAt)
+      directoryUpdated
     ),
     entry(siteUrl, "/data/nyc-restaurant-score-13-cliff", 0.9, "monthly", asDate("2026-11-25")),
     entry(siteUrl, "/data/not-yet-inspected-restaurants-nyc", 0.9, "monthly", asDate("2026-11-25")),

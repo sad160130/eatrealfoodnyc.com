@@ -13,6 +13,7 @@ import GuideReportNote from "@/components/guide-report-note"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { pageMeta } from "@/lib/page-meta"
 import { lateNightGuideDescription, lateNightGuideLede, lateNightGuideTitle } from "@/lib/seo-titles"
 
@@ -57,11 +58,11 @@ const GUIDE_FAQS = [
 ]
 
 export default async function LateNightGuide() {
-  const stats = await getLiveGuideStats()
-  const title = lateNightGuideTitle(stats.global.totalUniqueNeighborhoods)
+  const [stats, siteStats] = await Promise.all([getLiveGuideStats(), getSiteStats()])
+  const title = lateNightGuideTitle(siteStats.neighborhoods)
   const description = lateNightGuideDescription({
-    restaurants: stats.global.totalPublished,
-    neighborhoods: stats.global.totalUniqueNeighborhoods,
+    restaurants: siteStats.publishedListings,
+    neighborhoods: siteStats.neighborhoods,
   })
   return (
     <GuideLayout guide={guide}>
@@ -114,11 +115,11 @@ export default async function LateNightGuide() {
 
         <DataCallout
           heading="Late Night Healthy Dining — What Our Data Shows"
-          intro="Not every healthy restaurant in NYC is open late. Here is the breakdown of dining options across boroughs for diners eating after 9pm, drawn from our directory of active NYC restaurants."
+          intro={`Not every healthy restaurant in NYC is open late. Borough counts below are published listings. ${dataAsOfSentence(siteStats.dataAsOfLabel)}`}
           dataPoints={[
             {
-              stat: stats.global.totalPublished.toLocaleString(),
-              label: "Active NYC healthy restaurants tracked",
+              stat: siteStats.publishedListings.toLocaleString("en-US"),
+              label: "Published listings",
             },
             {
               stat: (stats.global.boroughs["Manhattan"]?.total ?? 0).toLocaleString(),

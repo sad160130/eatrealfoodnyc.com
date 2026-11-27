@@ -1,7 +1,7 @@
 import { cache } from "react"
 import { prisma } from "@/lib/db"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
-import { memoizeSuccess } from "@/lib/success-memo"
+import { loadLiveSiteStats, PUBLISHED_LISTING_WHERE, SITE_STATS_TTL_MS } from "@/lib/site-stats"
 
 /**
  * Footer, homepage, and listing metadata all read these totals. One minute
@@ -9,19 +9,9 @@ import { memoizeSuccess } from "@/lib/success-memo"
  * stored. `unstable_cache` is not used: its numeric `revalidate` is copied
  * onto the prerender and would pull fully static routes down to that interval.
  */
-export const DIRECTORY_SHARED_TTL_MS = 60_000
+export const DIRECTORY_SHARED_TTL_MS = SITE_STATS_TTL_MS
 
-/**
- * Published operational listings — the same filter public listing pages use
- * (borough hubs, neighbourhood hubs, diet hubs, homepage). Sitemap restaurant
- * URLs use `is_published: true`; neighbourhood URLs add this operational
- * filter. About, Press, and Partner counters must use this set, not the
- * full dataset (the old hardcoded 8,835).
- */
-export const PUBLISHED_LISTING_WHERE = {
-  business_status: "OPERATIONAL" as const,
-  is_published: true,
-}
+export { PUBLISHED_LISTING_WHERE }
 
 export interface PublishedDirectoryCounts {
   restaurants: number
@@ -33,39 +23,19 @@ export interface PublishedDirectoryCounts {
   hiddenGems: number
 }
 
-async function queryPublishedDirectoryCounts(): Promise<PublishedDirectoryCounts> {
-  const where = PUBLISHED_LISTING_WHERE
-  const [restaurants, gradeA, letterGraded, hiddenGems, neighborhoodGroups] = await Promise.all([
-    prisma.restaurant.count({ where }),
-    prisma.restaurant.count({ where: { ...where, inspection_grade: "A" } }),
-    prisma.restaurant.count({ where: { ...where, inspection_grade: { in: ["A", "B", "C"] } } }),
-    prisma.restaurant.count({ where: { ...where, is_hidden_gem: true } }),
-    prisma.restaurant.groupBy({
-      by: ["borough", "neighborhood"],
-      where: {
-        ...where,
-        borough: { not: null },
-        neighborhood: { not: null },
-      },
-    }),
-  ])
-
-  return {
-    restaurants,
-    neighborhoods: neighborhoodGroups.length,
-    gradeA,
-    letterGraded,
-    hiddenGems,
-  }
-}
-
 /**
- * Request dedupe via `cache()`, plus the process memo above so parallel
- * renders on one instance share one successful load.
+ * Same published-listing fields as `getSiteStats`. One database read feeds both.
  */
-export const getPublishedDirectoryCounts = cache(() =>
-  memoizeSuccess("published-directory-counts", DIRECTORY_SHARED_TTL_MS, queryPublishedDirectoryCounts)
-)
+export const getPublishedDirectoryCounts = cache(async (): Promise<PublishedDirectoryCounts> => {
+  const stats = await loadLiveSiteStats()
+  return {
+    restaurants: stats.publishedListings,
+    neighborhoods: stats.neighborhoods,
+    gradeA: stats.gradeAListings,
+    letterGraded: stats.gradedListings,
+    hiddenGems: stats.hiddenGems,
+  }
+})
 
 /**
  * Neighborhoods that have a published hub page (the same minimum as

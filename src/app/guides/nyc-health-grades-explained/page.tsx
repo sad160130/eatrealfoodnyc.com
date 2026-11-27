@@ -12,6 +12,7 @@ import AboutThisData from "@/components/about-this-data"
 import DataCallout from "@/components/data-callout"
 import GuideLinkIndex from "@/components/guide-link-index"
 import { getLiveGuideStats } from "@/lib/live-guide-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import GradeHubLinks from "@/components/grade-hub-links"
 import { pageMeta } from "@/lib/page-meta"
 import { healthGradesGuideDescription, healthGradesGuideTitle } from "@/lib/seo-titles"
@@ -43,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function NYCHealthGradesGuide() {
-  const stats = await getLiveGuideStats()
+  const [stats, siteStats] = await Promise.all([getLiveGuideStats(), getSiteStats()])
   const description = healthGradesGuideDescription()
   const citywide = CITYWIDE_RESTAURANT_GRADES
   const grades = stats.grades
@@ -84,12 +85,12 @@ export default async function NYCHealthGradesGuide() {
       <GuideHero
         guide={guide}
         subtitle={HEALTH_GRADES_LEDE}
-        note={`Last updated ${citywide.pulledOnLabel}. Directory figures on this page are published listings. The citywide section is the DOHMH inspection file.`}
+        note={`${dataAsOfSentence(siteStats.dataAsOfLabel)} Directory figures on this page are published listings. The citywide section is a separate DOHMH file pull dated ${citywide.pulledOnLabel}.`}
         stats={[
-          { stat: count(grades.published), label: "Published listings" },
-          { stat: `${grades.gradeAShareOfPublished}%`, label: "Grade A of published listings" },
-          { stat: count(grades.pending), label: "Grade Pending (Z or P)" },
-          { stat: grades.latestInspectionLabel ?? "None on file", label: "Newest inspection on file" },
+          { stat: count(siteStats.publishedListings), label: "Published listings" },
+          { stat: count(siteStats.gradeAListings), label: "Grade A among published listings" },
+          { stat: `${count(siteStats.gradedListings)} (${siteStats.gradedPercent}%)`, label: "Published listings with an A, B, or C" },
+          { stat: count(siteStats.neighborhoods), label: "Neighborhoods with a published listing" },
         ]}
       />
 
