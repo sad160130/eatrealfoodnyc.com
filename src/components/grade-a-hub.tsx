@@ -24,6 +24,8 @@ import {
 import { boroughToSlug, neighborhoodToSlug } from "@/lib/utils"
 import { HubRecord } from "@/components/hub-record"
 import { hubStamp } from "@/lib/hub-record"
+import { gradeAListAnswer, gradeAListQuestion } from "@/lib/grade-a-faq"
+import { formatLongDate, parseInspectionDate } from "@/lib/inspection-dates"
 
 export interface GradeAScope {
   boroughName?: string
@@ -136,6 +138,10 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
         ? `The newest matched inspection date among these Grade A listings is ${latestMonth}.`
         : "No inspection date is stored on these Grade A listings.",
     },
+    {
+      question: gradeAListQuestion(scope),
+      answer: gradeAListAnswer(total, place),
+    },
   ]
   const crumbs = [
     ...(scope.boroughName
@@ -175,6 +181,40 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
         </div>
       </header>
       <section className="mx-auto max-w-7xl px-6 py-12">
+        <div className="mb-12 overflow-x-auto border" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
+          <table className="w-full text-left text-sm">
+            <caption className="px-3 py-3 text-left" style={{ color: "var(--color-text)" }}>
+              Published Grade A listings on this page. This table is not every inspected restaurant in {place}.
+            </caption>
+            <thead>
+              <tr style={{ color: "var(--color-muted)" }}>
+                <th scope="col" className="px-3 py-2 font-medium">Name</th>
+                <th scope="col" className="px-3 py-2 font-medium">Address</th>
+                <th scope="col" className="px-3 py-2 font-medium">Grade</th>
+                <th scope="col" className="px-3 py-2 font-medium">Inspection date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {restaurants.map((restaurant) => {
+                const inspected = parseInspectionDate(restaurant.inspection_date)
+                return (
+                  <tr key={restaurant.slug} className="border-t" style={{ borderColor: "var(--hairline)" }}>
+                    <td className="px-3 py-2">
+                      <Link href={`/restaurants/${restaurant.slug}`} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                        {restaurant.name}
+                      </Link>
+                    </td>
+                    <td className="px-3 py-2">{restaurant.address}</td>
+                    <td className="px-3 py-2">A</td>
+                    <td className="px-3 py-2">
+                      {inspected ? formatLongDate(inspected) : restaurant.inspection_date?.trim() || "No inspection date on file"}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {restaurants.map((restaurant) => (
             <RestaurantCard key={restaurant.slug} restaurant={restaurant} />
