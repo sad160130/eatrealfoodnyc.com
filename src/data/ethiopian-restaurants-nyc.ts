@@ -1,3 +1,4 @@
+import { dohmhSourceUrl } from "@/lib/dohmh-source-url"
 import { guideAuthors } from "@/lib/founders"
 import { formatLongDate, parseInspectionDate } from "@/lib/inspection-dates"
 import {
@@ -410,7 +411,7 @@ export const ETHIOPIAN_FAQS: Array<{ question: string; answer: string }> = [
 ]
 
 export function camisUrl(camis: string): string {
-  return `https://a816-health.nyc.gov/ABCEats/Restaurant/Detail/${camis}`
+  return dohmhSourceUrl({ name: "", camis })
 }
 
 export function restaurantHref(slug: string): string {

@@ -72,7 +72,7 @@ function KitchenEntry({ restaurant }: { restaurant: CheckedRestaurant }) {
         Address: {restaurant.address}. CAMIS {restaurant.camis}
         {restaurant.officialDba !== restaurant.name.toUpperCase() ? `, filed as ${restaurant.officialDba}` : ""}.{" "}
         <a href={camisUrl(restaurant.camis)} className="font-semibold text-jade hover:text-forest">
-          City restaurant detail
+          DOHMH inspection record
         </a>
         . See the{" "}
         <Link href={restaurantHref(restaurant.slug)} className="font-semibold text-jade hover:text-forest">

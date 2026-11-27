@@ -1,7 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { pageMeta } from "@/lib/page-meta"
-import { TEAM_PAGE_DATE } from "@/lib/visible-dates"
+import { DOHMH_INSPECTION_DATASET_URL } from "@/lib/schema"
+import {
+  TEAM_OPENING_LEAD,
+  TEAM_OPENING_SOURCE,
+  TEAM_OPENING_TAIL,
+  TEAM_PAGE_DATE,
+} from "@/lib/visible-dates"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 
 export const metadata: Metadata = pageMeta({
@@ -41,7 +47,11 @@ export default function TeamPage() {
             Meet the Team
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC is built by co-founders Snket Desai and Rohan Kadam.
+            {TEAM_OPENING_LEAD}{" "}
+            <a href={DOHMH_INSPECTION_DATASET_URL} className="underline underline-offset-4">
+              {TEAM_OPENING_SOURCE}
+            </a>{" "}
+            {TEAM_OPENING_TAIL}
           </p>
         </div>
       </div>

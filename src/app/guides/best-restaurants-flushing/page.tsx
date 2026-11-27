@@ -169,7 +169,7 @@ export default function BestRestaurantsFlushing() {
                           {row.inspectionDateLabel ? `, ${row.inspectionDateLabel}` : ""}. Address: {row.address}. City
                           cuisine: {row.cuisine}. CAMIS {row.camis}.{" "}
                           <a href={camisUrl(row.camis)} className="font-semibold text-jade hover:text-forest">
-                            City restaurant detail
+                            DOHMH inspection record
                           </a>
                           .{" "}
                           <Link href={restaurantHref(row.slug)} className="font-semibold text-jade hover:text-forest">

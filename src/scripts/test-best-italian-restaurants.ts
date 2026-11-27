@@ -18,6 +18,7 @@ import {
   articleSchema,
   faqPageSchema,
   introWordCount,
+  camisUrl,
   neighborhoodHref,
   organizationSchema,
   pageInternalHrefs,
@@ -124,6 +125,10 @@ for (const agent of ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended", 
 }
 
 assert.equal(neighborhoodHref("Staten Island", "Stapleton"), "/nyc/staten-island/stapleton/healthy-restaurants")
+const italianRecord = decodeURIComponent(camisUrl("40700724"))
+assert.match(italianRecord, /43nn-pn8j/)
+assert.match(italianRecord, /camis='40700724'/)
+assert.doesNotMatch(italianRecord, /a816-health/)
 
 const guides = readFileSync(new URL("../config/guides.ts", import.meta.url), "utf8")
 assert.match(guides, /best-italian-restaurants-nyc/)

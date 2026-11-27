@@ -205,7 +205,7 @@ export default function EthiopianRestaurantsNyc() {
                   {row.camis}
                   {row.officialDba.toUpperCase() !== row.name.toUpperCase() ? `, filed as ${row.officialDba}` : ""}.{" "}
                   <a href={camisUrl(row.camis)} className="font-semibold text-jade hover:text-forest">
-                    City restaurant detail
+                    DOHMH inspection record
                   </a>
                   .
                 </p>

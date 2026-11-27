@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { dohmhSourceUrl } from "../components/official-grade-link"
+import { dohmhSourceUrl } from "../lib/dohmh-source-url"
 
 const byName = dohmhSourceUrl({ name: "Joe's Pizza" })
 assert.ok(byName.includes("43nn-pn8j"))

@@ -1,3 +1,4 @@
+import { dohmhSourceUrl } from "@/lib/dohmh-source-url"
 import { guideAuthors } from "@/lib/founders"
 /**
  * Grade A restaurants by borough, checked on 2026-11-24 (America/New_York).
@@ -73,7 +74,7 @@ export function neighborhoodHref(borough: string, neighborhood: string): string 
 }
 
 export function camisUrl(camis: string): string {
-  return `https://a816-health.nyc.gov/ABCEats/Restaurant/Detail/${camis}`
+  return dohmhSourceUrl({ name: "", camis })
 }
 
 export function wordCount(text: string): number {

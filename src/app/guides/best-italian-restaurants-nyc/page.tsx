@@ -195,7 +195,7 @@ export default function BestItalianRestaurantsNyc() {
                     : ""}
                   .{" "}
                   <a href={camisUrl(restaurant.camis)} className="font-semibold text-jade hover:text-forest">
-                    City restaurant detail
+                    DOHMH inspection record
                   </a>
                   . See the{" "}
                   <Link href={restaurantHref(restaurant.slug)} className="font-semibold text-jade hover:text-forest">

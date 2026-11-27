@@ -20,6 +20,7 @@ import {
   articleSchema,
   faqPageSchema,
   introWordCount,
+  camisUrl,
   neighborhoodHref,
   organizationSchema,
   pageInternalHrefs,
@@ -142,6 +143,11 @@ assert.doesNotMatch(pageSource, /export const revalidate/)
 assert.equal(neighborhoodHref("Staten Island", "Willowbrook"), "/nyc/staten-island/willowbrook/healthy-restaurants")
 assert.equal(neighborhoodHref("Queens", "Kew Gardens"), "/nyc/queens/kew-gardens/healthy-restaurants")
 assert.equal(neighborhoodHref("Manhattan", "SoHo"), "/nyc/manhattan/soho/healthy-restaurants")
+const pizzaCamis = BEST_PIZZA_RESTAURANTS[0].camis
+const pizzaRecord = decodeURIComponent(camisUrl(pizzaCamis))
+assert.match(pizzaRecord, /43nn-pn8j/)
+assert.match(pizzaRecord, new RegExp(`camis='${pizzaCamis}'`))
+assert.doesNotMatch(pizzaRecord, /a816-health/)
 
 const guides = readFileSync(new URL("../config/guides.ts", import.meta.url), "utf8")
 assert.match(guides, /best-pizza-restaurants-nyc/)

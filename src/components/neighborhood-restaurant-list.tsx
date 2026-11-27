@@ -61,10 +61,6 @@ export default function NeighborhoodRestaurantList({
         <div className="mx-auto max-w-3xl px-6 pb-10 pt-8">
           <p className="eyebrow">{borough}</p>
           <h1 className="display-1 mt-3">All restaurants in {neighborhood}</h1>
-          <p className="dek mt-4">
-            {total.toLocaleString("en-US")} published {total === 1 ? "listing" : "listings"}.
-            {pages > 1 ? ` Page ${page} of ${pages}.` : ""}
-          </p>
           <HubRecord
             place={`${neighborhood}, ${borough}`}
             urlPath={neighborhoodIndexPath(borough, neighborhood, page)}
@@ -76,6 +72,10 @@ export default function NeighborhoodRestaurantList({
             mode="all"
             listings={listings}
           />
+          <p className="dek mt-4">
+            {total.toLocaleString("en-US")} published {total === 1 ? "listing" : "listings"}.
+            {pages > 1 ? ` Page ${page} of ${pages}.` : ""}
+          </p>
           <h2 className="h2-serif mt-8">How many published restaurants are in {neighborhood}?</h2>
           <p className="mt-3 text-base leading-relaxed" style={{ color: "var(--color-text)" }}>
             {faqs[0].answer}{" "}

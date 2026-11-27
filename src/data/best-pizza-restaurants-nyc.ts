@@ -1,3 +1,4 @@
+import { dohmhSourceUrl } from "@/lib/dohmh-source-url"
 import { guideAuthors } from "@/lib/founders"
 /**
  * Verified "best pizza restaurants in NYC" ranking.
@@ -53,9 +54,6 @@ export type RankedPizzaRestaurant = {
   violations: RankedViolation[]
 }
 
-function abceats(camis: string): string {
-  return `https://a816-health.nyc.gov/ABCEats/Restaurant/Detail/${camis}`
-}
 
 export function restaurantHref(slug: string): string {
   return `/restaurants/${slug}`
@@ -402,7 +400,7 @@ export const BEST_PIZZA_RESTAURANTS: RankedPizzaRestaurant[] = [
 ]
 
 export function camisUrl(camis: string): string {
-  return abceats(camis)
+  return dohmhSourceUrl({ name: "", camis })
 }
 
 export const BEST_PIZZA_HOW_WE_PICKED = [
