@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { getCanonicalUrl } from "@/config/seo"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { DataSectionLink } from "@/components/data-section-link"
 import { FALL_2026_REPORT as R } from "@/data/fall-2026-inspection-report"
 import { InspectionLeadsCta } from "@/components/product-ctas"
 import { dohmhInspectionDataset } from "@/lib/schema"
@@ -85,6 +86,7 @@ export default function InspectionReportPage() {
           <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
             Last updated November 15, 2026, America/New_York. This is a dated extract, not a live ticker. Figures are from NYC Open Data dataset {R.datasetId}, extract {R.extractLabel}, inspections through {R.inspectionCutoff}.
           </p>
+          <DataSectionLink />
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-6 py-10">

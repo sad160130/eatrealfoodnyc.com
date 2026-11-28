@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
         statusCode: 301,
       },
       ...impression404Redirects(),
+      { source: "/html-sitemap", destination: "/sitemap", statusCode: 301 },
 
       // ── NEIGHBORHOOD SLUG FIXES ──
       // Apostrophe bug produced wrong slugs (hell-s-kitchen → hells-kitchen)

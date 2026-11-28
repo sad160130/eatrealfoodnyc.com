@@ -56,6 +56,8 @@ assert.equal(omitFromSitemap("/badge"), true)
 assert.equal(omitFromSitemap("/restaurants/dirt-candy/badge"), true)
 assert.equal(omitFromSitemap("/healthy-restaurants/grade-a/page/2"), true)
 assert.equal(omitFromSitemap("/healthy-restaurants/grade-a"), false)
+assert.equal(omitFromSitemap("/sitemap"), false)
+assert.equal(omitFromSitemap("/sitemap/restaurants/a/page/2"), false)
 assert.equal(omitFromSitemap("/data"), false)
 
 const east = placeGradeShare("East Village", "Manhattan")

@@ -577,6 +577,15 @@ export default async function RestaurantPage({
                         <span aria-hidden="true">→</span>
                       </Link>
                     </p>
+                    {gradeView.dataGrade === "A" ? (
+                      <p className="text-sm leading-relaxed" style={{ maxWidth: "52ch" }}>
+                        This listing is in the citywide{" "}
+                        <a href="/healthy-restaurants/grade-a" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                          Grade A restaurants
+                        </a>
+                        {" "}list.
+                      </p>
+                    ) : null}
                     <InspectionContext
                       neighborhood={restaurant.neighborhood}
                       borough={restaurant.borough}

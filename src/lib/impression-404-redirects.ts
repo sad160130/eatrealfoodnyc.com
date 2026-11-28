@@ -29,6 +29,7 @@ const QUEENS = ["bayside", "rosedale", "queens-center"]
 
 export const IMPRESSION_404_RESTAURANT_SLUGS = [
   "balaji-bhavan-pure-vegetarian-south-indian-restaurant",
+  "balaji-bhavan",
   "fornos-of-spain",
   "power-plant-kitchen",
   "karma-kafe",

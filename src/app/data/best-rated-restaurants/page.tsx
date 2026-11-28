@@ -22,9 +22,10 @@ import bestRatedData, { type RestaurantRow } from "@/data/best-rated-restaurants
 import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
 import { presentGrade } from "@/lib/grade-display"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
+import { DataSectionLink } from "@/components/data-section-link"
 
 const REPORT_URL = "https://www.eatrealfoodnyc.com/data/best-rated-restaurants"
-const PAGE_DESCRIPTION = `${bestRatedData.summary.total.toLocaleString("en-US")} restaurants in this ranking are rated ${bestRatedData.algorithm.qualifyingRating} or higher from community reviews. That ranking is not the size of the directory. Directory counts on the page are labeled Data as of. Grade A is a food-safety grade, not a health claim.`
+const PAGE_DESCRIPTION = `${bestRatedData.summary.total.toLocaleString("en-US")} restaurants in this ranking are rated ${bestRatedData.algorithm.qualifyingRating} or higher from community reviews. That ranking is not the size of the directory. Grade A is a food-safety grade, not a health claim.`
 
 export const metadata: Metadata = {
   title: `NYC's Best-Rated Healthy Restaurants 2026 — ${bestRatedData.summary.total} Top-Rated Spots`,
@@ -775,6 +776,7 @@ export default async function BestRatedRestaurantsPage() {
           >
             Related data reports
           </h2>
+          <DataSectionLink />
           <Link
             href="/data/nyc-restaurant-health-grade-report"
             className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-sage/30 hover:shadow-md"

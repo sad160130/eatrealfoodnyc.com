@@ -4,6 +4,7 @@ import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import { FOOD_SAFETY_SENTENCE } from "@/lib/nta-grade-share"
 import { dohmhInspectionDataset } from "@/lib/schema"
 import { dataPageIndex } from "@/lib/data-pages"
+import { DataSectionLink } from "@/components/data-section-link"
 
 const SITE = "https://www.eatrealfoodnyc.com"
 
@@ -74,6 +75,7 @@ export function OriginalResearch({
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-6 py-10">
+        <DataSectionLink />
         {children}
         <h2 className="h2-serif mt-12">Other data pages</h2>
         <ul className="mt-4 space-y-3 text-base leading-relaxed">

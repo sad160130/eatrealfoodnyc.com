@@ -231,6 +231,19 @@ export default async function NeighborhoodPage({
               ? `None of the ${restaurants.length.toLocaleString("en-US")} published restaurants in ${neighborhoodName} has a matched NYC DOHMH letter grade.`
               : `${restaurants.filter((row) => row.inspection_grade === "A").length.toLocaleString("en-US")} of ${gradedCount.toLocaleString("en-US")} graded restaurants in ${neighborhoodName} hold Grade A. The share is among graded listings, not every published row.`}
           </p>
+          <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+            The citywide list is{" "}
+            <a href="/healthy-restaurants/grade-a" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+              Grade A restaurants in New York City
+            </a>
+            .
+          </p>
+          {neighborhoodSlug === "lower-east-side" ? (
+            <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+              {lowerEastSideNote(neighborhoodName, restaurants)}
+            </p>
+          ) : null}
+          {spotlightListing(neighborhoodSlug, restaurants)}
           <NeighborhoodGradeContext neighborhood={neighborhoodName} borough={boroughName} />
           <h2 className="h2-serif mt-8">Which diets are tagged in {neighborhoodName}?</h2>
           <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
@@ -507,5 +520,36 @@ export default async function NeighborhoodPage({
         </div>
       </div>
     </>
+  )
+}
+
+function lowerEastSideNote(
+  neighborhoodName: string,
+  restaurants: Array<{ name: string; inspection_grade: string | null }>
+): string {
+  const gradeA = restaurants.filter((row) => row.inspection_grade === "A")
+  const named = gradeA.slice(0, 3).map((row) => row.name)
+  const names = named.length <= 1
+    ? named[0] ?? ""
+    : `${named.slice(0, -1).join(", ")} and ${named[named.length - 1]}`
+  return `The Lower East Side hub is the published set matched to ${neighborhoodName}, separate from the East Village and Chinatown hubs. ${gradeA.length.toLocaleString("en-US")} of ${restaurants.length.toLocaleString("en-US")} listings on this page hold Grade A${names ? `, including ${names}` : ""}.`
+}
+
+function spotlightListing(
+  neighborhoodSlug: string,
+  restaurants: Array<{ name: string; slug: string }>
+) {
+  const match = restaurants.find((row) =>
+    (neighborhoodSlug === "rego-park" && row.slug === "90-30-metropolitan-avenue")
+    || (neighborhoodSlug === "bedford-stuyvesant" && row.slug === "peaches-lewis")
+  )
+  if (!match) return null
+  return (
+    <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
+      <a href={`/restaurants/${match.slug}`} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+        {match.name}
+      </a>
+      {" "}is a published listing in this neighborhood.
+    </p>
   )
 }
