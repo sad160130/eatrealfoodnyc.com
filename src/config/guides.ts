@@ -58,7 +58,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "🏥",
     readTime: "8 min read",
     featured: true,
-    publishedDate: "2026-01-15",
+    publishedDate: "2026-03-27",
     updatedDate: "2026-11-25",
     keywords: ["nyc restaurant grades", "nyc restaurant health grade", "restaurant grade nyc"],
     relatedGuides: [
@@ -83,7 +83,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "📋",
     readTime: "7 min read",
     featured: false,
-    publishedDate: "2026-01-20",
+    publishedDate: "2026-03-27",
     keywords: ["nyc restaurant inspection", "how restaurant inspections work nyc", "nyc dohmh inspection"],
     relatedGuides: ["nyc-health-grades-explained", "hidden-gem-restaurants-nyc"],
     relatedHubPages: [
@@ -101,7 +101,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "🌱",
     readTime: "10 min read",
     featured: true,
-    publishedDate: "2026-01-25",
+    publishedDate: "2026-03-27",
     keywords: ["vegan restaurants nyc", "vegan nyc guide", "best vegan restaurants new york city"],
     relatedGuides: ["gluten-free-dining-nyc", "best-healthy-neighborhoods-nyc", "how-eat-healthy-nyc-15-dollars"],
     relatedHubPages: [
@@ -120,7 +120,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "🕌",
     readTime: "9 min read",
     featured: true,
-    publishedDate: "2026-02-01",
+    publishedDate: "2026-03-27",
     keywords: ["halal food nyc", "halal restaurants new york city", "best halal nyc"],
     relatedGuides: ["kosher-dining-nyc-guide", "best-healthy-neighborhoods-nyc", "nyc-health-grades-explained"],
     relatedHubPages: [
@@ -139,7 +139,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "🌾",
     readTime: "8 min read",
     featured: false,
-    publishedDate: "2026-02-05",
+    publishedDate: "2026-03-27",
     keywords: ["gluten free restaurants nyc", "gluten free dining new york", "celiac restaurants nyc"],
     relatedGuides: ["vegan-nyc-borough-guide", "nyc-health-grades-explained", "how-eat-healthy-nyc-15-dollars"],
     relatedHubPages: [
@@ -157,7 +157,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "💵",
     readTime: "9 min read",
     featured: false,
-    publishedDate: "2026-02-10",
+    publishedDate: "2026-03-27",
     keywords: ["healthy food nyc cheap", "cheap healthy restaurants nyc", "eat healthy nyc budget"],
     relatedGuides: ["best-healthy-neighborhoods-nyc", "vegan-nyc-borough-guide", "hidden-gem-restaurants-nyc"],
     relatedHubPages: [
@@ -176,7 +176,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "🗺️",
     readTime: "10 min read",
     featured: true,
-    publishedDate: "2026-02-15",
+    publishedDate: "2026-03-27",
     updatedDate: "2026-11-26",
     keywords: ["healthiest neighborhoods nyc", "best neighborhoods nyc healthy food", "nyc neighborhood healthy restaurants"],
     relatedGuides: ["nyc-health-grades-explained", "how-eat-healthy-nyc-15-dollars", "vegan-nyc-borough-guide"],
@@ -196,7 +196,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "💎",
     readTime: "6 min read",
     featured: false,
-    publishedDate: "2026-02-20",
+    publishedDate: "2026-03-27",
     keywords: ["hidden gem restaurants nyc", "underrated restaurants new york", "best unknown restaurants nyc"],
     relatedGuides: ["nyc-health-grades-explained", "best-healthy-neighborhoods-nyc", "how-eat-healthy-nyc-15-dollars"],
     relatedHubPages: [
@@ -215,7 +215,7 @@ export const GUIDES: GuideArticle[] = [
     emoji: "✡️",
     readTime: "8 min read",
     featured: false,
-    publishedDate: "2026-02-25",
+    publishedDate: "2026-03-27",
     keywords: ["kosher restaurants nyc", "kosher dining new york city", "best kosher nyc"],
     relatedGuides: ["halal-food-guide-nyc", "nyc-health-grades-explained", "best-healthy-neighborhoods-nyc"],
     relatedHubPages: [

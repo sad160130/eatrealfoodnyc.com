@@ -72,7 +72,7 @@ export default async function NYCHealthGradesGuide() {
             description,
             author: guideAuthors(),
             publisher: { "@type": "Organization", name: "Eat Real Food NYC", url: siteUrl },
-            datePublished: "2026-01-15",
+            datePublished: guide.publishedDate,
             dateModified: citywide.pulledOn,
             mainEntityOfPage: {
               "@type": "WebPage",
