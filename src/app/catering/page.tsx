@@ -7,6 +7,7 @@ import { gradeABoroughPath } from "@/lib/grade-a"
 import { getDirectorySnapshot } from "@/lib/directory-snapshot"
 import { getIndexableDietTags } from "@/lib/diet-hubs"
 import { CATERING_FAQS, CATERING_INTRO, CATERING_TITLE } from "@/lib/money-pages"
+import { DOHMH_DATASET } from "@/config/data-product"
 import { HOLIDAY_CATERING_PATH } from "@/lib/holiday-catering"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import CateringForm from "@/components/catering-form"
@@ -66,7 +67,11 @@ export default async function CateringPage({
           {snapshot.latestInspectionAt ? (
             <>
               <p className="mt-3 text-sm" style={{ color: "var(--color-muted)" }}>
-                Updated {snapshot.latestInspectionLabel}.
+                Updated {snapshot.latestInspectionLabel}. That date is the newest matched inspection on a published listing, from the{" "}
+                <a href={DOHMH_DATASET.url} className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                  NYC DOHMH restaurant inspection dataset {DOHMH_DATASET.id}
+                </a>
+                .
               </p>
               <UpdatedWebPage date={snapshot.latestInspectionAt} urlPath="/catering" hideLabel />
             </>

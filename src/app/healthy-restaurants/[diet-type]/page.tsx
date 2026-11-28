@@ -25,6 +25,18 @@ import { selectTopPicks, TOP_PICKS_EXPLAINER } from "@/lib/top-picks"
 import { buildHubItemList, dohmhInspectionDataset } from "@/lib/schema"
 import NewsletterSignup from "@/components/newsletter-signup"
 
+const THIN_DIET_DATA_DATE = new Set(["keto", "paleo", "raw-food"])
+
+/**
+ * Keto, paleo, and raw-food often have no matched inspection day, so their
+ * sitemap lastmod is the directory data date. Use that same day in JSON-LD.
+ * Do not fall through to the build clock.
+ */
+function schemaDateModified(tag: string, hubStamp: Date | undefined, directoryDate: Date | null): string | undefined {
+  const date = THIN_DIET_DATA_DATE.has(tag) ? directoryDate ?? hubStamp : hubStamp
+  return date ? date.toISOString().slice(0, 10) : undefined
+}
+
 export async function generateStaticParams() {
   return Object.keys(DIET_CONFIG).map((tag) => ({ "diet-type": tag }))
 }
@@ -183,6 +195,7 @@ export default async function DietTypePage({
     restaurants: restaurants.slice(0, 10),
   })
 
+  const schemaModified = schemaDateModified(tag, hubStamp, snapshot.latestInspectionAt)
   const datasetJsonLd = {
     "@context": "https://schema.org",
     "@type": "Dataset",
@@ -219,7 +232,7 @@ export default async function DietTypePage({
           "NYC health inspection grades",
           "healthy restaurants NYC",
         ],
-    ...(hubStamp && { dateModified: hubStamp.toISOString().slice(0, 10) }),
+    ...(schemaModified ? { dateModified: schemaModified } : {}),
   }
 
   return (
@@ -250,6 +263,9 @@ export default async function DietTypePage({
           <h1 className="display-1 mt-3">
             {tag === "kosher" ? kosherHealthGradesTitle(gradeSplit.gradeA, gradeSplit.graded) : `${config.label} restaurants in NYC`}
           </h1>
+          <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
+            {capsule}
+          </p>
           {tag === "kosher" ? (
             <p className="mt-4 text-lg leading-relaxed" style={{ maxWidth: "62ch", color: "var(--color-text)" }}>
               The dining guide lists{" "}
@@ -260,13 +276,9 @@ export default async function DietTypePage({
               >
                 kosher restaurants in NYC
               </Link>
-              {totalCount > 0 ? ` (${totalCount.toLocaleString("en-US")} published)` : ""} by borough. This page is the NYC DOHMH grade breakdown for that set.
+              {" "}by borough. This page is the NYC DOHMH grade breakdown for that set.
             </p>
           ) : null}
-
-          <p className="dek mt-4" style={{ maxWidth: "62ch" }}>
-            {capsule}
-          </p>
           <h2 className="h2-serif mt-8">How many {config.label.toLowerCase()} restaurants hold a Grade A?</h2>
           <p className="mt-3 text-base leading-relaxed" style={{ maxWidth: "62ch" }}>
             {gradeSplit.graded === 0
