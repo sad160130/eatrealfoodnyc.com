@@ -5,6 +5,7 @@ import { COMBO_MIN_RESTAURANTS, DIET_CONFIG } from "@/config/dietary-tags"
 import { GUIDES } from "@/config/guides"
 import { NEIGHBORHOOD_HUB_MIN_RESTAURANTS } from "@/lib/neighborhood-hubs"
 import { neighborhoodIndexPath, pageCount } from "@/lib/restaurant-index"
+import { htmlSitemapPaths } from "@/lib/html-sitemap"
 import {
   countGradeA,
   gradeABoroughCounts,
@@ -102,6 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     where: { is_published: true, business_status: "OPERATIONAL" },
     select: {
       slug: true,
+      name: true,
       updated_at: true,
       inspection_date: true,
       inspection_grade: true,
@@ -364,7 +366,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...gradeAPages,
     ...neighborhoodDietPages,
     ...newsletterIssuePages,
-    entry(siteUrl, "/html-sitemap", 0.5, "weekly", directoryUpdated),
+    ...htmlSitemapPaths(
+      restaurants.map((row) => row.name),
+      ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"]
+    ).map((path) => entry(siteUrl, path, path === "/sitemap" ? 0.5 : 0.4, "weekly", directoryUpdated)),
     ...indexPages,
     ...restaurantPages,
   ].filter((item) => !omitFromSitemap(item.url.replace(siteUrl, "") || "/"))

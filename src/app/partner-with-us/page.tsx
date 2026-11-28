@@ -61,7 +61,7 @@ const FAQ = [
   },
   {
     q: "Can I cancel?",
-    a: "Yes. Partner Listings are month to month after any introductory period. Exclusive page sponsorships may have a minimum term. Cancel before the next bill and the label comes off when the paid period ends.",
+    a: "Yes. Partner Listings are month to month and billed from day one. There is no free first month. Exclusive page sponsorships may have a minimum term. Cancel before the next bill and the label comes off when the paid period ends.",
   },
   {
     q: "What if you decline or end the partnership?",

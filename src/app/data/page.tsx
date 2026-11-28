@@ -8,13 +8,15 @@ import { UpdatedWebPage } from "@/components/updated-webpage"
 import { HIGH_SCORE } from "@/lib/compliance-csv"
 import { PARTNER_INQUIRY_EMAIL } from "@/config/contact"
 import { getPublishedDirectoryCounts } from "@/lib/directory-stats"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
+import { ExplainerAudio } from "@/components/explainer-audio"
 import { gradeABoroughPath } from "@/lib/grade-a"
 import { DATA_WEEKLY_TITLE, dataWeeklyFaqs } from "@/lib/money-pages"
 import BreadcrumbJsonLd from "@/components/breadcrumb-jsonld"
 import DataProductCta, { DataHeroCta } from "@/components/data-product-cta"
 import DataSampleForm from "@/components/data-sample-form"
 import FAQSchema from "@/components/faq-schema"
-import { DATA_PRODUCT, DOHMH_DATASET } from "@/config/data-product"
+import { DATA_PRODUCT, DOHMH_DATASET, NEIGHBORHOOD_INSPECTION_REPORT } from "@/config/data-product"
 import { dataPageIndex } from "@/lib/data-pages"
 
 export const revalidate = 86400
@@ -39,11 +41,12 @@ type SampleRow = {
 export default async function DataProductPage({
   searchParams,
 }: {
-  searchParams: Promise<{ subscribed?: string }>
+  searchParams: Promise<{ subscribed?: string; purchased?: string }>
 }) {
-  const { subscribed } = await searchParams
-  const purchaseConfirmed = subscribed === "1"
-  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionAt, counts] =
+  const { subscribed, purchased } = await searchParams
+  const subscriptionConfirmed = subscribed === "1"
+  const reportConfirmed = purchased === "1"
+  const [pending, highScore, closed, notInspected, pendingRows, highRows, uninspectedRows, newestInspectionAt, counts, stats] =
     await Promise.all([
     prisma.restaurant.count({ where: { inspection_grade: { in: ["Z", "P"] } } }),
     prisma.restaurant.count({ where: { inspection_score: { gte: HIGH_SCORE } } }),
@@ -78,9 +81,11 @@ export default async function DataProductPage({
     }),
     loadNewestInspectionAt(),
     getPublishedDirectoryCounts(),
+    getSiteStats(),
   ])
   const newestInspectionLabel = newestInspectionAt ? formatLongDate(newestInspectionAt) : null
   const faqs = dataWeeklyFaqs()
+  const dataIntro = dataSectionIntro(stats)
 
   const rows: SampleRow[] = [
     ...pendingRows.map((row) => toSample(row, "Grade pending")),
@@ -96,6 +101,25 @@ export default async function DataProductPage({
         <div className="mx-auto max-w-3xl px-6 pb-8 pt-8 sm:pb-10 sm:pt-10">
           <p className="eyebrow">{DATA_PRODUCT.name}</p>
           <h1 className="display-2 mt-3">The inspection changes before you hear about it.</h1>
+          <div className="mt-4 space-y-4 text-base leading-relaxed" style={{ maxWidth: "65ch" }}>
+            {dataIntro.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+            ))}
+          </div>
+          <p className="mt-4 text-base leading-relaxed" style={{ maxWidth: "65ch" }}>
+            The dated extracts are the{" "}
+            <a href="/data/nyc-restaurant-health-grade-report" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>Fall 2026 inspection report</a>
+            , the{" "}
+            <a href="/data/nyc-restaurant-score-13-cliff" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>score 13 cliff</a>
+            ,{" "}
+            <a href="/data/not-yet-inspected-restaurants-nyc" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>restaurants not yet inspected</a>
+            , the{" "}
+            <a href="/data/nyc-restaurant-closures-2026-11" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>closures file</a>
+            , and the{" "}
+            <a href="/data/best-rated-restaurants" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>best-rated ranking</a>
+            . Each of those pages links back to this section.
+          </p>
+          <ExplainerAudio page="data" transcript={[...dataIntro, "The dated extracts are the Fall 2026 inspection report, the score 13 cliff, restaurants not yet inspected, the closures file, and the best-rated ranking. Each of those pages links back to this section."].join("\n\n")} />
           <p className="dek mt-4">
             A Grade Pending sign, a score at the Grade C line, a closure, or a restaurant that has not been inspected yet is the week a vendor can still help. By the time that restaurant is in a directory roundup, the week is gone.
           </p>
@@ -107,7 +131,7 @@ export default async function DataProductPage({
             {newestInspectionLabel ? ` Rows as of ${newestInspectionLabel}.` : ""} Source NYC Open Data {DOHMH_DATASET.id}.
           </p>
           {newestInspectionAt ? <UpdatedWebPage date={newestInspectionAt} urlPath="/data" /> : null}
-          {purchaseConfirmed ? (
+          {subscriptionConfirmed ? (
             <p
               role="status"
               className="mt-6 border px-5 py-4 text-base leading-relaxed"
@@ -116,8 +140,39 @@ export default async function DataProductPage({
               Thanks. Your subscription is confirmed.
             </p>
           ) : null}
+          {reportConfirmed ? (
+            <p
+              role="status"
+              className="mt-6 border px-5 py-4 text-base leading-relaxed"
+              style={{ borderColor: "var(--color-jade)", backgroundColor: "#fff", color: "var(--color-forest)" }}
+            >
+              Thanks. Your neighborhood inspection report is confirmed. We will email the Excel file to the address you used at checkout.
+            </p>
+          ) : null}
           <DataHeroCta />
           <DataProductCta />
+          <section
+            className="mt-8 border p-5"
+            style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}
+            aria-labelledby="neighborhood-report"
+          >
+            <p className="eyebrow">One-time report</p>
+            <h2 id="neighborhood-report" className="mt-2 text-xl font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--color-forest)" }}>
+              {NEIGHBORHOOD_INSPECTION_REPORT.name}
+            </h2>
+            <p className="mt-2 text-3xl font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--color-forest)" }}>
+              ${NEIGHBORHOOD_INSPECTION_REPORT.priceUsd}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+              One Excel file, paid once. This is separate from {DATA_PRODUCT.name} at ${DATA_PRODUCT.priceMonthlyUsd} a month or ${DATA_PRODUCT.priceYearlyUsd} a year.
+            </p>
+            <a
+              href={NEIGHBORHOOD_INSPECTION_REPORT.stripePaymentLink}
+              className="mt-4 inline-flex h-11 items-center rounded-md bg-forest px-5 text-sm font-semibold text-cream"
+            >
+              Buy the report
+            </a>
+          </section>
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-6 pt-8">
@@ -259,6 +314,20 @@ export default async function DataProductPage({
 
 function countLabel(count: number, singular: string, plural: string) {
   return `${count.toLocaleString("en-US")} ${count === 1 ? singular : plural}`
+}
+
+function dataSectionIntro(stats: Awaited<ReturnType<typeof getSiteStats>>): string[] {
+  const opening = "This is the data section of Eat Real Food NYC. The reports linked from this page are dated extracts of NYC Department of Health and Mental Hygiene inspections, matched to the published directory. The Monday email on this page is a separate product that uses the same inspection file."
+  if (stats.source !== "live") {
+    return [
+      opening,
+      "Published-directory counts are not available for this render. Each report below quotes the record date of the extract it was built from.",
+    ]
+  }
+  return [
+    opening,
+    `The published directory lists ${stats.publishedListings.toLocaleString("en-US")} operational restaurants, ${stats.gradeAListings.toLocaleString("en-US")} of them with a matched Grade A, in ${stats.neighborhoods.toLocaleString("en-US")} neighborhoods. ${stats.restaurantsTracked.toLocaleString("en-US")} restaurant rows are tracked, including unpublished rows. ${dataAsOfSentence(stats.dataAsOfLabel)} Grade A is a food-safety grade, not a health claim.`,
+  ]
 }
 
 function toSample(

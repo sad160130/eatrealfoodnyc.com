@@ -7,14 +7,15 @@ import {
 } from "../lib/impression-404-redirects"
 
 const redirects = impression404Redirects()
-assert.equal(IMPRESSION_404_RESTAURANT_SLUGS.length, 126)
-assert.equal(new Set(IMPRESSION_404_RESTAURANT_SLUGS).size, 126)
-assert.equal(redirects.length, 128)
+assert.equal(IMPRESSION_404_RESTAURANT_SLUGS.length, 127)
+assert.equal(new Set(IMPRESSION_404_RESTAURANT_SLUGS).size, 127)
+assert.equal(redirects.length, 129)
 
 assert.equal(
   impressionRestaurantDestination("balaji-bhavan-pure-vegetarian-south-indian-restaurant"),
   "/healthy-restaurants"
 )
+assert.equal(impressionRestaurantDestination("balaji-bhavan"), "/healthy-restaurants")
 assert.equal(impressionRestaurantDestination("susans-kitchen-of-great-neck"), "/healthy-restaurants")
 assert.equal(impressionRestaurantDestination("chopt-creative-salad-co-bayside"), "/nyc/queens/healthy-restaurants")
 assert.equal(impressionRestaurantDestination("capri-rosedale"), "/nyc/queens/healthy-restaurants")
@@ -25,6 +26,10 @@ assert.equal(
   "/nyc/manhattan/lower-east-side/healthy-restaurants"
 )
 assert.equal(bySource.get("/nyc/bronx/soundview/healthy-restaurants"), "/nyc/bronx/healthy-restaurants")
+assert.equal(
+  bySource.get("/restaurants/balaji-bhavan"),
+  bySource.get("/restaurants/balaji-bhavan-pure-vegetarian-south-indian-restaurant")
+)
 for (const row of redirects) {
   assert.equal(row.statusCode, 301)
   assert.notEqual(row.source, row.destination)

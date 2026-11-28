@@ -26,6 +26,8 @@ import { HubRecord } from "@/components/hub-record"
 import { hubStamp } from "@/lib/hub-record"
 import { gradeAListAnswer, gradeAListQuestion } from "@/lib/grade-a-faq"
 import { formatLongDate, parseInspectionDate } from "@/lib/inspection-dates"
+import { dataAsOfSentence, getSiteStats } from "@/lib/site-stats"
+import { ExplainerAudio } from "@/components/explainer-audio"
 
 export interface GradeAScope {
   boroughName?: string
@@ -88,7 +90,7 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
   const pages = gradeAPageCount(total)
   if (scope.page > pages) notFound()
 
-  const [rows, latestMonth, boroughs, dated] = await Promise.all([
+  const [rows, latestMonth, boroughs, dated, siteStats] = await Promise.all([
     prisma.restaurant.findMany({
       where,
       orderBy: [{ rating: "desc" }, { reviews: "desc" }, { name: "asc" }],
@@ -101,6 +103,7 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
       where,
       select: { inspection_date: true, updated_at: true },
     }),
+    getSiteStats(),
   ])
   const restaurants = await withPartnerStatus(rows)
   const place = placeLabel(scope)
@@ -143,6 +146,8 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
       answer: gradeAListAnswer(total, place),
     },
   ]
+  const citywide = !scope.boroughName && !scope.neighborhoodName
+  const cityIntro = citywide ? gradeACityIntro(total, latestMonth, siteStats) : []
   const crumbs = [
     ...(scope.boroughName
       ? [{ label: scope.boroughName, href: `/nyc/${boroughToSlug(scope.boroughName)}/healthy-restaurants` }]
@@ -181,6 +186,22 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
         </div>
       </header>
       <section className="mx-auto max-w-7xl px-6 py-12">
+        {citywide ? (
+          <div className="mb-12 max-w-3xl">
+            <h2 className="h2-serif">What this Grade A list is</h2>
+            <div className="mt-4 space-y-4 text-base leading-relaxed">
+              {cityIntro.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+              ))}
+              <p>
+                <a href="/guides/nyc-health-grades-explained" className="underline underline-offset-4" style={{ color: "var(--color-jade)" }}>
+                  How NYC health grades work
+                </a>
+              </p>
+            </div>
+            <ExplainerAudio page="grade-a" transcript={cityIntro.join("\n\n")} />
+          </div>
+        ) : null}
         <div className="mb-12 overflow-x-auto border" style={{ borderColor: "var(--hairline)", backgroundColor: "#fff" }}>
           <table className="w-full text-left text-sm">
             <caption className="px-3 py-3 text-left" style={{ color: "var(--color-text)" }}>
@@ -259,4 +280,20 @@ export async function GradeAHub({ scope }: { scope: GradeAScope }) {
       </div>
     </div>
   )
+}
+
+function gradeACityIntro(
+  total: number,
+  latestMonth: string | null,
+  stats: Awaited<ReturnType<typeof getSiteStats>>
+): string[] {
+  const when = latestMonth
+    ? `The newest matched inspection month among these listings is ${latestMonth}.`
+    : "No inspection month is stored on these listings."
+  const asOf = stats.source === "live" ? ` ${dataAsOfSentence(stats.dataAsOfLabel)}` : ""
+  return [
+    `This page lists every published operational restaurant in New York City whose matched NYC Department of Health and Mental Hygiene grade is A. ${total.toLocaleString("en-US")} listings are in that set. It is not the full city inspection file, and a missing letter is not included.`,
+    `Grade A means fewer than 14 points on the initial inspection or the reinspection. ${when}${asOf} The borough lists are linked under the restaurants on this page.`,
+    "Neighborhood hubs and Grade A restaurant pages link here. The health grades guide explains how the city assigns the letter.",
+  ]
 }
