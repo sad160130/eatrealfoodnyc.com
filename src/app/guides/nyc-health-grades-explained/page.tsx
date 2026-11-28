@@ -137,7 +137,11 @@ export default async function NYCHealthGradesGuide() {
                 <Link href="/catering/holiday-party-catering-nyc" className="font-semibold text-jade hover:text-forest">
                   holiday party catering in NYC from Grade A restaurants
                 </Link>{" "}
-                lists published Grade A restaurants for group orders. The request is free, and the page does not quote restaurant prices.
+                lists published Grade A restaurants for group orders. Send the request on the{" "}
+                <Link href="/catering" className="font-semibold text-jade hover:text-forest">
+                  catering form
+                </Link>
+                . The request is free, and the page does not quote restaurant prices.
               </p>
             </div>
             <div id="what-a-b-rating-means" className="scroll-mt-24">

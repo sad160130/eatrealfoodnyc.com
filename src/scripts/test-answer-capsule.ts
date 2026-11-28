@@ -1,4 +1,5 @@
 import assert from "node:assert/strict"
+import { readFileSync } from "node:fs"
 import { dietCapsule, neighborhoodCapsule, restaurantCapsule, wordCount } from "../lib/answer-capsule"
 
 function expectRange(label: string, text: string) {
@@ -74,5 +75,27 @@ expectRange("diet", diet)
 assert.ok(diet.includes("10 A"))
 assert.ok(diet.includes("2 B"))
 assert.ok(diet.includes("1 C"))
+
+const kosher = dietCapsule({
+  label: "Kosher",
+  count: 82,
+  gradeA: 61,
+  gradeB: 9,
+  gradeC: 0,
+  latestMonth: "November 2026",
+})
+expectRange("kosher opening", kosher)
+assert.ok(kosher.startsWith("82 kosher restaurants are published"))
+assert.ok(kosher.includes("61 A"))
+assert.ok(kosher.includes("9 B"))
+assert.ok(kosher.includes("0 C"))
+assert.equal(kosher.includes("dining guide"), false)
+
+const dietPage = readFileSync(new URL("../app/healthy-restaurants/[diet-type]/page.tsx", import.meta.url), "utf8")
+const openingAt = dietPage.indexOf("{capsule}")
+const guideLinkAt = dietPage.indexOf('href="/guides/kosher-dining-nyc-guide"')
+assert.ok(openingAt > 0 && guideLinkAt > openingAt, "the kosher guide link must follow the count-led opening")
+assert.match(dietPage, /THIN_DIET_DATA_DATE = new Set\(\["keto", "paleo", "raw-food"\]\)/)
+assert.doesNotMatch(dietPage, /dateModified: new Date\(/)
 
 console.log("answer capsule tests passed")
