@@ -53,11 +53,7 @@ export default async function AboutPage() {
             in New York City.
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/70">
-            Eat Real Food NYC was built by Rohan Kadam out of a genuine frustration.
-            Finding a truly healthy restaurant in New York City — one you could trust
-            for both food quality and food safety — required stitching together five
-            different apps, reading hundreds of reviews, and still feeling unsure. He
-            decided to fix that. Snket Desai is a co-founder of Eat Real Food NYC, with Rohan Kadam.
+            Eat Real Food NYC was built and is run by Snket Desai, who designed the site and wrote its code and data pipeline. Rohan Kadam is a co-founder.
           </p>
         </div>
       </div>
